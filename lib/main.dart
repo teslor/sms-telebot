@@ -132,6 +132,7 @@ class HelpScreen extends StatelessWidget {
       AppLocalizations.of(context)!.help_howToUse_03,
       AppLocalizations.of(context)!.help_howToUse_04,
       AppLocalizations.of(context)!.help_howToUse_05,
+      AppLocalizations.of(context)!.help_howToUse_06,
     ];
     final List<String> filterItems = [
       AppLocalizations.of(context)!.help_filters_01,
@@ -183,7 +184,8 @@ class GuideList extends StatelessWidget {
       children: List.generate(items.length, (index) {
         return ListTile(
           contentPadding: const EdgeInsets.all(0),
-          leading: const Icon(Icons.check_circle_outline_rounded),
+          leading: const Icon(Icons.check_circle_outline_rounded, size: 15),
+          minLeadingWidth: 15,
           subtitle: Text(items[index]),
         );
       }),

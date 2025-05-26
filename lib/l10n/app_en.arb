@@ -33,6 +33,7 @@
   "help_howToUse_03": "Go to the app, in bot settings, enter the token, and test settings (you can also set the chat id if you know it). If the test is successful, the settings are saved, and a hello message is sent to the Telegram chat.",
   "help_howToUse_04": "That's it! Now incoming SMS will be forwarded to your bot.",
   "help_howToUse_05": "The app runs in the background, so the system may close it to save battery. To prevent this, disable optimization for the app (usually found in battery settings).",
+  "help_howToUse_06": "Make sure to keep the internet connection enabled for the app to work.",
   "help_filters": "Filters",
   "help_filters_01": "You can set filters for sender or text of incoming SMS messages. A filter is triggered if a sender number/name or text contains the specified characters.",
   "help_filters_02": "There are two modes: whitelist (SMS is forwarded if at least one filter matches) and blacklist (SMS is not forwarded if any filter matches). In whitelist mode, if no filters are set, no SMS messages will be forwarded to the bot.",
