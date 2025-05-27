@@ -14,7 +14,7 @@ class SmsPage extends StatelessWidget {
     final latestSms = appState.latestSms;
 
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(15),
       child: smsReceived == 0 ? Center(child: Text(AppLocalizations.of(context)!.sms_empty, textAlign: TextAlign.center, style: TextStyle(fontSize: 18))) : Column(
         children: [
           Row(
@@ -28,7 +28,10 @@ class SmsPage extends StatelessWidget {
           SizedBox(height: 15),
           Card(
             child: ListTile(
-              title: Text('${AppLocalizations.of(context)!.sms_latest} ${latestSms['sender']}):'),
+              title: Text(
+                '${AppLocalizations.of(context)!.sms_latest} ${latestSms['sender']}):',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+              ),
               subtitle: Text(latestSms['sms'])
             ),
           ),
@@ -42,12 +45,12 @@ class SmsPage extends StatelessWidget {
       child: Card(
         color: Theme.of(context).colorScheme.secondaryContainer,
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(title, style: TextStyle(fontSize: 16), textAlign: TextAlign.center),
-              Text(value, style: TextStyle(fontSize: 22), textAlign: TextAlign.center),
+              Text(title, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
+              Text(value, style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
             ],
           ),
         ),

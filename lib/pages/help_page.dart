@@ -42,10 +42,10 @@ class HelpPage extends StatelessWidget {
           const SizedBox(height: 10),
 
           Center(child: Text(AppLocalizations.of(context)!.help_howToUse,style: TextStyle(fontSize: 18, height: 2.5))),
-          GuideList(items: guideItems),
+          GuideList(items: guideItems, warnIndices: [4, 5]),
 
           Center(child: Text(AppLocalizations.of(context)!.help_filters,style: TextStyle(fontSize: 18, height: 2.5))),
-          GuideList(items: filterItems),
+          GuideList(items: filterItems, warnIndices: []),
         ],
       ),
     );
@@ -56,9 +56,11 @@ class GuideList extends StatelessWidget {
   const GuideList({
     super.key,
     required this.items,
+    required this.warnIndices,
   });
 
   final List<String> items;
+  final List<int> warnIndices;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,8 @@ class GuideList extends StatelessWidget {
       children: List.generate(items.length, (index) {
         return ListTile(
           contentPadding: const EdgeInsets.all(0),
-          leading: const Icon(Icons.check_circle_outline_rounded, size: 15),
+          leading: warnIndices.contains(index) ? const Icon(Icons.error_outline_rounded, size: 15) :
+                   const Icon(Icons.check_circle_outline_rounded, size: 15),
           minLeadingWidth: 15,
           subtitle: Text(items[index]),
         );
