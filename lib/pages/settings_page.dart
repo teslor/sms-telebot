@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../state.dart';
-import '../utils.dart';
+import '../service.dart';
 import '../widgets/action_button.dart';
 
 class SettingsPage extends StatefulWidget {

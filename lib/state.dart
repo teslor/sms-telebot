@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:readsms/readsms.dart';
 import 'dart:convert';
 import 'constants.dart';
-import 'utils.dart';
+import 'service.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 final appLoc = AppLocalizations.of(navigatorKey.currentState!.context);
