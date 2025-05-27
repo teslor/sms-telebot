@@ -6,14 +6,14 @@ import '../state.dart';
 import '../utils.dart';
 import '../widgets/action_button.dart';
 
-class BotPage extends StatefulWidget {
-  const BotPage({super.key});
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
 
   @override
-  State<BotPage> createState() => _BotPageState();
+  State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _BotPageState extends State<BotPage> {
+class _SettingsPageState extends State<SettingsPage> {
   late TextEditingController _botTokenController;
   late TextEditingController _chatIdController;
 
@@ -69,8 +69,8 @@ class _BotPageState extends State<BotPage> {
             controller: _botTokenController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.bot_token,
-              helperText: AppLocalizations.of(context)!.bot_tokenInfo,
+              labelText: AppLocalizations.of(context)!.settings_token,
+              helperText: AppLocalizations.of(context)!.settings_tokenInfo,
               helperMaxLines: 2,
             ),
             onSubmitted: (String value) { 
@@ -87,8 +87,8 @@ class _BotPageState extends State<BotPage> {
             controller: _chatIdController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.bot_chatId,
-              helperText: AppLocalizations.of(context)!.bot_chatIdInfo,
+              labelText: AppLocalizations.of(context)!.settings_chatId,
+              helperText: AppLocalizations.of(context)!.settings_chatIdInfo,
               helperMaxLines: 2,
             ),
             keyboardType: TextInputType.number,
@@ -101,7 +101,7 @@ class _BotPageState extends State<BotPage> {
           Spacer(),
 
           ActionButton(
-            label: AppLocalizations.of(context)!.bot_test,
+            label: AppLocalizations.of(context)!.settings_test,
             onPressed: _isTesting || _isTestingDisabled ? null : _testAndSaveSettings,
             isSuccess: _testResult,
             isInProgress: _isTesting,

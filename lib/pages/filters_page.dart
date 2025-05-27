@@ -56,8 +56,8 @@ class _FiltersPageState extends State<FiltersPage> {
                   style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 12))),
                   segments: <ButtonSegment<int>>[
                     ButtonSegment<int>(value: 0, label: Text(AppLocalizations.of(context)!.filters_off, textAlign: TextAlign.center, style: TextStyle(height: 1.15))),
-                    ButtonSegment<int>(value: 1, label: Text(AppLocalizations.of(context)!.filters_whiteList, textAlign: TextAlign.center, style: TextStyle(height: 1.15))),
-                    ButtonSegment<int>(value: 2, label: Text(AppLocalizations.of(context)!.filters_blackList, textAlign: TextAlign.center, style: TextStyle(height: 1.15))),
+                    ButtonSegment<int>(value: 1, label: Text(AppLocalizations.of(context)!.filters_whitelist, textAlign: TextAlign.center, style: TextStyle(height: 1.15))),
+                    ButtonSegment<int>(value: 2, label: Text(AppLocalizations.of(context)!.filters_blacklist, textAlign: TextAlign.center, style: TextStyle(height: 1.15))),
                   ],
                   selected: <int>{appState.filterMode},
                   onSelectionChanged: (Set<int> newSelection) {

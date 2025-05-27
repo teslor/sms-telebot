@@ -6,8 +6,8 @@ import 'constants.dart';
 import 'state.dart';
 import 'styles.dart';
 import 'pages/sms_page.dart';
-import 'pages/bot_page.dart';
 import 'pages/filters_page.dart';
+import 'pages/settings_page.dart';
 import 'pages/help_page.dart';
 
 void main() {
@@ -18,7 +18,7 @@ void main() {
   ]).then((_) {
     runApp(App());
   });
-} 
+}
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -97,22 +97,22 @@ class _AppViewState extends State<AppView> {
             label: AppLocalizations.of(context)!.sms,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.settings),
-            icon: Icon(Icons.settings_outlined),
-            label: AppLocalizations.of(context)!.bot,
-          ),
-          NavigationDestination(
             selectedIcon: Icon(Icons.filter_alt),
             icon: Icon(Icons.filter_alt_outlined),
             label: AppLocalizations.of(context)!.filters,
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.settings),
+            icon: Icon(Icons.settings_outlined),
+            label: AppLocalizations.of(context)!.settings,
           ),
         ],
       ),
       body:
         <Widget>[
           const SmsPage(),
-          const BotPage(),
           const FiltersPage(),
+          const SettingsPage(),
         ][currentPageIndex],
     );
   }
