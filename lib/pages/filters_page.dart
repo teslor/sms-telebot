@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import '../app_state.dart';
+import '../constants.dart';
+import '../state.dart';
 import '../utils.dart';
 import '../widgets/action_button.dart';
 
@@ -17,6 +18,12 @@ class _FiltersPageState extends State<FiltersPage> {
   final GlobalKey<_ChipsWidgetState> _smsChipsKey = GlobalKey<_ChipsWidgetState>();
   bool? _testResult;
   bool? _saveResult;
+
+  List<String> _getListNames() {
+    final appState = context.read<AppState>();
+    return appState.filterMode == 1 ? AppConst.filterKeys.sublist(0, 2) :
+           appState.filterMode == 2 ? AppConst.filterKeys.sublist(2, 4) : ['', ''];
+  }
 
   void _testFilters() async {
     final appState = context.read<AppState>();
@@ -62,7 +69,7 @@ class _FiltersPageState extends State<FiltersPage> {
                 
                 ChipsWidget(
                   key: _senderChipsKey,
-                  listName: appState.filterMode == 1 ? 'wSenders' : appState.filterMode == 2 ? 'bSenders' : '',
+                  listName: _getListNames()[0],
                   labelText: AppLocalizations.of(context)!.filters_sender,
                   helperText: AppLocalizations.of(context)!.filters_senderInfo,
                   prefixIcon: const Icon(Icons.person_outline_rounded)
@@ -72,7 +79,7 @@ class _FiltersPageState extends State<FiltersPage> {
                 
                 ChipsWidget(
                   key: _smsChipsKey,
-                  listName: appState.filterMode == 1 ? 'wSms' : appState.filterMode == 2 ? 'bSms' : '',
+                  listName: _getListNames()[1],
                   labelText: AppLocalizations.of(context)!.filters_text,
                   helperText: AppLocalizations.of(context)!.filters_textInfo,
                   prefixIcon: const Icon(Icons.sms_outlined)
@@ -129,7 +136,7 @@ class _ChipsWidgetState extends State<ChipsWidget> {
       children: [
         TextField(
           controller: inputController,
-          enabled: appState.filterMode != 0,
+          enabled: widget.listName.isNotEmpty,
           decoration: InputDecoration(
             border: OutlineInputBorder(),
             labelText: widget.labelText,
@@ -154,6 +161,7 @@ class _ChipsWidgetState extends State<ChipsWidget> {
           children: (appState.filterLists[widget.listName] ?? []).map((chip) {
             return Chip(
               padding: const EdgeInsets.all(5),
+              labelStyle: TextStyle(color: isRegex(chip) ? Colors.teal : null),
               label: InkWell(
                 onTap: () { inputController.text = chip; },
                 child: Text(chip),

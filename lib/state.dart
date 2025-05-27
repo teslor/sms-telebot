@@ -3,30 +3,31 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:readsms/readsms.dart';
 import 'dart:convert';
+import 'constants.dart';
 import 'utils.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 final appLoc = AppLocalizations.of(navigatorKey.currentState!.context);
-List<String> _filterKeys = ['wSenders', 'wSms', 'bSenders', 'bSms'];
 
 class AppState extends ChangeNotifier {
+  SharedPreferences? _prefs;
   final _smsPlugin = Readsms();
-  Map<String, bool> isFilterListChanged = { for (var key in _filterKeys) key: false };
-
-  String? botToken;
-  String? chatId;
-  int filterMode = 0;
-  Map<String, List<String>> filterLists = { for (var key in _filterKeys) key: [] };
+  final Map<String, bool> _isFilterListChanged = { for (var key in AppConst.filterKeys) key: false };
 
   int smsReceived = 0;
   int smsSentToBot = 0;
   Map latestSms = {};
+  String? botToken;
+  String? chatId;
+  int filterMode = 0;
+  Map<String, List<String>> filterLists = { for (var key in AppConst.filterKeys) key: [] };
 
   AppState() {
-    _initialize();
+    _init();
   }
 
-  Future<void> _initialize() async {
+  Future<void> _init() async {
+    _prefs = await SharedPreferences.getInstance();
     await _loadSettings();
 
     if (await getPermission()) {
@@ -44,25 +45,24 @@ class AppState extends ChangeNotifier {
   }
   
   Future<void> _loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    botToken = prefs.getString('botToken') ?? '';
-    chatId = prefs.getString('chatId') ?? '';
-    filterMode = prefs.getInt('filterMode') ?? filterMode;
-    for (var key in _filterKeys) {
-      filterLists[key] = List<String>.from(jsonDecode(prefs.getString(key) ?? '[]'));
+    botToken = _prefs?.getString('botToken') ?? '';
+    chatId = _prefs?.getString('chatId') ?? '';
+    filterMode = _prefs?.getInt('filterMode') ?? filterMode;
+    for (var key in AppConst.filterKeys) {
+      filterLists[key] = List<String>.from(jsonDecode(_prefs?.getString(key) ?? '[]'));
     }
     notifyListeners();
   }
 
   void addToFilterList(String listName, String item) {
     filterLists[listName]!.add(item);
-    isFilterListChanged[listName] = true;
+    _isFilterListChanged[listName] = true;
     notifyListeners();
   }
 
   void removeFromFilterList(String listName, String item) {
     filterLists[listName]!.remove(item);
-    isFilterListChanged[listName] = true;
+    _isFilterListChanged[listName] = true;
     notifyListeners();
   }
 
@@ -70,35 +70,31 @@ class AppState extends ChangeNotifier {
     if (filterMode == 0) { // filters off
       return true;
     } else if (filterMode == 1) { // whitelist
-      return (hasFilterMatches(sender, filterLists['wSenders']) || hasFilterMatches(sms, filterLists['wSms']));
+      return (hasFilterMatches(sender, filterLists[AppConst.filterKeys[0]]) || hasFilterMatches(sms, filterLists[AppConst.filterKeys[1]]));
     } else { // blacklist
-      return (!hasFilterMatches(sender, filterLists['bSenders']) && !hasFilterMatches(sms, filterLists['bSms']));
+      return (!hasFilterMatches(sender, filterLists[AppConst.filterKeys[2]]) && !hasFilterMatches(sms, filterLists[AppConst.filterKeys[3]]));
     }
   }
 
   Future<void> updateFilterMode(int newMode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('filterMode', newMode);
+    await _prefs?.setInt('filterMode', newMode);
     filterMode = newMode;
     notifyListeners();
   }
 
   Future<void> updateBotSettings(String newBotToken, String newChatId) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('botToken', newBotToken);
-    await prefs.setString('chatId', newChatId);
+    await _prefs?.setString('botToken', newBotToken);
+    await _prefs?.setString('chatId', newChatId);
     botToken = newBotToken;
     chatId = newChatId;
     notifyListeners();
   }
 
   Future<void> saveFilters() async {
-    SharedPreferences? prefs;
-    for (var key in _filterKeys) {
-      if (isFilterListChanged[key]!) {
-        prefs = prefs ?? await SharedPreferences.getInstance();
-        prefs.setString(key, jsonEncode(filterLists[key]));
-        isFilterListChanged[key] = false;
+    for (var key in AppConst.filterKeys) {
+      if (_isFilterListChanged[key]!) {
+        _prefs?.setString(key, jsonEncode(filterLists[key]));
+        _isFilterListChanged[key] = false;
       }
     }
   }

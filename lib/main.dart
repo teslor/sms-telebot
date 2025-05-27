@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'app_state.dart';
+import 'constants.dart';
+import 'state.dart';
 import 'styles.dart';
 import 'pages/sms_page.dart';
 import 'pages/bot_page.dart';
 import 'pages/filters_page.dart';
-
-const appLabel = 'SMS Telebot';
-const appVersion = '0.2.0';
+import 'pages/help_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +18,7 @@ void main() {
   ]).then((_) {
     runApp(App());
   });
-}
+} 
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -30,7 +29,7 @@ class App extends StatelessWidget {
       create: (context) => AppState(),
       child: MaterialApp(
         navigatorKey: navigatorKey,
-        title: appLabel,
+        title: AppConst.appName,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
@@ -75,13 +74,13 @@ class _AppViewState extends State<AppView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(appLabel),
+        title: const Text(AppConst.appName),
         centerTitle: true,
         elevation: 2,
         actions: [
           IconButton(
             icon: Icon(Icons.help_outline_rounded),
-            onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) => HelpScreen())); },
+            onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage())); },
           ),
         ],        
       ),
@@ -115,80 +114,6 @@ class _AppViewState extends State<AppView> {
           const BotPage(),
           const FiltersPage(),
         ][currentPageIndex],
-    );
-  }
-}
-
-class HelpScreen extends StatelessWidget {
-  const HelpScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final List<String> guideItems = [
-      AppLocalizations.of(context)!.help_howToUse_01,
-      AppLocalizations.of(context)!.help_howToUse_02,
-      AppLocalizations.of(context)!.help_howToUse_03,
-      AppLocalizations.of(context)!.help_howToUse_04,
-      AppLocalizations.of(context)!.help_howToUse_05,
-      AppLocalizations.of(context)!.help_howToUse_06,
-    ];
-    final List<String> filterItems = [
-      AppLocalizations.of(context)!.help_filters_01,
-      AppLocalizations.of(context)!.help_filters_02,
-      AppLocalizations.of(context)!.help_filters_03,
-      AppLocalizations.of(context)!.help_filters_04,
-    ];
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.help_about),
-        centerTitle: true,
-        elevation: 2,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(25.0),
-        children: [
-          Text(appLabel, style: TextStyle(fontSize: 20, color: theme.colorScheme.secondary)),
-          Transform.translate(
-            offset: const Offset(0, -5),
-            child: Text(appVersion ,style: TextStyle(color: theme.colorScheme.secondary)),
-          ),
-          Text(AppLocalizations.of(context)!.help_appInfo),
-          const SizedBox(height: 10),
-
-          Center(child: Text(AppLocalizations.of(context)!.help_howToUse,style: TextStyle(fontSize: 18, height: 2.5))),
-          GuideList(items: guideItems),
-
-          Center(child: Text(AppLocalizations.of(context)!.help_filters,style: TextStyle(fontSize: 18, height: 2.5))),
-          GuideList(items: filterItems),
-        ],
-      ),
-    );
-  }
-}
-
-class GuideList extends StatelessWidget {
-  const GuideList({
-    super.key,
-    required this.items,
-  });
-
-  final List<String> items;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(items.length, (index) {
-        return ListTile(
-          contentPadding: const EdgeInsets.all(0),
-          leading: const Icon(Icons.check_circle_outline_rounded, size: 15),
-          minLeadingWidth: 15,
-          subtitle: Text(items[index]),
-        );
-      }),
     );
   }
 }
