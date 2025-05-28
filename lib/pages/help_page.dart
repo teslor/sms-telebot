@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../constants.dart';
+import '../service.dart';
 
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final appLabelColor = Theme.of(context).colorScheme.secondary;
 
     final List<String> guideItems = [
       AppLocalizations.of(context)!.help_howToUse_01,
@@ -33,10 +34,23 @@ class HelpPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(25.0),
         children: [
-          Text(AppConst.appName, style: TextStyle(fontSize: 20, color: theme.colorScheme.secondary)),
+          Text(AppConst.appName, style: TextStyle(fontSize: 20, color: appLabelColor)),
           Transform.translate(
             offset: const Offset(0, -5),
-            child: Text(AppConst.appVersion ,style: TextStyle(color: theme.colorScheme.secondary)),
+            child: Row(
+              children: [
+                Text('${AppConst.appVersion}, ', style: TextStyle(color: appLabelColor)),
+                InkWell(
+                  onTap: () { launchURL('https://github.com/teslor/sms-telebot'); },
+                  child: Row(
+                    children: [
+                      Text('GitHub', style: TextStyle(color: appLabelColor, decoration: TextDecoration.underline )),
+                      Icon(Icons.star_border_rounded, color: appLabelColor, size: 16),
+                    ],
+                  )
+                ),
+              ],
+            ),
           ),
           Text(AppLocalizations.of(context)!.help_appInfo),
           const SizedBox(height: 10),
@@ -69,9 +83,9 @@ class GuideList extends StatelessWidget {
       children: List.generate(items.length, (index) {
         return ListTile(
           contentPadding: const EdgeInsets.all(0),
-          leading: warnIndices.contains(index) ? const Icon(Icons.error_outline_rounded, size: 15) :
-                   const Icon(Icons.check_circle_outline_rounded, size: 15),
-          minLeadingWidth: 15,
+          leading: warnIndices.contains(index) ? const Icon(Icons.error_outline_rounded, size: 18) :
+                   const Icon(Icons.check_circle_outline_rounded, size: 18),
+          minLeadingWidth: 18,
           subtitle: Text(items[index]),
         );
       }),

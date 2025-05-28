@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 Future<bool> getPermission() async {
@@ -41,6 +42,13 @@ Future<bool> sendMessage(String? token, String? chatId, String msg) async {
     final response = await http.get(Uri.parse(url));
     return response.statusCode == 200;
   } catch (e) { return false; }
+}
+
+void launchURL(String url) async {
+  final uri = Uri.parse(url);
+  try {
+    await launchUrl(uri);
+  } catch (e) { return; }
 }
 
 bool isRegex(String text) {
