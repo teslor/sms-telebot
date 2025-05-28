@@ -18,7 +18,8 @@ class _SettingsPageState extends State<SettingsPage> {
   late TextEditingController _chatIdController;
 
   bool _isTesting = false;
-  bool _isTestingDisabled = true;
+  bool _isInputChanged = false;
+  bool _isBotTokenCorrect = false;
   bool? _testResult; // null = not tested yet
 
   @override
@@ -27,7 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final appState = context.read<AppState>();
     _botTokenController = TextEditingController(text: appState.botToken);
     _chatIdController = TextEditingController(text: appState.chatId);
-    _isTestingDisabled = _botTokenController.text.isEmpty;
+    _isBotTokenCorrect = validateBotToken(_botTokenController.text);
   }
 
   @override
@@ -35,6 +36,11 @@ class _SettingsPageState extends State<SettingsPage> {
     _botTokenController.dispose();
     _chatIdController.dispose();
     super.dispose();
+  }
+
+  bool validateBotToken(String value) {
+    final regex = RegExp(r'^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$');
+    return regex.hasMatch(value);
   }
 
   Future<void> _testAndSaveSettings() async {
@@ -73,11 +79,8 @@ class _SettingsPageState extends State<SettingsPage> {
               helperText: AppLocalizations.of(context)!.settings_tokenInfo,
               helperMaxLines: 2,
             ),
-            onSubmitted: (String value) { 
-              setState(() { _testResult = null; });
-            },
             onChanged: (String value) {
-              setState(() { _isTestingDisabled = value.isEmpty; });
+              setState(() { _testResult = null; _isInputChanged = true; _isBotTokenCorrect = validateBotToken(value); });
             },
           ),
 
@@ -93,16 +96,16 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            onSubmitted: (String value) { 
-              setState(() { _testResult = null; });
-            }
+            onChanged: (String value) {
+              setState(() { _testResult = null; _isInputChanged = true; });
+            },
           ),
 
           Spacer(),
 
           ActionButton(
             label: AppLocalizations.of(context)!.settings_test,
-            onPressed: _isTesting || _isTestingDisabled ? null : _testAndSaveSettings,
+            onPressed: _isTesting || !_isInputChanged || !_isBotTokenCorrect ? null : _testAndSaveSettings,
             isSuccess: _testResult,
             isInProgress: _isTesting,
           ),

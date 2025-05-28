@@ -61,7 +61,7 @@ class _FiltersPageState extends State<FiltersPage> {
                   ],
                   selected: <int>{appState.filterMode},
                   onSelectionChanged: (Set<int> newSelection) {
-                    appState.updateFilterMode(newSelection.first);
+                    appState.setFilterMode(newSelection.first);
                   },
                 ),
                 

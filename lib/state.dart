@@ -54,6 +54,21 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool checkFilters(String sender, String sms) {
+    if (filterMode == 0) { // filters off
+      return true;
+    } else if (filterMode == 1) { // whitelist
+      return (hasFilterMatches(sender, filterLists[AppConst.filterKeys[0]]) || hasFilterMatches(sms, filterLists[AppConst.filterKeys[1]]));
+    } else { // blacklist
+      return (!hasFilterMatches(sender, filterLists[AppConst.filterKeys[2]]) && !hasFilterMatches(sms, filterLists[AppConst.filterKeys[3]]));
+    }
+  }
+
+  void setFilterMode(int newMode) {
+    filterMode = newMode;
+    notifyListeners();
+  }
+
   void addToFilterList(String listName, String item) {
     filterLists[listName]!.add(item);
     _isFilterListChanged[listName] = true;
@@ -66,20 +81,14 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool checkFilters(String sender, String sms) {
-    if (filterMode == 0) { // filters off
-      return true;
-    } else if (filterMode == 1) { // whitelist
-      return (hasFilterMatches(sender, filterLists[AppConst.filterKeys[0]]) || hasFilterMatches(sms, filterLists[AppConst.filterKeys[1]]));
-    } else { // blacklist
-      return (!hasFilterMatches(sender, filterLists[AppConst.filterKeys[2]]) && !hasFilterMatches(sms, filterLists[AppConst.filterKeys[3]]));
+  Future<void> saveFilters() async {
+    await _prefs?.setInt('filterMode', filterMode);
+    for (var key in AppConst.filterKeys) {
+      if (_isFilterListChanged[key]!) {
+        _prefs?.setString(key, jsonEncode(filterLists[key]));
+        _isFilterListChanged[key] = false;
+      }
     }
-  }
-
-  Future<void> updateFilterMode(int newMode) async {
-    await _prefs?.setInt('filterMode', newMode);
-    filterMode = newMode;
-    notifyListeners();
   }
 
   Future<void> updateBotSettings(String newBotToken, String newChatId) async {
@@ -88,15 +97,6 @@ class AppState extends ChangeNotifier {
     botToken = newBotToken;
     chatId = newChatId;
     notifyListeners();
-  }
-
-  Future<void> saveFilters() async {
-    for (var key in AppConst.filterKeys) {
-      if (_isFilterListChanged[key]!) {
-        _prefs?.setString(key, jsonEncode(filterLists[key]));
-        _isFilterListChanged[key] = false;
-      }
-    }
   }
 
   @override
