@@ -27,12 +27,24 @@ class SmsPage extends StatelessWidget {
           ),
           SizedBox(height: 15),
           Card(
-            child: ListTile(
-              title: Text(
-                '${AppLocalizations.of(context)!.sms_latest} ${latestSms['sender']}):',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${AppLocalizations.of(context)!.sms_receivedRecently}:',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)
+                  ),
+                  const SizedBox(height: 4),
+                  RichText(
+                    text: TextSpan(style: DefaultTextStyle.of(context).style, children: [
+                      TextSpan(text: '${latestSms['sender']}: ', style: TextStyle(fontWeight: FontWeight.w500)),
+                      TextSpan(text: latestSms['sms']),
+                    ]),
+                  ),
+                ],
               ),
-              subtitle: Text(latestSms['sms'])
             ),
           ),
         ],

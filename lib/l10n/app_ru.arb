@@ -6,7 +6,7 @@
   "sms_from": "СМС от",
   "sms_received": "Получено",
   "sms_sent": "Отправлено",
-  "sms_latest": "Недавняя СМС (от",
+  "sms_receivedRecently": "Получено недавно",
   "filters": "ФИЛЬТРЫ",
   "filters_off": "Без\nфильтров",
   "filters_whitelist": "Белый\nсписок",

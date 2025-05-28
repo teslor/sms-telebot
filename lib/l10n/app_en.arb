@@ -6,7 +6,7 @@
   "sms_from": "SMS from",
   "sms_received": "Received",
   "sms_sent": "Sent to bot",
-  "sms_latest": "Latest SMS (from",  
+  "sms_receivedRecently": "Received recently",
   "filters": "FILTERS",
   "filters_off": "Off",
   "filters_whitelist": "Whitelist",
