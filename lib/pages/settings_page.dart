@@ -94,7 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
               helperText: AppLocalizations.of(context)!.settings_chatIdInfo,
               helperMaxLines: 2,
             ),
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.numberWithOptions(decimal: false, signed: true),
             inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*$'))],
             onChanged: (String value) {
               setState(() { _testResult = null; _isInputChanged = true; });
