@@ -95,7 +95,7 @@ class _SettingsPageState extends State<SettingsPage> {
               helperMaxLines: 2,
             ),
             keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*$'))],
             onChanged: (String value) {
               setState(() { _testResult = null; _isInputChanged = true; });
             },
