@@ -30,10 +30,15 @@ To verify if a specific SMS will be forwarded, simply enter the sender and/or me
 
 # :memo: Notes
 
+* The app is not guaranteed to work properly on all devices, particularly on some customized Android systems due to possible OS security restrictions.
+
 * The app runs in the background, which may lead the system to close it to conserve battery. To avoid this, consider disabling battery optimization for the app in your device settings.
 
-* Make sure to grant the necessary permissions for SMS access to ensure the app functions correctly.
+* Make sure to grant the necessary permissions for SMS access.
+
+* On Huawei EMUI or Xiaomi MIUI, you may need to turn off Verification Code Protection to forward SMS with verification codes, but be aware that doing so can pose a security risk.
+
+<br>
 
 ---
-
 Released under the MIT license.
