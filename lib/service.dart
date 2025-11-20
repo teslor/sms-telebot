@@ -36,7 +36,7 @@ Future<String> getUpdates(String? token) async {
 
 Future<bool> sendMessage(String? token, String? chatId, String msg) async {
   if (token == null || chatId == null) return false;
-  final url = 'https://api.telegram.org/bot$token/sendMessage?chat_id=$chatId&text=${Uri.encodeComponent(msg)}';
+  final url = 'https://api.telegram.org/bot$token/sendMessage?chat_id=$chatId&text=${Uri.encodeComponent(msg)}&parse_mode=HTML';
 
   try {
     final response = await http.get(Uri.parse(url));

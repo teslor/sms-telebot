@@ -15,6 +15,7 @@ class HelpPage extends StatelessWidget {
       AppLocalizations.of(context)!.help_howToUse_02,
       AppLocalizations.of(context)!.help_howToUse_03,
       AppLocalizations.of(context)!.help_howToUse_04,
+      AppLocalizations.of(context)!.help_howToUse_04l,      
       AppLocalizations.of(context)!.help_howToUse_05,
       AppLocalizations.of(context)!.help_howToUse_06,
     ];
@@ -56,7 +57,7 @@ class HelpPage extends StatelessWidget {
           const SizedBox(height: 10),
 
           Center(child: Text(AppLocalizations.of(context)!.help_howToUse,style: TextStyle(fontSize: 18, height: 2.5))),
-          GuideList(items: guideItems, warnIndices: [4, 5]),
+          GuideList(items: guideItems, warnIndices: [5, 6]),
 
           Center(child: Text(AppLocalizations.of(context)!.help_filters,style: TextStyle(fontSize: 18, height: 2.5))),
           GuideList(items: filterItems, warnIndices: []),

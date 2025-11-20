@@ -19,6 +19,7 @@ class AppState extends ChangeNotifier {
   Map latestSms = {};
   String? botToken;
   String? chatId;
+  String? deviceLabel;
   int filterMode = 0;
   Map<String, List<String>> filterLists = { for (var key in AppConst.filterKeys) key: [] };
 
@@ -35,8 +36,9 @@ class AppState extends ChangeNotifier {
       _smsPlugin.smsStream.listen((event) async {
         smsReceived++;
 
+        String deviceInfo = deviceLabel!.isNotEmpty ? ' <i>($deviceLabel)</i>' : '';
         bool sendResult = checkFilters(event.sender, event.body) ? 
-                          await sendMessage(botToken, chatId, '${appLoc!.sms_from} ${event.sender}:\n${event.body}') : false;
+                          await sendMessage(botToken, chatId, '${appLoc!.sms_from} <b>${event.sender}</b>$deviceInfo:\n${event.body}') : false;
         if (sendResult) smsSentToBot++;
         latestSms = { 'time': event.timeReceived.toString(), 'sender': event.sender, 'sms': event.body, 'sent': sendResult };
         notifyListeners();
@@ -47,6 +49,7 @@ class AppState extends ChangeNotifier {
   Future<void> _loadSettings() async {
     botToken = _prefs?.getString('botToken') ?? '';
     chatId = _prefs?.getString('chatId') ?? '';
+    deviceLabel = _prefs?.getString('deviceLabel') ?? '';
     filterMode = _prefs?.getInt('filterMode') ?? filterMode;
     for (var key in AppConst.filterKeys) {
       filterLists[key] = List<String>.from(jsonDecode(_prefs?.getString(key) ?? '[]'));
@@ -91,11 +94,17 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  Future<void> updateBotSettings(String newBotToken, String newChatId) async {
+  Future<void> updateBotSettings(String newBotToken, String newChatId, String newDeviceLabel) async {
     await _prefs?.setString('botToken', newBotToken);
     await _prefs?.setString('chatId', newChatId);
+    if (newDeviceLabel.isNotEmpty) {
+      await _prefs?.setString('deviceLabel', newDeviceLabel);
+    } else {
+      await _prefs?.remove('deviceLabel');
+    }
     botToken = newBotToken;
     chatId = newChatId;
+    deviceLabel = newDeviceLabel;
     notifyListeners();
   }
 

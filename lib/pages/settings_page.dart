@@ -16,6 +16,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   late TextEditingController _botTokenController;
   late TextEditingController _chatIdController;
+  late TextEditingController _deviceLabelController;
 
   bool _isTesting = false;
   bool _isInputChanged = false;
@@ -28,6 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final appState = context.read<AppState>();
     _botTokenController = TextEditingController(text: appState.botToken);
     _chatIdController = TextEditingController(text: appState.chatId);
+    _deviceLabelController = TextEditingController(text: appState.deviceLabel);
     _isBotTokenCorrect = validateBotToken(_botTokenController.text);
   }
 
@@ -35,6 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void dispose() {
     _botTokenController.dispose();
     _chatIdController.dispose();
+    _deviceLabelController.dispose();
     super.dispose();
   }
 
@@ -49,12 +52,15 @@ class _SettingsPageState extends State<SettingsPage> {
     final appState = context.read<AppState>();
     String testBotToken = _botTokenController.text;
     String testChatId = _chatIdController.text;
+    String testDeviceLabel = _deviceLabelController.text;
 
     if (testChatId.isEmpty) testChatId = await getUpdates(testBotToken);
     if (testChatId.isNotEmpty) {
-      final result = await sendMessage(testBotToken, testChatId, mounted ? AppLocalizations.of(context)!.sms_hello : '=^•⩊•^=');
+      String helloMessage = mounted ? AppLocalizations.of(context)!.sms_hello : '=^•⩊•^=';
+      if (testDeviceLabel.isNotEmpty) helloMessage = '$helloMessage <i>($testDeviceLabel)</i>';
+      final result = await sendMessage(testBotToken, testChatId, helloMessage);
       if (result) {
-        await appState.updateBotSettings(testBotToken, testChatId);
+        await appState.updateBotSettings(testBotToken, testChatId, testDeviceLabel);
         setState(() { _isTesting = false; _testResult = true; _chatIdController.text = testChatId; });
         return;
       }
@@ -96,6 +102,26 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             keyboardType: TextInputType.numberWithOptions(decimal: false, signed: true),
             inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*$'))],
+            onChanged: (String value) {
+              setState(() { _testResult = null; _isInputChanged = true; });
+            },
+          ),
+
+          const SizedBox(height: 20),
+
+          const Divider(),
+
+          const SizedBox(height: 20),
+
+          TextField(
+            controller: _deviceLabelController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: AppLocalizations.of(context)!.settings_deviceLabel,
+              helperText: AppLocalizations.of(context)!.settings_deviceLabelInfo,
+              helperMaxLines: 2,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+            ),
             onChanged: (String value) {
               setState(() { _testResult = null; _isInputChanged = true; });
             },
