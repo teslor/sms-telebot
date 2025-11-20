@@ -30,7 +30,7 @@ class SmsPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
                     '${AppLocalizations.of(context)!.sms_receivedRecently}:',
