@@ -22,6 +22,8 @@
   "settings_tokenInfo": "Token obtenu de @BotFather",
   "settings_chatId": "ID du chat",
   "settings_chatIdInfo": "ID du chat avec votre bot (facultatif)",
+  "settings_deviceLabel": "Libellé de l'appareil",
+  "settings_deviceLabelInfo": "Libellé personnalisé (facultatif)",
   "settings_test": "Tester et enregistrer",
   "help_about": "À propos",
   "help_appInfo": "App pour transférer automatiquement les SMS entrants vers un bot Telegram",
@@ -30,6 +32,7 @@
   "help_howToUse_02": "Ouvrez un chat avec votre bot dans Telegram, démarrez une conversation ou envoyez un message. Ceci est nécessaire pour récupérer automatiquement l'ID du chat.",
   "help_howToUse_03": "Ouvrez l'app, dans les paramètres du bot, entrez le token et testez les paramètres (vous pouvez aussi définir l'ID du chat si vous le connaissez). Si le test réussit, les paramètres sont enregistrés et un message de bienvenue est envoyé au chat Telegram.",
   "help_howToUse_04": "C'est fait ! Maintenant les SMS entrants seront transférés à votre bot.",
+  "help_howToUse_04l": "Lors du transfert de SMS depuis plusieurs appareils, vous pouvez définir un libellé d'appareil dans les paramètres pour identifier le téléphone récepteur.",
   "help_howToUse_05": "L'app fonctionne en arrière-plan, le système peut donc la fermer pour économiser la batterie. Pour éviter cela, désactivez l'optimisation pour cette app (généralement dans les paramètres de batterie).",
   "help_howToUse_06": "Assurez-vous de garder la connexion internet activée pour que l'app fonctionne.",
   "help_filters": "Filtres",
@@ -38,4 +41,3 @@
   "help_filters_03": "Utilisez deux barres obliques pour regex. Par exemple, le filtre /^\\d*555$/ correspond à tous les numéros se terminant par 555",
   "help_filters_04": "Pour vérifier si un SMS spécifique sera transféré selon les filtres actuels, entrez l'expéditeur et/ou le message requis dans les champs et cliquez sur le bouton pour vérifier."
 }
-

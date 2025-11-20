@@ -22,6 +22,8 @@
   "settings_tokenInfo": "Token obtenido de @BotFather",
   "settings_chatId": "ID del chat",
   "settings_chatIdInfo": "ID del chat con tu bot (opcional)",
+  "settings_deviceLabel": "Etiqueta del dispositivo",
+  "settings_deviceLabelInfo": "Etiqueta personalizada (opcional)",
   "settings_test": "Probar y guardar",
   "help_about": "Acerca de",
   "help_appInfo": "App para reenviar automáticamente mensajes SMS entrantes a un bot de Telegram",
@@ -30,6 +32,7 @@
   "help_howToUse_02": "Abre un chat con tu bot en Telegram, inicia una conversación o envía cualquier mensaje. Esto es necesario para obtener automáticamente el ID del chat.",
   "help_howToUse_03": "Abre la app, en configuración del bot, introduce el token y prueba los ajustes (también puedes establecer el ID del chat si lo conoces). Si la prueba es exitosa, la configuración se guarda y se envía un mensaje de bienvenida al chat de Telegram.",
   "help_howToUse_04": "¡Listo! Ahora los SMS entrantes se reenviarán a tu bot.",
+  "help_howToUse_04l": "Al reenviar SMS desde varios dispositivos, puedes configurar una etiqueta de dispositivo en ajustes para identificar el teléfono receptor.",
   "help_howToUse_05": "La app funciona en segundo plano, por lo que el sistema puede cerrarla para ahorrar batería. Para evitarlo, desactiva la optimización para esta app (normalmente en ajustes de batería).",
   "help_howToUse_06": "Asegúrate de mantener la conexión a internet habilitada para que la app funcione.",
   "help_filters": "Filtros",
@@ -38,4 +41,3 @@
   "help_filters_03": "Usa dos barras para regex. Por ejemplo, el filtro /^\\d*555$/ coincide con todos los números que terminan en 555",
   "help_filters_04": "Para verificar si un SMS específico se reenviará según los filtros actuales, introduce el remitente y/o mensaje requerido en los campos y haz clic en el botón para verificar."
 }
-

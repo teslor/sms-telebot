@@ -22,6 +22,8 @@
   "settings_tokenInfo": "从 @BotFather 获取的令牌",
   "settings_chatId": "聊天 ID",
   "settings_chatIdInfo": "与您的机器人的聊天 ID（可选）",
+  "settings_deviceLabel": "设备标签",
+  "settings_deviceLabelInfo": "自定义标签（可选",
   "settings_test": "测试并保存",
   "help_about": "关于",
   "help_appInfo": "自动将接收的短信转发至 Telegram 机器人的应用",
@@ -30,6 +32,7 @@
   "help_howToUse_02": "在 Telegram 中打开与您的机器人的聊天，开始对话或发送任何消息。这是自动获取聊天 ID 所必需的。",
   "help_howToUse_03": "打开应用，在机器人设置中输入令牌并测试设置（如果知道聊天 ID，也可以设置）。如果测试成功，设置将被保存，并向 Telegram 聊天发送欢迎消息。",
   "help_howToUse_04": "完成！现在接收的短信将转发至您的机器人。",
+  "help_howToUse_04l": "从多个设备转发短信时，可以在设置中设置设备标签以识别接收手机。",
   "help_howToUse_05": "应用在后台运行，因此系统可能会关闭它以节省电量。为避免这种情况，请禁用此应用的优化（通常在电池设置中）。",
   "help_howToUse_06": "确保保持互联网连接以使应用正常工作。",
   "help_filters": "筛选器",
@@ -38,4 +41,3 @@
   "help_filters_03": "使用两个斜杠表示正则表达式。例如，筛选器 /^\\d*555$/ 匹配所有以 555 结尾的号码",
   "help_filters_04": "要检查特定短信是否会根据当前筛选器转发，请在输入字段中输入所需的发件人和/或消息，然后点击按钮进行验证。"
 }
-

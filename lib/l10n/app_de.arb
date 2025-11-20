@@ -22,6 +22,8 @@
   "settings_tokenInfo": "Token vom @BotFather erhalten",
   "settings_chatId": "Chat-ID",
   "settings_chatIdInfo": "ID des Chats mit Ihrem Bot (optional)",
+  "settings_deviceLabel": "Gerätename",
+  "settings_deviceLabelInfo": "Benutzerdefinierte Bezeichnung (optional)",
   "settings_test": "Testen & Speichern",
   "help_about": "Über",
   "help_appInfo": "App zum automatischen Weiterleiten eingehender SMS an einen Telegram-Bot",
@@ -30,6 +32,7 @@
   "help_howToUse_02": "Öffnen Sie einen Chat mit Ihrem Bot in Telegram, starten Sie ein Gespräch oder senden Sie eine Nachricht. Dies ist erforderlich, um die Chat-ID automatisch abzurufen.",
   "help_howToUse_03": "Öffnen Sie die App, geben Sie in den Bot-Einstellungen das Token ein und testen Sie die Einstellungen (Sie können auch die Chat-ID angeben, falls bekannt). Bei erfolgreichem Test werden die Einstellungen gespeichert und eine Begrüßungsnachricht an den Telegram-Chat gesendet.",
   "help_howToUse_04": "Fertig! Nun werden eingehende SMS an Ihren Bot weitergeleitet.",
+  "help_howToUse_04l": "Beim Weiterleiten von SMS von mehreren Geräten können Sie in den Einstellungen ein Gerätelabel festlegen, um das empfangende Telefon zu identifizieren.",
   "help_howToUse_05": "Die App läuft im Hintergrund, daher kann das System sie schließen, um Akku zu sparen. Um dies zu verhindern, deaktivieren Sie die Optimierung für diese App (normalerweise in den Akku-Einstellungen).",
   "help_howToUse_06": "Stellen Sie sicher, dass die Internetverbindung aktiviert ist, damit die App funktioniert.",
   "help_filters": "Filter",
@@ -38,4 +41,3 @@
   "help_filters_03": "Verwenden Sie zwei Schrägstriche für Regex. Zum Beispiel trifft Filter /^\\d*555$/ auf alle Nummern zu, die mit 555 enden",
   "help_filters_04": "Um zu prüfen, ob eine bestimmte SMS basierend auf den aktuellen Filtern weitergeleitet wird, geben Sie den Absender und/oder die Nachricht in die Felder ein und klicken Sie auf die Schaltfläche."
 }
-
