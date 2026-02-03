@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-Future<bool> getPermission() async {
+Future<bool> getSmsPermission() async {
   if (await Permission.sms.status == PermissionStatus.granted) {
     return true;
   } else {
@@ -12,6 +12,13 @@ Future<bool> getPermission() async {
     } else {
       return false;
     }
+  }
+}
+
+Future<void> getNotificationPermission() async {
+  // Required on Android 13+ to show foreground notifications
+  if (await Permission.notification.status != PermissionStatus.granted) {
+    await Permission.notification.request();
   }
 }
 

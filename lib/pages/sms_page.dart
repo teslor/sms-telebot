@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../state.dart';
+import '../widgets/action_button.dart';
 
 class SmsPage extends StatelessWidget {
   const SmsPage({super.key});
@@ -15,37 +16,67 @@ class SmsPage extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(15),
-      child: smsReceived == 0 ? Center(child: Text(AppLocalizations.of(context)!.sms_empty, textAlign: TextAlign.center, style: TextStyle(fontSize: 18))) : Column(
+      child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildSmsCard(context, '${AppLocalizations.of(context)!.sms_received}:', smsReceived.toString()),
-              SizedBox(width: 10),
-              _buildSmsCard(context, '${AppLocalizations.of(context)!.sms_sent}:', smsSentToBot.toString()),
-            ],
-          ),
-          SizedBox(height: 15),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    '${AppLocalizations.of(context)!.sms_receivedRecently}:',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)
-                  ),
-                  const SizedBox(height: 4),
-                  RichText(
-                    text: TextSpan(style: DefaultTextStyle.of(context).style, children: [
-                      TextSpan(text: '${latestSms['sender']}: ', style: TextStyle(fontWeight: FontWeight.w500)),
-                      TextSpan(text: latestSms['sms']),
-                    ]),
-                  ),
-                ],
+          Expanded(
+            child: !appState.isRunning ? Center(
+              child: Text(
+                'Press Start to begin\nforwarding SMS',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18),
               ),
+            ) : smsReceived == 0 ? Center(
+              child: Text(
+                AppLocalizations.of(context)!.sms_empty,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18),
+              ),
+            ) : Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildSmsCard(context, '${AppLocalizations.of(context)!.sms_received}:', smsReceived.toString()),
+                    SizedBox(width: 10),
+                    _buildSmsCard(context, '${AppLocalizations.of(context)!.sms_sent}:', smsSentToBot.toString()),
+                  ],
+                ),
+                SizedBox(height: 15),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          '${AppLocalizations.of(context)!.sms_receivedRecently}:',
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)
+                        ),
+                        const SizedBox(height: 4),
+                        RichText(
+                          text: TextSpan(style: DefaultTextStyle.of(context).style, children: [
+                            TextSpan(text: '${latestSms['sender']}: ', style: TextStyle(fontWeight: FontWeight.w500)),
+                            TextSpan(text: latestSms['sms']),
+                          ]),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
+          ),
+          const SizedBox(height: 15),
+          ActionButton(
+            label: appState.isRunning ? 'Stop' : 'Start',
+            isSuccess: null,
+            onPressed: () async {
+              if (appState.isRunning) {
+                await appState.stopProcessing();
+              } else {
+                await appState.startProcessing();
+              }
+            },
           ),
         ],
       ),

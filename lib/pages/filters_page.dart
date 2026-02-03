@@ -27,9 +27,12 @@ class _FiltersPageState extends State<FiltersPage> {
 
   void _testFilters() async {
     final appState = context.read<AppState>();
-    setState(() { 
-      _testResult = appState.checkFilters(_senderChipsKey.currentState?.inputController.text ?? '',
-                  _smsChipsKey.currentState?.inputController.text ?? '');
+    final sender = _senderChipsKey.currentState?.inputController.text ?? '';
+    final sms = _smsChipsKey.currentState?.inputController.text ?? '';
+    final result = await appState.checkFiltersNative(sender, sms);
+    if (!mounted) return;
+    setState(() {
+      _testResult = result;
     });
   }
 

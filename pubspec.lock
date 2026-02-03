@@ -240,14 +240,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.5"
-  readsms:
-    dependency: "direct main"
-    description:
-      name: readsms
-      sha256: "77139c6d8a8e31e1012b79a5038b1423caecf6129ead3de803924fb6ff4e98ee"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.0+4"
   shared_preferences:
     dependency: "direct main"
     description:
