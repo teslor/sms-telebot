@@ -58,6 +58,8 @@ class SmsForwardWorker(
         } catch (_: ClassCastException) {
             prefs.getLong("flutter.filterMode", 0L).toInt()
         }
+        // Read l10n from SharedPreferences
+        val l10nSmsFrom = prefs.getString("flutter.l10n_sms_from", "SMS from")
 
         var sendResult = false
         var workerResult: Result = Result.failure()
@@ -81,7 +83,7 @@ class SmsForwardWorker(
                 workerResult = Result.success()
             } else {
                 val deviceInfo = if (deviceLabel.isNotBlank()) " <i>($deviceLabel)</i>" else ""
-                val message = "SMS from <b>$sender</b>$deviceInfo:\n$body"
+                val message = "$l10nSmsFrom <b>$sender</b>$deviceInfo:\n$body"
 
                 val code = sendTelegramMessage(token, chatId, message)
                 sendResult = code == 200
@@ -157,6 +159,7 @@ class SmsForwardWorker(
         val lastId = prefs.getString("flutter.lastSmsId", null)
         val lastSent = prefs.getBoolean("flutter.lastSmsSent", false)
 
+        // SharedPreferences may store Dart int as Long, so fallback to getLong
         val receivedCountStart = try {
             prefs.getInt("flutter.smsReceived", 0)
         } catch (_: ClassCastException) {
@@ -171,6 +174,7 @@ class SmsForwardWorker(
         var receivedCount = receivedCountStart
         var sentCount = sentCountStart
 
+        // Same SMS can be processed again (WorkManager retry due to network constraint, or duplicate SMS intent)
         val isSameSms = lastId == smsId
         if (!isSameSms) {
             receivedCount += 1

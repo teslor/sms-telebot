@@ -21,7 +21,7 @@ class SmsPage extends StatelessWidget {
           Expanded(
             child: !appState.isRunning ? Center(
               child: Text(
-                'Press Start to begin\nforwarding SMS',
+                AppLocalizations.of(context)!.sms_welcome,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
@@ -68,7 +68,7 @@ class SmsPage extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           ActionButton(
-            label: appState.isRunning ? 'Stop' : 'Start',
+            label: appState.isRunning ? AppLocalizations.of(context)!.sms_stop : AppLocalizations.of(context)!.sms_start,
             isSuccess: null,
             onPressed: () async {
               if (appState.isRunning) {

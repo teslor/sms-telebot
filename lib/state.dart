@@ -8,7 +8,6 @@ import 'constants.dart';
 import 'service.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
-final appLoc = AppLocalizations.of(navigatorKey.currentState!.context);
 
 class AppState extends ChangeNotifier with WidgetsBindingObserver {
   SharedPreferences? _prefs;
@@ -37,6 +36,15 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     await _loadSmsStats();
     await getSmsPermission();
     await getNotificationPermission();
+
+    // Save l10n required for background process after first frame when context is available
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final localizations = AppLocalizations.of(navigatorKey.currentContext!)!;
+      final current = _prefs?.getString('l10n_sms_from');
+      if (current != localizations.sms_from) {
+        await _prefs?.setString('l10n_sms_from', localizations.sms_from);
+      }
+    });
 
     _startSmsStatsPolling();
   }
