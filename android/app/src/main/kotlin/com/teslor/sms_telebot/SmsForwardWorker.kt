@@ -64,7 +64,7 @@ class SmsForwardWorker(
                 smsId = smsId,
                 sender = sender,
                 body = body,
-                timestamp = timestamp
+                timestamp = System.currentTimeMillis()
             )
             return@withContext Result.success()
         }

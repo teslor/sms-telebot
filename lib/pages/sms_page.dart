@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../state.dart';
 import '../widgets/action_button.dart';
 
@@ -50,8 +51,8 @@ class SmsPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.sms_receivedRecently,
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)
+                            '${AppLocalizations.of(context)!.sms_sent} • ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.fromMillisecondsSinceEpoch(int.parse(lastSms['time'])))}',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5))
                           ),
                           const SizedBox(height: 4),
                           RichText(
