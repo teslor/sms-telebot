@@ -10,9 +10,9 @@ class SmsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
-    final smsReceived = appState.smsReceived;
-    final smsSentToBot = appState.smsSentToBot;
-    final latestSms = appState.latestSms;
+    final smsReceivedCount = appState.smsReceivedCount;
+    final smsSentCount = appState.smsSentCount;
+    final lastSms = appState.lastSms;
 
     return Padding(
       padding: const EdgeInsets.all(15),
@@ -25,7 +25,7 @@ class SmsPage extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
-            ) : smsReceived == 0 ? Center(
+            ) : smsReceivedCount == 0 ? Center(
               child: Text(
                 AppLocalizations.of(context)!.sms_empty,
                 textAlign: TextAlign.center,
@@ -36,33 +36,34 @@ class SmsPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildSmsCard(context, '${AppLocalizations.of(context)!.sms_received}:', smsReceived.toString()),
+                    _buildSmsCard(context, AppLocalizations.of(context)!.sms_received, smsReceivedCount.toString()),
                     SizedBox(width: 10),
-                    _buildSmsCard(context, '${AppLocalizations.of(context)!.sms_sent}:', smsSentToBot.toString()),
+                    _buildSmsCard(context, AppLocalizations.of(context)!.sms_sent, smsSentCount.toString()),
                   ],
                 ),
                 SizedBox(height: 15),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          '${AppLocalizations.of(context)!.sms_receivedRecently}:',
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)
-                        ),
-                        const SizedBox(height: 4),
-                        RichText(
-                          text: TextSpan(style: DefaultTextStyle.of(context).style, children: [
-                            TextSpan(text: '${latestSms['sender']}: ', style: TextStyle(fontWeight: FontWeight.w500)),
-                            TextSpan(text: latestSms['sms']),
-                          ]),
-                        ),
-                      ],
+                if (lastSms != null)
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.sms_receivedRecently,
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)
+                          ),
+                          const SizedBox(height: 4),
+                          RichText(
+                            text: TextSpan(style: DefaultTextStyle.of(context).style, children: [
+                              TextSpan(text: '${lastSms['sender']}: ', style: TextStyle(fontWeight: FontWeight.w500)),
+                              TextSpan(text: lastSms['sms']),
+                            ]),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -70,7 +71,7 @@ class SmsPage extends StatelessWidget {
           ActionButton(
             label: appState.isRunning ? AppLocalizations.of(context)!.sms_stop : AppLocalizations.of(context)!.sms_start,
             isSuccess: null,
-            onPressed: () async {
+            onPressed: (appState.botToken == '' || appState.chatId == '') ? null : () async {
               if (appState.isRunning) {
                 await appState.stopProcessing();
               } else {

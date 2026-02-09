@@ -31,74 +31,48 @@ class SmsForwardWorker(
     }
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+        val prefs = applicationContext.getSharedPreferences("FlutterSharedPreferences",Context.MODE_PRIVATE)
+        val isRunning = prefs.getBoolean(SmsContract.Prefs.IS_RUNNING, false)
+        if (!isRunning) return@withContext Result.success()
+
         val sender = inputData.getString(KEY_SENDER).orEmpty()
         val body = inputData.getString(KEY_BODY).orEmpty()
+        val timestamp = inputData.getLong(KEY_TIMESTAMP, 0L)
+        val smsId = "$timestamp|${body.hashCode()}"
 
-        if (sender.isBlank() || body.isBlank()) {
-            return@withContext Result.failure()
+        // Robust deduplication for Telegram side: protects against delayed network redelivery (A -> B -> A),
+        // WorkManager retries, and rare OEM/Android broadcast duplicates
+        val smsSentLastIds = getSmsSentLastIds(prefs)
+        if (smsSentLastIds.contains(smsId)) {
+            return@withContext Result.success() // already sent successfully earlier -> success
         }
 
-        // Read settings saved by Flutter (shared_preferences)
-        val prefs = applicationContext.getSharedPreferences(
-            "FlutterSharedPreferences",
-            Context.MODE_PRIVATE
-        )
+        val token = prefs.getString(SmsContract.Prefs.BOT_TOKEN, "").orEmpty()
+        val chatId = prefs.getString(SmsContract.Prefs.CHAT_ID, "").orEmpty()
+        val deviceLabel = prefs.getString(SmsContract.Prefs.DEVICE_LABEL, "").orEmpty()
+        if (token.isBlank() || chatId.isBlank()) return@withContext Result.failure()
 
-        val isRunning = prefs.getBoolean("flutter.isRunning", false)
-        if (!isRunning) {
+        val l10nSmsFrom = prefs.getString(SmsContract.Prefs.L10N_SMS_FROM, "SMS from")
+        val deviceInfo = if (deviceLabel.isNotBlank()) " <i>($deviceLabel)</i>" else ""
+        val message = "$l10nSmsFrom <b>$sender</b>$deviceInfo:\n$body"
+
+        val code = sendTelegramMessage(token, chatId, message)
+        if (code == 200) {
+            updateSentStats(
+                prefs = prefs,
+                smsSentLastIds = smsSentLastIds,
+                smsId = smsId,
+                sender = sender,
+                body = body,
+                timestamp = timestamp
+            )
             return@withContext Result.success()
         }
 
-        val token = prefs.getString("flutter.botToken", "").orEmpty()
-        val chatId = prefs.getString("flutter.chatId", "").orEmpty()
-        val deviceLabel = prefs.getString("flutter.deviceLabel", "").orEmpty()
-        // SharedPreferences may store Dart int as Long on Android
-        val filterMode = try {
-            prefs.getInt("flutter.filterMode", 0)
-        } catch (_: ClassCastException) {
-            prefs.getLong("flutter.filterMode", 0L).toInt()
+        return@withContext when {
+            code != null && code in 400..499 -> Result.failure()
+            else -> Result.retry()
         }
-        // Read l10n from SharedPreferences
-        val l10nSmsFrom = prefs.getString("flutter.l10n_sms_from", "SMS from")
-
-        var sendResult = false
-        var workerResult: Result = Result.failure()
-
-        val filters = SmsFilters.fromPrefs(prefs)
-        if (token.isBlank() || chatId.isBlank()) {
-            // No configuration yet; don't retry endlessly
-            sendResult = false
-            workerResult = Result.failure()
-        } else {
-            val shouldSend = SmsFilters.checkFilters(
-                mode = filterMode,
-                sender = sender,
-                sms = body,
-                filters = filters
-            )
-
-            if (!shouldSend) {
-                // Filtered out: nothing to do, but this is not an error
-                sendResult = false
-                workerResult = Result.success()
-            } else {
-                val deviceInfo = if (deviceLabel.isNotBlank()) " <i>($deviceLabel)</i>" else ""
-                val message = "$l10nSmsFrom <b>$sender</b>$deviceInfo:\n$body"
-
-                val code = sendTelegramMessage(token, chatId, message)
-                sendResult = code == 200
-                workerResult = when {
-                    code == 200 -> Result.success()
-                    code in 400..499 -> Result.failure()
-                    else -> Result.retry()
-                }
-            }
-        }
-
-        // Update UI stats in SharedPreferences and notify Flutter (if running)
-        updateUiStats(prefs, sender, body, inputData.getLong(KEY_TIMESTAMP, 0L), sendResult)
-
-        return@withContext workerResult
     }
 
     /**
@@ -108,10 +82,7 @@ class SmsForwardWorker(
      */
     private fun sendTelegramMessage(token: String, chatId: String, msg: String): Int? {
         val encoded = URLEncoder.encode(msg, "UTF-8")
-        val url = URL(
-            "https://api.telegram.org/bot$token/sendMessage" +
-                "?chat_id=$chatId&text=$encoded&parse_mode=HTML"
-        )
+        val url = URL("https://api.telegram.org/bot$token/sendMessage?chat_id=$chatId&text=$encoded&parse_mode=HTML")
 
         return try {
             val connection = url.openConnection() as HttpURLConnection
@@ -123,6 +94,50 @@ class SmsForwardWorker(
         } catch (e: Exception) {
             null
         }
+    }
+
+    private fun getSmsSentLastIds(prefs: android.content.SharedPreferences): MutableList<String> {
+        val raw = prefs.getString(SmsContract.Prefs.SMS_SENT_LAST_IDS, "[]") ?: "[]"
+
+        return try {
+            val json = JSONArray(raw)
+            MutableList(json.length()) { index -> json.optString(index) }
+                .filter { it.isNotBlank() }
+                .toMutableList()
+        } catch (_: Exception) {
+            mutableListOf()
+        }
+    }
+
+    private fun updateSentStats(
+        prefs: android.content.SharedPreferences,
+        smsSentLastIds: MutableList<String>,
+        smsId: String,
+        sender: String,
+        body: String,
+        timestamp: Long
+    ) {
+        smsSentLastIds.add(smsId)
+        val updatedIds = smsSentLastIds.takeLast(SmsContract.Prefs.CAP_LAST_IDS)
+
+        var sentCount = try {
+            prefs.getInt(SmsContract.Prefs.SMS_SENT_COUNT, 0)
+        } catch (_: ClassCastException) {
+            prefs.getLong(SmsContract.Prefs.SMS_SENT_COUNT, 0L).toInt()
+        }
+        sentCount += 1
+
+        val smsJson = JSONObject()
+            .put("time", timestamp.toString())
+            .put("sender", sender)
+            .put("sms", body)
+
+        prefs.edit()
+            .putInt(SmsContract.Prefs.SMS_SENT_COUNT, sentCount)
+            .putString(SmsContract.Prefs.SMS_SENT_LAST_IDS, JSONArray(updatedIds).toString())
+            .putString(SmsContract.Prefs.SMS_SENT_LAST_ID, smsId)
+            .putString(SmsContract.Prefs.SMS_SENT_LAST_DATA, smsJson.toString())
+            .apply()
     }
 
     private fun createForegroundNotification(): Notification {
@@ -148,57 +163,6 @@ class SmsForwardWorker(
             .build()
     }
 
-    private fun updateUiStats(
-        prefs: android.content.SharedPreferences,
-        sender: String,
-        body: String,
-        timestamp: Long,
-        sent: Boolean
-    ) {
-        val smsId = "$timestamp|$sender|${body.hashCode()}"
-        val lastId = prefs.getString("flutter.lastSmsId", null)
-        val lastSent = prefs.getBoolean("flutter.lastSmsSent", false)
-
-        // SharedPreferences may store Dart int as Long, so fallback to getLong
-        val receivedCountStart = try {
-            prefs.getInt("flutter.smsReceived", 0)
-        } catch (_: ClassCastException) {
-            prefs.getLong("flutter.smsReceived", 0L).toInt()
-        }
-        val sentCountStart = try {
-            prefs.getInt("flutter.smsSentToBot", 0)
-        } catch (_: ClassCastException) {
-            prefs.getLong("flutter.smsSentToBot", 0L).toInt()
-        }
-
-        var receivedCount = receivedCountStart
-        var sentCount = sentCountStart
-
-        // Same SMS can be processed again (WorkManager retry due to network constraint, or duplicate SMS intent)
-        val isSameSms = lastId == smsId
-        if (!isSameSms) {
-            receivedCount += 1
-        }
-        if (sent && (!isSameSms || !lastSent)) {
-            sentCount += 1
-        }
-
-        val latest = JSONObject()
-            .put("time", timestamp.toString())
-            .put("sender", sender)
-            .put("sms", body)
-            .put("sent", sent)
-
-        prefs.edit()
-            .putInt("flutter.smsReceived", receivedCount)
-            .putInt("flutter.smsSentToBot", sentCount)
-            .putString("flutter.latestSms", latest.toString())
-            .putString("flutter.lastSmsId", smsId)
-            .putBoolean("flutter.lastSmsSent", sent)
-            .apply()
-
-    }
-
     companion object {
         const val TAG = "sms_forward_worker"
         const val KEY_SENDER = "sender"
@@ -206,73 +170,5 @@ class SmsForwardWorker(
         const val KEY_TIMESTAMP = "timestamp"
         private const val FOREGROUND_NOTIFICATION_ID = 1001
         private const val FOREGROUND_CHANNEL_ID = "sms_telebot_forwarding"
-    }
-}
-
-/**
- * Filter logic equivalent to the Dart implementation.
- * Stored filters are JSON arrays in shared_preferences.
- */
-object SmsFilters {
-    private val filterKeys = listOf("wSenders", "wSms", "bSenders", "bSms")
-
-    data class Lists(
-        val wSenders: List<String>,
-        val wSms: List<String>,
-        val bSenders: List<String>,
-        val bSms: List<String>
-    )
-
-    fun fromPrefs(prefs: android.content.SharedPreferences): Lists {
-        fun readList(key: String): List<String> {
-            val raw = prefs.getString("flutter.$key", "[]") ?: "[]"
-            return try {
-                val json = JSONArray(raw)
-                List(json.length()) { index -> json.optString(index) }
-            } catch (_: Exception) {
-                emptyList()
-            }
-        }
-
-        return Lists(
-            wSenders = readList(filterKeys[0]),
-            wSms = readList(filterKeys[1]),
-            bSenders = readList(filterKeys[2]),
-            bSms = readList(filterKeys[3])
-        )
-    }
-
-    fun checkFilters(mode: Int, sender: String, sms: String, filters: Lists): Boolean {
-        return when (mode) {
-            0 -> true // filters off
-            1 -> { // whitelist
-                hasFilterMatches(sender, filters.wSenders) || hasFilterMatches(sms, filters.wSms)
-            }
-            else -> { // blacklist
-                !hasFilterMatches(sender, filters.bSenders) && !hasFilterMatches(sms, filters.bSms)
-            }
-        }
-    }
-
-    private fun hasFilterMatches(text: String, filters: List<String>): Boolean {
-        if (text.isBlank() || filters.isEmpty()) return false
-
-        for (filter in filters) {
-            if (isRegex(filter)) {
-                try {
-                    val regex = Regex(filter.substring(1, filter.length - 1))
-                    if (regex.containsMatchIn(text)) return true
-                } catch (_: Exception) {
-                    // Invalid regex -> ignore, same as Dart behavior
-                }
-            } else {
-                if (text.contains(filter)) return true
-            }
-        }
-        return false
-    }
-
-    private fun isRegex(text: String): Boolean {
-        return text.length > 1 && text.startsWith("/") && text.endsWith("/")
     }
 }

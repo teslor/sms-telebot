@@ -16,9 +16,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   static const MethodChannel _filtersChannel = MethodChannel('sms_telebot/filters');
 
   bool isRunning = false;
-  int smsReceived = 0;
-  int smsSentToBot = 0;
-  Map latestSms = {};
+  int smsReceivedCount = 0;
+  int smsSentCount = 0;
+  Map? lastSms;
+  String? lastSmsId;
   String? botToken;
   String? chatId;
   String? deviceLabel;
@@ -33,20 +34,22 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> _init() async {
     _prefs = await SharedPreferences.getInstance();
     await _loadSettings();
-    await _loadSmsStats();
     await getSmsPermission();
     await getNotificationPermission();
 
     // Save l10n required for background process after first frame when context is available
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final localizations = AppLocalizations.of(navigatorKey.currentContext!)!;
-      final current = _prefs?.getString('l10n_sms_from');
+      final current = _prefs?.getString('l10nSmsFrom');
       if (current != localizations.sms_from) {
-        await _prefs?.setString('l10n_sms_from', localizations.sms_from);
+        await _prefs?.setString('l10nSmsFrom', localizations.sms_from);
       }
     });
 
+    if (!isRunning) return;
+    _loadSmsStats();
     _startSmsStatsPolling();
+
   }
 
   void _startSmsStatsPolling() {
@@ -63,8 +66,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _loadSmsStats();
-      _startSmsStatsPolling();
+      if (isRunning) {
+        _loadSmsStats();
+        _startSmsStatsPolling();
+      }
     } else if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.detached) {
@@ -87,34 +92,20 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> _loadSmsStats() async {
     await _prefs?.reload();
-    final nextReceived = _prefs?.getInt('smsReceived') ?? smsReceived;
-    final nextSent = _prefs?.getInt('smsSentToBot') ?? smsSentToBot;
-    Map nextLatest = latestSms;
-    final latestRaw = _prefs?.getString('latestSms') ?? '';
-    if (latestRaw.isNotEmpty) {
+    final newReceived = _prefs?.getInt('smsReceivedCount') ?? smsReceivedCount;
+    final newSent = _prefs?.getInt('smsSentCount') ?? smsSentCount;
+    final newId = _prefs?.getString('smsSentLastId') ?? lastSmsId;
+
+    if (newReceived != smsReceivedCount || newSent != smsSentCount || newId != lastSmsId) {
+      smsReceivedCount = newReceived;
+      smsSentCount = newSent;
       try {
-        nextLatest = jsonDecode(latestRaw);
+        lastSms = jsonDecode(_prefs?.getString('smsSentLastData') ?? '');
       } catch (_) {
-        nextLatest = {};
+        lastSms = null;
       }
-    }
-
-    if (nextReceived != smsReceived || nextSent != smsSentToBot ||
-        nextLatest.toString() != latestSms.toString()) {
-      smsReceived = nextReceived;
-      smsSentToBot = nextSent;
-      latestSms = nextLatest;
+      lastSmsId = newId;
       notifyListeners();
-    }
-  }
-
-  bool checkFilters(String sender, String sms) {
-    if (filterMode == 0) { // filters off
-      return true;
-    } else if (filterMode == 1) { // whitelist
-      return (hasFilterMatches(sender, filterLists[AppConst.filterKeys[0]]) || hasFilterMatches(sms, filterLists[AppConst.filterKeys[1]]));
-    } else { // blacklist
-      return (!hasFilterMatches(sender, filterLists[AppConst.filterKeys[2]]) && !hasFilterMatches(sms, filterLists[AppConst.filterKeys[3]]));
     }
   }
 
@@ -131,7 +122,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       });
       return result ?? false;
     } catch (_) {
-      return checkFilters(sender, sms);
+      return false;
     }
   }
 
@@ -165,21 +156,26 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> startProcessing() async {
     isRunning = true;
     await _prefs?.setBool('isRunning', true);
+    _startSmsStatsPolling();
     notifyListeners();
   }
 
   Future<void> stopProcessing() async {
+    _stopSmsStatsPolling();
     isRunning = false;
-    smsReceived = 0;
-    smsSentToBot = 0;
-    latestSms = {};
+    smsReceivedCount = 0;
+    smsSentCount = 0;
+    lastSms = null;
+    lastSmsId = null;
 
+    // Reset stats
     await _prefs?.setBool('isRunning', false);
-    await _prefs?.setInt('smsReceived', 0);
-    await _prefs?.setInt('smsSentToBot', 0);
-    await _prefs?.remove('latestSms');
-    await _prefs?.remove('lastSmsId');
-    await _prefs?.remove('lastSmsSent');
+    await _prefs?.setInt('smsReceivedCount', 0);
+    await _prefs?.remove('smsReceivedLastId');
+    await _prefs?.setInt('smsSentCount', 0);
+    await _prefs?.remove('smsSentLastData');
+    await _prefs?.remove('smsSentLastId');
+    await _prefs?.remove('smsSentLastIds');
 
     notifyListeners();
   }
