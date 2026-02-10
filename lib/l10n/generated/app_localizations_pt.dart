@@ -121,7 +121,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get help_howToUse_05 =>
-      'Alguns telefones podem limitar a atividade em segundo plano para economizar bateria. Se você notar grandes atrasos na entrega, desative a otimização de bateria para o app.';
+      'Recomenda-se desativar a otimização de bateria para o app, pois o sistema pode limitar a atividade dos apps em segundo plano para economizar energia.';
 
   @override
   String get help_howToUse_06 =>

@@ -121,7 +121,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get help_howToUse_05 =>
-      'Some phones may limit background activity to save power. If you notice long delivery delays, disable battery optimization for the app.';
+      'It is recommended to disable battery optimization for the app, since the system may restrict background activity to save power.';
 
   @override
   String get help_howToUse_06 =>

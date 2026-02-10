@@ -120,7 +120,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get help_howToUse_05 =>
-      '一部のスマートフォンでは、省電力のためバックグラウンドでの動作が制限される場合があります。配信が大きく遅れると感じた場合は、このアプリのバッテリー最適化を無効にしてください。';
+      'バッテリー節約のためにシステムがバックグラウンドでのアプリ動作を制限する場合があるため、このアプリのバッテリー最適化を無効にすることを推奨します。';
 
   @override
   String get help_howToUse_06 => 'アプリが動作するように、インターネット接続を有効にしておいてください。';

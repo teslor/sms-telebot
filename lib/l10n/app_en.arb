@@ -35,7 +35,7 @@
   "help_howToUse_03": "Go to the app, in bot settings, enter the token, and test settings (you can also set the chat id if you know it). If the test is successful, the settings are saved, and a hello message is sent to the Telegram chat.",
   "help_howToUse_04": "That's it! The app is now ready to forward incoming SMS to your bot. Tap Start to enable SMS forwarding, or tap Stop to turn it off.",
   "help_howToUse_04l": "When forwarding SMS from multiple devices, you can set a device label in settings to identify the receiving phone.",
-  "help_howToUse_05": "Some phones may limit background activity to save power. If you notice long delivery delays, disable battery optimization for the app.",
+  "help_howToUse_05": "It is recommended to disable battery optimization for the app, since the system may restrict background activity to save power.",
   "help_howToUse_06": "Make sure to keep the internet connection enabled for the app to work.",
   "help_filters": "Filters",
   "help_filters_01": "You can set filters for sender or text of incoming SMS messages. A filter is triggered if a sender number/name or text contains the specified characters.",

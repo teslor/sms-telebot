@@ -118,8 +118,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get help_howToUse_04l => '从多个设备转发短信时，可以在设置中设置设备标签以识别接收手机。';
 
   @override
-  String get help_howToUse_05 =>
-      '某些手机为节省电量可能会限制后台活动。如果你发现短信转达延迟较长，请为本应用关闭电池优化。';
+  String get help_howToUse_05 => '建议为本应用关闭电池优化，因为系统可能会为节省电量而限制应用在后台运行。';
 
   @override
   String get help_howToUse_06 => '确保保持互联网连接以使应用正常工作。';

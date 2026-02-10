@@ -35,7 +35,7 @@
   "help_howToUse_03": "Öffnen Sie die App, geben Sie in den Bot-Einstellungen das Token ein und testen Sie die Einstellungen (Sie können auch die Chat-ID angeben, falls bekannt). Bei erfolgreichem Test werden die Einstellungen gespeichert und eine Begrüßungsnachricht an den Telegram-Chat gesendet.",
   "help_howToUse_04": "Fertig! Die App ist jetzt bereit, eingehende SMS an Ihren Bot weiterzuleiten. Tippen Sie auf Start, um die SMS-Weiterleitung zu aktivieren, oder auf Stopp, um sie zu deaktivieren.",
   "help_howToUse_04l": "Beim Weiterleiten von SMS von mehreren Geräten können Sie in den Einstellungen ein Gerätelabel festlegen, um das empfangende Telefon zu identifizieren.",
-  "help_howToUse_05": "Manche Telefone beschränken zur Akkuersparnis die Hintergrundaktivität. Wenn Sie sehr lange Zustellverzögerungen bemerken, deaktivieren Sie die Akkuoptimierung für diese App.",
+  "help_howToUse_05": "Es wird empfohlen, die Akkuoptimierung für diese App zu deaktivieren, da das System zur Energieeinsparung die Arbeit von Apps im Hintergrund einschränken kann.",
   "help_howToUse_06": "Stellen Sie sicher, dass die Internetverbindung aktiviert ist, damit die App funktioniert.",
   "help_filters": "Filter",
   "help_filters_01": "Sie können Filter für Absender oder Text eingehender SMS festlegen. Ein Filter wird ausgelöst, wenn Nummer/Name des Absenders oder Text die angegebenen Zeichen enthalten.",

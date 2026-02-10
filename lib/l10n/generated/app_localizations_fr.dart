@@ -122,7 +122,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get help_howToUse_05 =>
-      'Certains téléphones peuvent limiter l’activité en arrière‑plan pour économiser la batterie. Si vous constatez de longs délais de livraison, désactivez l’optimisation de la batterie pour l’app.';
+      'Il est recommandé de désactiver l’optimisation de la batterie pour l’app, car le système peut limiter l’activité des applications en arrière-plan pour économiser l’énergie.';
 
   @override
   String get help_howToUse_06 =>

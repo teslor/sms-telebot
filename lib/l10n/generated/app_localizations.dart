@@ -325,7 +325,7 @@ abstract class AppLocalizations {
   /// No description provided for @help_howToUse_05.
   ///
   /// In en, this message translates to:
-  /// **'Some phones may limit background activity to save power. If you notice long delivery delays, disable battery optimization for the app.'**
+  /// **'It is recommended to disable battery optimization for the app, since the system may restrict background activity to save power.'**
   String get help_howToUse_05;
 
   /// No description provided for @help_howToUse_06.

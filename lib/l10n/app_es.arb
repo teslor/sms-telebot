@@ -35,7 +35,7 @@
   "help_howToUse_03": "Abre la app, en configuración del bot, introduce el token y prueba los ajustes (también puedes establecer el ID del chat si lo conoces). Si la prueba es exitosa, la configuración se guarda y se envía un mensaje de bienvenida al chat de Telegram.",
   "help_howToUse_04": "¡Listo! La app ya está lista para reenviar los SMS entrantes a tu bot. Toca Iniciar para activar el reenvío de SMS o Detener para desactivarlo.",
   "help_howToUse_04l": "Al reenviar SMS desde varios dispositivos, puedes configurar una etiqueta de dispositivo en ajustes para identificar el teléfono receptor.",
-  "help_howToUse_05": "Algunos teléfonos pueden limitar la actividad en segundo plano para ahorrar batería. Si notas grandes retrasos en la entrega, desactiva la optimización de batería para la app.",
+  "help_howToUse_05": "Se recomienda desactivar la optimización de batería para la app, ya que el sistema puede limitar la actividad de las aplicaciones en segundo plano para ahorrar energía.",
   "help_howToUse_06": "Asegúrate de mantener la conexión a internet habilitada para que la app funcione.",
   "help_filters": "Filtros",
   "help_filters_01": "Puedes establecer filtros para el remitente o texto de los mensajes SMS entrantes. Un filtro se activa si el número/nombre del remitente o el texto contiene los caracteres especificados.",

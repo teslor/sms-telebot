@@ -52,11 +52,12 @@ class SmsPage extends StatelessWidget {
                         children: [
                           Text(
                             '${AppLocalizations.of(context)!.sms_sent} • ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.fromMillisecondsSinceEpoch(int.parse(lastSms['time'])))}',
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5))
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5))
                           ),
                           const SizedBox(height: 4),
                           RichText(
-                            text: TextSpan(style: DefaultTextStyle.of(context).style, children: [
+                            textScaler: MediaQuery.textScalerOf(context),
+                            text: TextSpan(style: DefaultTextStyle.of(context).style.copyWith(fontSize: 14), children: [
                               TextSpan(text: '${lastSms['sender']}: ', style: TextStyle(fontWeight: FontWeight.w500)),
                               TextSpan(text: lastSms['sms']),
                             ]),

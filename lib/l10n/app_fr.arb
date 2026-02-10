@@ -35,7 +35,7 @@
   "help_howToUse_03": "Ouvrez l'app, dans les paramètres du bot, entrez le token et testez les paramètres (vous pouvez aussi définir l'ID du chat si vous le connaissez). Si le test réussit, les paramètres sont enregistrés et un message de bienvenue est envoyé au chat Telegram.",
   "help_howToUse_04": "C'est fait ! L’app est maintenant prête à transférer les SMS entrants vers votre bot. Appuyez sur Démarrer pour activer le transfert des SMS ou sur Arrêter pour le désactiver.",
   "help_howToUse_04l": "Lors du transfert de SMS depuis plusieurs appareils, vous pouvez définir un libellé d'appareil dans les paramètres pour identifier le téléphone récepteur.",
-  "help_howToUse_05": "Certains téléphones peuvent limiter l’activité en arrière‑plan pour économiser la batterie. Si vous constatez de longs délais de livraison, désactivez l’optimisation de la batterie pour l’app.",
+  "help_howToUse_05": "Il est recommandé de désactiver l’optimisation de la batterie pour l’app, car le système peut limiter l’activité des applications en arrière-plan pour économiser l’énergie.",
   "help_howToUse_06": "Assurez-vous de garder la connexion internet activée pour que l'app fonctionne.",
   "help_filters": "Filtres",
   "help_filters_01": "Vous pouvez définir des filtres pour l'expéditeur ou le texte des SMS entrants. Un filtre se déclenche si le numéro/nom de l'expéditeur ou le texte contient les caractères spécifiés.",

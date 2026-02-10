@@ -123,7 +123,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get help_howToUse_05 =>
-      'Manche Telefone beschränken zur Akkuersparnis die Hintergrundaktivität. Wenn Sie sehr lange Zustellverzögerungen bemerken, deaktivieren Sie die Akkuoptimierung für diese App.';
+      'Es wird empfohlen, die Akkuoptimierung für diese App zu deaktivieren, da das System zur Energieeinsparung die Arbeit von Apps im Hintergrund einschränken kann.';
 
   @override
   String get help_howToUse_06 =>
