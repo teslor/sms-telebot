@@ -8,15 +8,15 @@ plugins {
 android {
     namespace = "com.teslor.sms_telebot"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "29.0.13113456"
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     defaultConfig {
@@ -40,8 +40,8 @@ android {
 }
 
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation("androidx.work:work-runtime-ktx:2.10.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
 }
 
 flutter {
