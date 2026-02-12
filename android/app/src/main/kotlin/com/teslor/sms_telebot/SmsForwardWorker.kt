@@ -53,8 +53,11 @@ class SmsForwardWorker(
         if (token.isBlank() || chatId.isBlank()) return@withContext Result.failure()
 
         val l10nSmsFrom = prefs.getString(SmsContract.Prefs.L10N_SMS_FROM, "SMS from")
-        val deviceInfo = if (deviceLabel.isNotBlank()) " <i>($deviceLabel)</i>" else ""
-        val message = "$l10nSmsFrom <b>$sender</b>$deviceInfo:\n$body"
+        val senderEscaped = escapeHtml(sender)
+        val deviceLabelEscaped = escapeHtml(deviceLabel)
+        val bodyEscaped = escapeHtml(body)
+        val deviceInfo = if (deviceLabelEscaped.isNotBlank()) " <i>($deviceLabelEscaped)</i>" else ""
+        val message = "$l10nSmsFrom <b>$senderEscaped</b>$deviceInfo:\n$bodyEscaped"
 
         val code = sendTelegramMessage(token, chatId, message)
         if (code == 200) {
@@ -165,6 +168,13 @@ class SmsForwardWorker(
             .setSmallIcon(R.mipmap.ic_launcher)
             .setOngoing(true)
             .build()
+    }
+
+    private fun escapeHtml(text: String): String {
+        return text
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
     }
 
     companion object {
