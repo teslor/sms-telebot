@@ -80,21 +80,29 @@ class SmsForwardWorker(
     }
 
     /**
-     * Sends a Telegram message using a simple GET request.
+     * Sends a Telegram message using a simple POST request.
      *
      * Returns the HTTP status code, or null on IO errors.
      */
     private fun sendTelegramMessage(token: String, chatId: String, msg: String): Int? {
-        val encoded = URLEncoder.encode(msg, "UTF-8")
-        val url = URL("https://api.telegram.org/bot$token/sendMessage?chat_id=$chatId&text=$encoded&parse_mode=HTML")
+        val url = URL("https://api.telegram.org/bot$token/sendMessage")
+        val postData = buildString {
+            append("chat_id=").append(URLEncoder.encode(chatId, "UTF-8"))
+            append("&text=").append(URLEncoder.encode(msg, "UTF-8"))
+            append("&parse_mode=HTML")
+        }
+        val postBytes = postData.toByteArray(Charsets.UTF_8)
 
         var connection: HttpURLConnection? = null
         return try {
             connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "GET"
+            connection.requestMethod = "POST"
+            connection.doOutput = true
             connection.connectTimeout = 15_000
             connection.readTimeout = 15_000
-            connection.connect()
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            connection.setFixedLengthStreamingMode(postBytes.size)
+            connection.outputStream.use { it.write(postBytes) }
             connection.responseCode
         } catch (e: Exception) {
             null
