@@ -70,6 +70,7 @@ class SmsForwardWorker(
         }
 
         return@withContext when {
+            code == 429 -> Result.retry()
             code != null && code in 400..499 -> Result.failure()
             else -> Result.retry()
         }
@@ -84,8 +85,9 @@ class SmsForwardWorker(
         val encoded = URLEncoder.encode(msg, "UTF-8")
         val url = URL("https://api.telegram.org/bot$token/sendMessage?chat_id=$chatId&text=$encoded&parse_mode=HTML")
 
+        var connection: HttpURLConnection? = null
         return try {
-            val connection = url.openConnection() as HttpURLConnection
+            connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connectTimeout = 15_000
             connection.readTimeout = 15_000
@@ -93,6 +95,8 @@ class SmsForwardWorker(
             connection.responseCode
         } catch (e: Exception) {
             null
+        } finally {
+            connection?.disconnect()
         }
     }
 
