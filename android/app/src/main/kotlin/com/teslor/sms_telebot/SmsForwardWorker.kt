@@ -52,7 +52,7 @@ class SmsForwardWorker(
         val deviceLabel = prefs.getString(SmsContract.Prefs.DEVICE_LABEL, "").orEmpty()
         if (token.isBlank() || chatId.isBlank()) return@withContext Result.failure()
 
-        val l10nSmsFrom = prefs.getString(SmsContract.Prefs.L10N_SMS_FROM, "SMS from")
+        val l10nSmsFrom = prefs.getString(SmsContract.Prefs.L10N_SMS_FROM, "SMS from").orEmpty().ifBlank { "SMS from" }
         val senderEscaped = escapeHtml(sender)
         val deviceLabelEscaped = escapeHtml(deviceLabel)
         val bodyEscaped = escapeHtml(body)

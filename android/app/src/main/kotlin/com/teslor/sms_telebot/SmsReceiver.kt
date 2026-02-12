@@ -9,6 +9,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import androidx.work.Constraints
 import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
@@ -91,7 +92,13 @@ class SmsReceiver : BroadcastReceiver() {
             .addTag(SmsForwardWorker.TAG)
             .build()
 
-        WorkManager.getInstance(context).enqueue(request)
+        // Ensure only one work request is enqueued per SMS id
+        val uniqueWorkName = "sms_forward:$smsId"
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            uniqueWorkName,
+            ExistingWorkPolicy.KEEP,
+            request
+        )
     }
 
     private fun updateReceivedStats(
