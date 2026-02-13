@@ -75,59 +75,65 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 5),
+          Expanded(
+            child: ListView(
+              children: [
+                const SizedBox(height: 5),
 
-          TextField(
-            controller: _botTokenController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.settings_token,
-              helperText: AppLocalizations.of(context)!.settings_tokenInfo,
-              helperMaxLines: 2,
+                TextField(
+                  controller: _botTokenController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: AppLocalizations.of(context)!.settings_token,
+                    helperText: AppLocalizations.of(context)!.settings_tokenInfo,
+                    helperMaxLines: 2,
+                  ),
+                  onChanged: (String value) {
+                    setState(() { _testResult = null; _isInputChanged = true; _isBotTokenCorrect = validateBotToken(value); });
+                  },
+                ),
+
+                const SizedBox(height: 20),
+
+                TextField(
+                  controller: _chatIdController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: AppLocalizations.of(context)!.settings_chatId,
+                    helperText: AppLocalizations.of(context)!.settings_chatIdInfo,
+                    helperMaxLines: 2,
+                  ),
+                  keyboardType: TextInputType.numberWithOptions(decimal: false, signed: true),
+                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*$'))],
+                  onChanged: (String value) {
+                    setState(() { _testResult = null; _isInputChanged = true; });
+                  },
+                ),
+
+                const SizedBox(height: 20),
+
+                const Divider(),
+
+                const SizedBox(height: 20),
+
+                TextField(
+                  controller: _deviceLabelController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: AppLocalizations.of(context)!.settings_deviceLabel,
+                    helperText: AppLocalizations.of(context)!.settings_deviceLabelInfo,
+                    helperMaxLines: 2,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                  ),
+                  onChanged: (String value) {
+                    setState(() { _testResult = null; _isInputChanged = true; });
+                  },
+                ),
+              ],
             ),
-            onChanged: (String value) {
-              setState(() { _testResult = null; _isInputChanged = true; _isBotTokenCorrect = validateBotToken(value); });
-            },
           ),
 
           const SizedBox(height: 20),
-
-          TextField(
-            controller: _chatIdController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.settings_chatId,
-              helperText: AppLocalizations.of(context)!.settings_chatIdInfo,
-              helperMaxLines: 2,
-            ),
-            keyboardType: TextInputType.numberWithOptions(decimal: false, signed: true),
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*$'))],
-            onChanged: (String value) {
-              setState(() { _testResult = null; _isInputChanged = true; });
-            },
-          ),
-
-          const SizedBox(height: 20),
-
-          const Divider(),
-
-          const SizedBox(height: 20),
-
-          TextField(
-            controller: _deviceLabelController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.settings_deviceLabel,
-              helperText: AppLocalizations.of(context)!.settings_deviceLabelInfo,
-              helperMaxLines: 2,
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-            ),
-            onChanged: (String value) {
-              setState(() { _testResult = null; _isInputChanged = true; });
-            },
-          ),
-
-          Spacer(),
 
           ActionButton(
             label: AppLocalizations.of(context)!.settings_test,
