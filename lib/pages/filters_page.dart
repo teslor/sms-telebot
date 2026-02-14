@@ -68,7 +68,7 @@ class _FiltersPageState extends State<FiltersPage> {
                   },
                 ),
                 
-                const SizedBox(height: 15),
+                const SizedBox(height: 20),
                 
                 ChipsWidget(
                   key: _senderChipsKey,
