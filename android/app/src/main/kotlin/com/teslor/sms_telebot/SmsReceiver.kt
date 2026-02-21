@@ -14,7 +14,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
-import org.json.JSONArray
 
 /**
  * Receives incoming SMS from the Android system.
@@ -118,73 +117,5 @@ class SmsReceiver : BroadcastReceiver() {
             .putInt(SmsContract.Prefs.SMS_RECEIVED_COUNT, receivedCount)
             .putString(SmsContract.Prefs.SMS_RECEIVED_LAST_ID, smsId)
             .apply()
-    }
-}
-
-/**
- * Filter logic equivalent to the Dart implementation.
- * Stored filters are JSON arrays in shared_preferences.
- */
-object SmsFilters {
-    private val filterKeys = SmsContract.Prefs.FILTER_KEYS
-
-    data class Lists(
-        val wSenders: List<String>,
-        val wSms: List<String>,
-        val bSenders: List<String>,
-        val bSms: List<String>
-    )
-
-    fun fromPrefs(prefs: android.content.SharedPreferences): Lists {
-        fun readList(key: String): List<String> {
-            val raw = prefs.getString(key, "[]") ?: "[]"
-            return try {
-                val json = JSONArray(raw)
-                List(json.length()) { index -> json.optString(index) }
-            } catch (_: Exception) {
-                emptyList()
-            }
-        }
-
-        return Lists(
-            wSenders = readList(filterKeys[0]),
-            wSms = readList(filterKeys[1]),
-            bSenders = readList(filterKeys[2]),
-            bSms = readList(filterKeys[3])
-        )
-    }
-
-    fun checkFilters(mode: Int, sender: String, sms: String, filters: Lists): Boolean {
-        return when (mode) {
-            0 -> true // filters off
-            1 -> { // whitelist
-                hasFilterMatches(sender, filters.wSenders) || hasFilterMatches(sms, filters.wSms)
-            }
-            else -> { // blacklist
-                !hasFilterMatches(sender, filters.bSenders) && !hasFilterMatches(sms, filters.bSms)
-            }
-        }
-    }
-
-    private fun hasFilterMatches(text: String, filters: List<String>): Boolean {
-        if (text.isBlank() || filters.isEmpty()) return false
-
-        for (filter in filters) {
-            if (isRegex(filter)) {
-                try {
-                    val regex = Regex(filter.substring(1, filter.length - 1))
-                    if (regex.containsMatchIn(text)) return true
-                } catch (_: Exception) {
-                    // Invalid regex -> ignore, same as Dart behavior
-                }
-            } else {
-                if (text.contains(filter)) return true
-            }
-        }
-        return false
-    }
-
-    private fun isRegex(text: String): Boolean {
-        return text.length > 1 && text.startsWith("/") && text.endsWith("/")
     }
 }

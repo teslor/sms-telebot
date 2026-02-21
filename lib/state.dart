@@ -13,7 +13,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   SharedPreferences? _prefs;
   final Map<String, bool> _isFilterListChanged = { for (var key in AppConst.filterKeys) key: false };
   Timer? _smsStatsTimer;
-  static const MethodChannel _filtersChannel = MethodChannel('sms_telebot/filters');
+  static const MethodChannel _filtersChannel = MethodChannel(AppConst.filtersChannel);
 
   bool isRunning = false;
   int smsReceivedCount = 0;

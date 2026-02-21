@@ -148,9 +148,9 @@ class _ChipsWidgetState extends State<ChipsWidget> {
             prefixIcon: widget.prefixIcon,
             suffixIcon: IconButton(
               icon: const Icon(Icons.add),
-              onPressed: () {
+              onPressed: () async {
                 final text = inputController.text.trim();
-                if (text.isEmpty || (isRegex(text) && !isValidRegex(text))) return;
+                if (text.isEmpty || (isRegex(text) && !await isValidRegexNative(text))) return;
                 appState.addToFilterList(widget.listName, text); inputController.clear();
               },
             ),

@@ -1,7 +1,11 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'dart:convert';
+import 'constants.dart';
+
+const MethodChannel _filtersChannel = MethodChannel(AppConst.filtersChannel);
 
 Future<bool> getSmsPermission() async {
   if (await Permission.sms.status == PermissionStatus.granted) {
@@ -62,26 +66,13 @@ bool isRegex(String text) {
   return text.isNotEmpty && text[0] == '/' && text[text.length - 1] == '/';
 }
 
-bool isValidRegex(String text) {
+Future<bool> isValidRegexNative(String text) async {
   try {
-    RegExp(text.substring(1, text.length - 1));
-    return true;
-  } catch (e) {
+    final result = await _filtersChannel.invokeMethod<bool>('isValidRegex', {
+      'text': text,
+    });
+    return result ?? false;
+  } catch (_) {
     return false;
-  }  
-}
-
-bool hasFilterMatches(String text, List<String>? filters) {
-  if (text.isEmpty || filters == null) return false;
-  for (String filter in filters) {
-    if (isRegex(filter)) {
-      try {
-        RegExp regex = RegExp(filter.substring(1, filter.length - 1));
-        if (regex.hasMatch(text)) return true;
-      } catch (e) { /**/ }
-    } else {
-      if (text.contains(filter)) return true;
-    }
   }
-  return false;
 }
