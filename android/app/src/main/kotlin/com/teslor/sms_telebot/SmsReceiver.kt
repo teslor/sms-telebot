@@ -47,7 +47,9 @@ class SmsReceiver : BroadcastReceiver() {
 
         if (sender.isBlank() || body.isBlank()) return
 
-        val smsId = "$timestamp|${body.hashCode()}"
+        // Within a one-minute window, the ID for identical texts will be the same
+        val timeWindow = timestamp / (1000L * 60L)
+        val smsId = "$sender|$timeWindow|${body.hashCode()}"
 
         // Android/network may redeliver the same SMS back-to-back
         // If it's a duplicate, do not schedule background work and do not bump counters

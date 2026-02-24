@@ -10,6 +10,8 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -38,7 +40,8 @@ class SmsForwardWorker(
         val sender = inputData.getString(KEY_SENDER).orEmpty()
         val body = inputData.getString(KEY_BODY).orEmpty()
         val timestamp = inputData.getLong(KEY_TIMESTAMP, 0L)
-        val smsId = "$timestamp|${body.hashCode()}"
+        val timeWindow = timestamp / (1000L * 60L)
+        val smsId = "$sender|$timeWindow|${body.hashCode()}"
 
         // Robust deduplication for Telegram side: protects against delayed network redelivery (A -> B -> A),
         // WorkManager retries, and rare OEM/Android broadcast duplicates
@@ -61,14 +64,15 @@ class SmsForwardWorker(
 
         val code = sendTelegramMessage(token, chatId, message)
         if (code == 200) {
-            updateSentStats(
-                prefs = prefs,
-                smsSentLastIds = smsSentLastIds,
-                smsId = smsId,
-                sender = sender,
-                body = body,
-                timestamp = System.currentTimeMillis()
-            )
+            statsMutex.withLock {
+                updateSentStats(
+                    prefs = prefs,
+                    smsId = smsId,
+                    sender = sender,
+                    body = body,
+                    timestamp = System.currentTimeMillis()
+                )
+            }
             return@withContext Result.success()
         }
 
@@ -126,14 +130,14 @@ class SmsForwardWorker(
 
     private fun updateSentStats(
         prefs: android.content.SharedPreferences,
-        smsSentLastIds: MutableList<String>,
         smsId: String,
         sender: String,
         body: String,
         timestamp: Long
     ) {
-        smsSentLastIds.add(smsId)
-        val updatedIds = smsSentLastIds.takeLast(SmsContract.Prefs.CAP_LAST_IDS)
+        val currentIds = getSmsSentLastIds(prefs)
+        currentIds.add(smsId)
+        val updatedIds = currentIds.takeLast(SmsContract.Prefs.CAP_LAST_IDS)
 
         var sentCount = try {
             prefs.getInt(SmsContract.Prefs.SMS_SENT_COUNT, 0)
@@ -192,5 +196,6 @@ class SmsForwardWorker(
         const val KEY_TIMESTAMP = "timestamp"
         private const val FOREGROUND_NOTIFICATION_ID = 1001
         private const val FOREGROUND_CHANNEL_ID = "sms_telebot_forwarding"
+        private val statsMutex = Mutex()
     }
 }
