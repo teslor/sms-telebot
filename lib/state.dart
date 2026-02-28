@@ -1,30 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'constants.dart';
+import 'db.dart';
 import 'service.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
 class AppState extends ChangeNotifier with WidgetsBindingObserver {
-  SharedPreferences? _prefs;
-  final Map<String, bool> _isFilterListChanged = { for (var key in AppConst.filterKeys) key: false };
   Timer? _smsStatsTimer;
   static const MethodChannel _filtersChannel = MethodChannel(AppConst.filtersChannel);
 
+  // App settings
   bool isRunning = false;
+  String? deviceLabel;
+
+  // Connection & filters
+  String? botToken;
+  String? chatId;
+  int filterMode = 0;
+  Map<String, List<String>> filterLists = { for (var key in AppConst.filterKeys) key: [] };
+
+  // SMS stats
   int smsReceivedCount = 0;
   int smsSentCount = 0;
   Map? lastSms;
   String? lastSmsId;
-  String? botToken;
-  String? chatId;
-  String? deviceLabel;
-  int filterMode = 0;
-  Map<String, List<String>> filterLists = { for (var key in AppConst.filterKeys) key: [] };
 
   AppState() {
     WidgetsBinding.instance.addObserver(this);
@@ -32,24 +35,22 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> _init() async {
-    _prefs = await SharedPreferences.getInstance();
     await _loadSettings();
+    await _loadRules();
     await getSmsPermission();
     await getNotificationPermission();
 
     // Save l10n required for background process after first frame when context is available
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final localizations = AppLocalizations.of(navigatorKey.currentContext!)!;
-      final current = _prefs?.getString('l10nSmsFrom');
+      final current = await DbHelper.instance.getSetting('l10n_smsFrom');
       if (current != localizations.sms_from) {
-        await _prefs?.setString('l10nSmsFrom', localizations.sms_from);
+        await DbHelper.instance.saveSetting('l10n_smsFrom', localizations.sms_from);
       }
     });
 
-    if (!isRunning) return;
     _loadSmsStats();
-    _startSmsStatsPolling();
-
+    if (isRunning) _startSmsStatsPolling();
   }
 
   void _startSmsStatsPolling() {
@@ -61,6 +62,20 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   void _stopSmsStatsPolling() {
     _smsStatsTimer?.cancel();
     _smsStatsTimer = null;
+  }
+
+  Future<void> startProcessing() async {
+    isRunning = true;
+    await DbHelper.instance.saveBoolSetting('is_running', true);
+    _startSmsStatsPolling();
+    notifyListeners();
+  }
+
+  Future<void> stopProcessing() async {
+    isRunning = false;
+    _stopSmsStatsPolling();
+    await DbHelper.instance.saveBoolSetting('is_running', false);
+    notifyListeners();
   }
 
   @override
@@ -77,36 +92,69 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     }
     super.didChangeAppLifecycleState(state);
   }
+
+  // ============================================================
+  // Read data from DB
+  // ============================================================
   
   Future<void> _loadSettings() async {
-    isRunning = _prefs?.getBool('isRunning') ?? isRunning;
-    botToken = _prefs?.getString('botToken') ?? '';
-    chatId = _prefs?.getString('chatId') ?? '';
-    deviceLabel = _prefs?.getString('deviceLabel') ?? '';
-    filterMode = _prefs?.getInt('filterMode') ?? filterMode;
+    isRunning = await DbHelper.instance.getBoolSetting('is_running');
+    deviceLabel = await DbHelper.instance.getSetting('device_label') ?? '';
+    notifyListeners();
+  }
+
+  Future<void> _loadRules() async {
+    final rules = await DbHelper.instance.getAllRules();
+    if (rules.isEmpty) return;
+    final rule = rules.first;
+    final config = safeDecode(rule['config_json']) ?? {};
+    final filters = safeDecode(rule['filters_json']) ?? {};
+
+    botToken = config['botToken'] ?? '';
+    chatId = config['chatId'] ?? '';
+    filterMode = filters['filter_mode'] ?? filterMode;
+
     for (var key in AppConst.filterKeys) {
-      filterLists[key] = List<String>.from(jsonDecode(_prefs?.getString(key) ?? '[]'));
+      filterLists[key] = List<String>.from(filters[key] ?? []);
     }
     notifyListeners();
   }
 
   Future<void> _loadSmsStats() async {
-    await _prefs?.reload();
-    final newReceived = _prefs?.getInt('smsReceivedCount') ?? smsReceivedCount;
-    final newSent = _prefs?.getInt('smsSentCount') ?? smsSentCount;
-    final newId = _prefs?.getString('smsSentLastId') ?? lastSmsId;
+    final newReceivedCount = await DbHelper.instance.getReceivedSmsCount();
+    final lastSmsData = await DbHelper.instance.getLastSentSms();
+    final newId = lastSmsData?['id'] ?? '';
 
-    if (newReceived != smsReceivedCount || newSent != smsSentCount || newId != lastSmsId) {
-      smsReceivedCount = newReceived;
-      smsSentCount = newSent;
-      try {
-        lastSms = jsonDecode(_prefs?.getString('smsSentLastData') ?? '');
-      } catch (_) {
-        lastSms = null;
-      }
+    if (newReceivedCount != smsReceivedCount || newId != lastSmsId) {
+      smsReceivedCount = newReceivedCount;
+      smsSentCount = await DbHelper.instance.getSentSmsCount();
       lastSmsId = newId;
+      lastSms = lastSmsData;
       notifyListeners();
     }
+  }
+
+  // ============================================================
+  // Rules methods
+  // ============================================================
+
+  Future<void> updateBotSettings(String newBotToken, String newChatId, String newDeviceLabel) async {
+    await DbHelper.instance.saveSetting('device_label', newDeviceLabel);
+
+    final configMap = {'botToken': newBotToken, 'chatId': newChatId};
+    final configJson = jsonEncode(configMap);
+    final rules = await DbHelper.instance.getAllRules();
+    if (rules.isNotEmpty) {
+      await DbHelper.instance.updateRuleField(rules.first['id'], 'config_json', configJson);
+    } else {
+      await DbHelper.instance.insertDefaultRule(configJson);
+    }
+
+    botToken = newBotToken;
+    chatId = newChatId;
+    deviceLabel = newDeviceLabel;
+
+    notifyListeners();
   }
 
   Future<bool> checkFiltersNative(String sender, String sms) async {
@@ -133,66 +181,35 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   void addToFilterList(String listName, String item) {
     filterLists[listName]!.add(item);
-    _isFilterListChanged[listName] = true;
     notifyListeners();
   }
 
   void removeFromFilterList(String listName, String item) {
     filterLists[listName]!.remove(item);
-    _isFilterListChanged[listName] = true;
     notifyListeners();
   }
 
   Future<void> saveFilters() async {
-    await _prefs?.setInt('filterMode', filterMode);
+    final Map<String, dynamic> filtersMap = {'filter_mode': filterMode};
     for (var key in AppConst.filterKeys) {
-      if (_isFilterListChanged[key]!) {
-        _prefs?.setString(key, jsonEncode(filterLists[key]));
-        _isFilterListChanged[key] = false;
-      }
+      filtersMap[key] = filterLists[key] ?? [];
     }
-  }
+    final String filtersJson = jsonEncode(filtersMap);
 
-  Future<void> startProcessing() async {
-    isRunning = true;
-    await _prefs?.setBool('isRunning', true);
-    _startSmsStatsPolling();
-    notifyListeners();
-  }
-
-  Future<void> stopProcessing() async {
-    _stopSmsStatsPolling();
-    isRunning = false;
-    smsReceivedCount = 0;
-    smsSentCount = 0;
-    lastSms = null;
-    lastSmsId = null;
-
-    // Reset stats
-    await _prefs?.setBool('isRunning', false);
-    await _prefs?.setInt('smsReceivedCount', 0);
-    await _prefs?.remove('smsReceivedLastId');
-    await _prefs?.setInt('smsSentCount', 0);
-    await _prefs?.remove('smsSentLastData');
-    await _prefs?.remove('smsSentLastId');
-    await _prefs?.remove('smsSentLastIds');
-
-    notifyListeners();
-  }
-
-  Future<void> updateBotSettings(String newBotToken, String newChatId, String newDeviceLabel) async {
-    await _prefs?.setString('botToken', newBotToken);
-    await _prefs?.setString('chatId', newChatId);
-    if (newDeviceLabel.isNotEmpty) {
-      await _prefs?.setString('deviceLabel', newDeviceLabel);
+    final rules = await DbHelper.instance.getAllRules();
+    if (rules.isNotEmpty) {
+      await DbHelper.instance.updateRuleField(rules.first['id'], 'filters_json', filtersJson);
     } else {
-      await _prefs?.remove('deviceLabel');
+      await DbHelper.instance.insertDefaultRule(
+        jsonEncode({'botToken': '', 'chatId': ''}),
+        filtersJson,
+      );
     }
-    botToken = newBotToken;
-    chatId = newChatId;
-    deviceLabel = newDeviceLabel;
+
     notifyListeners();
   }
+
+  // ============================================================
 
   @override
   void dispose() {

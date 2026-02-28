@@ -76,3 +76,14 @@ Future<bool> isValidRegexNative(String text) async {
     return false;
   }
 }
+
+Map<String, dynamic>? safeDecode(dynamic source) {
+  if (source == null || source is! String || source.isEmpty) return null;
+  try {
+    final decoded = jsonDecode(source);
+    if (decoded is Map<String, dynamic>) return decoded;
+    return null;
+  } catch (_) {
+    return null;
+  }
+}
