@@ -43,9 +43,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     // Save l10n required for background process after first frame when context is available
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final localizations = AppLocalizations.of(navigatorKey.currentContext!)!;
-      final current = await DbHelper.instance.getSetting('l10n_smsFrom');
+      final current = await DbHelper.instance.getSetting('l10n_sms_from');
       if (current != localizations.sms_from) {
-        await DbHelper.instance.saveSetting('l10n_smsFrom', localizations.sms_from);
+        await DbHelper.instance.saveSetting('l10n_sms_from', localizations.sms_from);
       }
     });
 
@@ -147,7 +147,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     if (rules.isNotEmpty) {
       await DbHelper.instance.updateRuleField(rules.first['id'], 'config_json', configJson);
     } else {
-      await DbHelper.instance.insertDefaultRule(configJson);
+      await DbHelper.instance.insertRule(configJson: configJson);
     }
 
     botToken = newBotToken;
@@ -163,10 +163,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         'mode': filterMode,
         'sender': sender,
         'sms': sms,
-        'wSenders': filterLists[AppConst.filterKeys[0]] ?? <String>[],
-        'wSms': filterLists[AppConst.filterKeys[1]] ?? <String>[],
-        'bSenders': filterLists[AppConst.filterKeys[2]] ?? <String>[],
-        'bSms': filterLists[AppConst.filterKeys[3]] ?? <String>[],
+        'whitelist_senders': filterLists[AppConst.filterKeys[0]] ?? <String>[],
+        'whitelist_body': filterLists[AppConst.filterKeys[1]] ?? <String>[],
+        'blacklist_senders': filterLists[AppConst.filterKeys[2]] ?? <String>[],
+        'blacklist_body': filterLists[AppConst.filterKeys[3]] ?? <String>[],
       });
       return result ?? false;
     } catch (_) {
@@ -190,7 +190,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> saveFilters() async {
-    final Map<String, dynamic> filtersMap = {'filter_mode': filterMode};
+    final Map<String, dynamic> filtersMap = {};
     for (var key in AppConst.filterKeys) {
       filtersMap[key] = filterLists[key] ?? [];
     }
@@ -200,9 +200,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     if (rules.isNotEmpty) {
       await DbHelper.instance.updateRuleField(rules.first['id'], 'filters_json', filtersJson);
     } else {
-      await DbHelper.instance.insertDefaultRule(
-        jsonEncode({'botToken': '', 'chatId': ''}),
-        filtersJson,
+      await DbHelper.instance.insertRule(
+        filterMode: filterMode,
+        configJson: jsonEncode({'botToken': '', 'chatId': ''}),
+        filtersJson: filtersJson,
       );
     }
 

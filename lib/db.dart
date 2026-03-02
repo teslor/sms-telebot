@@ -54,8 +54,9 @@ class DbHelper {
         name TEXT,
         provider TEXT,
         is_active INTEGER DEFAULT 1,
+        filter_mode INTEGER DEFAULT 0,
         config_json TEXT,
-        filters_json TEXT
+        filters_json TEXT DEFAULT NULL
       )
     ''');
 
@@ -97,7 +98,7 @@ class DbHelper {
     final settingsBatch = db.batch();
     settingsBatch.insert('app_settings', {'key': 'device_label', 'value': deviceLabel});
     settingsBatch.insert('app_settings', {'key': 'is_running','value': isRunning ? '1' : '0'});
-    settingsBatch.insert('app_settings', {'key': 'l10n_smsFrom', 'value': l10nSmsFrom});
+    settingsBatch.insert('app_settings', {'key': 'l10n_sms_from', 'value': l10nSmsFrom});
     await settingsBatch.commit();
 
     // Build JSON for the first rule
@@ -118,7 +119,6 @@ class DbHelper {
 
     // Map old keys to the new naming scheme
     final filtersJson = jsonEncode({
-      'filter_mode': filterMode,
       AppConst.filterKeys[0]: parseList('wSenders'),
       AppConst.filterKeys[1]: parseList('wSms'),
       AppConst.filterKeys[2]: parseList('bSenders'),
@@ -127,7 +127,7 @@ class DbHelper {
 
     // Create the default rule using the currently opened DB executor to avoid
     // re-entering instance.database while the database is still opening
-    await insertDefaultRule(configJson, filtersJson, db);
+    await insertRule(filterMode: filterMode, configJson: configJson, filtersJson: filtersJson, executor: db);
 
     // Clear SharedPreferences permanently
     await prefs.clear();
@@ -153,10 +153,7 @@ class DbHelper {
   Future<String?> getSetting(String key) async {
     final db = await instance.database;
     final result = await db.query(
-      'app_settings',
-      columns: ['value'],
-      where: 'key = ?',
-      whereArgs: [key],
+      'app_settings', columns: ['value'], where: 'key = ?', whereArgs: [key],
     );
 
     if (result.isNotEmpty) {
@@ -182,8 +179,7 @@ class DbHelper {
   Future<int> saveSetting(String key, String value) async {
     final db = await instance.database;
     return await db.insert('app_settings', {
-      'key': key,
-      'value': value,
+      'key': key, 'value': value,
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
@@ -194,36 +190,31 @@ class DbHelper {
   }
 
   /// Create a new rule in forwarding_rules
-  Future<int> insertRule(Map<String, dynamic> ruleData, [DatabaseExecutor? executor]) async {
+  Future<int> insertRule({
+    String name = 'Telegram Bot',
+    String provider = 'telegram',
+    int isActive = 1,
+    int filterMode = 0,
+    required String configJson,
+    String? filtersJson,
+    DatabaseExecutor? executor,
+  }) async {
     final db = executor ?? await instance.database;
-    return await db.insert('forwarding_rules', ruleData);
-  }
-
-  /// Create the default rule
-  Future<int> insertDefaultRule(String configJson, [String? filtersJson, DatabaseExecutor? executor]) async {
-    final normalizedFiltersJson = filtersJson ??
-        jsonEncode({
-          'filter_mode': 0,
-          for (final key in AppConst.filterKeys) key: [],
-        });
-
-    return await insertRule({
-      'name': 'Telegram Bot',
-      'provider': 'telegram',
-      'is_active': 1,
+    return await db.insert('forwarding_rules', {
+      'name': name,
+      'provider': provider,
+      'is_active': isActive,
+      'filter_mode': filterMode,
       'config_json': configJson,
-      'filters_json': normalizedFiltersJson,
-    }, executor);
+      'filters_json': filtersJson,
+    });
   }
 
   /// Update a specific rule by ID
   Future<int> updateRule(int id, Map<String, dynamic> ruleData) async {
     final db = await instance.database;
     return await db.update(
-      'forwarding_rules',
-      ruleData,
-      where: 'id = ?',
-      whereArgs: [id],
+      'forwarding_rules', ruleData, where: 'id = ?', whereArgs: [id],
     );
   }
 
@@ -231,10 +222,7 @@ class DbHelper {
   Future<int> updateRuleField(int id, String column, dynamic value) async {
     final db = await instance.database;
     return await db.update(
-      'forwarding_rules',
-      {column: value},
-      where: 'id = ?',
-      whereArgs: [id],
+      'forwarding_rules', {column: value}, where: 'id = ?', whereArgs: [id],
     );
   }
 
@@ -273,10 +261,7 @@ class DbHelper {
     final db = await instance.database;
 
     final result = await db.query(
-      'sms_history',
-      where: 'status != 0',
-      orderBy: 'sent_at DESC',
-      limit: 1,
+      'sms_history', where: 'status != 0', orderBy: 'sent_at DESC', limit: 1,
     );
 
     if (result.isNotEmpty) return result.first;
