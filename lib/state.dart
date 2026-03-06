@@ -93,9 +93,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
   }
 
-  // ============================================================
+  // ================================================================================
   // Read data from DB
-  // ============================================================
+  // ================================================================================
   
   Future<void> _loadSettings() async {
     isRunning = await LocalDb.instance.getBoolSetting('isRunning');
@@ -134,9 +134,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  // ============================================================
+  // ================================================================================
   // Rules methods
-  // ============================================================
+  // ================================================================================
 
   Future<void> updateBotSettings(String newBotToken, String newChatId, String newDeviceLabel) async {
     await LocalDb.instance.saveSetting('deviceLabel', newDeviceLabel);
@@ -210,7 +210,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
-  // ============================================================
+  // ================================================================================
 
   @override
   void dispose() {

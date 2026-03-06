@@ -14,6 +14,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
+import java.security.MessageDigest
 import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +67,11 @@ class SmsReceiver : BroadcastReceiver() {
 
         // Within a 5 second window, the ID for the same sender/body will be the same
         val timeWindow = timestamp / 5000L
-        val smsId = "$sender|$timeWindow|${body.hashCode()}"
+        val rawSmsId = "$sender|$timeWindow|$body"
+        val smsId = MessageDigest.getInstance("SHA-256")
+            .digest(rawSmsId.toByteArray())
+            .joinToString(separator = "") { byte -> "%02x".format(byte.toInt() and 0xff) }
+            .take(16)
 
         // Android/network may redeliver the same SMS back-to-back
         // If it's a duplicate, do not schedule background work
@@ -74,11 +79,13 @@ class SmsReceiver : BroadcastReceiver() {
         if (smsId == lastReceivedId) return
 
         // Immediately save all SMS information to sms_history
+        val deviceReceivedAt = System.currentTimeMillis()
         dbHelper.insertSmsHistory(
             id = smsId,
             sender = sender,
             body = body,
-            receivedAt = timestamp,
+            smscAt = timestamp,
+            receivedAt = deviceReceivedAt,
             status = 0 // 0 = received, not yet sent
         )
 

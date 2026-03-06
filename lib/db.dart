@@ -62,11 +62,13 @@ class LocalDb {
         id TEXT PRIMARY KEY,
         sender TEXT,
         body TEXT,
+        smsc_at INTEGER,
         received_at INTEGER,
         sent_at INTEGER,
         status INTEGER DEFAULT 0
       )
     ''');
+    await db.execute('CREATE INDEX idx_sh_received_at ON sms_history(received_at)');
 
     await db.execute('''
       CREATE TABLE event_log (

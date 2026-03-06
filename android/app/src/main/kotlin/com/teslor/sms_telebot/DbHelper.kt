@@ -141,10 +141,10 @@ class DbHelper private constructor(private val context: Context) {
     }
 
     // Create a new record
-    fun insertSmsHistory(id: String, sender: String, body: String, receivedAt: Long, sentAt: Long? = null, status: Int = 0): Boolean {
+    fun insertSmsHistory(id: String, sender: String, body: String, smscAt: Long, receivedAt: Long, sentAt: Long? = null, status: Int = 0): Boolean {
         return openDatabase()?.use { db ->
             val values = ContentValues().apply {
-                put("id", id); put("sender", sender); put("body", body)
+                put("id", id); put("sender", sender); put("body", body); put("smsc_at", smscAt)
                 put("received_at", receivedAt); put("sent_at", sentAt); put("status", status)
             }
             db.insertWithOnConflict("sms_history", null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1L
