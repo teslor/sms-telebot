@@ -9,7 +9,7 @@ object SmsContract {
     }
 
     object Keys {
-        val FILTER_KEYS = listOf("whitelist_senders", "whitelist_body", "blacklist_senders", "blacklist_body")
+        val FILTER_KEYS = listOf("whitelistSenders", "whitelistBody", "blacklistSenders", "blacklistBody")
     }
 }
 
@@ -17,10 +17,10 @@ object SmsFilters {
     private val filterKeys = SmsContract.Keys.FILTER_KEYS
 
     data class Lists(
-        val whitelist_senders: List<String>,
-        val whitelist_body: List<String>,
-        val blacklist_senders: List<String>,
-        val blacklist_body: List<String>
+        val whitelistSenders: List<String>,
+        val whitelistBody: List<String>,
+        val blacklistSenders: List<String>,
+        val blacklistBody: List<String>
     )
 
     fun fromJson(jsonStr: String?): Lists {
@@ -37,10 +37,10 @@ object SmsFilters {
             }
 
             Lists(
-                whitelist_senders = readList(filterKeys[0]),
-                whitelist_body = readList(filterKeys[1]),
-                blacklist_senders = readList(filterKeys[2]),
-                blacklist_body = readList(filterKeys[3])
+                whitelistSenders = readList(filterKeys[0]),
+                whitelistBody = readList(filterKeys[1]),
+                blacklistSenders = readList(filterKeys[2]),
+                blacklistBody = readList(filterKeys[3])
             )
         } catch (_: Exception) {
             Lists(emptyList(), emptyList(), emptyList(), emptyList())
@@ -51,10 +51,10 @@ object SmsFilters {
         return when (mode) {
             0 -> true // filters off
             1 -> { // whitelist
-                hasFilterMatches(sender, filters.whitelist_senders) || hasFilterMatches(sms, filters.whitelist_body)
+                hasFilterMatches(sender, filters.whitelistSenders) || hasFilterMatches(sms, filters.whitelistBody)
             }
             else -> { // blacklist
-                !hasFilterMatches(sender, filters.blacklist_senders) && !hasFilterMatches(sms, filters.blacklist_body)
+                !hasFilterMatches(sender, filters.blacklistSenders) && !hasFilterMatches(sms, filters.blacklistBody)
             }
         }
     }

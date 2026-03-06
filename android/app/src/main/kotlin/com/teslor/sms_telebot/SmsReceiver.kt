@@ -51,7 +51,7 @@ class SmsReceiver : BroadcastReceiver() {
 
     private fun processSmsInBackground(context: Context, intent: Intent) {
         val dbHelper = DbHelper.getInstance(context)
-        val isRunning = dbHelper.getBoolSetting("is_running")
+        val isRunning = dbHelper.getBoolSetting("isRunning")
         if (!isRunning) return
 
         // Extract all message parts, for multipart SMS we concatenate bodies

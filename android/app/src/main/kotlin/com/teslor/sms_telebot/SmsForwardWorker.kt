@@ -34,7 +34,7 @@ class SmsForwardWorker(
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val dbHelper = DbHelper.getInstance(applicationContext)
-        val isRunning = dbHelper.getBoolSetting("is_running")
+        val isRunning = dbHelper.getBoolSetting("isRunning")
         if (!isRunning) return@withContext Result.success()
 
         // Read input data from receiver
@@ -52,8 +52,8 @@ class SmsForwardWorker(
         if (rules.isEmpty()) return@withContext Result.success()
 
         // Read common settings
-        val deviceLabel = dbHelper.getSetting("device_label").orEmpty()
-        val l10nSmsFrom = dbHelper.getSetting("l10n_sms_from").orEmpty().ifBlank { "SMS from" }
+        val deviceLabel = dbHelper.getSetting("deviceLabel").orEmpty()
+        val l10nSmsFrom = dbHelper.getSetting("l10nSmsFrom").orEmpty().ifBlank { "SMS from" }
 
         // Start parallel sending
         val results = coroutineScope {

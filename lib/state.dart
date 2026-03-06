@@ -43,9 +43,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     // Save l10n required for background process after first frame when context is available
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final localizations = AppLocalizations.of(navigatorKey.currentContext!)!;
-      final current = await LocalDb.instance.getSetting('l10n_sms_from');
+      final current = await LocalDb.instance.getSetting('l10nSmsFrom');
       if (current != localizations.sms_from) {
-        await LocalDb.instance.saveSetting('l10n_sms_from', localizations.sms_from);
+        await LocalDb.instance.saveSetting('l10nSmsFrom', localizations.sms_from);
       }
     });
 
@@ -66,7 +66,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> startProcessing() async {
     isRunning = true;
-    await LocalDb.instance.saveBoolSetting('is_running', true);
+    await LocalDb.instance.saveBoolSetting('isRunning', true);
     _startSmsStatsPolling();
     notifyListeners();
   }
@@ -74,7 +74,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> stopProcessing() async {
     isRunning = false;
     _stopSmsStatsPolling();
-    await LocalDb.instance.saveBoolSetting('is_running', false);
+    await LocalDb.instance.saveBoolSetting('isRunning', false);
     notifyListeners();
   }
 
@@ -98,8 +98,8 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   // ============================================================
   
   Future<void> _loadSettings() async {
-    isRunning = await LocalDb.instance.getBoolSetting('is_running');
-    deviceLabel = await LocalDb.instance.getSetting('device_label') ?? '';
+    isRunning = await LocalDb.instance.getBoolSetting('isRunning');
+    deviceLabel = await LocalDb.instance.getSetting('deviceLabel') ?? '';
     notifyListeners();
   }
 
@@ -139,7 +139,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   // ============================================================
 
   Future<void> updateBotSettings(String newBotToken, String newChatId, String newDeviceLabel) async {
-    await LocalDb.instance.saveSetting('device_label', newDeviceLabel);
+    await LocalDb.instance.saveSetting('deviceLabel', newDeviceLabel);
 
     final configMap = {'botToken': newBotToken, 'chatId': newChatId};
     final configJson = jsonEncode(configMap);
@@ -163,10 +163,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         'mode': filterMode,
         'sender': sender,
         'sms': sms,
-        'whitelist_senders': filterLists[AppConst.filterKeys[0]] ?? <String>[],
-        'whitelist_body': filterLists[AppConst.filterKeys[1]] ?? <String>[],
-        'blacklist_senders': filterLists[AppConst.filterKeys[2]] ?? <String>[],
-        'blacklist_body': filterLists[AppConst.filterKeys[3]] ?? <String>[],
+        'whitelistSenders': filterLists[AppConst.filterKeys[0]] ?? <String>[],
+        'whitelistBody': filterLists[AppConst.filterKeys[1]] ?? <String>[],
+        'blacklistSenders': filterLists[AppConst.filterKeys[2]] ?? <String>[],
+        'blacklistBody': filterLists[AppConst.filterKeys[3]] ?? <String>[],
       });
       return result ?? false;
     } catch (_) {
