@@ -7,6 +7,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
@@ -19,16 +20,16 @@ class MainActivity : FlutterActivity() {
                         val mode = call.argument<Int>("mode") ?: 0
                         val sender = call.argument<String>("sender") ?: ""
                         val sms = call.argument<String>("sms") ?: ""
-                        val wSenders = call.argument<List<String>>("wSenders") ?: emptyList()
-                        val wSms = call.argument<List<String>>("wSms") ?: emptyList()
-                        val bSenders = call.argument<List<String>>("bSenders") ?: emptyList()
-                        val bSms = call.argument<List<String>>("bSms") ?: emptyList()
+                        val whitelist_senders = call.argument<List<String>>("whitelist_senders") ?: emptyList()
+                        val whitelist_body = call.argument<List<String>>("whitelist_body") ?: emptyList()
+                        val blacklist_senders = call.argument<List<String>>("blacklist_senders") ?: emptyList()
+                        val blacklist_body = call.argument<List<String>>("blacklist_body") ?: emptyList()
 
                         val lists = SmsFilters.Lists(
-                            wSenders = wSenders,
-                            wSms = wSms,
-                            bSenders = bSenders,
-                            bSms = bSms
+                            whitelist_senders = whitelist_senders,
+                            whitelist_body = whitelist_body,
+                            blacklist_senders = blacklist_senders,
+                            blacklist_body = blacklist_body
                         )
 
                         val ok = SmsFilters.checkFilters(

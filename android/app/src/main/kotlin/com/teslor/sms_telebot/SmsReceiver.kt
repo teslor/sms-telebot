@@ -1,12 +1,12 @@
 package com.teslor.sms_telebot
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.provider.Telephony
 import androidx.core.content.ContextCompat
-import android.Manifest
-import android.content.pm.PackageManager
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
@@ -14,6 +14,10 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
+import kotlin.random.Random
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * Receives incoming SMS from the Android system.
@@ -33,8 +37,21 @@ class SmsReceiver : BroadcastReceiver() {
         )
         if (permission != PackageManager.PERMISSION_GRANTED) return
 
-        val prefs = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
-        val isRunning = prefs.getBoolean(SmsContract.Prefs.IS_RUNNING, false)
+        // Call goAsync() to avoid blocking UI thread when reading/writing DB
+        val pendingResult = goAsync()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                processSmsInBackground(context, intent)
+            } finally {
+                pendingResult.finish() // mandatory to finish BroadcastReceiver
+            }
+        }
+    }
+
+    private fun processSmsInBackground(context: Context, intent: Intent) {
+        val dbHelper = DbHelper.getInstance(context)
+        val isRunning = dbHelper.getBoolSetting("is_running")
         if (!isRunning) return
 
         // Extract all message parts, for multipart SMS we concatenate bodies
@@ -47,40 +64,63 @@ class SmsReceiver : BroadcastReceiver() {
 
         if (sender.isBlank() || body.isBlank()) return
 
-        // Within a one-minute window, the ID for identical texts will be the same
-        val timeWindow = timestamp / (1000L * 60L)
+        // Within a 5 second window, the ID for the same sender/body will be the same
+        val timeWindow = timestamp / 5000L
         val smsId = "$sender|$timeWindow|${body.hashCode()}"
 
         // Android/network may redeliver the same SMS back-to-back
-        // If it's a duplicate, do not schedule background work and do not bump counters
-        val smsReceivedLastId = prefs.getString(SmsContract.Prefs.SMS_RECEIVED_LAST_ID, null)
-        if (smsId == smsReceivedLastId) return
+        // If it's a duplicate, do not schedule background work
+        val lastReceivedId = dbHelper.getLastReceivedSmsId()
+        if (smsId == lastReceivedId) return
 
-        updateReceivedStats(prefs, smsId)
-
-        // Check user-defined filters to decide whether this SMS should be forwarded
-        val filterMode = try {
-            prefs.getInt(SmsContract.Prefs.FILTER_MODE, 0)
-        } catch (_: ClassCastException) {
-            prefs.getLong(SmsContract.Prefs.FILTER_MODE, 0L).toInt()
-        }
-        val filters = SmsFilters.fromPrefs(prefs)
-        val shouldSend = SmsFilters.checkFilters(
-            mode = filterMode,
+        // Immediately save all SMS information to sms_history
+        dbHelper.insertSmsHistory(
+            id = smsId,
             sender = sender,
-            sms = body,
-            filters = filters
+            body = body,
+            receivedAt = timestamp,
+            status = 0 // 0 = received, not yet sent
         )
-        if (!shouldSend) return
+
+        // Cleanup old SMS with 10% probability
+        if (Random.nextInt(10) == 0) {
+            // Take current device time minus 24 hours in milliseconds
+            val timeLimit = System.currentTimeMillis() - (24 * 60 * 60 * 1000L)
+            dbHelper.deleteOldSms(timeLimit)
+        }
+
+        // Get all active forwarding rules
+        val activeRules = dbHelper.getActiveRules()
+        val matchedRuleIds = mutableListOf<Int>()
+
+        // Iterate through all rules and check filters
+        for (rule in activeRules) {
+            if (rule.filterMode == 0) {
+                // If filters are disabled, the rule automatically matches
+                matchedRuleIds.add(rule.id)
+            } else {
+                // Decode JSON filters only if filterMode != 0
+                val filters = SmsFilters.fromJson(rule.filtersJson)
+                val isMatched = SmsFilters.checkFilters(
+                    mode = rule.filterMode,
+                    sender = sender,
+                    sms = body,
+                    filters = filters
+                )
+                if (isMatched) matchedRuleIds.add(rule.id)
+            }
+        }
+
+        // If no rule passes filtering, break the process
+        if (matchedRuleIds.isEmpty()) return
 
         // Prepare WorkManager input, keep it minimal and serializable
         val inputData = Data.Builder()
-            .putString(SmsForwardWorker.KEY_SENDER, sender)
-            .putString(SmsForwardWorker.KEY_BODY, body)
-            .putLong(SmsForwardWorker.KEY_TIMESTAMP, timestamp)
+            .putString("sms_id", smsId)
+            .putIntArray("rule_ids", matchedRuleIds.toIntArray())
             .build()
 
-        // Require network for sending to Telegram; if offline, WorkManager retries later
+        // Require network for forwarding; if offline, WorkManager retries later
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -100,24 +140,5 @@ class SmsReceiver : BroadcastReceiver() {
             ExistingWorkPolicy.KEEP,
             request
         )
-    }
-
-    private fun updateReceivedStats(
-        prefs: android.content.SharedPreferences,
-        smsId: String
-    ) {
-        // SharedPreferences may store Dart int as Long, so fallback to getLong
-        var receivedCount = try {
-            prefs.getInt(SmsContract.Prefs.SMS_RECEIVED_COUNT, 0)
-        } catch (_: ClassCastException) {
-            prefs.getLong(SmsContract.Prefs.SMS_RECEIVED_COUNT, 0L).toInt()
-        }
-
-        receivedCount += 1
-
-        prefs.edit()
-            .putInt(SmsContract.Prefs.SMS_RECEIVED_COUNT, receivedCount)
-            .putString(SmsContract.Prefs.SMS_RECEIVED_LAST_ID, smsId)
-            .apply()
     }
 }

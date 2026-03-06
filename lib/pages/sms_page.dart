@@ -56,15 +56,15 @@ class SmsPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Text(
-                                    '${AppLocalizations.of(context)!.sms_sent} • ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.fromMillisecondsSinceEpoch(int.parse(lastSms['time'])))}',
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5))
+                                    '${AppLocalizations.of(context)!.sms_sent} • ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.fromMillisecondsSinceEpoch(lastSms['sent_at']))}',
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface.withAlpha(128))
                                   ),
                                   const SizedBox(height: 4),
                                   RichText(
                                     textScaler: MediaQuery.textScalerOf(context),
                                     text: TextSpan(style: DefaultTextStyle.of(context).style.copyWith(fontSize: 14), children: [
                                       TextSpan(text: '${lastSms['sender']}: ', style: TextStyle(fontWeight: FontWeight.w500)),
-                                      TextSpan(text: lastSms['sms']),
+                                      TextSpan(text: lastSms['body']),
                                     ]),
                                   ),
                                 ],

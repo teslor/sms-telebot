@@ -1,76 +1,60 @@
 package com.teslor.sms_telebot
 
 import org.json.JSONArray
+import org.json.JSONObject
 
 object SmsContract {
+    object Providers {
+        const val TELEGRAM_BOT = "telegram_bot"
+    }
 
-    // SharedPreferences keys
-    object Prefs {
-        private const val P = "flutter."
-
-        // General
-        const val IS_RUNNING = "${P}isRunning"
-
-        // Settings
-        const val BOT_TOKEN = "${P}botToken"
-        const val CHAT_ID = "${P}chatId"
-        const val DEVICE_LABEL = "${P}deviceLabel"
-        const val FILTER_MODE = "${P}filterMode"
-        val FILTER_KEYS = listOf("${P}wSenders", "${P}wSms", "${P}bSenders", "${P}bSms")
-        const val L10N_SMS_FROM = "${P}l10nSmsFrom"
-
-        // Received SMS
-        const val SMS_RECEIVED_COUNT = "${P}smsReceivedCount"
-        const val SMS_RECEIVED_LAST_ID = "${P}smsReceivedLastId"
-
-        // Sent (forwarded) SMS
-        const val SMS_SENT_COUNT = "${P}smsSentCount"
-        const val SMS_SENT_LAST_IDS = "${P}smsSentLastIds"
-        const val SMS_SENT_LAST_ID = "${P}smsSentLastId"
-        const val SMS_SENT_LAST_DATA = "${P}smsSentLastData"
-
-        const val CAP_LAST_IDS = 20
+    object Keys {
+        val FILTER_KEYS = listOf("whitelist_senders", "whitelist_body", "blacklist_senders", "blacklist_body")
     }
 }
 
-/** Stored filters are JSON arrays. */
 object SmsFilters {
-    private val filterKeys = SmsContract.Prefs.FILTER_KEYS
+    private val filterKeys = SmsContract.Keys.FILTER_KEYS
 
     data class Lists(
-            val wSenders: List<String>,
-            val wSms: List<String>,
-            val bSenders: List<String>,
-            val bSms: List<String>
+        val whitelist_senders: List<String>,
+        val whitelist_body: List<String>,
+        val blacklist_senders: List<String>,
+        val blacklist_body: List<String>
     )
 
-    fun fromPrefs(prefs: android.content.SharedPreferences): Lists {
-        fun readList(key: String): List<String> {
-            val raw = prefs.getString(key, "[]") ?: "[]"
-            return try {
-                val json = JSONArray(raw)
-                List(json.length()) { index -> json.optString(index) }
-            } catch (_: Exception) {
-                emptyList()
-            }
+    fun fromJson(jsonStr: String?): Lists {
+        if (jsonStr.isNullOrBlank()) {
+            return Lists(emptyList(), emptyList(), emptyList(), emptyList())
         }
 
-        return Lists(
-                wSenders = readList(filterKeys[0]),
-                wSms = readList(filterKeys[1]),
-                bSenders = readList(filterKeys[2]),
-                bSms = readList(filterKeys[3])
-        )
+        return try {
+            val json = JSONObject(jsonStr)
+            
+            fun readList(key: String): List<String> {
+                val arr = json.optJSONArray(key) ?: return emptyList()
+                return List(arr.length()) { index -> arr.optString(index) }
+            }
+
+            Lists(
+                whitelist_senders = readList(filterKeys[0]),
+                whitelist_body = readList(filterKeys[1]),
+                blacklist_senders = readList(filterKeys[2]),
+                blacklist_body = readList(filterKeys[3])
+            )
+        } catch (_: Exception) {
+            Lists(emptyList(), emptyList(), emptyList(), emptyList())
+        }
     }
 
     fun checkFilters(mode: Int, sender: String, sms: String, filters: Lists): Boolean {
         return when (mode) {
             0 -> true // filters off
             1 -> { // whitelist
-                hasFilterMatches(sender, filters.wSenders) || hasFilterMatches(sms, filters.wSms)
+                hasFilterMatches(sender, filters.whitelist_senders) || hasFilterMatches(sms, filters.whitelist_body)
             }
             else -> { // blacklist
-                !hasFilterMatches(sender, filters.bSenders) && !hasFilterMatches(sms, filters.bSms)
+                !hasFilterMatches(sender, filters.blacklist_senders) && !hasFilterMatches(sms, filters.blacklist_body)
             }
         }
     }
@@ -83,9 +67,7 @@ object SmsFilters {
                 try {
                     val regex = Regex(filter.substring(1, filter.length - 1))
                     if (regex.containsMatchIn(text)) return true
-                } catch (_: Exception) {
-                    // Invalid regex -> ignore, same as Dart behavior
-                }
+                } catch (_: Exception) {} // invalid regex -> ignore
             } else {
                 if (text.contains(filter)) return true
             }

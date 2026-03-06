@@ -4,12 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'constants.dart';
 
-class DbHelper {
+class LocalDb {
   // Singleton pattern to keep a single DB instance for the whole app
-  static final DbHelper instance = DbHelper._init();
+  static final LocalDb instance = LocalDb._init();
   static Database? _database;
 
-  DbHelper._init();
+  LocalDb._init();
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -27,9 +27,6 @@ class DbHelper {
       version: 1,
       onConfigure: _onConfigure,
       onCreate: _onCreate,
-      onOpen: (db) async {
-        await _migrateFromPrefs(db);
-      },
     );
   }
 
@@ -67,7 +64,7 @@ class DbHelper {
         body TEXT,
         received_at INTEGER,
         sent_at INTEGER,
-        status INTEGER
+        status INTEGER DEFAULT 0
       )
     ''');
 
@@ -79,6 +76,8 @@ class DbHelper {
         message TEXT
       )
     ''');
+
+    await _migrateFromPrefs(db);
   }
 
   // Migrate data from SharedPreferences
@@ -133,9 +132,9 @@ class DbHelper {
     await prefs.clear();
   }
 
-  // ============================================================
-  // CRUD METHODS (Database operations)
-  // ============================================================
+  // ================================================================================
+  // APP_SETTINGS
+  // ================================================================================
 
   /// Read ALL settings from app_settings as a map
   Future<Map<String, String>> getAllSettings() async {
@@ -183,6 +182,10 @@ class DbHelper {
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  // ================================================================================
+  // FORWARDING_RULES
+  // ================================================================================
+
   /// Get ALL rules from forwarding_rules
   Future<List<Map<String, dynamic>>> getAllRules() async {
     final db = await instance.database;
@@ -192,7 +195,7 @@ class DbHelper {
   /// Create a new rule in forwarding_rules
   Future<int> insertRule({
     String name = 'Telegram Bot',
-    String provider = 'telegram',
+    String provider = 'telegram_bot',
     int isActive = 1,
     int filterMode = 0,
     required String configJson,
@@ -226,9 +229,9 @@ class DbHelper {
     );
   }
 
-  // ============================================================
-  // SMS STATS AND HISTORY (Last 24 hours)
-  // ============================================================
+  // ================================================================================
+  // SMS_HISTORY
+  // ================================================================================
 
   /// Get the number of SMS messages RECEIVED by the phone in the last 24 hours
   Future<int> getReceivedSmsCount() async {

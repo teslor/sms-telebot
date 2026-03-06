@@ -9,17 +9,17 @@ import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
 
 /**
- * Background worker that sends an incoming SMS to Telegram.
+ * Background worker that sends an incoming SMS to providers.
  */
 class SmsForwardWorker(
     appContext: Context,
@@ -33,62 +33,101 @@ class SmsForwardWorker(
     }
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        val prefs = applicationContext.getSharedPreferences("FlutterSharedPreferences",Context.MODE_PRIVATE)
-        val isRunning = prefs.getBoolean(SmsContract.Prefs.IS_RUNNING, false)
+        val dbHelper = DbHelper.getInstance(applicationContext)
+        val isRunning = dbHelper.getBoolSetting("is_running")
         if (!isRunning) return@withContext Result.success()
 
-        val sender = inputData.getString(KEY_SENDER).orEmpty()
-        val body = inputData.getString(KEY_BODY).orEmpty()
-        val timestamp = inputData.getLong(KEY_TIMESTAMP, 0L)
-        val timeWindow = timestamp / (1000L * 60L)
-        val smsId = "$sender|$timeWindow|${body.hashCode()}"
+        // Read input data from receiver
+        val smsId = inputData.getString("sms_id") ?: return@withContext Result.failure()
+        val ruleIds = inputData.getIntArray("rule_ids") ?: return@withContext Result.failure()
 
-        // Robust deduplication for Telegram side: protects against delayed network redelivery (A -> B -> A),
-        // WorkManager retries, and rare OEM/Android broadcast duplicates
-        val smsSentLastIds = getSmsSentLastIds(prefs)
-        if (smsSentLastIds.contains(smsId)) {
-            return@withContext Result.success() // already sent successfully earlier -> success
+        // Check if SMS exists and was not already sent
+        val smsData = dbHelper.getSmsById(smsId) ?: return@withContext Result.failure()
+        if (smsData.status != 0) {
+            return@withContext Result.success() // already processed (deduplication)
         }
 
-        val token = prefs.getString(SmsContract.Prefs.BOT_TOKEN, "").orEmpty()
-        val chatId = prefs.getString(SmsContract.Prefs.CHAT_ID, "").orEmpty()
-        val deviceLabel = prefs.getString(SmsContract.Prefs.DEVICE_LABEL, "").orEmpty()
-        if (token.isBlank() || chatId.isBlank()) return@withContext Result.failure()
+        // Get rules from DB by their IDs
+        val rules = dbHelper.getRulesByIds(ruleIds)
+        if (rules.isEmpty()) return@withContext Result.success()
 
-        val l10nSmsFrom = prefs.getString(SmsContract.Prefs.L10N_SMS_FROM, "SMS from").orEmpty().ifBlank { "SMS from" }
-        val senderEscaped = escapeHtml(sender)
-        val deviceLabelEscaped = escapeHtml(deviceLabel)
-        val bodyEscaped = escapeHtml(body)
-        val deviceInfo = if (deviceLabelEscaped.isNotBlank()) " <i>($deviceLabelEscaped)</i>" else ""
-        val message = "$l10nSmsFrom <b>$senderEscaped</b>$deviceInfo:\n$bodyEscaped"
+        // Read common settings
+        val deviceLabel = dbHelper.getSetting("device_label").orEmpty()
+        val l10nSmsFrom = dbHelper.getSetting("l10n_sms_from").orEmpty().ifBlank { "SMS from" }
 
-        val code = sendTelegramMessage(token, chatId, message)
-        if (code == 200) {
-            statsMutex.withLock {
-                updateSentStats(
-                    prefs = prefs,
-                    smsId = smsId,
-                    sender = sender,
-                    body = body,
-                    timestamp = System.currentTimeMillis()
+        // Start parallel sending
+        val results = coroutineScope {
+            rules.map { rule ->
+                async {
+                    processRule(rule, smsData.sender, smsData.body, deviceLabel, l10nSmsFrom)
+                }
+            }.awaitAll()
+        }
+
+        val successCount = results.count { it } // count the number of successful sends
+
+        return@withContext if (successCount > 0) {
+            // If at least one send is successful - save the status
+            val newStatus = if (successCount == rules.size) 1 else 2 // 1 = all ok, 2 = partially
+            
+            dbHelper.updateSmsHistory(
+                id = smsId,
+                updates = mapOf(
+                    "status" to newStatus,
+                    "sent_at" to System.currentTimeMillis()
                 )
-            }
-            return@withContext Result.success()
-        }
-
-        return@withContext when {
-            code == 429 -> Result.retry()
-            code != null && code in 400..499 -> Result.failure()
-            else -> Result.retry()
+            )
+            Result.success() // do not repeat the task
+        } else {
+            Result.retry() // if ALL sends failed - schedule a retry
         }
     }
 
-    /**
-     * Sends a Telegram message using a simple POST request.
-     *
-     * Returns the HTTP status code, or null on IO errors.
-     */
-    private fun sendTelegramMessage(token: String, chatId: String, msg: String): Int? {
+    // Router by providers for forwarding
+    private fun processRule(
+        rule: ForwardingRuleConfig, 
+        sender: String, 
+        body: String, 
+        deviceLabel: String, 
+        l10nSmsFrom: String
+    ): Boolean {
+        return when (rule.provider.lowercase()) {
+            SmsContract.Providers.TELEGRAM_BOT -> sendToTelegram(rule.configJson, sender, body, deviceLabel, l10nSmsFrom)
+            else -> true // unknown provider is considered successful to avoid endless retry
+        }
+    }
+
+    // Logic for forwarding specifically to Telegram Bot
+    private fun sendToTelegram(
+        configJson: String?, 
+        sender: String, 
+        body: String, 
+        deviceLabel: String, 
+        l10nSmsFrom: String
+    ): Boolean {
+        if (configJson.isNullOrBlank()) return false
+        
+        return try {
+            val json = JSONObject(configJson)
+            val token = json.optString("botToken", "")
+            val chatId = json.optString("chatId", "")
+            if (token.isBlank() || chatId.isBlank()) return false
+
+            val senderEscaped = escapeHtml(sender)
+            val deviceLabelEscaped = escapeHtml(deviceLabel)
+            val bodyEscaped = escapeHtml(body)
+            val deviceInfo = if (deviceLabelEscaped.isNotBlank()) " <i>($deviceLabelEscaped)</i>" else ""
+            val message = "$l10nSmsFrom <b>$senderEscaped</b>$deviceInfo:\n$bodyEscaped"
+
+            val code = sendTelegramMessageRequest(token, chatId, message)
+            code == 200
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    // Send SMS payload to Telegram Bot API
+    private fun sendTelegramMessageRequest(token: String, chatId: String, msg: String): Int? {
         val url = URL("https://api.telegram.org/bot$token/sendMessage")
         val postData = buildString {
             append("chat_id=").append(URLEncoder.encode(chatId, "UTF-8"))
@@ -113,50 +152,6 @@ class SmsForwardWorker(
         } finally {
             connection?.disconnect()
         }
-    }
-
-    private fun getSmsSentLastIds(prefs: android.content.SharedPreferences): MutableList<String> {
-        val raw = prefs.getString(SmsContract.Prefs.SMS_SENT_LAST_IDS, "[]") ?: "[]"
-
-        return try {
-            val json = JSONArray(raw)
-            MutableList(json.length()) { index -> json.optString(index) }
-                .filter { it.isNotBlank() }
-                .toMutableList()
-        } catch (_: Exception) {
-            mutableListOf()
-        }
-    }
-
-    private fun updateSentStats(
-        prefs: android.content.SharedPreferences,
-        smsId: String,
-        sender: String,
-        body: String,
-        timestamp: Long
-    ) {
-        val currentIds = getSmsSentLastIds(prefs)
-        currentIds.add(smsId)
-        val updatedIds = currentIds.takeLast(SmsContract.Prefs.CAP_LAST_IDS)
-
-        var sentCount = try {
-            prefs.getInt(SmsContract.Prefs.SMS_SENT_COUNT, 0)
-        } catch (_: ClassCastException) {
-            prefs.getLong(SmsContract.Prefs.SMS_SENT_COUNT, 0L).toInt()
-        }
-        sentCount += 1
-
-        val smsJson = JSONObject()
-            .put("time", timestamp.toString())
-            .put("sender", sender)
-            .put("sms", body)
-
-        prefs.edit()
-            .putInt(SmsContract.Prefs.SMS_SENT_COUNT, sentCount)
-            .putString(SmsContract.Prefs.SMS_SENT_LAST_IDS, JSONArray(updatedIds).toString())
-            .putString(SmsContract.Prefs.SMS_SENT_LAST_ID, smsId)
-            .putString(SmsContract.Prefs.SMS_SENT_LAST_DATA, smsJson.toString())
-            .apply()
     }
 
     private fun createForegroundNotification(): Notification {
@@ -191,11 +186,7 @@ class SmsForwardWorker(
 
     companion object {
         const val TAG = "sms_forward_worker"
-        const val KEY_SENDER = "sender"
-        const val KEY_BODY = "body"
-        const val KEY_TIMESTAMP = "timestamp"
         private const val FOREGROUND_NOTIFICATION_ID = 1001
         private const val FOREGROUND_CHANNEL_ID = "sms_telebot_forwarding"
-        private val statsMutex = Mutex()
     }
 }

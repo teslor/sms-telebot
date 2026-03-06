@@ -43,9 +43,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     // Save l10n required for background process after first frame when context is available
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final localizations = AppLocalizations.of(navigatorKey.currentContext!)!;
-      final current = await DbHelper.instance.getSetting('l10n_sms_from');
+      final current = await LocalDb.instance.getSetting('l10n_sms_from');
       if (current != localizations.sms_from) {
-        await DbHelper.instance.saveSetting('l10n_sms_from', localizations.sms_from);
+        await LocalDb.instance.saveSetting('l10n_sms_from', localizations.sms_from);
       }
     });
 
@@ -66,7 +66,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> startProcessing() async {
     isRunning = true;
-    await DbHelper.instance.saveBoolSetting('is_running', true);
+    await LocalDb.instance.saveBoolSetting('is_running', true);
     _startSmsStatsPolling();
     notifyListeners();
   }
@@ -74,7 +74,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> stopProcessing() async {
     isRunning = false;
     _stopSmsStatsPolling();
-    await DbHelper.instance.saveBoolSetting('is_running', false);
+    await LocalDb.instance.saveBoolSetting('is_running', false);
     notifyListeners();
   }
 
@@ -98,13 +98,13 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   // ============================================================
   
   Future<void> _loadSettings() async {
-    isRunning = await DbHelper.instance.getBoolSetting('is_running');
-    deviceLabel = await DbHelper.instance.getSetting('device_label') ?? '';
+    isRunning = await LocalDb.instance.getBoolSetting('is_running');
+    deviceLabel = await LocalDb.instance.getSetting('device_label') ?? '';
     notifyListeners();
   }
 
   Future<void> _loadRules() async {
-    final rules = await DbHelper.instance.getAllRules();
+    final rules = await LocalDb.instance.getAllRules();
     if (rules.isEmpty) return;
     final rule = rules.first;
     final config = safeDecode(rule['config_json']) ?? {};
@@ -112,7 +112,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
     botToken = config['botToken'] ?? '';
     chatId = config['chatId'] ?? '';
-    filterMode = filters['filter_mode'] ?? filterMode;
+    filterMode = rule['filter_mode'] ?? filterMode;
 
     for (var key in AppConst.filterKeys) {
       filterLists[key] = List<String>.from(filters[key] ?? []);
@@ -121,15 +121,15 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> _loadSmsStats() async {
-    final newReceivedCount = await DbHelper.instance.getReceivedSmsCount();
-    final lastSmsData = await DbHelper.instance.getLastSentSms();
-    final newId = lastSmsData?['id'] ?? '';
+    final newReceivedCount = await LocalDb.instance.getReceivedSmsCount();
+    final newLastSms = await LocalDb.instance.getLastSentSms();
+    final newId = newLastSms?['id'];
 
     if (newReceivedCount != smsReceivedCount || newId != lastSmsId) {
       smsReceivedCount = newReceivedCount;
-      smsSentCount = await DbHelper.instance.getSentSmsCount();
+      smsSentCount = await LocalDb.instance.getSentSmsCount();
       lastSmsId = newId;
-      lastSms = lastSmsData;
+      lastSms = newLastSms;
       notifyListeners();
     }
   }
@@ -139,15 +139,15 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   // ============================================================
 
   Future<void> updateBotSettings(String newBotToken, String newChatId, String newDeviceLabel) async {
-    await DbHelper.instance.saveSetting('device_label', newDeviceLabel);
+    await LocalDb.instance.saveSetting('device_label', newDeviceLabel);
 
     final configMap = {'botToken': newBotToken, 'chatId': newChatId};
     final configJson = jsonEncode(configMap);
-    final rules = await DbHelper.instance.getAllRules();
+    final rules = await LocalDb.instance.getAllRules();
     if (rules.isNotEmpty) {
-      await DbHelper.instance.updateRuleField(rules.first['id'], 'config_json', configJson);
+      await LocalDb.instance.updateRuleField(rules.first['id'], 'config_json', configJson);
     } else {
-      await DbHelper.instance.insertRule(configJson: configJson);
+      await LocalDb.instance.insertRule(configJson: configJson);
     }
 
     botToken = newBotToken;
@@ -196,11 +196,11 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     }
     final String filtersJson = jsonEncode(filtersMap);
 
-    final rules = await DbHelper.instance.getAllRules();
+    final rules = await LocalDb.instance.getAllRules();
     if (rules.isNotEmpty) {
-      await DbHelper.instance.updateRuleField(rules.first['id'], 'filters_json', filtersJson);
+      await LocalDb.instance.updateRuleField(rules.first['id'], 'filters_json', filtersJson);
     } else {
-      await DbHelper.instance.insertRule(
+      await LocalDb.instance.insertRule(
         filterMode: filterMode,
         configJson: jsonEncode({'botToken': '', 'chatId': ''}),
         filtersJson: filtersJson,
