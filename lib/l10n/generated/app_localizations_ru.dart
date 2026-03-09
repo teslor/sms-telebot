@@ -9,6 +9,21 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get action_cancel => 'Отмена';
+
+  @override
+  String get action_delete => 'Удалить';
+
+  @override
+  String get action_save => 'Сохранить';
+
+  @override
+  String get action_test => 'Проверить';
+
+  @override
+  String get action_testAndSave => 'Проверить и сохранить';
+
+  @override
   String get sms => 'СМС';
 
   @override
@@ -36,7 +51,34 @@ class AppLocalizationsRu extends AppLocalizations {
   String get sms_stop => 'Стоп';
 
   @override
-  String get filters => 'ФИЛЬТРЫ';
+  String get rule => 'Правило';
+
+  @override
+  String get rule_confirmDelete => 'Вы уверены, что хотите удалить правило?';
+
+  @override
+  String get rules => 'ПРАВИЛА';
+
+  @override
+  String get rules_empty => 'Пока нет правил\nСоздайте первое!';
+
+  @override
+  String get connection => 'Подключение';
+
+  @override
+  String get telebot_token => 'Токен';
+
+  @override
+  String get telebot_tokenInfo => 'Токен бота, полученный от @BotFather';
+
+  @override
+  String get telebot_chatId => 'ID чата';
+
+  @override
+  String get telebot_chatIdInfo => 'ID чата с ботом (опционально)';
+
+  @override
+  String get filters => 'Фильтры';
 
   @override
   String get filters_off => 'Без\nфильтров';
@@ -60,34 +102,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get filters_textInfo => 'Добавьте фильтры для текста СМС';
 
   @override
-  String get filters_test => 'Проверить';
-
-  @override
-  String get filters_save => 'Сохранить';
-
-  @override
   String get settings => 'НАСТРОЙКИ';
-
-  @override
-  String get settings_token => 'Токен';
-
-  @override
-  String get settings_tokenInfo => 'Токен бота, полученный от @BotFather';
-
-  @override
-  String get settings_chatId => 'ID чата';
-
-  @override
-  String get settings_chatIdInfo => 'ID чата с ботом (опционально)';
 
   @override
   String get settings_deviceLabel => 'Метка устройства';
 
   @override
   String get settings_deviceLabelInfo => 'Пользовательская метка (опционально)';
-
-  @override
-  String get settings_test => 'Проверить и сохранить';
 
   @override
   String get help_about => 'О приложении';

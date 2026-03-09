@@ -17,11 +17,15 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   bool isRunning = false;
   String? deviceLabel;
 
-  // Connection & filters
+  // Rule list
+  List<Map<String, dynamic>> rules =[];
+  Map<String, dynamic>? selectedRule;
+
+  // Selected rule data
   String? botToken;
   String? chatId;
   int filterMode = 0;
-  Map<String, List<String>> filterLists = { for (var key in AppConst.filterKeys) key: [] };
+  Map<String, List<String>> filterLists = { for (var key in AppConst.filterKeys) key:[] };
 
   // SMS stats
   int smsReceivedCount = 0;
@@ -93,10 +97,6 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
   }
 
-  // ================================================================================
-  // Read data from DB
-  // ================================================================================
-  
   Future<void> _loadSettings() async {
     isRunning = await LocalDb.instance.getBoolSetting('isRunning');
     deviceLabel = await LocalDb.instance.getSetting('deviceLabel') ?? '';
@@ -104,18 +104,16 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> _loadRules() async {
-    final rules = await LocalDb.instance.getAllRules();
-    if (rules.isEmpty) return;
-    final rule = rules.first;
-    final config = safeDecode(rule['config_json']) ?? {};
-    final filters = safeDecode(rule['filters_json']) ?? {};
+    rules = await LocalDb.instance.getAllRules();
 
-    botToken = config['botToken'] ?? '';
-    chatId = config['chatId'] ?? '';
-    filterMode = rule['filter_mode'] ?? filterMode;
-
-    for (var key in AppConst.filterKeys) {
-      filterLists[key] = List<String>.from(filters[key] ?? []);
+    // Refresh selected rule data if it exists
+    if (selectedRule != null) {
+      final updatedRule = rules.where((r) => r['id'] == selectedRule!['id']).firstOrNull;
+      if (updatedRule != null) {
+        selectRule(updatedRule);
+      } else {
+        selectRule(null);
+      }
     }
     notifyListeners();
   }
@@ -135,25 +133,72 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   // ================================================================================
-  // Rules methods
+  // Rules management
   // ================================================================================
 
-  Future<void> updateBotSettings(String newBotToken, String newChatId, String newDeviceLabel) async {
-    await LocalDb.instance.saveSetting('deviceLabel', newDeviceLabel);
+  void selectRule(Map<String, dynamic>? rule) {
+    selectedRule = rule;
+    if (rule != null) {
+      final config = safeDecode(rule['config_json']) ?? {};
+      final filters = safeDecode(rule['filters_json']) ?? {};
+
+      botToken = config['botToken'] ?? '';
+      chatId = config['chatId']?.toString() ?? '';
+      filterMode = rule['filter_mode'] ?? 0;
+
+      filterLists = { for (var key in AppConst.filterKeys) key: [] };
+      for (var key in AppConst.filterKeys) {
+        filterLists[key] = List<String>.from(filters[key] ??[]);
+      }
+    } else {
+      botToken = null;
+      chatId = null;
+      filterMode = 0;
+      filterLists = { for (var key in AppConst.filterKeys) key:[] };
+    }
+    notifyListeners();
+  }
+
+  Future<void> updateRuleName(int id, String name) async {
+    await LocalDb.instance.updateRuleField(id, 'name', name);
+    await _loadRules();
+  }
+
+  Future<void> toggleRuleActive(int id, bool isActive) async {
+    await LocalDb.instance.updateRuleField(id, 'is_active', isActive ? 1 : 0);
+    await _loadRules();
+  }
+
+  Future<void> deleteRule(int id) async {
+    await LocalDb.instance.deleteRule(id);
+    await _loadRules();
+  }
+
+  Future<void> addRule() async {
+    final configJson = jsonEncode({'botToken': '', 'chatId': ''});
+
+    await LocalDb.instance.insertRule(
+      name: AppLocalizations.of(navigatorKey.currentContext!)!.rule,
+      isActive: 0,
+      configJson: configJson,
+    );
+    await _loadRules();
+  }
+
+  Future<void> updateConnectionData(String newBotToken, String newChatId) async {
+    if (selectedRule == null) return;
+    final ruleId = selectedRule!['id'];
 
     final configMap = {'botToken': newBotToken, 'chatId': newChatId};
     final configJson = jsonEncode(configMap);
-    final rules = await LocalDb.instance.getAllRules();
-    if (rules.isNotEmpty) {
-      await LocalDb.instance.updateRuleField(rules.first['id'], 'config_json', configJson);
-    } else {
-      await LocalDb.instance.insertRule(configJson: configJson);
-    }
+    await LocalDb.instance.updateRuleField(ruleId, 'config_json', configJson);
 
-    botToken = newBotToken;
-    chatId = newChatId;
+    await _loadRules();
+  }
+
+  Future<void> updateDeviceLabel(String newDeviceLabel) async {
+    await LocalDb.instance.saveSetting('deviceLabel', newDeviceLabel);
     deviceLabel = newDeviceLabel;
-
     notifyListeners();
   }
 
@@ -190,27 +235,30 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> saveFilters() async {
+    if (selectedRule == null) return;
+    final ruleId = selectedRule!['id'];
+
     final Map<String, dynamic> filtersMap = {};
     for (var key in AppConst.filterKeys) {
       filtersMap[key] = filterLists[key] ?? [];
     }
     final String filtersJson = jsonEncode(filtersMap);
 
-    final rules = await LocalDb.instance.getAllRules();
-    if (rules.isNotEmpty) {
-      await LocalDb.instance.updateRuleField(rules.first['id'], 'filters_json', filtersJson);
-    } else {
-      await LocalDb.instance.insertRule(
-        filterMode: filterMode,
-        configJson: jsonEncode({'botToken': '', 'chatId': ''}),
-        filtersJson: filtersJson,
-      );
-    }
+    await LocalDb.instance.updateRule(ruleId, {
+      'filter_mode': filterMode,
+      'filters_json': filtersJson,
+    });
 
-    notifyListeners();
+    await _loadRules();
   }
 
-  // ================================================================================
+  bool get canStartProcessing {
+    return rules.any((r) {
+      if (r['is_active'] != 1) return false;
+      final config = safeDecode(r['config_json']) ?? {};
+      return (config['botToken'] ?? '').toString().isNotEmpty && (config['chatId'] ?? '').toString().isNotEmpty;
+    });
+  }
 
   @override
   void dispose() {

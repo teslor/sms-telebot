@@ -6,14 +6,14 @@ import '../state.dart';
 import '../service.dart';
 import '../widgets/action_button.dart';
 
-class FiltersPage extends StatefulWidget {
-  const FiltersPage({super.key});
+class RuleFiltersPage extends StatefulWidget {
+  const RuleFiltersPage({super.key});
 
   @override
-  State<FiltersPage> createState() => _FiltersPageState();
+  State<RuleFiltersPage> createState() => _RuleFiltersPageState();
 }
 
-class _FiltersPageState extends State<FiltersPage> {
+class _RuleFiltersPageState extends State<RuleFiltersPage> {
   final GlobalKey<_ChipsWidgetState> _senderChipsKey = GlobalKey<_ChipsWidgetState>();
   final GlobalKey<_ChipsWidgetState> _smsChipsKey = GlobalKey<_ChipsWidgetState>();
   bool? _testResult;
@@ -36,10 +36,13 @@ class _FiltersPageState extends State<FiltersPage> {
     });
   }
 
-   void _saveFilters() async {
+  void _saveFilters() async {
     final appState = context.read<AppState>();
-    appState.saveFilters();
-    setState(() { _saveResult = true; });
+    FocusManager.instance.primaryFocus?.unfocus();
+    await appState.saveFilters();
+    if (mounted) {
+      setState(() { _saveResult = true; });
+    }
   } 
 
   @override
@@ -53,17 +56,18 @@ class _FiltersPageState extends State<FiltersPage> {
         children: [
           Expanded(
             child: ListView(
-              children: [
+              children:[
                 SegmentedButton<int>(
                   showSelectedIcon: false,
-                  style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 12))),
+                  style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 12))),
                   segments: <ButtonSegment<int>>[
-                    ButtonSegment<int>(value: 0, label: Text(AppLocalizations.of(context)!.filters_off, textAlign: TextAlign.center, style: TextStyle(height: 1.15))),
-                    ButtonSegment<int>(value: 1, label: Text(AppLocalizations.of(context)!.filters_whitelist, textAlign: TextAlign.center, style: TextStyle(height: 1.15))),
-                    ButtonSegment<int>(value: 2, label: Text(AppLocalizations.of(context)!.filters_blacklist, textAlign: TextAlign.center, style: TextStyle(height: 1.15))),
+                    ButtonSegment<int>(value: 0, label: Text(AppLocalizations.of(context)!.filters_off, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
+                    ButtonSegment<int>(value: 1, label: Text(AppLocalizations.of(context)!.filters_whitelist, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
+                    ButtonSegment<int>(value: 2, label: Text(AppLocalizations.of(context)!.filters_blacklist, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
                   ],
                   selected: <int>{appState.filterMode},
                   onSelectionChanged: (Set<int> newSelection) {
+                    setState(() { _saveResult = null; });
                     appState.setFilterMode(newSelection.first);
                   },
                 ),
@@ -94,9 +98,9 @@ class _FiltersPageState extends State<FiltersPage> {
           const SizedBox(height: 20),
 
           Row(
-            children: [
+            children:[
               Expanded(child: ActionButton(
-                label: AppLocalizations.of(context)!.filters_test,
+                label: AppLocalizations.of(context)!.action_test,
                 onPressed: _testFilters,
                 isSuccess: _testResult
               )),
@@ -104,7 +108,7 @@ class _FiltersPageState extends State<FiltersPage> {
               const SizedBox(width: 15),
 
               Expanded(child: ActionButton(
-                label: AppLocalizations.of(context)!.filters_save,
+                label: AppLocalizations.of(context)!.action_save,
                 onPressed: _saveFilters,
                 isSuccess: _saveResult
               ))
@@ -141,7 +145,7 @@ class _ChipsWidgetState extends State<ChipsWidget> {
           controller: inputController,
           enabled: widget.listName.isNotEmpty,
           decoration: InputDecoration(
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             labelText: widget.labelText,
             helperText: widget.helperText,
             helperMaxLines: 2,
@@ -169,7 +173,7 @@ class _ChipsWidgetState extends State<ChipsWidget> {
                 onTap: () { inputController.text = chip; },
                 child: Text(chip),
               ),
-              deleteIcon: Icon(Icons.close),
+              deleteIcon: const Icon(Icons.close),
               onDeleted: () { appState.removeFromFilterList(widget.listName, chip); },
             );
           }).toList(),

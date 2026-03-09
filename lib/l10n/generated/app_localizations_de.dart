@@ -9,6 +9,21 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get action_cancel => 'Abbrechen';
+
+  @override
+  String get action_delete => 'Löschen';
+
+  @override
+  String get action_save => 'Speichern';
+
+  @override
+  String get action_test => 'Testen';
+
+  @override
+  String get action_testAndSave => 'Testen & Speichern';
+
+  @override
   String get sms => 'SMS';
 
   @override
@@ -37,7 +52,34 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sms_stop => 'Stopp';
 
   @override
-  String get filters => 'FILTER';
+  String get rule => 'Regel';
+
+  @override
+  String get rule_confirmDelete => 'Möchten Sie diese Regel wirklich löschen?';
+
+  @override
+  String get rules => 'REGELN';
+
+  @override
+  String get rules_empty => 'Noch keine Regeln\nErstellen Sie die erste!';
+
+  @override
+  String get connection => 'Verbindung';
+
+  @override
+  String get telebot_token => 'Bot-Token';
+
+  @override
+  String get telebot_tokenInfo => 'Token vom @BotFather erhalten';
+
+  @override
+  String get telebot_chatId => 'Chat-ID';
+
+  @override
+  String get telebot_chatIdInfo => 'ID des Chats mit Ihrem Bot (optional)';
+
+  @override
+  String get filters => 'Filter';
 
   @override
   String get filters_off => 'Aus';
@@ -61,25 +103,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get filters_textInfo => 'Filter für SMS-Text hinzufügen';
 
   @override
-  String get filters_test => 'Testen';
-
-  @override
-  String get filters_save => 'Speichern';
-
-  @override
   String get settings => 'EINSTELLUNGEN';
-
-  @override
-  String get settings_token => 'Bot-Token';
-
-  @override
-  String get settings_tokenInfo => 'Token vom @BotFather erhalten';
-
-  @override
-  String get settings_chatId => 'Chat-ID';
-
-  @override
-  String get settings_chatIdInfo => 'ID des Chats mit Ihrem Bot (optional)';
 
   @override
   String get settings_deviceLabel => 'Gerätename';
@@ -87,9 +111,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get settings_deviceLabelInfo =>
       'Benutzerdefinierte Bezeichnung (optional)';
-
-  @override
-  String get settings_test => 'Testen & Speichern';
 
   @override
   String get help_about => 'Über';

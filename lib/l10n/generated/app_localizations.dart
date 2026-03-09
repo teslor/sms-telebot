@@ -112,6 +112,36 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
+  /// No description provided for @action_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get action_cancel;
+
+  /// No description provided for @action_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get action_delete;
+
+  /// No description provided for @action_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get action_save;
+
+  /// No description provided for @action_test.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get action_test;
+
+  /// No description provided for @action_testAndSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Test & Save'**
+  String get action_testAndSave;
+
   /// No description provided for @sms.
   ///
   /// In en, this message translates to:
@@ -166,10 +196,64 @@ abstract class AppLocalizations {
   /// **'Stop'**
   String get sms_stop;
 
+  /// No description provided for @rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule'**
+  String get rule;
+
+  /// No description provided for @rule_confirmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this rule?'**
+  String get rule_confirmDelete;
+
+  /// No description provided for @rules.
+  ///
+  /// In en, this message translates to:
+  /// **'RULES'**
+  String get rules;
+
+  /// No description provided for @rules_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No rules yet\nCreate your first one!'**
+  String get rules_empty;
+
+  /// No description provided for @connection.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection'**
+  String get connection;
+
+  /// No description provided for @telebot_token.
+  ///
+  /// In en, this message translates to:
+  /// **'Bot token'**
+  String get telebot_token;
+
+  /// No description provided for @telebot_tokenInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Bot token you\'ve got from @BotFather'**
+  String get telebot_tokenInfo;
+
+  /// No description provided for @telebot_chatId.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat ID'**
+  String get telebot_chatId;
+
+  /// No description provided for @telebot_chatIdInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'ID of a chat with your bot (optional)'**
+  String get telebot_chatIdInfo;
+
   /// No description provided for @filters.
   ///
   /// In en, this message translates to:
-  /// **'FILTERS'**
+  /// **'Filters'**
   String get filters;
 
   /// No description provided for @filters_off.
@@ -214,47 +298,11 @@ abstract class AppLocalizations {
   /// **'Add filters for SMS text'**
   String get filters_textInfo;
 
-  /// No description provided for @filters_test.
-  ///
-  /// In en, this message translates to:
-  /// **'Test'**
-  String get filters_test;
-
-  /// No description provided for @filters_save.
-  ///
-  /// In en, this message translates to:
-  /// **'Save'**
-  String get filters_save;
-
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
   /// **'SETTINGS'**
   String get settings;
-
-  /// No description provided for @settings_token.
-  ///
-  /// In en, this message translates to:
-  /// **'Bot token'**
-  String get settings_token;
-
-  /// No description provided for @settings_tokenInfo.
-  ///
-  /// In en, this message translates to:
-  /// **'Bot token you\'ve got from @BotFather'**
-  String get settings_tokenInfo;
-
-  /// No description provided for @settings_chatId.
-  ///
-  /// In en, this message translates to:
-  /// **'Chat ID'**
-  String get settings_chatId;
-
-  /// No description provided for @settings_chatIdInfo.
-  ///
-  /// In en, this message translates to:
-  /// **'ID of a chat with your bot (optional)'**
-  String get settings_chatIdInfo;
 
   /// No description provided for @settings_deviceLabel.
   ///
@@ -267,12 +315,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Custom label (optional)'**
   String get settings_deviceLabelInfo;
-
-  /// No description provided for @settings_test.
-  ///
-  /// In en, this message translates to:
-  /// **'Test & Save'**
-  String get settings_test;
 
   /// No description provided for @help_about.
   ///

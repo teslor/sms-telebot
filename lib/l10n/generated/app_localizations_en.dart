@@ -9,6 +9,21 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get action_cancel => 'Cancel';
+
+  @override
+  String get action_delete => 'Delete';
+
+  @override
+  String get action_save => 'Save';
+
+  @override
+  String get action_test => 'Test';
+
+  @override
+  String get action_testAndSave => 'Test & Save';
+
+  @override
   String get sms => 'SMS';
 
   @override
@@ -36,7 +51,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sms_stop => 'Stop';
 
   @override
-  String get filters => 'FILTERS';
+  String get rule => 'Rule';
+
+  @override
+  String get rule_confirmDelete => 'Are you sure you want to delete this rule?';
+
+  @override
+  String get rules => 'RULES';
+
+  @override
+  String get rules_empty => 'No rules yet\nCreate your first one!';
+
+  @override
+  String get connection => 'Connection';
+
+  @override
+  String get telebot_token => 'Bot token';
+
+  @override
+  String get telebot_tokenInfo => 'Bot token you\'ve got from @BotFather';
+
+  @override
+  String get telebot_chatId => 'Chat ID';
+
+  @override
+  String get telebot_chatIdInfo => 'ID of a chat with your bot (optional)';
+
+  @override
+  String get filters => 'Filters';
 
   @override
   String get filters_off => 'Off';
@@ -60,34 +102,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filters_textInfo => 'Add filters for SMS text';
 
   @override
-  String get filters_test => 'Test';
-
-  @override
-  String get filters_save => 'Save';
-
-  @override
   String get settings => 'SETTINGS';
-
-  @override
-  String get settings_token => 'Bot token';
-
-  @override
-  String get settings_tokenInfo => 'Bot token you\'ve got from @BotFather';
-
-  @override
-  String get settings_chatId => 'Chat ID';
-
-  @override
-  String get settings_chatIdInfo => 'ID of a chat with your bot (optional)';
 
   @override
   String get settings_deviceLabel => 'Device label';
 
   @override
   String get settings_deviceLabelInfo => 'Custom label (optional)';
-
-  @override
-  String get settings_test => 'Test & Save';
 
   @override
   String get help_about => 'About';

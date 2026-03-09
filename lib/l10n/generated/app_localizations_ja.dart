@@ -9,6 +9,21 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
+  String get action_cancel => 'キャンセル';
+
+  @override
+  String get action_delete => '削除';
+
+  @override
+  String get action_save => '保存';
+
+  @override
+  String get action_test => 'テスト';
+
+  @override
+  String get action_testAndSave => 'テストして保存';
+
+  @override
   String get sms => 'SMS';
 
   @override
@@ -36,6 +51,33 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sms_stop => '停止';
 
   @override
+  String get rule => 'ルール';
+
+  @override
+  String get rule_confirmDelete => 'このルールを削除してもよろしいですか？';
+
+  @override
+  String get rules => 'ルール';
+
+  @override
+  String get rules_empty => 'まだルールがありません\n最初のルールを作成しましょう！';
+
+  @override
+  String get connection => '接続';
+
+  @override
+  String get telebot_token => 'ボットトークン';
+
+  @override
+  String get telebot_tokenInfo => '@BotFatherから取得したトークン';
+
+  @override
+  String get telebot_chatId => 'チャットID';
+
+  @override
+  String get telebot_chatIdInfo => 'ボットとのチャットのID（オプション）';
+
+  @override
   String get filters => 'フィルター';
 
   @override
@@ -60,34 +102,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get filters_textInfo => 'SMSテキストのフィルターを追加';
 
   @override
-  String get filters_test => 'テスト';
-
-  @override
-  String get filters_save => '保存';
-
-  @override
   String get settings => '設定';
-
-  @override
-  String get settings_token => 'ボットトークン';
-
-  @override
-  String get settings_tokenInfo => '@BotFatherから取得したトークン';
-
-  @override
-  String get settings_chatId => 'チャットID';
-
-  @override
-  String get settings_chatIdInfo => 'ボットとのチャットのID（オプション）';
 
   @override
   String get settings_deviceLabel => 'デバイスラベル';
 
   @override
   String get settings_deviceLabelInfo => 'カスタムラベル（オプション）';
-
-  @override
-  String get settings_test => 'テストして保存';
 
   @override
   String get help_about => 'このアプリについて';

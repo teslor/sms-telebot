@@ -84,7 +84,7 @@ class SmsPage extends StatelessWidget {
           ActionButton(
             label: appState.isRunning ? AppLocalizations.of(context)!.sms_stop : AppLocalizations.of(context)!.sms_start,
             isSuccess: null,
-            onPressed: (appState.botToken == '' || appState.chatId == '') ? null : () async {
+            onPressed: (!appState.canStartProcessing && !appState.isRunning) ? null : () async {
               if (appState.isRunning) {
                 await appState.stopProcessing();
               } else {

@@ -231,6 +231,12 @@ class LocalDb {
     );
   }
 
+  /// Delete a specific rule by ID
+  Future<int> deleteRule(int id) async {
+    final db = await instance.database;
+    return await db.delete('forwarding_rules', where: 'id = ?', whereArgs: [id]);
+  }
+
   // ================================================================================
   // SMS_HISTORY
   // ================================================================================

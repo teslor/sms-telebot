@@ -6,7 +6,7 @@ import 'constants.dart';
 import 'state.dart';
 import 'styles.dart';
 import 'pages/sms_page.dart';
-import 'pages/filters_page.dart';
+import 'pages/rules_page.dart';
 import 'pages/settings_page.dart';
 import 'pages/help_page.dart';
 
@@ -71,13 +71,17 @@ class _AppViewState extends State<AppView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final appState = context.watch<AppState>();
+    
+    // Hide the main AppBar when a specific rule is open
+    final bool isRuleSelected = currentPageIndex == 1 && appState.selectedRule != null;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: isRuleSelected ? null : AppBar(
         title: const Text(AppConst.appName),
         centerTitle: true,
         elevation: 2,
-        actions: [
+        actions:[
           IconButton(
             icon: Icon(Icons.help_outline_rounded),
             onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage())); },
@@ -86,6 +90,10 @@ class _AppViewState extends State<AppView> {
       ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
+          // Return to the list of rules if the Rules tab is already selected
+          if (currentPageIndex == index && index == 1) {
+            context.read<AppState>().selectRule(null);
+          }
           setState(() { currentPageIndex = index; });
         },
         indicatorColor: theme.colorScheme.inversePrimary,
@@ -97,13 +105,13 @@ class _AppViewState extends State<AppView> {
             label: AppLocalizations.of(context)!.sms,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.filter_alt),
-            icon: Icon(Icons.filter_alt_outlined),
-            label: AppLocalizations.of(context)!.filters,
+            selectedIcon: Icon(Icons.rule),
+            icon: Icon(Icons.rule_outlined),
+            label: AppLocalizations.of(context)!.rules,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.settings),
-            icon: Icon(Icons.settings_outlined),
+            selectedIcon: const Icon(Icons.settings),
+            icon: const Icon(Icons.settings_outlined),
             label: AppLocalizations.of(context)!.settings,
           ),
         ],
@@ -111,7 +119,7 @@ class _AppViewState extends State<AppView> {
       body:
         <Widget>[
           const SmsPage(),
-          const FiltersPage(),
+          const RulesMainPage(),
           const SettingsPage(),
         ][currentPageIndex],
     );

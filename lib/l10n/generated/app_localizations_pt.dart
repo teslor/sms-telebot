@@ -9,6 +9,21 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
+  String get action_cancel => 'Cancelar';
+
+  @override
+  String get action_delete => 'Excluir';
+
+  @override
+  String get action_save => 'Salvar';
+
+  @override
+  String get action_test => 'Testar';
+
+  @override
+  String get action_testAndSave => 'Testar e salvar';
+
+  @override
   String get sms => 'SMS';
 
   @override
@@ -36,7 +51,35 @@ class AppLocalizationsPt extends AppLocalizations {
   String get sms_stop => 'Parar';
 
   @override
-  String get filters => 'FILTROS';
+  String get rule => 'Regra';
+
+  @override
+  String get rule_confirmDelete =>
+      'Tem certeza de que deseja excluir esta regra?';
+
+  @override
+  String get rules => 'REGRAS';
+
+  @override
+  String get rules_empty => 'Ainda não há regras\nCrie a primeira!';
+
+  @override
+  String get connection => 'Conexão';
+
+  @override
+  String get telebot_token => 'Token do bot';
+
+  @override
+  String get telebot_tokenInfo => 'Token obtido do @BotFather';
+
+  @override
+  String get telebot_chatId => 'ID do chat';
+
+  @override
+  String get telebot_chatIdInfo => 'ID do chat com seu bot (opcional)';
+
+  @override
+  String get filters => 'Filtros';
 
   @override
   String get filters_off => 'Desativado';
@@ -60,34 +103,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get filters_textInfo => 'Adicione filtros para o texto do SMS';
 
   @override
-  String get filters_test => 'Testar';
-
-  @override
-  String get filters_save => 'Salvar';
-
-  @override
   String get settings => 'CONFIGURAÇÕES';
-
-  @override
-  String get settings_token => 'Token do bot';
-
-  @override
-  String get settings_tokenInfo => 'Token obtido do @BotFather';
-
-  @override
-  String get settings_chatId => 'ID do chat';
-
-  @override
-  String get settings_chatIdInfo => 'ID do chat com seu bot (opcional)';
 
   @override
   String get settings_deviceLabel => 'Rótulo do dispositivo';
 
   @override
   String get settings_deviceLabelInfo => 'Rótulo personalizado (opcional)';
-
-  @override
-  String get settings_test => 'Testar e salvar';
 
   @override
   String get help_about => 'Sobre';

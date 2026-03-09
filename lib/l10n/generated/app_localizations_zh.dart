@@ -9,6 +9,21 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get action_cancel => '取消';
+
+  @override
+  String get action_delete => '删除';
+
+  @override
+  String get action_save => '保存';
+
+  @override
+  String get action_test => '测试';
+
+  @override
+  String get action_testAndSave => '测试并保存';
+
+  @override
   String get sms => '短信';
 
   @override
@@ -36,6 +51,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sms_stop => '停止';
 
   @override
+  String get rule => '规则';
+
+  @override
+  String get rule_confirmDelete => '确定要删除此规则吗？';
+
+  @override
+  String get rules => '规则';
+
+  @override
+  String get rules_empty => '还没有规则\n创建第一条！';
+
+  @override
+  String get connection => '连接';
+
+  @override
+  String get telebot_token => '机器人令牌';
+
+  @override
+  String get telebot_tokenInfo => '从 @BotFather 获取的令牌';
+
+  @override
+  String get telebot_chatId => '聊天 ID';
+
+  @override
+  String get telebot_chatIdInfo => '与您的机器人的聊天 ID（可选）';
+
+  @override
   String get filters => '筛选器';
 
   @override
@@ -60,34 +102,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get filters_textInfo => '添加短信文本筛选器';
 
   @override
-  String get filters_test => '测试';
-
-  @override
-  String get filters_save => '保存';
-
-  @override
   String get settings => '设置';
-
-  @override
-  String get settings_token => '机器人令牌';
-
-  @override
-  String get settings_tokenInfo => '从 @BotFather 获取的令牌';
-
-  @override
-  String get settings_chatId => '聊天 ID';
-
-  @override
-  String get settings_chatIdInfo => '与您的机器人的聊天 ID（可选）';
 
   @override
   String get settings_deviceLabel => '设备标签';
 
   @override
   String get settings_deviceLabelInfo => '自定义标签（可选';
-
-  @override
-  String get settings_test => '测试并保存';
 
   @override
   String get help_about => '关于';

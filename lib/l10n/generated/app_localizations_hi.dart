@@ -9,6 +9,21 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String get action_cancel => 'रद्द करें';
+
+  @override
+  String get action_delete => 'हटाएं';
+
+  @override
+  String get action_save => 'सहेजें';
+
+  @override
+  String get action_test => 'टेस्ट करें';
+
+  @override
+  String get action_testAndSave => 'टेस्ट और सहेजें';
+
+  @override
   String get sms => 'SMS';
 
   @override
@@ -36,6 +51,33 @@ class AppLocalizationsHi extends AppLocalizations {
   String get sms_stop => 'स्टॉप';
 
   @override
+  String get rule => 'नियम';
+
+  @override
+  String get rule_confirmDelete => 'क्या आप वाकई इस नियम को हटाना चाहते हैं?';
+
+  @override
+  String get rules => 'नियम';
+
+  @override
+  String get rules_empty => 'अभी तक कोई नियम नहीं है\nपहला बनाएं!';
+
+  @override
+  String get connection => 'कनेक्शन';
+
+  @override
+  String get telebot_token => 'बॉट टोकन';
+
+  @override
+  String get telebot_tokenInfo => '@BotFather से प्राप्त टोकन';
+
+  @override
+  String get telebot_chatId => 'चैट ID';
+
+  @override
+  String get telebot_chatIdInfo => 'आपके बॉट के साथ चैट की ID (वैकल्पिक)';
+
+  @override
   String get filters => 'फ़िल्टर';
 
   @override
@@ -60,34 +102,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get filters_textInfo => 'SMS टेक्स्ट के लिए फ़िल्टर जोड़ें';
 
   @override
-  String get filters_test => 'टेस्ट करें';
-
-  @override
-  String get filters_save => 'सहेजें';
-
-  @override
   String get settings => 'सेटिंग्स';
-
-  @override
-  String get settings_token => 'बॉट टोकन';
-
-  @override
-  String get settings_tokenInfo => '@BotFather से प्राप्त टोकन';
-
-  @override
-  String get settings_chatId => 'चैट ID';
-
-  @override
-  String get settings_chatIdInfo => 'आपके बॉट के साथ चैट की ID (वैकल्पिक)';
 
   @override
   String get settings_deviceLabel => 'डिवाइस लेबल';
 
   @override
   String get settings_deviceLabelInfo => 'कस्टम लेबल (वैकल्पिक)';
-
-  @override
-  String get settings_test => 'टेस्ट और सहेजें';
 
   @override
   String get help_about => 'ऐप के बारे में';
