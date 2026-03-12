@@ -30,6 +30,7 @@ class App extends StatelessWidget {
       child: MaterialApp(
         navigatorKey: navigatorKey,
         title: AppConst.appName,
+
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
@@ -39,6 +40,7 @@ class App extends StatelessWidget {
             style: CustomStyle.elevatedButtonStyle,
           ),
         ),
+
         darkTheme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
@@ -49,6 +51,7 @@ class App extends StatelessWidget {
             style: CustomStyle.elevatedButtonStyle,
           ),
         ),
+
         home: const AppView(),
         debugShowCheckedModeBanner: false,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -105,8 +108,8 @@ class _AppViewState extends State<AppView> {
             label: AppLocalizations.of(context)!.sms,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.rule),
-            icon: Icon(Icons.rule_outlined),
+            selectedIcon: Icon(Icons.checklist_rtl),
+            icon: Icon(Icons.checklist_rtl_outlined),
             label: AppLocalizations.of(context)!.rules,
           ),
           NavigationDestination(

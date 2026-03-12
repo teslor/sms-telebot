@@ -185,6 +185,19 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     await _loadRules();
   }
 
+  Future<void> duplicateRule(Map<String, dynamic> ruleToCopy) async {
+    String newName = '${ruleToCopy['name']} (${AppLocalizations.of(navigatorKey.currentContext!)!.rule_copySuffix})';
+
+    await LocalDb.instance.insertRule(
+      name: newName,
+      isActive: 0,
+      filterMode: ruleToCopy['filter_mode'],
+      configJson: ruleToCopy['config_json'],
+      filtersJson: ruleToCopy['filters_json'],
+    );
+    await _loadRules();
+  }
+
   Future<void> updateConnectionData(String newBotToken, String newChatId) async {
     if (selectedRule == null) return;
     final ruleId = selectedRule!['id'];

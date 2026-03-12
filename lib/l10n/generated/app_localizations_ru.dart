@@ -15,6 +15,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get action_delete => 'Удалить';
 
   @override
+  String get action_duplicate => 'Дублировать';
+
+  @override
   String get action_save => 'Сохранить';
 
   @override
@@ -54,7 +57,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get rule => 'Правило';
 
   @override
-  String get rule_confirmDelete => 'Вы уверены, что хотите удалить правило?';
+  String get rule_copySuffix => 'копия';
+
+  @override
+  String get rule_deleteHeader => 'Удалить правило?';
+
+  @override
+  String get rule_deleteText => 'Это действие нельзя отменить.';
 
   @override
   String get rules => 'ПРАВИЛА';

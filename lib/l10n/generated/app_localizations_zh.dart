@@ -15,6 +15,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get action_delete => '删除';
 
   @override
+  String get action_duplicate => '复制';
+
+  @override
   String get action_save => '保存';
 
   @override
@@ -54,7 +57,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get rule => '规则';
 
   @override
-  String get rule_confirmDelete => '确定要删除此规则吗？';
+  String get rule_copySuffix => '副本';
+
+  @override
+  String get rule_deleteHeader => '删除规则？';
+
+  @override
+  String get rule_deleteText => '此操作无法撤销。';
 
   @override
   String get rules => '规则';

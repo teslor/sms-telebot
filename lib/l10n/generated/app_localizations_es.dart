@@ -15,6 +15,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get action_delete => 'Eliminar';
 
   @override
+  String get action_duplicate => 'Duplicar';
+
+  @override
   String get action_save => 'Guardar';
 
   @override
@@ -54,7 +57,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get rule => 'Regla';
 
   @override
-  String get rule_confirmDelete => '¿Seguro que deseas eliminar esta regla?';
+  String get rule_copySuffix => 'copia';
+
+  @override
+  String get rule_deleteHeader => '¿Eliminar regla?';
+
+  @override
+  String get rule_deleteText => 'Esta acción no se puede deshacer.';
 
   @override
   String get rules => 'REGLAS';

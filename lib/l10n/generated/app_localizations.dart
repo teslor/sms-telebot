@@ -124,6 +124,12 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get action_delete;
 
+  /// No description provided for @action_duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get action_duplicate;
+
   /// No description provided for @action_save.
   ///
   /// In en, this message translates to:
@@ -202,11 +208,23 @@ abstract class AppLocalizations {
   /// **'Rule'**
   String get rule;
 
-  /// No description provided for @rule_confirmDelete.
+  /// No description provided for @rule_copySuffix.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to delete this rule?'**
-  String get rule_confirmDelete;
+  /// **'copy'**
+  String get rule_copySuffix;
+
+  /// No description provided for @rule_deleteHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete rule?'**
+  String get rule_deleteHeader;
+
+  /// No description provided for @rule_deleteText.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get rule_deleteText;
 
   /// No description provided for @rules.
   ///

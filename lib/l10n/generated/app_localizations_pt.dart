@@ -15,6 +15,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get action_delete => 'Excluir';
 
   @override
+  String get action_duplicate => 'Duplicar';
+
+  @override
   String get action_save => 'Salvar';
 
   @override
@@ -54,8 +57,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get rule => 'Regra';
 
   @override
-  String get rule_confirmDelete =>
-      'Tem certeza de que deseja excluir esta regra?';
+  String get rule_copySuffix => 'cópia';
+
+  @override
+  String get rule_deleteHeader => 'Excluir regra?';
+
+  @override
+  String get rule_deleteText => 'Esta ação não pode ser desfeita.';
 
   @override
   String get rules => 'REGRAS';

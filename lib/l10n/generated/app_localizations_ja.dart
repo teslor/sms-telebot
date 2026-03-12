@@ -15,6 +15,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get action_delete => '削除';
 
   @override
+  String get action_duplicate => '複製';
+
+  @override
   String get action_save => '保存';
 
   @override
@@ -54,7 +57,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rule => 'ルール';
 
   @override
-  String get rule_confirmDelete => 'このルールを削除してもよろしいですか？';
+  String get rule_copySuffix => 'コピー';
+
+  @override
+  String get rule_deleteHeader => 'ルールを削除しますか？';
+
+  @override
+  String get rule_deleteText => 'この操作は元に戻せません。';
 
   @override
   String get rules => 'ルール';
