@@ -41,4 +41,5 @@ To verify if a specific SMS will be forwarded, simply enter the sender and/or me
 <br>
 
 ---
-Released under the MIT license.
+**License & Commercial Use**  
+This project is licensed under the GNU AGPLv3. If you represent a company and want to use SMS Telebot in a closed-source commercial environment without the AGPL restrictions, or if you need a custom White-Label build, please contact me for a Commercial License.
