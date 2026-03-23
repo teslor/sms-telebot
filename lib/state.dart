@@ -22,9 +22,8 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Map<String, dynamic>? selectedRule;
 
   // Selected rule data
-  String? botToken;
-  String? chatId;
   int filterMode = 0;
+  Map<String, dynamic> config = {};
   Map<String, List<String>> filterLists = { for (var key in AppConst.filterKeys) key:[] };
 
   // SMS stats
@@ -139,21 +138,17 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   void selectRule(Map<String, dynamic>? rule) {
     selectedRule = rule;
     if (rule != null) {
-      final config = safeDecode(rule['config_json']) ?? {};
-      final filters = safeDecode(rule['filters_json']) ?? {};
-
-      botToken = config['botToken'] ?? '';
-      chatId = config['chatId']?.toString() ?? '';
       filterMode = rule['filter_mode'] ?? 0;
+      config = safeDecode(rule['config_json']) ?? {};
+      final filters = safeDecode(rule['filters_json']) ?? {};
 
       filterLists = { for (var key in AppConst.filterKeys) key: [] };
       for (var key in AppConst.filterKeys) {
         filterLists[key] = List<String>.from(filters[key] ??[]);
       }
     } else {
-      botToken = null;
-      chatId = null;
       filterMode = 0;
+      config = {};
       filterLists = { for (var key in AppConst.filterKeys) key:[] };
     }
     notifyListeners();
@@ -198,14 +193,11 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     await _loadRules();
   }
 
-  Future<void> updateConnectionData(String newBotToken, String newChatId) async {
+  Future<void> updateConnectionData(Map<String, dynamic> newConfig) async {
     if (selectedRule == null) return;
     final ruleId = selectedRule!['id'];
 
-    final configMap = {'botToken': newBotToken, 'chatId': newChatId};
-    final configJson = jsonEncode(configMap);
-    await LocalDb.instance.updateRuleField(ruleId, 'config_json', configJson);
-
+    await LocalDb.instance.updateRuleField(ruleId, 'config_json', jsonEncode(newConfig));
     await _loadRules();
   }
 
@@ -218,9 +210,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Future<bool> checkFiltersNative(String sender, String sms) async {
     try {
       final result = await _filtersChannel.invokeMethod<bool>('checkFilters', {
-        'mode': filterMode,
         'sender': sender,
         'sms': sms,
+        'mode': filterMode,
         'whitelistSenders': filterLists[AppConst.filterKeys[0]] ?? <String>[],
         'whitelistBody': filterLists[AppConst.filterKeys[1]] ?? <String>[],
         'blacklistSenders': filterLists[AppConst.filterKeys[2]] ?? <String>[],
@@ -268,8 +260,8 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   bool get canStartProcessing {
     return rules.any((r) {
       if (r['is_active'] != 1) return false;
-      final config = safeDecode(r['config_json']) ?? {};
-      return (config['botToken'] ?? '').toString().isNotEmpty && (config['chatId'] ?? '').toString().isNotEmpty;
+      final cfg = safeDecode(r['config_json']) ?? {};
+      return cfg.isNotEmpty && cfg.values.every((v) => v != null && v.toString().isNotEmpty);
     });
   }
 

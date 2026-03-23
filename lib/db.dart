@@ -52,7 +52,7 @@ class LocalDb {
         provider TEXT,
         is_active INTEGER DEFAULT 1,
         filter_mode INTEGER DEFAULT 0,
-        config_json TEXT,
+        config_json TEXT DEFAULT NULL,
         filters_json TEXT DEFAULT NULL
       )
     ''');
