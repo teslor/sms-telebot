@@ -8,15 +8,17 @@ import android.os.Build
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.json.JSONObject
-import java.net.HttpURLConnection
-import java.net.URL
-import java.net.URLEncoder
 
 /**
  * Background worker that sends an incoming SMS to providers.
@@ -41,45 +43,52 @@ class SmsForwardWorker(
         val smsId = inputData.getString("sms_id") ?: return@withContext Result.failure()
         val ruleIds = inputData.getIntArray("rule_ids") ?: return@withContext Result.failure()
 
-        // Check if SMS exists and was not already sent
-        val smsData = dbHelper.getSmsById(smsId) ?: return@withContext Result.failure()
-        if (smsData.status != 0) {
-            return@withContext Result.success() // already processed (deduplication)
-        }
+        // Guard against concurrent duplicate execution for the same SMS
+        if (!inFlightSmsIds.add(smsId)) return@withContext Result.success()
 
-        // Get rules from DB by their IDs
-        val rules = dbHelper.getRulesByIds(ruleIds)
-        if (rules.isEmpty()) return@withContext Result.success()
+        try {
+            // Check if SMS exists and was not already sent
+            val smsData = dbHelper.getSmsById(smsId) ?: return@withContext Result.failure()
+            if (smsData.status != 0) {
+                return@withContext Result.success() // already processed (deduplication)
+            }
 
-        // Read common settings
-        val deviceLabel = dbHelper.getSetting("deviceLabel").orEmpty()
-        val l10nSmsFrom = dbHelper.getSetting("l10nSmsFrom").orEmpty().ifBlank { "SMS from" }
+            // Get rules from DB by their IDs
+            val rules = dbHelper.getRulesByIds(ruleIds)
+            if (rules.isEmpty()) return@withContext Result.success()
 
-        // Start parallel sending
-        val results = coroutineScope {
-            rules.map { rule ->
-                async {
-                    processRule(rule, smsData.sender, smsData.body, deviceLabel, l10nSmsFrom)
-                }
-            }.awaitAll()
-        }
+            // Read common settings
+            val deviceLabel = dbHelper.getSetting("deviceLabel").orEmpty()
+            val l10nSmsFrom = dbHelper.getSetting("l10nSmsFrom").orEmpty().ifBlank { "SMS from" }
 
-        val successCount = results.count { it } // count the number of successful sends
+            // Start parallel sending
+            val results = coroutineScope {
+                rules.map { rule ->
+                    async {
+                        processRule(rule, smsData.sender, smsData.body, deviceLabel, l10nSmsFrom)
+                    }
+                }.awaitAll()
+            }
 
-        return@withContext if (successCount > 0) {
-            // If at least one send is successful - save the status
-            val newStatus = if (successCount == rules.size) 1 else 2 // 1 = all ok, 2 = partially
-            
-            dbHelper.updateSmsHistory(
-                id = smsId,
-                updates = mapOf(
-                    "status" to newStatus,
-                    "sent_at" to System.currentTimeMillis()
+            val successCount = results.count { it } // count the number of successful sends
+
+            return@withContext if (successCount > 0) {
+                // If at least one send is successful - save the status
+                val newStatus = if (successCount == rules.size) 1 else 2 // 1 = all ok, 2 = partially
+
+                dbHelper.updateSmsHistory(
+                    id = smsId,
+                    updates = mapOf(
+                        "status" to newStatus,
+                        "sent_at" to System.currentTimeMillis()
+                    )
                 )
-            )
-            Result.success() // do not repeat the task
-        } else {
-            Result.retry() // if ALL sends failed - schedule a retry
+                Result.success() // do not repeat the task
+            } else {
+                Result.retry() // if ALL sends failed - schedule a retry
+            }
+        } finally {
+            inFlightSmsIds.remove(smsId)
         }
     }
 
@@ -128,29 +137,23 @@ class SmsForwardWorker(
 
     // Send SMS payload to Telegram Bot API
     private fun sendTelegramMessageRequest(token: String, chatId: String, msg: String): Int? {
-        val url = URL("https://api.telegram.org/bot$token/sendMessage")
-        val postData = buildString {
-            append("chat_id=").append(URLEncoder.encode(chatId, "UTF-8"))
-            append("&text=").append(URLEncoder.encode(msg, "UTF-8"))
-            append("&parse_mode=HTML")
-        }
-        val postBytes = postData.toByteArray(Charsets.UTF_8)
+        val requestBody = FormBody.Builder()
+            .add("chat_id", chatId)
+            .add("text", msg)
+            .add("parse_mode", "HTML")
+            .build()
 
-        var connection: HttpURLConnection? = null
+        val request = Request.Builder()
+            .url("https://api.telegram.org/bot$token/sendMessage")
+            .post(requestBody)
+            .build()
+
         return try {
-            connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "POST"
-            connection.doOutput = true
-            connection.connectTimeout = 15_000
-            connection.readTimeout = 15_000
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-            connection.setFixedLengthStreamingMode(postBytes.size)
-            connection.outputStream.use { it.write(postBytes) }
-            connection.responseCode
+            httpClient.newCall(request).execute().use {
+                response -> response.code
+            }
         } catch (e: Exception) {
             null
-        } finally {
-            connection?.disconnect()
         }
     }
 
@@ -188,5 +191,13 @@ class SmsForwardWorker(
         const val TAG = "sms_forward_worker"
         private const val FOREGROUND_NOTIFICATION_ID = 1001
         private const val FOREGROUND_CHANNEL_ID = "sms_telebot_forwarding"
+        private val inFlightSmsIds = ConcurrentHashMap.newKeySet<String>()
+        private val httpClient: OkHttpClient by lazy {
+            OkHttpClient.Builder()
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build()
+        }
     }
 }
