@@ -9,16 +9,11 @@ import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import okhttp3.FormBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import org.json.JSONObject
 
 /**
  * Background worker that sends an incoming SMS to providers.
@@ -100,61 +95,16 @@ class SmsForwardWorker(
         deviceLabel: String, 
         l10nSmsFrom: String
     ): Boolean {
-        return when (rule.provider.lowercase()) {
-            SmsContract.Providers.TELEGRAM_BOT -> sendToTelegram(rule.configJson, sender, body, deviceLabel, l10nSmsFrom)
-            else -> true // unknown provider is considered successful to avoid endless retry
-        }
-    }
-
-    // Logic for forwarding specifically to Telegram Bot
-    private fun sendToTelegram(
-        configJson: String?, 
-        sender: String, 
-        body: String, 
-        deviceLabel: String, 
-        l10nSmsFrom: String
-    ): Boolean {
-        if (configJson.isNullOrBlank()) return false
-        
-        return try {
-            val json = JSONObject(configJson)
-            val token = json.optString("botToken", "")
-            val chatId = json.optString("chatId", "")
-            if (token.isBlank() || chatId.isBlank()) return false
-
-            val senderEscaped = escapeHtml(sender)
-            val deviceLabelEscaped = escapeHtml(deviceLabel)
-            val bodyEscaped = escapeHtml(body)
-            val deviceInfo = if (deviceLabelEscaped.isNotBlank()) " <i>($deviceLabelEscaped)</i>" else ""
-            val message = "$l10nSmsFrom <b>$senderEscaped</b>$deviceInfo:\n$bodyEscaped"
-
-            val code = sendTelegramMessageRequest(token, chatId, message)
-            code == 200
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    // Send SMS payload to Telegram Bot API
-    private fun sendTelegramMessageRequest(token: String, chatId: String, msg: String): Int? {
-        val requestBody = FormBody.Builder()
-            .add("chat_id", chatId)
-            .add("text", msg)
-            .add("parse_mode", "HTML")
-            .build()
-
-        val request = Request.Builder()
-            .url("https://api.telegram.org/bot$token/sendMessage")
-            .post(requestBody)
-            .build()
-
-        return try {
-            httpClient.newCall(request).execute().use {
-                response -> response.code
-            }
-        } catch (e: Exception) {
-            null
-        }
+        return SmsProviderGateway.send(
+            providerId = rule.provider,
+            configJson = rule.configJson,
+            payload = SmsForwardPayload(
+                sender = sender,
+                body = body,
+                deviceLabel = deviceLabel,
+                l10nSmsFrom = l10nSmsFrom
+            )
+        )
     }
 
     private fun createForegroundNotification(): Notification {
@@ -180,24 +130,10 @@ class SmsForwardWorker(
             .build()
     }
 
-    private fun escapeHtml(text: String): String {
-        return text
-            .replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-    }
-
     companion object {
         const val TAG = "sms_forward_worker"
         private const val FOREGROUND_NOTIFICATION_ID = 1001
         private const val FOREGROUND_CHANNEL_ID = "sms_telebot_forwarding"
         private val inFlightSmsIds = ConcurrentHashMap.newKeySet<String>()
-        private val httpClient: OkHttpClient by lazy {
-            OkHttpClient.Builder()
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
-                .build()
-        }
     }
 }

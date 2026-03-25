@@ -11,11 +11,11 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Timer? _smsStatsTimer;
-  static const MethodChannel _filtersChannel = MethodChannel(AppConst.filtersChannel);
+  static const MethodChannel _mainChannel = MethodChannel(AppConst.mainChannel);
 
   // App settings
   bool isRunning = false;
-  String? deviceLabel;
+  String deviceLabel = '';
 
   // Rule list
   List<Map<String, dynamic>> rules =[];
@@ -209,7 +209,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<bool> checkFiltersNative(String sender, String sms) async {
     try {
-      final result = await _filtersChannel.invokeMethod<bool>('checkFilters', {
+      final result = await _mainChannel.invokeMethod<bool>('checkFilters', {
         'sender': sender,
         'sms': sms,
         'mode': filterMode,

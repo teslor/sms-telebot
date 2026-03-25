@@ -50,19 +50,18 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     final appState = context.read<AppState>();
     String testBotToken = _botTokenController.text;
     String testChatId = _chatIdController.text;
-    String testDeviceLabel = appState.deviceLabel ?? '';
 
-    final l10n = AppLocalizations.of(context);
-    final String defaultHello = l10n?.sms_hello ?? '=^•⩊•^=';
+    final String helloMessage = AppLocalizations.of(context)?.sms_hello ?? '=^•⩊•^=';
 
     try {
       if (testChatId.isEmpty) testChatId = await getUpdates(testBotToken);
 
       if (testChatId.isNotEmpty) {
-        String helloMessage = defaultHello;
-        if (testDeviceLabel.isNotEmpty) helloMessage = '$helloMessage <i>($testDeviceLabel)</i>';
-
-        final result = await sendMessage(testBotToken, testChatId, helloMessage);
+        final result = await sendToTelegramBotNative(
+          config: { 'botToken': testBotToken,'chatId': testChatId },
+          body: helloMessage,
+          deviceLabel: appState.deviceLabel,
+        );
 
         if (result) {
           await appState.updateConnectionData({

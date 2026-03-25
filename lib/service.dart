@@ -5,7 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'dart:convert';
 import 'constants.dart';
 
-const MethodChannel _filtersChannel = MethodChannel(AppConst.filtersChannel);
+const MethodChannel _mainChannel = MethodChannel(AppConst.mainChannel);
 
 Future<bool> getSmsPermission() async {
   if (await Permission.sms.status == PermissionStatus.granted) {
@@ -45,36 +45,11 @@ Future<String> getUpdates(String? token) async {
   return '';
 }
 
-Future<bool> sendMessage(String? token, String? chatId, String msg) async {
-  if (token == null || chatId == null) return false;
-  final url = 'https://api.telegram.org/bot$token/sendMessage?chat_id=$chatId&text=${Uri.encodeComponent(msg)}&parse_mode=HTML';
-
-  try {
-    final response = await http.get(Uri.parse(url));
-    return response.statusCode == 200;
-  } catch (e) { return false; }
-}
-
 void launchURL(String url) async {
   final uri = Uri.parse(url);
   try {
     await launchUrl(uri);
   } catch (e) { return; }
-}
-
-bool isRegex(String text) {
-  return text.isNotEmpty && text[0] == '/' && text[text.length - 1] == '/';
-}
-
-Future<bool> isValidRegexNative(String text) async {
-  try {
-    final result = await _filtersChannel.invokeMethod<bool>('isValidRegex', {
-      'text': text,
-    });
-    return result ?? false;
-  } catch (_) {
-    return false;
-  }
 }
 
 Map<String, dynamic>? safeDecode(dynamic source) {
@@ -85,5 +60,45 @@ Map<String, dynamic>? safeDecode(dynamic source) {
     return null;
   } catch (_) {
     return null;
+  }
+}
+
+bool isRegex(String text) {
+  return text.isNotEmpty && text[0] == '/' && text[text.length - 1] == '/';
+}
+
+// ================================================================================
+// Native methods calls
+// ================================================================================
+
+Future<bool> isValidRegexNative(String text) async {
+  try {
+    final result = await _mainChannel.invokeMethod<bool>('isValidRegex', {
+      'text': text,
+    });
+    return result ?? false;
+  } catch (_) {
+    return false;
+  }
+}
+
+Future<bool> sendToTelegramBotNative({
+  required Map<String, dynamic> config,
+  required String body,
+  String sender = '',
+  String deviceLabel = '',
+  String l10nSmsFrom = 'SMS from',
+}) async {
+  try {
+    final result = await _mainChannel.invokeMethod<bool>('sendToTelegramBot', {
+      'configJson': jsonEncode(config),
+      'sender': sender,
+      'body': body,
+      'deviceLabel': deviceLabel,
+      'l10nSmsFrom': l10nSmsFrom,
+    });
+    return result ?? false;
+  } catch (_) {
+    return false;
   }
 }
