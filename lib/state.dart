@@ -18,13 +18,15 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   String deviceLabel = '';
 
   // Rule list
-  List<Map<String, dynamic>> rules =[];
+  List<Map<String, dynamic>> rules = [];
   Map<String, dynamic>? selectedRule;
 
   // Selected rule data
   int filterMode = 0;
   Map<String, dynamic> config = {};
-  Map<String, List<String>> filterLists = { for (var key in AppConst.filterKeys) key:[] };
+  Map<String, List<String>> filterLists = {
+    for (var key in AppConst.filterKeys) key: [],
+  };
 
   // SMS stats
   int smsReceivedCount = 0;
@@ -142,14 +144,16 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       config = safeDecode(rule['config_json']) ?? {};
       final filters = safeDecode(rule['filters_json']) ?? {};
 
-      filterLists = { for (var key in AppConst.filterKeys) key: [] };
+      filterLists = {
+        for (var key in AppConst.filterKeys) key: []
+      };
       for (var key in AppConst.filterKeys) {
-        filterLists[key] = List<String>.from(filters[key] ??[]);
+        filterLists[key] = List<String>.from(filters[key] ?? []);
       }
     } else {
       filterMode = 0;
       config = {};
-      filterLists = { for (var key in AppConst.filterKeys) key:[] };
+      filterLists = {for (var key in AppConst.filterKeys) key: []};
     }
     notifyListeners();
   }
@@ -169,19 +173,39 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     await _loadRules();
   }
 
-  Future<void> addRule() async {
-    final configJson = jsonEncode({'botToken': '', 'chatId': ''});
+  Map<String, dynamic> _defaultConfigForProvider(String provider) {
+    switch (provider) {
+      case 'smtp_server':
+        return {
+          'host': '', 'protocol': 'starttls', 'port': 587,
+          'login': '', 'password': '', 'fromEmail': '', 'toEmail': '', 'subject': '',
+        };
+      case 'telegram_bot':
+      default:
+        return {'botToken': '', 'chatId': ''};
+    }
+  }
 
-    await LocalDb.instance.insertRule(
+  Future<void> addRule({required String provider, bool autoSelect = false}) async {
+    final configJson = jsonEncode(_defaultConfigForProvider(provider));
+
+    final insertedRuleId = await LocalDb.instance.insertRule(
       name: AppLocalizations.of(navigatorKey.currentContext!)!.rule,
+      provider: provider,
       isActive: 0,
       configJson: configJson,
     );
+
     await _loadRules();
+
+    if (!autoSelect) return;
+    final createdRule = rules.where((rule) => rule['id'] == insertedRuleId).firstOrNull;
+    if (createdRule != null) selectRule(createdRule);
   }
 
   Future<void> duplicateRule(Map<String, dynamic> ruleToCopy) async {
-    String newName = '${ruleToCopy['name']} (${AppLocalizations.of(navigatorKey.currentContext!)!.rule_copySuffix})';
+    String newName =
+        '${ruleToCopy['name']} (${AppLocalizations.of(navigatorKey.currentContext!)!.rule_copySuffix})';
 
     await LocalDb.instance.insertRule(
       name: newName,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../state.dart';
+import 'connections/registry.dart';
 import 'rule_page.dart';
 
 class RulesMainPage extends StatelessWidget {
@@ -20,6 +21,53 @@ class RulesMainPage extends StatelessWidget {
 class RulesPage extends StatelessWidget {
   const RulesPage({super.key});
 
+  String _providerTitle(String provider) {
+    switch (provider) {
+      case 'telegram_bot':
+        return 'Telegram Bot';
+      case 'smtp_server':
+        return 'SMTP Server';
+      default:
+        return provider;
+    }
+  }
+
+  IconData _providerIcon(String provider) {
+    switch (provider) {
+      case 'telegram_bot':
+        return Icons.telegram;
+      case 'smtp_server':
+        return Icons.mail_outline;
+      default:
+        return Icons.extension;
+    }
+  }
+
+  Future<String?> _showProviderPicker(BuildContext context) {
+    final providers = connectionProviders.keys.toList(growable: false);
+
+    return showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      useSafeArea: true,
+      builder: (sheetContext) {
+        return ListView.separated(
+          shrinkWrap: true,
+          itemCount: providers.length,
+          separatorBuilder: (_, _) => const Divider(height: 1),
+          itemBuilder: (itemContext, index) {
+            final provider = providers[index];
+            return ListTile(
+              leading: Icon(_providerIcon(provider)),
+              title: Text(_providerTitle(provider)),
+              onTap: () => Navigator.pop(sheetContext, provider),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
@@ -28,19 +76,24 @@ class RulesPage extends StatelessWidget {
     return Scaffold(
       body: rules.isEmpty
         ? Center(
-            child: Text(AppLocalizations.of(context)!.rules_empty, style: TextStyle(fontSize: 18)),
-          )
-        : ListView.builder(
-            padding: const EdgeInsets.all(20),
-            itemCount: rules.length,
-            itemBuilder: (context, index) {
-              final rule = rules[index];
-              return RuleCard(rule: rule);
-            },
+          child: Text(
+            AppLocalizations.of(context)!.rules_empty,
+            style: TextStyle(fontSize: 18),
           ),
+        )
+        : ListView.builder(
+          padding: const EdgeInsets.all(20),
+          itemCount: rules.length,
+          itemBuilder: (context, index) {
+            final rule = rules[index];
+            return RuleCard(rule: rule);
+          },
+        ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          appState.addRule();
+        onPressed: () async {
+          final selectedProvider = await _showProviderPicker(context);
+          if (selectedProvider == null || !context.mounted) return;
+          await appState.addRule(provider: selectedProvider, autoSelect: true);
         },
         child: const Icon(Icons.add),
       ),
@@ -76,11 +129,11 @@ class RuleCard extends StatelessWidget {
                 leading: const Icon(Icons.delete_outline, color: Colors.red),
                 title: Text(
                   AppLocalizations.of(context)!.action_delete,
-                  style: const TextStyle(color: Colors.red)
+                  style: const TextStyle(color: Colors.red),
                 ),
                 onTap: () {
                   Navigator.pop(bottomSheetContext); // close bottom sheet
-                  
+
                   showDialog(
                     context: context,
                     builder: (dialogContext) => AlertDialog(
@@ -108,8 +161,8 @@ class RuleCard extends StatelessWidget {
                             Navigator.pop(dialogContext);
                           },
                           child: Text(
-                            AppLocalizations.of(context)!.action_delete, 
-                            style: const TextStyle(color: Colors.red)
+                            AppLocalizations.of(context)!.action_delete,
+                            style: const TextStyle(color: Colors.red),
                           ),
                         ),
                       ],
