@@ -40,40 +40,31 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children:[
-          Expanded(
-            child: ListView(
-              children:[
-                const SizedBox(height: 5),
-                TextField(
-                  controller: _deviceLabelController,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: AppLocalizations.of(context)!.settings_deviceLabel,
-                    helperText: AppLocalizations.of(context)!.settings_deviceLabelInfo,
-                    helperMaxLines: 2,
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                  onChanged: (String value) {
-                    setState(() { _saveResult = null; _isInputChanged = true; });
-                  },
-                ),
-              ],
+    return Scaffold(
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const SizedBox(height: 5),
+          TextField(
+            controller: _deviceLabelController,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: AppLocalizations.of(context)!.settings_deviceLabel,
+              helperText: AppLocalizations.of(context)!.settings_deviceLabelInfo,
+              helperMaxLines: 2,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
-          ),
-
-          const SizedBox(height: 20),
-
-          ActionButton(
-            label: AppLocalizations.of(context)!.action_save,
-            onPressed: !_isInputChanged ? null : _saveSettings,
-            isSuccess: _saveResult,
+            onChanged: (String value) {
+              setState(() { _saveResult = null; _isInputChanged = true; });
+            },
           ),
         ],
+      ),
+
+      bottomNavigationBar: ActionButton(
+        label: AppLocalizations.of(context)!.action_save,
+        onPressed: !_isInputChanged ? null : _saveSettings,
+        isSuccess: _saveResult,
       ),
     );
   }

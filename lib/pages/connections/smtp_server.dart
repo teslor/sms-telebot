@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../state.dart';
 import '../../widgets/action_button.dart';
 
@@ -205,152 +206,144 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
       context,
     ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400);
 
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Scaffold(
+      body: ListView(
+        padding: const EdgeInsets.all(20),
         children: [
-          Expanded(
-            child: ListView(
-              children: [
-                const SizedBox(height: 5),
-                TextField(
-                  controller: _hostController,
-                  keyboardType: TextInputType.url,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'SMTP host',
-                  ),
-                  onChanged: _onChanged,
-                ),
-                const SizedBox(height: 20),
-                DropdownButtonFormField<String>(
-                  value: _protocol,
-                  style: dropdownTextStyle,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Protocol',
-                  ),
-                  items: [
-                    DropdownMenuItem(
-                      value: 'starttls',
-                      child: Text('STARTTLS', style: dropdownTextStyle),
-                    ),
-                    DropdownMenuItem(
-                      value: 'ssl',
-                      child: Text('SSL/TLS', style: dropdownTextStyle),
-                    ),
-                    DropdownMenuItem(
-                      value: 'none',
-                      child: Text('None', style: dropdownTextStyle),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value == null) return;
-                    setState(() {
-                      _protocol = value;
-                      if (!_isPortManuallyEdited) {
-                        _portController.text =
-                            _defaultPortForProtocol(value).toString();
-                      }
-                      _saveResult = null;
-                      _isInputChanged = true;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _portController,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Port',
-                    helperText:
-                        'Auto: 587 (STARTTLS), 465 (SSL/TLS), 25 (None)',
-                  ),
-                  onChanged: _onPortChanged,
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _loginController,
-                  keyboardType: TextInputType.text,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Login',
-                    helperText: 'Usually full email address',
-                  ),
-                  onChanged: _onChanged,
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: !_isPasswordVisible,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: 'Password',
-                    helperText: 'Usually password for external apps',
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
-                  onChanged: _onChanged,
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _fromEmailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'From email',
-                    helperText: 'Leave empty to use login as sender',
-                  ),
-                  onChanged: _onChanged,
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _toEmailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'To email',
-                    helperText: 'Recipient email address',
-                  ),
-                  onChanged: _onChanged,
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _subjectController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Subject',
-                    helperText: 'Email subject (optional)',
-                  ),
-                  onChanged: _onChanged,
-                ),
-              ],
+          const SizedBox(height: 5),
+          TextField(
+            controller: _hostController,
+            keyboardType: TextInputType.url,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'SMTP host',
             ),
+            onChanged: _onChanged,
           ),
           const SizedBox(height: 20),
-          ActionButton(
-            label: 'Test and Save',
-            onPressed:
-                _isSaving || !_isInputChanged || !_isFormValid
-                    ? null
-                    : _testAndSaveSettings,
-            isSuccess: _saveResult,
-            isInProgress: _isSaving,
+          DropdownButtonFormField<String>(
+            value: _protocol,
+            style: dropdownTextStyle,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Protocol',
+            ),
+            items: [
+              DropdownMenuItem(
+                value: 'starttls',
+                child: Text('STARTTLS', style: dropdownTextStyle),
+              ),
+              DropdownMenuItem(
+                value: 'ssl',
+                child: Text('SSL/TLS', style: dropdownTextStyle),
+              ),
+              DropdownMenuItem(
+                value: 'none',
+                child: Text('None', style: dropdownTextStyle),
+              ),
+            ],
+            onChanged: (value) {
+              if (value == null) return;
+              setState(() {
+                _protocol = value;
+                if (!_isPortManuallyEdited) {
+                  _portController.text =
+                      _defaultPortForProtocol(value).toString();
+                }
+                _saveResult = null;
+                _isInputChanged = true;
+              });
+            },
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: _portController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Port',
+              helperText:
+                  'Auto: 587 (STARTTLS), 465 (SSL/TLS), 25 (None)',
+            ),
+            onChanged: _onPortChanged,
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: _loginController,
+            keyboardType: TextInputType.text,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Login',
+              helperText: 'Usually full email address',
+            ),
+            onChanged: _onChanged,
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: _passwordController,
+            obscureText: !_isPasswordVisible,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: 'Password',
+              helperText: 'Usually password for external apps',
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isPasswordVisible
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              ),
+            ),
+            onChanged: _onChanged,
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: _fromEmailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'From email',
+              helperText: 'Leave empty to use login as sender',
+            ),
+            onChanged: _onChanged,
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: _toEmailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'To email',
+              helperText: 'Recipient email address',
+            ),
+            onChanged: _onChanged,
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: _subjectController,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Subject',
+              helperText: 'Email subject (optional)',
+            ),
+            onChanged: _onChanged,
           ),
         ],
+      ),
+
+      bottomNavigationBar: ActionButton(
+        label: AppLocalizations.of(context)!.action_testAndSave,
+        onPressed: _isSaving || !_isInputChanged || !_isFormValid
+          ? null
+          : _testAndSaveSettings,
+        isSuccess: _saveResult,
+        isInProgress: _isSaving,
       ),
     );
   }

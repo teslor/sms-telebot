@@ -49,70 +49,62 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
 
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    return Scaffold(
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children:[
+          SegmentedButton<int>(
+            showSelectedIcon: false,
+            style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 12))),
+            segments: <ButtonSegment<int>>[
+              ButtonSegment<int>(value: 0, label: Text(AppLocalizations.of(context)!.filters_off, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
+              ButtonSegment<int>(value: 1, label: Text(AppLocalizations.of(context)!.filters_whitelist, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
+              ButtonSegment<int>(value: 2, label: Text(AppLocalizations.of(context)!.filters_blacklist, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
+            ],
+            selected: <int>{appState.filterMode},
+            onSelectionChanged: (Set<int> newSelection) {
+              setState(() { _saveResult = null; });
+              appState.setFilterMode(newSelection.first);
+            },
+          ),
+          const SizedBox(height: 20),
+          ChipsWidget(
+            key: _senderChipsKey,
+            listName: _getListNames()[0],
+            labelText: AppLocalizations.of(context)!.filters_sender,
+            helperText: AppLocalizations.of(context)!.filters_senderInfo,
+            prefixIcon: const Icon(Icons.person_outline_rounded)
+          ),
+          const SizedBox(height: 20),
+          ChipsWidget(
+            key: _smsChipsKey,
+            listName: _getListNames()[1],
+            labelText: AppLocalizations.of(context)!.filters_text,
+            helperText: AppLocalizations.of(context)!.filters_textInfo,
+            prefixIcon: const Icon(Icons.sms_outlined)
+          ),
+        ],
+      ),
+
+      bottomNavigationBar: Row(
+        children:[
           Expanded(
-            child: ListView(
-              children:[
-                SegmentedButton<int>(
-                  showSelectedIcon: false,
-                  style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 12))),
-                  segments: <ButtonSegment<int>>[
-                    ButtonSegment<int>(value: 0, label: Text(AppLocalizations.of(context)!.filters_off, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
-                    ButtonSegment<int>(value: 1, label: Text(AppLocalizations.of(context)!.filters_whitelist, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
-                    ButtonSegment<int>(value: 2, label: Text(AppLocalizations.of(context)!.filters_blacklist, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
-                  ],
-                  selected: <int>{appState.filterMode},
-                  onSelectionChanged: (Set<int> newSelection) {
-                    setState(() { _saveResult = null; });
-                    appState.setFilterMode(newSelection.first);
-                  },
-                ),
-                
-                const SizedBox(height: 20),
-                
-                ChipsWidget(
-                  key: _senderChipsKey,
-                  listName: _getListNames()[0],
-                  labelText: AppLocalizations.of(context)!.filters_sender,
-                  helperText: AppLocalizations.of(context)!.filters_senderInfo,
-                  prefixIcon: const Icon(Icons.person_outline_rounded)
-                ),
-                
-                const SizedBox(height: 20),
-                
-                ChipsWidget(
-                  key: _smsChipsKey,
-                  listName: _getListNames()[1],
-                  labelText: AppLocalizations.of(context)!.filters_text,
-                  helperText: AppLocalizations.of(context)!.filters_textInfo,
-                  prefixIcon: const Icon(Icons.sms_outlined)
-                ),
-              ],
+            child: ActionButton(
+              label: AppLocalizations.of(context)!.action_test,
+              onPressed: _testFilters,
+              isSuccess: _testResult,
+              expand: false,
+              padding: const EdgeInsets.fromLTRB(20, 20, 7.5, 20),
             ),
           ),
-
-          const SizedBox(height: 20),
-
-          Row(
-            children:[
-              Expanded(child: ActionButton(
-                label: AppLocalizations.of(context)!.action_test,
-                onPressed: _testFilters,
-                isSuccess: _testResult
-              )),
-
-              const SizedBox(width: 15),
-
-              Expanded(child: ActionButton(
-                label: AppLocalizations.of(context)!.action_save,
-                onPressed: _saveFilters,
-                isSuccess: _saveResult
-              ))
-            ],
+          Expanded(
+            child: ActionButton(
+              label: AppLocalizations.of(context)!.action_save,
+              onPressed: _saveFilters,
+              isSuccess: _saveResult,
+              expand: false,
+              padding: const EdgeInsets.fromLTRB(7.5, 20, 20, 20),
+            ),
           )
         ],
       ),

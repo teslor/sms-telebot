@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../state.dart';
+import '../widgets/action_button.dart';
 import 'connections/registry.dart';
 import 'rule_page.dart';
 
@@ -53,6 +54,7 @@ class RulesPage extends StatelessWidget {
       builder: (sheetContext) {
         return ListView.separated(
           shrinkWrap: true,
+          padding: EdgeInsets.zero,
           itemCount: providers.length,
           separatorBuilder: (_, _) => const Divider(height: 1),
           itemBuilder: (itemContext, index) {
@@ -89,13 +91,15 @@ class RulesPage extends StatelessWidget {
             return RuleCard(rule: rule);
           },
         ),
-      floatingActionButton: FloatingActionButton(
+
+      bottomNavigationBar: ActionButton(
+        label: 'Add rule',
+        isSuccess: null,
         onPressed: () async {
           final selectedProvider = await _showProviderPicker(context);
           if (selectedProvider == null || !context.mounted) return;
           await appState.addRule(provider: selectedProvider, autoSelect: true);
         },
-        child: const Icon(Icons.add),
       ),
     );
   }
@@ -108,70 +112,72 @@ class RuleCard extends StatelessWidget {
   void _showActionMenu(BuildContext context, AppState appState) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       useSafeArea: true,
       builder: (BuildContext bottomSheetContext) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Duplicate button
-              ListTile(
+        return ListView.separated(
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          itemCount: 2,
+          separatorBuilder: (_, _) => const Divider(height: 1),
+          itemBuilder: (itemContext, index) {
+            if (index == 0) {
+              return ListTile(
                 leading: const Icon(Icons.control_point_duplicate),
                 title: Text(AppLocalizations.of(context)!.action_duplicate),
                 onTap: () {
-                  Navigator.pop(bottomSheetContext); // close bottom sheet
+                  Navigator.pop(bottomSheetContext);
                   appState.duplicateRule(rule);
                 },
+              );
+            }
+
+            return ListTile(
+              leading: const Icon(Icons.delete_outline, color: Colors.red),
+              title: Text(
+                AppLocalizations.of(context)!.action_delete,
+                style: const TextStyle(color: Colors.red),
               ),
+              onTap: () {
+                Navigator.pop(bottomSheetContext);
 
-              // Delete button
-              ListTile(
-                leading: const Icon(Icons.delete_outline, color: Colors.red),
-                title: Text(
-                  AppLocalizations.of(context)!.action_delete,
-                  style: const TextStyle(color: Colors.red),
-                ),
-                onTap: () {
-                  Navigator.pop(bottomSheetContext); // close bottom sheet
-
-                  showDialog(
-                    context: context,
-                    builder: (dialogContext) => AlertDialog(
-                      title: Text(
-                        AppLocalizations.of(context)!.rule_deleteHeader,
-                        style: const TextStyle(fontSize: 20),
-                      ),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(rule['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 5),
-                          Text(AppLocalizations.of(context)!.rule_deleteText),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(dialogContext),
-                          child: Text(AppLocalizations.of(context)!.action_cancel),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            appState.deleteRule(rule['id']);
-                            Navigator.pop(dialogContext);
-                          },
-                          child: Text(
-                            AppLocalizations.of(context)!.action_delete,
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                        ),
+                showDialog(
+                  context: context,
+                  builder: (dialogContext) => AlertDialog(
+                    title: Text(
+                      AppLocalizations.of(context)!.rule_deleteHeader,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(rule['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 5),
+                        Text(AppLocalizations.of(context)!.rule_deleteText),
                       ],
                     ),
-                  );
-                },
-              ),
-            ],
-          ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(dialogContext),
+                        child: Text(AppLocalizations.of(context)!.action_cancel),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          appState.deleteRule(rule['id']);
+                          Navigator.pop(dialogContext);
+                        },
+                        child: Text(
+                          AppLocalizations.of(context)!.action_delete,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
         );
       },
     );

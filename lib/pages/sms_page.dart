@@ -15,84 +15,76 @@ class SmsPage extends StatelessWidget {
     final smsSentCount = appState.smsSentCount;
     final lastSms = appState.lastSms;
 
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) => ListView(
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) => ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight - 40),
+              child: !appState.isRunning ? Center(
+                child: Text(
+                  AppLocalizations.of(context)!.sms_welcome,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18),
+                ),
+              ) : smsReceivedCount == 0 ? Center(
+                child: Text(
+                  AppLocalizations.of(context)!.sms_empty,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18),
+                ),
+              ) : Column(
                 children: [
-                  ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                    child: !appState.isRunning ? Center(
-                      child: Text(
-                        AppLocalizations.of(context)!.sms_welcome,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ) : smsReceivedCount == 0 ? Center(
-                      child: Text(
-                        AppLocalizations.of(context)!.sms_empty,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ) : Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildSmsCard(context, AppLocalizations.of(context)!.sms_received, smsReceivedCount.toString()),
+                      SizedBox(width: 15),
+                      _buildSmsCard(context, AppLocalizations.of(context)!.sms_sent, smsSentCount.toString()),
+                    ],
+                  ),
+                  SizedBox(height: 15),
+                  if (lastSms != null)
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            _buildSmsCard(context, AppLocalizations.of(context)!.sms_received, smsReceivedCount.toString()),
-                            SizedBox(width: 15),
-                            _buildSmsCard(context, AppLocalizations.of(context)!.sms_sent, smsSentCount.toString()),
+                            Text(
+                              '${AppLocalizations.of(context)!.sms_sent} • ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.fromMillisecondsSinceEpoch(lastSms['sent_at']))}',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface.withAlpha(128))
+                            ),
+                            const SizedBox(height: 4),
+                            RichText(
+                              textScaler: MediaQuery.textScalerOf(context),
+                              text: TextSpan(style: DefaultTextStyle.of(context).style.copyWith(fontSize: 14), children: [
+                                TextSpan(text: '${lastSms['sender']}: ', style: TextStyle(fontWeight: FontWeight.w500)),
+                                TextSpan(text: lastSms['body']),
+                              ]),
+                            ),
                           ],
                         ),
-                        SizedBox(height: 15),
-                        if (lastSms != null)
-                          Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Text(
-                                    '${AppLocalizations.of(context)!.sms_sent} • ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.fromMillisecondsSinceEpoch(lastSms['sent_at']))}',
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface.withAlpha(128))
-                                  ),
-                                  const SizedBox(height: 4),
-                                  RichText(
-                                    textScaler: MediaQuery.textScalerOf(context),
-                                    text: TextSpan(style: DefaultTextStyle.of(context).style.copyWith(fontSize: 14), children: [
-                                      TextSpan(text: '${lastSms['sender']}: ', style: TextStyle(fontWeight: FontWeight.w500)),
-                                      TextSpan(text: lastSms['body']),
-                                    ]),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                      ],
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
-          ),
+          ],
+        ),
+      ),
 
-          const SizedBox(height: 20),
-
-          ActionButton(
-            label: appState.isRunning ? AppLocalizations.of(context)!.sms_stop : AppLocalizations.of(context)!.sms_start,
-            isSuccess: null,
-            onPressed: (!appState.canStartProcessing && !appState.isRunning) ? null : () async {
-              if (appState.isRunning) {
-                await appState.stopProcessing();
-              } else {
-                await appState.startProcessing();
-              }
-            },
-          ),
-        ],
+      bottomNavigationBar: ActionButton(
+        label: appState.isRunning ? AppLocalizations.of(context)!.sms_stop : AppLocalizations.of(context)!.sms_start,
+        isSuccess: null,
+        onPressed: (!appState.canStartProcessing && !appState.isRunning) ? null : () async {
+          if (appState.isRunning) {
+            await appState.stopProcessing();
+          } else {
+            await appState.startProcessing();
+          }
+        },
       ),
     );
   }

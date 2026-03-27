@@ -95,58 +95,46 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: ListView(
-              children:[
-                const SizedBox(height: 5),
-
-                TextField(
-                  controller: _botTokenController,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: AppLocalizations.of(context)!.telebot_token,
-                    helperText: AppLocalizations.of(context)!.telebot_tokenInfo,
-                    helperMaxLines: 2,
-                  ),
-                  onChanged: (String value) {
-                    setState(() { _testResult = null; _isInputChanged = true; _isBotTokenCorrect = _validateBotToken(value); });
-                  },
-                ),
-
-                const SizedBox(height: 20),
-
-                TextField(
-                  controller: _chatIdController,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: AppLocalizations.of(context)!.telebot_chatId,
-                    helperText: AppLocalizations.of(context)!.telebot_chatIdInfo,
-                    helperMaxLines: 2,
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: true),
-                  inputFormatters:[FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*$'))],
-                  onChanged: (String value) {
-                    setState(() { _testResult = null; _isInputChanged = true; });
-                  },
-                ),
-              ],
+    return Scaffold(
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children:[
+          const SizedBox(height: 5),
+          TextField(
+            controller: _botTokenController,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: AppLocalizations.of(context)!.telebot_token,
+              helperText: AppLocalizations.of(context)!.telebot_tokenInfo,
+              helperMaxLines: 2,
             ),
+            onChanged: (String value) {
+              setState(() { _testResult = null; _isInputChanged = true; _isBotTokenCorrect = _validateBotToken(value); });
+            },
           ),
-
           const SizedBox(height: 20),
-
-          ActionButton(
-            label: AppLocalizations.of(context)!.action_testAndSave,
-            onPressed: _isTesting || !_isInputChanged || !_isBotTokenCorrect ? null : _testAndSaveSettings,
-            isSuccess: _testResult,
-            isInProgress: _isTesting,
+          TextField(
+            controller: _chatIdController,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: AppLocalizations.of(context)!.telebot_chatId,
+              helperText: AppLocalizations.of(context)!.telebot_chatIdInfo,
+              helperMaxLines: 2,
+            ),
+            keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: true),
+            inputFormatters:[FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*$'))],
+            onChanged: (String value) {
+              setState(() { _testResult = null; _isInputChanged = true; });
+            },
           ),
         ],
+      ),
+
+      bottomNavigationBar: ActionButton(
+        label: AppLocalizations.of(context)!.action_testAndSave,
+        onPressed: _isTesting || !_isInputChanged || !_isBotTokenCorrect ? null : _testAndSaveSettings,
+        isSuccess: _testResult,
+        isInProgress: _isTesting,
       ),
     );
   }
