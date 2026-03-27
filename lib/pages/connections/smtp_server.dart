@@ -214,9 +214,9 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
           TextField(
             controller: _hostController,
             keyboardType: TextInputType.url,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'SMTP host',
+              labelText: AppLocalizations.of(context)!.smtp_host,
             ),
             onChanged: _onChanged,
           ),
@@ -224,9 +224,9 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
           DropdownButtonFormField<String>(
             value: _protocol,
             style: dropdownTextStyle,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Protocol',
+              labelText: AppLocalizations.of(context)!.smtp_protocol,
             ),
             items: [
               DropdownMenuItem(
@@ -239,7 +239,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
               ),
               DropdownMenuItem(
                 value: 'none',
-                child: Text('None', style: dropdownTextStyle),
+                child: Text(AppLocalizations.of(context)!.smtp_protocolEmpty, style: dropdownTextStyle),
               ),
             ],
             onChanged: (value) {
@@ -260,11 +260,9 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             controller: _portController,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Port',
-              helperText:
-                  'Auto: 587 (STARTTLS), 465 (SSL/TLS), 25 (None)',
+              labelText: AppLocalizations.of(context)!.smtp_port,
             ),
             onChanged: _onPortChanged,
           ),
@@ -272,10 +270,10 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
           TextField(
             controller: _loginController,
             keyboardType: TextInputType.text,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Login',
-              helperText: 'Usually full email address',
+              labelText: AppLocalizations.of(context)!.smtp_login,
+              helperText: AppLocalizations.of(context)!.smtp_loginInfo,
             ),
             onChanged: _onChanged,
           ),
@@ -284,9 +282,9 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             controller: _passwordController,
             obscureText: !_isPasswordVisible,
             decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: 'Password',
-              helperText: 'Usually password for external apps',
+              border: OutlineInputBorder(),
+              labelText: AppLocalizations.of(context)!.smtp_password,
+              helperText: AppLocalizations.of(context)!.smtp_passwordInfo,
               suffixIcon: IconButton(
                 icon: Icon(
                   _isPasswordVisible
@@ -306,10 +304,10 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
           TextField(
             controller: _fromEmailController,
             keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'From email',
-              helperText: 'Leave empty to use login as sender',
+              labelText: AppLocalizations.of(context)!.smtp_fromEmail,
+              helperText: AppLocalizations.of(context)!.smtp_fromEmailInfo,
             ),
             onChanged: _onChanged,
           ),
@@ -317,20 +315,20 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
           TextField(
             controller: _toEmailController,
             keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'To email',
-              helperText: 'Recipient email address',
+              labelText: AppLocalizations.of(context)!.smtp_toEmail,
+              helperText: AppLocalizations.of(context)!.smtp_toEmailInfo,
             ),
             onChanged: _onChanged,
           ),
           const SizedBox(height: 20),
           TextField(
             controller: _subjectController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Subject',
-              helperText: 'Email subject (optional)',
+              labelText: AppLocalizations.of(context)!.smtp_subject,
+              helperText: AppLocalizations.of(context)!.smtp_subjectInfo,
             ),
             onChanged: _onChanged,
           ),

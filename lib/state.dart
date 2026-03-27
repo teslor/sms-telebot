@@ -186,12 +186,12 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  Future<void> addRule({required String provider, bool autoSelect = false}) async {
+  Future<void> addRule({required String provider, required String name, bool autoSelect = false}) async {
     final configJson = jsonEncode(_defaultConfigForProvider(provider));
 
     final insertedRuleId = await LocalDb.instance.insertRule(
-      name: AppLocalizations.of(navigatorKey.currentContext!)!.rule,
       provider: provider,
+      name: name,
       isActive: 0,
       configJson: configJson,
     );

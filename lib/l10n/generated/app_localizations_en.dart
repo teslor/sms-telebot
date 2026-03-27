@@ -24,7 +24,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get action_test => 'Test';
 
   @override
-  String get action_testAndSave => 'Test & Save';
+  String get action_testAndSave => 'Test and save';
 
   @override
   String get sms => 'SMS';
@@ -57,6 +57,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rule => 'Rule';
 
   @override
+  String get rule_add => 'Add forwarding rule';
+
+  @override
   String get rule_copySuffix => 'copy';
 
   @override
@@ -75,6 +78,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connection => 'Connection';
 
   @override
+  String get telebot => 'Telegram bot';
+
+  @override
   String get telebot_token => 'Bot token';
 
   @override
@@ -85,6 +91,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get telebot_chatIdInfo => 'ID of a chat with your bot (optional)';
+
+  @override
+  String get smtp => 'SMTP server';
+
+  @override
+  String get smtp_host => 'SMTP host';
+
+  @override
+  String get smtp_protocol => 'Protocol';
+
+  @override
+  String get smtp_protocolEmpty => 'None';
+
+  @override
+  String get smtp_port => 'Port';
+
+  @override
+  String get smtp_login => 'Login';
+
+  @override
+  String get smtp_loginInfo => 'Usually full email address';
+
+  @override
+  String get smtp_password => 'Password';
+
+  @override
+  String get smtp_passwordInfo => 'Usually password for external apps';
+
+  @override
+  String get smtp_fromEmail => 'From email';
+
+  @override
+  String get smtp_fromEmailInfo => 'Optional – login if empty';
+
+  @override
+  String get smtp_toEmail => 'To email';
+
+  @override
+  String get smtp_toEmailInfo => 'Recipient email address';
+
+  @override
+  String get smtp_subject => 'Subject';
+
+  @override
+  String get smtp_subjectInfo => 'Email subject (optional)';
 
   @override
   String get filters => 'Filters';

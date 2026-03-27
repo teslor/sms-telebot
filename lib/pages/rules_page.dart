@@ -22,26 +22,20 @@ class RulesMainPage extends StatelessWidget {
 class RulesPage extends StatelessWidget {
   const RulesPage({super.key});
 
-  String _providerTitle(String provider) {
-    switch (provider) {
-      case 'telegram_bot':
-        return 'Telegram Bot';
-      case 'smtp_server':
-        return 'SMTP Server';
-      default:
-        return provider;
-    }
+  String _providerName(String provider, AppLocalizations l10n) {
+    return switch (provider) {
+      'telegram_bot' => l10n.telebot,
+      'smtp_server' => l10n.smtp,
+      _ => provider,
+    };
   }
 
   IconData _providerIcon(String provider) {
-    switch (provider) {
-      case 'telegram_bot':
-        return Icons.telegram;
-      case 'smtp_server':
-        return Icons.mail_outline;
-      default:
-        return Icons.extension;
-    }
+    return switch (provider) {
+      'telegram_bot' => Icons.telegram,
+      'smtp_server' => Icons.mail_outline,
+      _ => Icons.extension,
+    };
   }
 
   Future<String?> _showProviderPicker(BuildContext context) {
@@ -59,9 +53,11 @@ class RulesPage extends StatelessWidget {
           separatorBuilder: (_, _) => const Divider(height: 1),
           itemBuilder: (itemContext, index) {
             final provider = providers[index];
+            final l10n = AppLocalizations.of(itemContext)!;
+            final name = _providerName(provider, l10n);
             return ListTile(
               leading: Icon(_providerIcon(provider)),
-              title: Text(_providerTitle(provider)),
+              title: Text(name),
               onTap: () => Navigator.pop(sheetContext, provider),
             );
           },
@@ -93,12 +89,14 @@ class RulesPage extends StatelessWidget {
         ),
 
       bottomNavigationBar: ActionButton(
-        label: 'Add rule',
+        label: AppLocalizations.of(context)!.rule_add,
         isSuccess: null,
         onPressed: () async {
           final selectedProvider = await _showProviderPicker(context);
           if (selectedProvider == null || !context.mounted) return;
-          await appState.addRule(provider: selectedProvider, autoSelect: true);
+          final l10n = AppLocalizations.of(context)!;
+          final name = _providerName(selectedProvider, l10n);
+          await appState.addRule(provider: selectedProvider, name: name, autoSelect: true);
         },
       ),
     );

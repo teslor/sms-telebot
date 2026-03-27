@@ -57,6 +57,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get rule => 'Правило';
 
   @override
+  String get rule_add => 'Добавить правило пересылки';
+
+  @override
   String get rule_copySuffix => 'копия';
 
   @override
@@ -75,6 +78,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get connection => 'Подключение';
 
   @override
+  String get telebot => 'Telegram-бот';
+
+  @override
   String get telebot_token => 'Токен';
 
   @override
@@ -85,6 +91,51 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get telebot_chatIdInfo => 'ID чата с ботом (опционально)';
+
+  @override
+  String get smtp => 'SMTP-сервер';
+
+  @override
+  String get smtp_host => 'SMTP-хост';
+
+  @override
+  String get smtp_protocol => 'Протокол';
+
+  @override
+  String get smtp_protocolEmpty => 'Нет';
+
+  @override
+  String get smtp_port => 'Порт';
+
+  @override
+  String get smtp_login => 'Логин';
+
+  @override
+  String get smtp_loginInfo => 'Обычно полный email-адрес';
+
+  @override
+  String get smtp_password => 'Пароль';
+
+  @override
+  String get smtp_passwordInfo => 'Обычно пароль для внешних приложений';
+
+  @override
+  String get smtp_fromEmail => 'Email отправителя';
+
+  @override
+  String get smtp_fromEmailInfo => 'Опционально: логин, если пусто';
+
+  @override
+  String get smtp_toEmail => 'Email получателя';
+
+  @override
+  String get smtp_toEmailInfo => 'Email-адрес получателя';
+
+  @override
+  String get smtp_subject => 'Тема';
+
+  @override
+  String get smtp_subjectInfo => 'Тема письма (опционально)';
 
   @override
   String get filters => 'Фильтры';

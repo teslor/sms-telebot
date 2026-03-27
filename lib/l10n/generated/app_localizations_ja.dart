@@ -57,6 +57,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rule => 'ルール';
 
   @override
+  String get rule_add => '転送ルールを追加';
+
+  @override
   String get rule_copySuffix => 'コピー';
 
   @override
@@ -75,6 +78,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get connection => '接続';
 
   @override
+  String get telebot => 'Telegramボット';
+
+  @override
   String get telebot_token => 'ボットトークン';
 
   @override
@@ -85,6 +91,51 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get telebot_chatIdInfo => 'ボットとのチャットのID（オプション）';
+
+  @override
+  String get smtp => 'SMTPサーバー';
+
+  @override
+  String get smtp_host => 'SMTPホスト';
+
+  @override
+  String get smtp_protocol => 'プロトコル';
+
+  @override
+  String get smtp_protocolEmpty => 'なし';
+
+  @override
+  String get smtp_port => 'ポート';
+
+  @override
+  String get smtp_login => 'ログイン';
+
+  @override
+  String get smtp_loginInfo => '通常はメールアドレス全体';
+
+  @override
+  String get smtp_password => 'パスワード';
+
+  @override
+  String get smtp_passwordInfo => '通常は外部アプリ用パスワード';
+
+  @override
+  String get smtp_fromEmail => '送信元メール';
+
+  @override
+  String get smtp_fromEmailInfo => '任意 - 空の場合はログインを使用';
+
+  @override
+  String get smtp_toEmail => '送信先メール';
+
+  @override
+  String get smtp_toEmailInfo => '受信者のメールアドレス';
+
+  @override
+  String get smtp_subject => '件名';
+
+  @override
+  String get smtp_subjectInfo => 'メール件名（オプション）';
 
   @override
   String get filters => 'フィルター';

@@ -57,6 +57,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get rule => '规则';
 
   @override
+  String get rule_add => '添加转发规则';
+
+  @override
   String get rule_copySuffix => '副本';
 
   @override
@@ -75,6 +78,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get connection => '连接';
 
   @override
+  String get telebot => 'Telegram 机器人';
+
+  @override
   String get telebot_token => '机器人令牌';
 
   @override
@@ -85,6 +91,51 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get telebot_chatIdInfo => '与您的机器人的聊天 ID（可选）';
+
+  @override
+  String get smtp => 'SMTP 服务器';
+
+  @override
+  String get smtp_host => 'SMTP 主机';
+
+  @override
+  String get smtp_protocol => '协议';
+
+  @override
+  String get smtp_protocolEmpty => '无';
+
+  @override
+  String get smtp_port => '端口';
+
+  @override
+  String get smtp_login => '登录名';
+
+  @override
+  String get smtp_loginInfo => '通常为完整电子邮箱地址';
+
+  @override
+  String get smtp_password => '密码';
+
+  @override
+  String get smtp_passwordInfo => '通常为外部应用专用密码';
+
+  @override
+  String get smtp_fromEmail => '发件人邮箱';
+
+  @override
+  String get smtp_fromEmailInfo => '可选 - 留空时使用登录名';
+
+  @override
+  String get smtp_toEmail => '收件人邮箱';
+
+  @override
+  String get smtp_toEmailInfo => '收件人邮箱地址';
+
+  @override
+  String get smtp_subject => '主题';
+
+  @override
+  String get smtp_subjectInfo => '邮件主题（可选）';
 
   @override
   String get filters => '筛选器';

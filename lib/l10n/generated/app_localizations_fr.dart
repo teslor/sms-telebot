@@ -58,6 +58,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rule => 'Règle';
 
   @override
+  String get rule_add => 'Ajouter une règle de transfert';
+
+  @override
   String get rule_copySuffix => 'copie';
 
   @override
@@ -76,6 +79,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get connection => 'Connexion';
 
   @override
+  String get telebot => 'Bot Telegram';
+
+  @override
   String get telebot_token => 'Token du bot';
 
   @override
@@ -86,6 +92,52 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get telebot_chatIdInfo => 'ID du chat avec votre bot (facultatif)';
+
+  @override
+  String get smtp => 'Serveur SMTP';
+
+  @override
+  String get smtp_host => 'Hôte SMTP';
+
+  @override
+  String get smtp_protocol => 'Protocole';
+
+  @override
+  String get smtp_protocolEmpty => 'Aucun';
+
+  @override
+  String get smtp_port => 'Port';
+
+  @override
+  String get smtp_login => 'Identifiant';
+
+  @override
+  String get smtp_loginInfo => 'Généralement l\'adresse e-mail complète';
+
+  @override
+  String get smtp_password => 'Mot de passe';
+
+  @override
+  String get smtp_passwordInfo =>
+      'Généralement le mot de passe pour applications externes';
+
+  @override
+  String get smtp_fromEmail => 'E-mail de l\'expéditeur';
+
+  @override
+  String get smtp_fromEmailInfo => 'Optionnel - identifiant si vide';
+
+  @override
+  String get smtp_toEmail => 'E-mail du destinataire';
+
+  @override
+  String get smtp_toEmailInfo => 'Adresse e-mail du destinataire';
+
+  @override
+  String get smtp_subject => 'Objet';
+
+  @override
+  String get smtp_subjectInfo => 'Objet de l\'e-mail (facultatif)';
 
   @override
   String get filters => 'Filtres';

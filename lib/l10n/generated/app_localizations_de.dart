@@ -58,6 +58,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get rule => 'Regel';
 
   @override
+  String get rule_add => 'Weiterleitungsregel hinzufügen';
+
+  @override
   String get rule_copySuffix => 'Kopie';
 
   @override
@@ -77,6 +80,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get connection => 'Verbindung';
 
   @override
+  String get telebot => 'Telegram-Bot';
+
+  @override
   String get telebot_token => 'Bot-Token';
 
   @override
@@ -87,6 +93,51 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get telebot_chatIdInfo => 'ID des Chats mit Ihrem Bot (optional)';
+
+  @override
+  String get smtp => 'SMTP-Server';
+
+  @override
+  String get smtp_host => 'SMTP-Host';
+
+  @override
+  String get smtp_protocol => 'Protokoll';
+
+  @override
+  String get smtp_protocolEmpty => 'Keins';
+
+  @override
+  String get smtp_port => 'Port';
+
+  @override
+  String get smtp_login => 'Anmeldung';
+
+  @override
+  String get smtp_loginInfo => 'Normalerweise die vollständige E-Mail-Adresse';
+
+  @override
+  String get smtp_password => 'Passwort';
+
+  @override
+  String get smtp_passwordInfo => 'Normalerweise Passwort für externe Apps';
+
+  @override
+  String get smtp_fromEmail => 'Absender-E-Mail';
+
+  @override
+  String get smtp_fromEmailInfo => 'Optional - Anmeldung, falls leer';
+
+  @override
+  String get smtp_toEmail => 'Empfänger-E-Mail';
+
+  @override
+  String get smtp_toEmailInfo => 'E-Mail-Adresse des Empfängers';
+
+  @override
+  String get smtp_subject => 'Betreff';
+
+  @override
+  String get smtp_subjectInfo => 'E-Mail-Betreff (optional)';
 
   @override
   String get filters => 'Filter';

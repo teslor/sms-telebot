@@ -145,7 +145,7 @@ abstract class AppLocalizations {
   /// No description provided for @action_testAndSave.
   ///
   /// In en, this message translates to:
-  /// **'Test & Save'**
+  /// **'Test and save'**
   String get action_testAndSave;
 
   /// No description provided for @sms.
@@ -208,6 +208,12 @@ abstract class AppLocalizations {
   /// **'Rule'**
   String get rule;
 
+  /// No description provided for @rule_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add forwarding rule'**
+  String get rule_add;
+
   /// No description provided for @rule_copySuffix.
   ///
   /// In en, this message translates to:
@@ -244,6 +250,12 @@ abstract class AppLocalizations {
   /// **'Connection'**
   String get connection;
 
+  /// No description provided for @telebot.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram bot'**
+  String get telebot;
+
   /// No description provided for @telebot_token.
   ///
   /// In en, this message translates to:
@@ -267,6 +279,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ID of a chat with your bot (optional)'**
   String get telebot_chatIdInfo;
+
+  /// No description provided for @smtp.
+  ///
+  /// In en, this message translates to:
+  /// **'SMTP server'**
+  String get smtp;
+
+  /// No description provided for @smtp_host.
+  ///
+  /// In en, this message translates to:
+  /// **'SMTP host'**
+  String get smtp_host;
+
+  /// No description provided for @smtp_protocol.
+  ///
+  /// In en, this message translates to:
+  /// **'Protocol'**
+  String get smtp_protocol;
+
+  /// No description provided for @smtp_protocolEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get smtp_protocolEmpty;
+
+  /// No description provided for @smtp_port.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get smtp_port;
+
+  /// No description provided for @smtp_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get smtp_login;
+
+  /// No description provided for @smtp_loginInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Usually full email address'**
+  String get smtp_loginInfo;
+
+  /// No description provided for @smtp_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get smtp_password;
+
+  /// No description provided for @smtp_passwordInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Usually password for external apps'**
+  String get smtp_passwordInfo;
+
+  /// No description provided for @smtp_fromEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'From email'**
+  String get smtp_fromEmail;
+
+  /// No description provided for @smtp_fromEmailInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional – login if empty'**
+  String get smtp_fromEmailInfo;
+
+  /// No description provided for @smtp_toEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'To email'**
+  String get smtp_toEmail;
+
+  /// No description provided for @smtp_toEmailInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient email address'**
+  String get smtp_toEmailInfo;
+
+  /// No description provided for @smtp_subject.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get smtp_subject;
+
+  /// No description provided for @smtp_subjectInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Email subject (optional)'**
+  String get smtp_subjectInfo;
 
   /// No description provided for @filters.
   ///

@@ -57,6 +57,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get rule => 'नियम';
 
   @override
+  String get rule_add => 'फ़ॉरवर्डिंग नियम जोड़ें';
+
+  @override
   String get rule_copySuffix => 'कॉपी';
 
   @override
@@ -75,6 +78,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get connection => 'कनेक्शन';
 
   @override
+  String get telebot => 'Telegram बॉट';
+
+  @override
   String get telebot_token => 'बॉट टोकन';
 
   @override
@@ -85,6 +91,51 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get telebot_chatIdInfo => 'आपके बॉट के साथ चैट की ID (वैकल्पिक)';
+
+  @override
+  String get smtp => 'SMTP सर्वर';
+
+  @override
+  String get smtp_host => 'SMTP होस्ट';
+
+  @override
+  String get smtp_protocol => 'प्रोटोकॉल';
+
+  @override
+  String get smtp_protocolEmpty => 'कोई नहीं';
+
+  @override
+  String get smtp_port => 'पोर्ट';
+
+  @override
+  String get smtp_login => 'लॉगिन';
+
+  @override
+  String get smtp_loginInfo => 'आमतौर पर पूरा ईमेल पता';
+
+  @override
+  String get smtp_password => 'पासवर्ड';
+
+  @override
+  String get smtp_passwordInfo => 'आमतौर पर बाहरी ऐप्स के लिए पासवर्ड';
+
+  @override
+  String get smtp_fromEmail => 'प्रेषक ईमेल';
+
+  @override
+  String get smtp_fromEmailInfo => 'वैकल्पिक - खाली होने पर लॉगिन';
+
+  @override
+  String get smtp_toEmail => 'प्राप्तकर्ता ईमेल';
+
+  @override
+  String get smtp_toEmailInfo => 'प्राप्तकर्ता का ईमेल पता';
+
+  @override
+  String get smtp_subject => 'विषय';
+
+  @override
+  String get smtp_subjectInfo => 'ईमेल विषय (वैकल्पिक)';
 
   @override
   String get filters => 'फ़िल्टर';
