@@ -6,6 +6,7 @@ import org.json.JSONObject
 object SmsContract {
     object Providers {
         const val TELEGRAM_BOT = "telegram_bot"
+        const val SMTP_SERVER = "smtp_server"
     }
 
     object Keys {

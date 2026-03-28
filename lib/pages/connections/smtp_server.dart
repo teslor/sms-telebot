@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../state.dart';
+import '../../service.dart';
 import '../../widgets/action_button.dart';
 
 class SmtpServerConnection extends StatefulWidget {
@@ -32,32 +33,18 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
   void initState() {
     super.initState();
     final config = context.read<AppState>().config;
-    _hostController = TextEditingController(
-      text: config['host']?.toString() ?? '',
-    );
-    _portController = TextEditingController(
-      text: (config['port'] ?? 587).toString(),
-    );
-    _loginController = TextEditingController(
-      text: config['login']?.toString() ?? '',
-    );
-    _passwordController = TextEditingController(
-      text: config['password']?.toString() ?? '',
-    );
-    _fromEmailController = TextEditingController(
-      text: config['fromEmail']?.toString() ?? '',
-    );
-    _toEmailController = TextEditingController(
-      text: config['toEmail']?.toString() ?? '',
-    );
-    _subjectController = TextEditingController(
-      text: config['subject']?.toString() ?? '',
-    );
-    _protocol = _normalizeProtocol(config['protocol']?.toString());
+    _hostController = TextEditingController(text: config['host']?.toString() ?? '');
+    _portController = TextEditingController(text: (config['port'] ?? 587).toString());
+    _loginController = TextEditingController(text: config['login']?.toString() ?? '');
+    _passwordController = TextEditingController(text: config['password']?.toString() ?? '');
+    _fromEmailController = TextEditingController(text: config['fromEmail']?.toString() ?? '');
+    _toEmailController = TextEditingController(text: config['toEmail']?.toString() ?? '');
+    _subjectController = TextEditingController(text: config['subject']?.toString() ?? '');
+
+    _protocol = _normalizeProtocol(config['protocol']);
     final initialPort = _parsePort(_portController.text.trim());
     _isPortManuallyEdited =
-        initialPort != null &&
-        initialPort != _defaultPortForProtocol(_protocol);
+      initialPort != null && initialPort != _defaultPortForProtocol(_protocol);
   }
 
   @override
@@ -73,7 +60,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
   }
 
   String _normalizeProtocol(String? rawValue) {
-    if (rawValue == 'none' || rawValue == 'ssl' || rawValue == 'starttls') {
+    if (rawValue == 'starttls' || rawValue == 'ssl' || rawValue == 'none') {
       return rawValue!;
     }
     return 'starttls';
@@ -81,13 +68,10 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
 
   int _defaultPortForProtocol(String protocol) {
     switch (protocol) {
-      case 'ssl':
-        return 465;
-      case 'none':
-        return 25;
-      case 'starttls':
-      default:
-        return 587;
+      case 'starttls': return 587;
+      case 'ssl': return 465;
+      case 'none': return 25;
+      default: return 587;
     }
   }
 
@@ -129,13 +113,8 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
     final toEmail = _toEmailController.text.trim();
     final subject = _subjectController.text.trim();
 
-    if (host.isEmpty ||
-        login.isEmpty ||
-        password.isEmpty ||
-        port == null ||
-        subject.isEmpty ||
-        toEmail.isEmpty ||
-        !_isValidEmail(toEmail) ||
+    if (host.isEmpty || port == null || login.isEmpty || password.isEmpty ||
+        toEmail.isEmpty || !_isValidEmail(toEmail) ||
         (fromEmail.isNotEmpty && !_isValidEmail(fromEmail))) {
       if (mounted) {
         setState(() {
@@ -146,8 +125,11 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
       return;
     }
 
+    final appState = context.read<AppState>();
+    final String helloMessage = AppLocalizations.of(context)?.sms_hello ?? '=^•⩊•^=';
+
     try {
-      await context.read<AppState>().updateConnectionData({
+      final config = {
         'host': host,
         'protocol': _protocol,
         'port': port,
@@ -156,26 +138,31 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
         'fromEmail': fromEmail,
         'toEmail': toEmail,
         'subject': subject,
-      });
+      };
 
-      if (mounted) {
-        setState(() {
-          _saveResult = true;
-          _isInputChanged = false;
-        });
+      final result = await sendToProviderNative(
+        provider: 'smtp_server',
+        config: config,
+        body: helloMessage,
+        deviceLabel: appState.deviceLabel,
+      );
+
+      if (result) {
+        await appState.updateConnectionData(config);
+
+        if (mounted) {
+          setState(() {
+            _saveResult = true;
+            _isInputChanged = false;
+          });
+        }
+      } else {
+        if (mounted) setState(() { _saveResult = false; });
       }
     } catch (_) {
-      if (mounted) {
-        setState(() {
-          _saveResult = false;
-        });
-      }
+      if (mounted) setState(() { _saveResult = false; });
     } finally {
-      if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
-      }
+      if (mounted) setState(() { _isSaving = false; });
     }
   }
 
@@ -194,17 +181,15 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
       if (value.trim().isEmpty) {
         _isPortManuallyEdited = false;
       } else {
-        _isPortManuallyEdited =
-            parsedPort != _defaultPortForProtocol(_protocol);
+        _isPortManuallyEdited = parsedPort != _defaultPortForProtocol(_protocol);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final dropdownTextStyle = Theme.of(
-      context,
-    ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400);
+    final dropdownTextStyle = Theme.of(context)
+      .textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400);
 
     return Scaffold(
       body: ListView(

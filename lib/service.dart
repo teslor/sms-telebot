@@ -82,20 +82,20 @@ Future<bool> isValidRegexNative(String text) async {
   }
 }
 
-Future<bool> sendToTelegramBotNative({
+Future<bool> sendToProviderNative({
+  required String provider,
   required Map<String, dynamic> config,
   required String body,
   String sender = '',
   String deviceLabel = '',
-  String l10nSmsFrom = 'SMS from',
 }) async {
   try {
-    final result = await _mainChannel.invokeMethod<bool>('sendToTelegramBot', {
+    final result = await _mainChannel.invokeMethod<bool>('sendToProvider', {
+      'provider': provider,
       'configJson': jsonEncode(config),
       'sender': sender,
       'body': body,
       'deviceLabel': deviceLabel,
-      'l10nSmsFrom': l10nSmsFrom,
     });
     return result ?? false;
   } catch (_) {

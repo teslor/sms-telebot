@@ -20,22 +20,23 @@ class MainActivity : FlutterActivity() {
                 if (isDebugBuild()) Log.d("MainChannel", "${call.method} called")
 
                 when (call.method) {
-                    "sendToTelegramBot" -> {
+                    "sendToProvider" -> {
+                        val provider = call.argument<String>("provider") ?: ""
                         val configJson = call.argument<String>("configJson")
                         val sender = call.argument<String>("sender") ?: ""
                         val body = call.argument<String>("body") ?: ""
                         val deviceLabel = call.argument<String>("deviceLabel") ?: ""
-                        val l10nSmsFrom = call.argument<String>("l10nSmsFrom") ?: ""
 
                         lifecycleScope.launch(Dispatchers.IO) {
                             try {
-                                val ok = TelegramBotProvider.send(
+                                val ok = SmsProviderGateway.send(
+                                    providerId = provider,
                                     configJson = configJson,
                                     payload = SmsForwardPayload(
                                         sender = sender,
                                         body = body,
                                         deviceLabel = deviceLabel,
-                                        l10nSmsFrom = l10nSmsFrom
+                                        l10nSmsFrom = ""
                                     )
                                 )
 
@@ -44,7 +45,7 @@ class MainActivity : FlutterActivity() {
                                 }
                             } catch (e: Exception) {
                                 withContext(Dispatchers.Main) {
-                                    result.error("send_to_telegram_failed", e.message, null)
+                                    result.error("send_failed", e.message, null)
                                 }
                             }
                         }

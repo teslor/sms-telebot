@@ -57,17 +57,15 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
       if (testChatId.isEmpty) testChatId = await getUpdates(testBotToken);
 
       if (testChatId.isNotEmpty) {
-        final result = await sendToTelegramBotNative(
+        final result = await sendToProviderNative(
+          provider: 'telegram_bot',
           config: { 'botToken': testBotToken,'chatId': testChatId },
           body: helloMessage,
           deviceLabel: appState.deviceLabel,
         );
 
         if (result) {
-          await appState.updateConnectionData({
-            'botToken': testBotToken,
-            'chatId': testChatId,
-          });
+          await appState.updateConnectionData({ 'botToken': testBotToken, 'chatId': testChatId });
           if (mounted) {
             setState(() { 
               _testResult = true; 
@@ -79,17 +77,11 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
         }
       }
 
-      if (mounted) {
-        setState(() { _testResult = false; });
-      }
+      if (mounted) setState(() { _testResult = false; });
     } catch (e) {
-      if (mounted) {
-        setState(() { _testResult = false; });
-      }
+      if (mounted) setState(() { _testResult = false; });
     } finally {
-      if (mounted) {
-        setState(() { _isTesting = false; });
-      }
+      if (mounted) setState(() { _isTesting = false; });
     }
   }
 

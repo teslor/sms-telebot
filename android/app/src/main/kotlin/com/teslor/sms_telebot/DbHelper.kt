@@ -11,6 +11,9 @@ data class ForwardingRule(val id: Int, val filterMode: Int, val filtersJson: Str
 data class ForwardingRuleConfig(val id: Int, val provider: String, val configJson: String?)
 
 class DbHelper private constructor(private val context: Context) {
+    private val dbLock = Any()
+    @Volatile
+    private var database: SQLiteDatabase? = null
 
     companion object {
         @Volatile
@@ -22,18 +25,41 @@ class DbHelper private constructor(private val context: Context) {
         }
     }
 
-    // Try to open the database in read-write mode without creating it
-    private fun openDatabase(): SQLiteDatabase? {
+    // Open once and reuse the same connection across all calls
+    private fun getOrOpenDatabase(): SQLiteDatabase? {
+        database?.let { if (it.isOpen) return it }
+
         val dbFile = context.getDatabasePath("sms_telebot.db")
         if (!dbFile.exists()) return null
 
-        return try {
-            SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READWRITE).apply {
-                enableWriteAheadLogging() // Enable WAL mode for concurrent Dart/Kotlin access
-                setForeignKeyConstraintsEnabled(true)
+        // Slow path: ensure only one thread opens/stores the connection
+        synchronized(dbLock) {
+            database?.let { if (it.isOpen) return it }
+
+            return try {
+                SQLiteDatabase.openDatabase(
+                    dbFile.absolutePath,
+                    null,
+                    SQLiteDatabase.OPEN_READWRITE
+                ).apply {
+                    enableWriteAheadLogging()
+                    setForeignKeyConstraintsEnabled(true)
+                }.also { opened ->
+                    database = opened
+                }
+            } catch (e: SQLiteException) {
+                Log.e("DbHelper", "Error opening database. Maybe it doesn't exist yet", e)
+                null
             }
+        }
+    }
+
+    private inline fun <T> withDatabase(block: (SQLiteDatabase) -> T): T? {
+        val db = getOrOpenDatabase() ?: return null
+        return try {
+            block(db)
         } catch (e: SQLiteException) {
-            Log.e("DbHelper", "Error opening database. Maybe it doesn't exist yet", e)
+            Log.e("DbHelper", "Database operation failed", e)
             null
         }
     }
@@ -44,7 +70,7 @@ class DbHelper private constructor(private val context: Context) {
 
     // Read a specific setting by key
     fun getSetting(key: String): String? {
-        return openDatabase()?.use { db ->
+        return withDatabase { db ->
             db.query(
                 "app_settings", arrayOf("value"), "key = ?", arrayOf(key), null, null, null
             ).use {
@@ -64,7 +90,7 @@ class DbHelper private constructor(private val context: Context) {
 
     // Get all active rules for filtering
     fun getActiveRules(): List<ForwardingRule> {
-        return openDatabase()?.use { db ->
+        return withDatabase { db ->
             db.query(
                 "forwarding_rules",
                 arrayOf("id", "filter_mode", "filters_json"),
@@ -92,7 +118,7 @@ class DbHelper private constructor(private val context: Context) {
         val placeholders = ids.joinToString(",") { "?" }
         val stringArgs = ids.map { it.toString() }.toTypedArray()
 
-        return openDatabase()?.use { db ->
+        return withDatabase { db ->
             db.query(
                 "forwarding_rules",
                 arrayOf("id", "provider", "config_json"),
@@ -120,7 +146,7 @@ class DbHelper private constructor(private val context: Context) {
 
     // Get SMS data by ID
     fun getSmsById(id: String): SmsData? {
-        return openDatabase()?.use { db ->
+        return withDatabase { db ->
             db.query(
                 "sms_history", arrayOf("sender", "body", "status"), "id = ?", arrayOf(id), null, null, null
             ).use {
@@ -131,7 +157,7 @@ class DbHelper private constructor(private val context: Context) {
 
     // Get ID of the last received SMS
     fun getLastReceivedSmsId(): String? {
-        return openDatabase()?.use { db ->
+        return withDatabase { db ->
             db.query(
                 "sms_history", arrayOf("id"), null, null, null, null, "received_at DESC", "1"
             ).use {
@@ -142,7 +168,7 @@ class DbHelper private constructor(private val context: Context) {
 
     // Create a new record
     fun insertSmsHistory(id: String, sender: String, body: String, smscAt: Long, receivedAt: Long, sentAt: Long? = null, status: Int = 0): Boolean {
-        return openDatabase()?.use { db ->
+        return withDatabase { db ->
             val values = ContentValues().apply {
                 put("id", id); put("sender", sender); put("body", body); put("smsc_at", smscAt)
                 put("received_at", receivedAt); put("sent_at", sentAt); put("status", status)
@@ -154,7 +180,7 @@ class DbHelper private constructor(private val context: Context) {
     // Update a specific record by ID
     fun updateSmsHistory(id: String, updates: Map<String, Any?>): Boolean {
         if (updates.isEmpty()) return false
-        return openDatabase()?.use { db ->
+        return withDatabase { db ->
             val values = ContentValues().apply {
                 updates.forEach { (k, v) ->
                     when (v) {
@@ -170,7 +196,7 @@ class DbHelper private constructor(private val context: Context) {
 
     // Delete old SMS records
     fun deleteOldSms(timestampLimit: Long): Int {
-        return openDatabase()?.use { db ->
+        return withDatabase { db ->
             db.delete("sms_history", "received_at < ?", arrayOf(timestampLimit.toString()))
         } ?: 0
     }
