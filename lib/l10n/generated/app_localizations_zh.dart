@@ -222,4 +222,50 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get help_filters_04 =>
       '要检查特定短信是否会根据当前筛选器转发，请在输入字段中输入所需的发件人和/或消息，然后点击按钮进行验证。';
+
+  @override
+  String get error_badRequest => '处理您的请求时出现问题。请检查连接参数。';
+
+  @override
+  String get error_invalidParams => '请检查连接参数。部分数据缺失或不正确。';
+
+  @override
+  String get error_networkError => '请检查网络连接并重试。';
+
+  @override
+  String get error_networkTimeout => '连接超时。请检查网络后重试。';
+
+  @override
+  String get error_rateLimited => '请求过于频繁。请稍候再试。';
+
+  @override
+  String get error_serverError => '服务器当前不可用。请稍后再试。';
+
+  @override
+  String get error_smtpError => '邮件服务器返回错误。请核实连接参数。';
+
+  @override
+  String get error_smtpRecipientsRejected => '邮件服务器拒绝了收件人。请检查电子邮件地址。';
+
+  @override
+  String get error_smtp_forbidden => '邮件服务器拒绝此操作。请检查发件人和收件人权限。';
+
+  @override
+  String get error_smtp_unauthorized => 'SMTP 身份验证失败。请检查账号和密码。';
+
+  @override
+  String get error_tbot_conflict =>
+      'Webhook 激活时无法获取聊天 ID。请删除 Webhook 或手动输入 ID。';
+
+  @override
+  String get error_tbot_forbidden => 'Telegram 拒绝此操作。请确保机器人有权访问该聊天。';
+
+  @override
+  String get error_tbot_unauthorized => '机器人令牌 (Token) 错误。请检查并重试。';
+
+  @override
+  String get error_tbot_uninitialized => '无法获取聊天 ID。请先与您的机器人发起对话，然后重试。';
+
+  @override
+  String get error_unexpectedError => '发生了意外错误。请稍后再试。';
 }

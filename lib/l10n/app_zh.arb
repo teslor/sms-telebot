@@ -68,5 +68,20 @@
   "help_filters_01": "您可以为接收短信的发件人或文本设置筛选器。如果发件人号码/名称或文本包含指定字符，则触发筛选器。",
   "help_filters_02": "有两种模式：白名单（如果至少一个筛选器匹配则转发短信）和黑名单（如果任何筛选器匹配则不转发短信）。在白名单模式下，如果未设置筛选器，则不会向机器人转发任何短信。",
   "help_filters_03": "使用两个斜杠表示正则表达式。例如，筛选器 /^\\d*555$/ 匹配所有以 555 结尾的号码",
-  "help_filters_04": "要检查特定短信是否会根据当前筛选器转发，请在输入字段中输入所需的发件人和/或消息，然后点击按钮进行验证。"
+  "help_filters_04": "要检查特定短信是否会根据当前筛选器转发，请在输入字段中输入所需的发件人和/或消息，然后点击按钮进行验证。",
+  "error_badRequest": "处理您的请求时出现问题。请检查连接参数。",
+  "error_invalidParams": "请检查连接参数。部分数据缺失或不正确。",
+  "error_networkError": "请检查网络连接并重试。",
+  "error_networkTimeout": "连接超时。请检查网络后重试。",
+  "error_rateLimited": "请求过于频繁。请稍候再试。",
+  "error_serverError": "服务器当前不可用。请稍后再试。",
+  "error_smtpError": "邮件服务器返回错误。请核实连接参数。",
+  "error_smtpRecipientsRejected": "邮件服务器拒绝了收件人。请检查电子邮件地址。",
+  "error_smtp_forbidden": "邮件服务器拒绝此操作。请检查发件人和收件人权限。",
+  "error_smtp_unauthorized": "SMTP 身份验证失败。请检查账号和密码。",
+  "error_tbot_forbidden": "Telegram 拒绝此操作。请确保机器人有权访问该聊天。",
+  "error_tbot_conflict": "Webhook 激活时无法获取聊天 ID。请删除 Webhook 或手动输入 ID。",
+  "error_tbot_unauthorized": "机器人令牌 (Token) 错误。请检查并重试。",
+  "error_tbot_uninitialized": "无法获取聊天 ID。请先与您的机器人发起对话，然后重试。",
+  "error_unexpectedError": "发生了意外错误。请稍后再试。"
 }

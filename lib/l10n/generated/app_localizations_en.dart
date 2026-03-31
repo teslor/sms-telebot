@@ -226,4 +226,64 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get help_filters_04 =>
       'To check whether a specific SMS message will be forwarded based on the current filters, enter the required sender and/or message in the input fields and click the button to verify.';
+
+  @override
+  String get error_badRequest =>
+      'There was a problem processing your request. Ensure all connection parameters are correct.';
+
+  @override
+  String get error_invalidParams =>
+      'Check your connection parameters. Some data is missing or incorrect.';
+
+  @override
+  String get error_networkError =>
+      'Check your internet connection and try again.';
+
+  @override
+  String get error_networkTimeout =>
+      'The connection took too long. Check your internet and try again.';
+
+  @override
+  String get error_rateLimited =>
+      'You are sending requests too fast. Please wait a moment and try again.';
+
+  @override
+  String get error_serverError =>
+      'The server is currently unavailable. Please try again later.';
+
+  @override
+  String get error_smtpError =>
+      'The mail server returned an error. Verify your connection parameters.';
+
+  @override
+  String get error_smtpRecipientsRejected =>
+      'The mail server rejected the recipient. Check the email address.';
+
+  @override
+  String get error_smtp_forbidden =>
+      'The mail server denied this action. Check sender and recipient permissions.';
+
+  @override
+  String get error_smtp_unauthorized =>
+      'SMTP authentication failed. Check your login and password.';
+
+  @override
+  String get error_tbot_conflict =>
+      'Unable to get chat ID while webhook is active. Delete the webhook or enter Chat ID manually.';
+
+  @override
+  String get error_tbot_forbidden =>
+      'Telegram denied this action. Make sure the bot has access to the chat.';
+
+  @override
+  String get error_tbot_unauthorized =>
+      'The bot token is incorrect. Check it and try again.';
+
+  @override
+  String get error_tbot_uninitialized =>
+      'Unable to get chat ID. Start conversation with your bot and try again.';
+
+  @override
+  String get error_unexpectedError =>
+      'An unexpected error occurred. Please try again later.';
 }

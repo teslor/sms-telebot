@@ -29,7 +29,7 @@ class MainActivity : FlutterActivity() {
 
                         lifecycleScope.launch(Dispatchers.IO) {
                             try {
-                                val ok = SmsProviderGateway.send(
+                                val sendResult = SmsProviderGateway.send(
                                     providerId = provider,
                                     configJson = configJson,
                                     payload = SmsForwardPayload(
@@ -41,11 +41,17 @@ class MainActivity : FlutterActivity() {
                                 )
 
                                 withContext(Dispatchers.Main) {
-                                    result.success(ok)
+                                    result.success(sendResult.toMap())
                                 }
                             } catch (e: Exception) {
                                 withContext(Dispatchers.Main) {
-                                    result.error("send_failed", e.message, null)
+                                    result.success(
+                                        ProviderSendResult(
+                                            isSuccess = false,
+                                            code = SendCodes.UNEXPECTED_ERROR,
+                                            info = e.message ?: "Unexpected error"
+                                        ).toMap()
+                                    )
                                 }
                             }
                         }

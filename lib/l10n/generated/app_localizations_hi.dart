@@ -226,4 +226,64 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get help_filters_04 =>
       'यह जांचने के लिए कि वर्तमान फ़िल्टर के आधार पर कोई विशिष्ट SMS भेजा जाएगा या नहीं, इनपुट फ़ील्ड में आवश्यक प्रेषक और/या संदेश दर्ज करें और सत्यापित करने के लिए बटन पर क्लिक करें।';
+
+  @override
+  String get error_badRequest =>
+      'अनुरोध प्रोसेस करने में समस्या हुई। कृपया कनेक्शन मापदंडों की जांच करें।';
+
+  @override
+  String get error_invalidParams =>
+      'कनेक्शन मापदंडों की जांच करें। कुछ डेटा गायब है या गलत है।';
+
+  @override
+  String get error_networkError =>
+      'अपना इंटरनेट कनेक्शन जांचें और फिर से प्रयास करें।';
+
+  @override
+  String get error_networkTimeout =>
+      'कनेक्शन में बहुत समय लगा। अपना इंटरनेट जांचें और फिर से प्रयास करें।';
+
+  @override
+  String get error_rateLimited =>
+      'आप बहुत तेज़ी से अनुरोध भेज रहे हैं। कृपया कुछ देर प्रतीक्षा करें।';
+
+  @override
+  String get error_serverError =>
+      'सर्वर वर्तमान में उपलब्ध नहीं है। कृपया बाद में प्रयास करें।';
+
+  @override
+  String get error_smtpError =>
+      'मेल सर्वर ने त्रुटि दी। अपने कनेक्शन मापदंडों को सत्यापित करें।';
+
+  @override
+  String get error_smtpRecipientsRejected =>
+      'मेल सर्वर ने प्राप्तकर्ता को अस्वीकार कर दिया। ईमेल पता जांचें।';
+
+  @override
+  String get error_smtp_forbidden =>
+      'मेल सर्वर ने इस कार्रवाई को रोक दिया। अनुमतियों की जांच करें।';
+
+  @override
+  String get error_smtp_unauthorized =>
+      'SMTP प्रमाणीकरण विफल। लॉगिन और पासवर्ड जांचें।';
+
+  @override
+  String get error_tbot_conflict =>
+      'वेबहुक सक्रिय होने पर चैट आईडी प्राप्त नहीं की जा सकती। वेबहुक हटाएं या आईडी मैन्युअल रूप से दर्ज करें।';
+
+  @override
+  String get error_tbot_forbidden =>
+      'Telegram ने इस कार्रवाई को रोक दिया। सुनिश्चित करें कि बॉट के पास चैट का एक्सेस है।';
+
+  @override
+  String get error_tbot_unauthorized =>
+      'बॉट टोकन गलत है। इसे जांचें और फिर से प्रयास करें।';
+
+  @override
+  String get error_tbot_uninitialized =>
+      'चैट आईडी प्राप्त करने में असमर्थ। अपने बॉट के साथ बातचीत शुरू करें और फिर से प्रयास करें।';
+
+  @override
+  String get error_unexpectedError =>
+      'एक अप्रत्याशित त्रुटि हुई। कृपया बाद में प्रयास करें।';
 }

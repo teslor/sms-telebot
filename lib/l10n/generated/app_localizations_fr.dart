@@ -228,4 +228,64 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get help_filters_04 =>
       'Pour vérifier si un SMS spécifique sera transféré selon les filtres actuels, entrez l\'expéditeur et/ou le message requis dans les champs et cliquez sur le bouton pour vérifier.';
+
+  @override
+  String get error_badRequest =>
+      'Erreur lors du traitement de la requête. Vérifiez les paramètres de connexion.';
+
+  @override
+  String get error_invalidParams =>
+      'Paramètres incorrects. Des données sont manquantes ou erronées.';
+
+  @override
+  String get error_networkError =>
+      'Vérifiez votre connexion internet et réessayez.';
+
+  @override
+  String get error_networkTimeout =>
+      'Délai de connexion dépassé. Vérifiez votre réseau et réessayez.';
+
+  @override
+  String get error_rateLimited =>
+      'Trop de requêtes. Veuillez patienter un instant et réessayer.';
+
+  @override
+  String get error_serverError =>
+      'Le serveur est actuellement indisponible. Veuillez réessayer plus tard.';
+
+  @override
+  String get error_smtpError =>
+      'Le serveur de messagerie a renvoyé une erreur. Vérifiez la configuration.';
+
+  @override
+  String get error_smtpRecipientsRejected =>
+      'Destinataire refusé par le serveur. Vérifiez l\'adresse e-mail.';
+
+  @override
+  String get error_smtp_forbidden =>
+      'Action refusée par le serveur de messagerie. Vérifiez les permissions.';
+
+  @override
+  String get error_smtp_unauthorized =>
+      'Échec de l\'authentification SMTP. Vérifiez l\'identifiant et le mot de passe.';
+
+  @override
+  String get error_tbot_conflict =>
+      'Impossible d\'obtenir l\'ID du chat avec un webhook actif. Supprimez le webhook ou saisissez l\'ID manuellement.';
+
+  @override
+  String get error_tbot_forbidden =>
+      'Action refusée par Telegram. Vérifiez l\'accès du bot au chat.';
+
+  @override
+  String get error_tbot_unauthorized =>
+      'Le jeton (token) du bot est incorrect. Vérifiez-le et réessayez.';
+
+  @override
+  String get error_tbot_uninitialized =>
+      'Impossible d\'obtenir l\'ID du chat. Lancez une conversation avec votre bot et réessayez.';
+
+  @override
+  String get error_unexpectedError =>
+      'Une erreur inattendue est survenue. Veuillez réessayer plus tard.';
 }

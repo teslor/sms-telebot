@@ -68,5 +68,20 @@
   "help_filters_01": "Você pode definir filtros para o remetente ou texto das mensagens SMS recebidas. Um filtro é acionado se o número/nome do remetente ou o texto contiver os caracteres especificados.",
   "help_filters_02": "Existem dois modos: lista branca (o SMS é encaminhado se pelo menos um filtro corresponder) e lista negra (o SMS não é encaminhado se algum filtro corresponder). No modo lista branca, se nenhum filtro estiver definido, nenhum SMS será encaminhado ao bot.",
   "help_filters_03": "Use duas barras para regex. Por exemplo, o filtro /^\\d*555$/ corresponde a todos os números que terminam com 555",
-  "help_filters_04": "Para verificar se um SMS específico será encaminhado com base nos filtros atuais, insira o remetente e/ou mensagem necessários nos campos de entrada e clique no botão para verificar."
+  "help_filters_04": "Para verificar se um SMS específico será encaminhado com base nos filtros atuais, insira o remetente e/ou mensagem necessários nos campos de entrada e clique no botão para verificar.",
+  "error_badRequest": "Houve um problema ao processar sua solicitação. Verifique os parâmetros de conexão.",
+  "error_invalidParams": "Verifique os parâmetros. Alguns dados estão ausentes ou incorretos.",
+  "error_networkError": "Verifique sua conexão com a internet e tente novamente.",
+  "error_networkTimeout": "A conexão demorou muito. Verifique sua rede e tente novamente.",
+  "error_rateLimited": "Você está enviando solicitações rápido demais. Aguarde um momento e tente novamente.",
+  "error_serverError": "O servidor está indisponível no momento. Tente novamente mais tarde.",
+  "error_smtpError": "O servidor de e-mail retornou um erro. Verifique os parâmetros de conexão.",
+  "error_smtpRecipientsRejected": "O servidor de e-mail rejeitou o destinatário. Verifique o endereço de e-mail.",
+  "error_smtp_forbidden": "O servidor de e-mail negou esta ação. Verifique as permissões de remetente e destinatário.",
+  "error_smtp_unauthorized": "Falha na autenticação SMTP. Verifique o login e a senha.",
+  "error_tbot_forbidden": "O Telegram negou esta ação. Certifique-se de que o bot tem acesso ao chat.",
+  "error_tbot_conflict": "Não é possível obter o ID do chat com o webhook ativo. Exclua o webhook ou insira o ID manualmente.",
+  "error_tbot_unauthorized": "O token do bot está incorreto. Verifique e tente novamente.",
+  "error_tbot_uninitialized": "Não foi possível obter o ID do chat. Inicie uma conversa com seu bot e tente novamente.",
+  "error_unexpectedError": "Ocorreu um erro inesperado. Tente novamente mais tarde."
 }

@@ -89,3 +89,30 @@ object SmsFilters {
         }
     }
 }
+
+object LogFormatter {
+    fun buildInfo(
+        type: String, // source or event type
+        msg: String, // short description of what happened (human-readable)
+        provider: String? = null, // provider ID (optional)
+        code: String? = null, // internal error code (optional)
+        details: String? = null // technical details (optional)
+    ): String {
+        val sb = StringBuilder()
+        
+        // Basic fields
+        sb.append("type=").append(type)
+        sb.append(" msg=\"").append(msg).append("\"")
+        
+        // Specific fields for send_error type
+        if (!provider.isNullOrBlank()) sb.append(" provider=").append(provider)
+        if (!code.isNullOrBlank()) sb.append(" code=").append(code)
+        
+        if (!details.isNullOrBlank()) {
+            // Replace double quotes with single quotes inside details to avoid parsing issues
+            sb.append(" details=\"").append(details.replace("\"", "'")).append("\"") 
+        }
+        
+        return sb.toString()
+    }
+}

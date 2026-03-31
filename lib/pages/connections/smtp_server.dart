@@ -29,6 +29,13 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
   bool _isPortManuallyEdited = false;
   String _protocol = 'starttls';
 
+  void _showErrorMessage(String message) {
+    if (message.isEmpty) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -98,7 +105,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
     return true;
   }
 
-  Future<void> _testAndSaveSettings() async {
+  Future<void> _testAndSaveSettings(AppLocalizations l10n) async {
     FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       _isSaving = true;
@@ -120,6 +127,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
         setState(() {
           _saveResult = false;
           _isSaving = false;
+          _showErrorMessage(getLocalizedError(l10n, 'invalid_params'));
         });
       }
       return;
@@ -147,7 +155,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
         deviceLabel: appState.deviceLabel,
       );
 
-      if (result) {
+      if (result.isSuccess) {
         await appState.updateConnectionData(config);
 
         if (mounted) {
@@ -157,10 +165,16 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
           });
         }
       } else {
-        if (mounted) setState(() { _saveResult = false; });
+        if (mounted) {
+          setState(() { _saveResult = false; });
+          _showErrorMessage(getLocalizedError(l10n, result.code, 'smtp_server'));
+        }
       }
     } catch (_) {
-      if (mounted) setState(() { _saveResult = false; });
+      if (mounted) {
+        setState(() { _saveResult = false; });
+        _showErrorMessage(getLocalizedError(l10n, 'unexpected_error'));
+      }
     } finally {
       if (mounted) setState(() { _isSaving = false; });
     }
@@ -324,7 +338,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
         label: AppLocalizations.of(context)!.action_testAndSave,
         onPressed: _isSaving || !_isInputChanged || !_isFormValid
           ? null
-          : _testAndSaveSettings,
+          : () => _testAndSaveSettings(AppLocalizations.of(context)!),
         isSuccess: _saveResult,
         isInProgress: _isSaving,
       ),

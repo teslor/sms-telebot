@@ -224,4 +224,52 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get help_filters_04 =>
       '現在のフィルターに基づいて特定のSMSが転送されるかどうかを確認するには、入力フィールドに必要な送信元やメッセージを入力し、ボタンをクリックして検証してください。';
+
+  @override
+  String get error_badRequest => 'リクエストの処理中に問題が発生しました。接続パラメータを確認してください。';
+
+  @override
+  String get error_invalidParams => 'パラメータを確認してください。データが不足しているか正しくありません。';
+
+  @override
+  String get error_networkError => 'インターネット接続を確認して、もう一度お試しください。';
+
+  @override
+  String get error_networkTimeout => '接続に時間がかかりすぎました。ネットワークを確認して再試行してください。';
+
+  @override
+  String get error_rateLimited => 'リクエストの送信が速すぎます。しばらく待ってから再試行してください。';
+
+  @override
+  String get error_serverError => 'サーバーは現在利用できません。後でもう一度お試しください。';
+
+  @override
+  String get error_smtpError => 'メールサーバーがエラーを返しました。接続設定を確認してください。';
+
+  @override
+  String get error_smtpRecipientsRejected => '宛先が拒否されました。メールアドレスを確認してください。';
+
+  @override
+  String get error_smtp_forbidden => 'メールサーバーがこのアクションを拒否しました。権限を確認してください。';
+
+  @override
+  String get error_smtp_unauthorized => 'SMTP認証に失敗しました。ログインIDとパスワードを確認してください。';
+
+  @override
+  String get error_tbot_conflict =>
+      'Webhookが有効な間はチャットIDを取得できません。解除するか手動で入力してください。';
+
+  @override
+  String get error_tbot_forbidden =>
+      'Telegramがアクションを拒否しました。ボットのチャットアクセス権限を確認してください。';
+
+  @override
+  String get error_tbot_unauthorized => 'ボットトークンが正しくありません。確認して再試行してください。';
+
+  @override
+  String get error_tbot_uninitialized =>
+      'チャットIDを取得できません。ボットとのチャットを開始して、もう一度お試しください。';
+
+  @override
+  String get error_unexpectedError => '予期しないエラーが発生しました。後でもう一度お試しください。';
 }

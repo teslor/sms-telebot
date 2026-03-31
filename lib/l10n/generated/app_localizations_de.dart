@@ -229,4 +229,64 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get help_filters_04 =>
       'Um zu prüfen, ob eine bestimmte SMS basierend auf den aktuellen Filtern weitergeleitet wird, geben Sie den Absender und/oder die Nachricht in die Felder ein und klicken Sie auf die Schaltfläche.';
+
+  @override
+  String get error_badRequest =>
+      'Fehler beim Verarbeiten Ihrer Anfrage. Prüfen Sie die Verbindungsparameter.';
+
+  @override
+  String get error_invalidParams =>
+      'Verbindungsparameter prüfen. Daten fehlen oder sind fehlerhaft.';
+
+  @override
+  String get error_networkError =>
+      'Internetverbindung prüfen und erneut versuchen.';
+
+  @override
+  String get error_networkTimeout =>
+      'Zeitüberschreitung. Prüfen Sie Ihr Internet und versuchen Sie es erneut.';
+
+  @override
+  String get error_rateLimited =>
+      'Zu viele Anfragen. Bitte warten Sie kurz und versuchen Sie es erneut.';
+
+  @override
+  String get error_serverError =>
+      'Der Server ist derzeit nicht verfügbar. Bitte später versuchen.';
+
+  @override
+  String get error_smtpError =>
+      'Der Mailserver hat einen Fehler gemeldet. Verbindungsparameter prüfen.';
+
+  @override
+  String get error_smtpRecipientsRejected =>
+      'Empfänger vom Mailserver abgelehnt. E-Mail-Adresse prüfen.';
+
+  @override
+  String get error_smtp_forbidden =>
+      'Aktion vom Mailserver verweigert. Berechtigungen prüfen.';
+
+  @override
+  String get error_smtp_unauthorized =>
+      'SMTP-Authentifizierung fehlgeschlagen. Login und Passwort prüfen.';
+
+  @override
+  String get error_tbot_conflict =>
+      'Chat-ID bei aktivem Webhook nicht abrufbar. Webhook löschen oder ID manuell eingeben.';
+
+  @override
+  String get error_tbot_forbidden =>
+      'Telegram hat die Aktion verweigert. Bot-Zugriff auf den Chat prüfen.';
+
+  @override
+  String get error_tbot_unauthorized =>
+      'Ungültiger Bot-Token. Bitte überprüfen.';
+
+  @override
+  String get error_tbot_uninitialized =>
+      'Chat-ID nicht gefunden. Starten Sie eine Konversation mit Ihrem Bot und versuchen Sie es erneut.';
+
+  @override
+  String get error_unexpectedError =>
+      'Ein unerwarteter Fehler ist aufgetreten. Bitte später versuchen.';
 }

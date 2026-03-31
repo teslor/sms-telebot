@@ -226,4 +226,64 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get help_filters_04 =>
       'Чтобы проверить, будет ли переслано определённое СМС с учётом установленных фильтров, введите нужного отправителя и/или сообщение в поля ввода и нажмите кнопку для проверки.';
+
+  @override
+  String get error_badRequest =>
+      'Ошибка при обработке запроса. Проверьте параметры подключения.';
+
+  @override
+  String get error_invalidParams =>
+      'Проверьте параметры подключения. Данные отсутствуют или некорректны.';
+
+  @override
+  String get error_networkError =>
+      'Проверьте подключение к интернету и попробуйте снова.';
+
+  @override
+  String get error_networkTimeout =>
+      'Превышено время ожидания. Проверьте интернет и попробуйте снова.';
+
+  @override
+  String get error_rateLimited =>
+      'Слишком много запросов. Пожалуйста, подождите немного и повторите попытку.';
+
+  @override
+  String get error_serverError =>
+      'Сервер временно недоступен. Пожалуйста, попробуйте позже.';
+
+  @override
+  String get error_smtpError =>
+      'Почтовый сервер вернул ошибку. Проверьте параметры подключения.';
+
+  @override
+  String get error_smtpRecipientsRejected =>
+      'Почтовый сервер отклонил получателя. Проверьте адрес почты.';
+
+  @override
+  String get error_smtp_forbidden =>
+      'Действие запрещено почтовым сервером. Проверьте права доступа.';
+
+  @override
+  String get error_smtp_unauthorized =>
+      'Ошибка авторизации SMTP. Проверьте логин и пароль.';
+
+  @override
+  String get error_tbot_conflict =>
+      'Не удалось получить ID чата при активном webhook. Удалите его или введите ID вручную.';
+
+  @override
+  String get error_tbot_forbidden =>
+      'Telegram отклонил действие. Убедитесь, что у бота есть доступ к чату.';
+
+  @override
+  String get error_tbot_unauthorized =>
+      'Неверный токен бота. Проверьте его и попробуйте снова.';
+
+  @override
+  String get error_tbot_uninitialized =>
+      'Не удалось получить ID чата. Начните диалог с ботом и попробуйте снова.';
+
+  @override
+  String get error_unexpectedError =>
+      'Произошла непредвиденная ошибка. Пожалуйста, попробуйте позже.';
 }

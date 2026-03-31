@@ -65,7 +65,8 @@ class SmsForwardWorker(
                 }.awaitAll()
             }
 
-            val successCount = results.count { it } // count the number of successful sends
+            val successCount = results.count { it.isSuccess } // count the number of successful sends
+            val shouldRetry = results.any { !it.isSuccess && it.shouldRetry }
 
             return@withContext if (successCount > 0) {
                 // If at least one send is successful - save the status
@@ -78,9 +79,11 @@ class SmsForwardWorker(
                         "sent_at" to System.currentTimeMillis()
                     )
                 )
-                Result.success() // do not repeat the task
+                Result.success()
+            } else if (shouldRetry) {
+                Result.retry() // retry only when at least one failure is temporary
             } else {
-                Result.retry() // if ALL sends failed - schedule a retry
+                Result.failure() // all failures are permanent, no retry needed
             }
         } finally {
             inFlightSmsIds.remove(smsId)
@@ -94,7 +97,7 @@ class SmsForwardWorker(
         body: String, 
         deviceLabel: String, 
         l10nSmsFrom: String
-    ): Boolean {
+    ): ProviderSendResult {
         return SmsProviderGateway.send(
             providerId = rule.provider,
             configJson = rule.configJson,
