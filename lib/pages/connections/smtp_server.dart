@@ -22,8 +22,9 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
   late TextEditingController _toEmailController;
   late TextEditingController _subjectController;
 
-  bool _isSaving = false;
+  bool _isTesting = false;
   bool _isInputChanged = false;
+  bool? _testResult;
   bool? _saveResult;
   bool _isPasswordVisible = false;
   bool _isPortManuallyEdited = false;
@@ -51,7 +52,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
     _protocol = _normalizeProtocol(config['protocol']);
     final initialPort = _parsePort(_portController.text.trim());
     _isPortManuallyEdited =
-      initialPort != null && initialPort != _defaultPortForProtocol(_protocol);
+      initialPort != null && initialPort != _defaultPort(_protocol);
   }
 
   @override
@@ -67,24 +68,13 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
   }
 
   String _normalizeProtocol(String? rawValue) {
-    if (rawValue == 'starttls' || rawValue == 'ssl' || rawValue == 'none') {
-      return rawValue!;
-    }
-    return 'starttls';
+    return (['starttls', 'ssl', 'none'].contains(rawValue)) ? rawValue! : 'starttls';
   }
 
-  int _defaultPortForProtocol(String protocol) {
-    switch (protocol) {
-      case 'starttls': return 587;
-      case 'ssl': return 465;
-      case 'none': return 25;
-      default: return 587;
-    }
-  }
-
-  bool _isValidEmail(String value) {
-    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-    return emailRegex.hasMatch(value);
+  int _defaultPort(String protocol) {
+    return switch (protocol) {
+      'starttls' => 587, 'ssl' => 465, 'none' => 25, _ => 587
+    };
   }
 
   int? _parsePort(String value) {
@@ -93,95 +83,131 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
     return parsed;
   }
 
-  bool get _isFormValid {
-    final host = _hostController.text.trim();
-    final port = _parsePort(_portController.text.trim());
-    final login = _loginController.text.trim();
-    final password = _passwordController.text;
-    final toEmail = _toEmailController.text.trim();
-
-    if (host.isEmpty || port == null || login.isEmpty || password.isEmpty) return false;
-    if (toEmail.isEmpty || !_isValidEmail(toEmail)) return false;
-    return true;
+  bool _isValidEmail(String value) {
+    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+    return emailRegex.hasMatch(value);
   }
 
-  Future<void> _testAndSaveSettings(AppLocalizations l10n) async {
-    FocusManager.instance.primaryFocus?.unfocus();
-    setState(() {
-      _isSaving = true;
-      _saveResult = null;
-    });
+  List<String> _parseRecipientEmails(String value) {
+    return value
+      .split(RegExp(r'[;,]'))
+      .map((email) => email.trim())
+      .where((email) => email.isNotEmpty)
+      .toList();
+  }
 
+  bool _isValidRecipientEmails(String value) {
+    final recipients = _parseRecipientEmails(value);
+    if (recipients.isEmpty) return false;
+    return recipients.every(_isValidEmail);
+  }
+
+  bool get _isValidInputs {
     final host = _hostController.text.trim();
     final port = _parsePort(_portController.text.trim());
     final login = _loginController.text.trim();
     final password = _passwordController.text;
     final fromEmail = _fromEmailController.text.trim();
-    final toEmail = _toEmailController.text.trim();
-    final subject = _subjectController.text.trim();
+    final toEmail = _toEmailController.text;
 
-    if (host.isEmpty || port == null || login.isEmpty || password.isEmpty ||
-        toEmail.isEmpty || !_isValidEmail(toEmail) ||
-        (fromEmail.isNotEmpty && !_isValidEmail(fromEmail))) {
-      if (mounted) {
-        setState(() {
-          _saveResult = false;
-          _isSaving = false;
-          _showErrorMessage(getLocalizedError(l10n, 'invalid_params'));
-        });
-      }
+    if (host.isEmpty || port == null || login.isEmpty || password.isEmpty) return false;
+    if (fromEmail.isNotEmpty && !_isValidEmail(fromEmail)) return false;
+    if (!_isValidRecipientEmails(toEmail)) return false;
+    return true;
+  }
+
+  Map<String, dynamic> _buildConfig() {
+    return {
+      'host': _hostController.text.trim(),
+      'protocol': _protocol,
+      'port': _parsePort(_portController.text.trim()),
+      'login': _loginController.text.trim(),
+      'password': _passwordController.text,
+      'fromEmail': _fromEmailController.text.trim(),
+      'toEmail': _parseRecipientEmails(_toEmailController.text).join(', '),
+      'subject': _subjectController.text.trim(),
+    };
+  }
+
+  Future<void> _testConnection(AppLocalizations l10n) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    setState(() {
+      _isTesting = true;
+      _testResult = null;
+    });
+    if (!_isValidInputs) {
+      setState(() {
+        _isTesting = false;
+        _testResult = false;
+        _showErrorMessage(getLocalizedError(l10n, 'invalid_params'));
+      });
       return;
     }
 
     final appState = context.read<AppState>();
-    final String helloMessage = AppLocalizations.of(context)?.sms_hello ?? '=^•⩊•^=';
+    final config = _buildConfig();
 
     try {
-      final config = {
-        'host': host,
-        'protocol': _protocol,
-        'port': port,
-        'login': login,
-        'password': password,
-        'fromEmail': fromEmail,
-        'toEmail': toEmail,
-        'subject': subject,
-      };
-
       final result = await sendToProviderNative(
         provider: 'smtp_server',
         config: config,
-        body: helloMessage,
+        body: l10n.sms_hello,
         deviceLabel: appState.deviceLabel,
       );
 
       if (result.isSuccess) {
-        await appState.updateConnectionData(config);
-
         if (mounted) {
-          setState(() {
-            _saveResult = true;
-            _isInputChanged = false;
-          });
+          setState(() { _testResult = true; });
         }
       } else {
         if (mounted) {
-          setState(() { _saveResult = false; });
+          setState(() { _testResult = false; });
           _showErrorMessage(getLocalizedError(l10n, result.code, 'smtp_server'));
         }
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() { _testResult = false; });
+        _showErrorMessage(getLocalizedError(l10n, 'unexpected_error'));
+      }
+    } finally {
+      if (mounted) setState(() { _isTesting = false; });
+    }
+  }
+
+  Future<void> _saveConnection(AppLocalizations l10n) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    if (!_isValidInputs) {
+      setState(() {
+        _saveResult = false;
+        _showErrorMessage(getLocalizedError(l10n, 'invalid_params'));
+      });
+      return;
+    }
+
+    final appState = context.read<AppState>();
+    final config = _buildConfig();
+    try {
+      await appState.updateConnectionData(config);
+      if (mounted) {
+        setState(() {
+          _saveResult = true;
+          _isInputChanged = false;
+        });
       }
     } catch (_) {
       if (mounted) {
         setState(() { _saveResult = false; });
         _showErrorMessage(getLocalizedError(l10n, 'unexpected_error'));
       }
-    } finally {
-      if (mounted) setState(() { _isSaving = false; });
     }
   }
 
   void _onChanged([String _ = '']) {
     setState(() {
+      _testResult = null;
       _saveResult = null;
       _isInputChanged = true;
     });
@@ -190,18 +216,20 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
   void _onPortChanged(String value) {
     final parsedPort = _parsePort(value.trim());
     setState(() {
+      _testResult = null;
       _saveResult = null;
       _isInputChanged = true;
       if (value.trim().isEmpty) {
         _isPortManuallyEdited = false;
       } else {
-        _isPortManuallyEdited = parsedPort != _defaultPortForProtocol(_protocol);
+        _isPortManuallyEdited = parsedPort != _defaultPort(_protocol);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final dropdownTextStyle = Theme.of(context)
       .textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400);
 
@@ -215,7 +243,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             keyboardType: TextInputType.url,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.smtp_host,
+              labelText: l10n.smtp_host,
             ),
             onChanged: _onChanged,
           ),
@@ -225,7 +253,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             style: dropdownTextStyle,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.smtp_protocol,
+              labelText: l10n.smtp_protocol,
             ),
             items: [
               DropdownMenuItem(
@@ -238,7 +266,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
               ),
               DropdownMenuItem(
                 value: 'none',
-                child: Text(AppLocalizations.of(context)!.smtp_protocolEmpty, style: dropdownTextStyle),
+                child: Text(l10n.smtp_protocolEmpty, style: dropdownTextStyle),
               ),
             ],
             onChanged: (value) {
@@ -246,9 +274,9 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
               setState(() {
                 _protocol = value;
                 if (!_isPortManuallyEdited) {
-                  _portController.text =
-                      _defaultPortForProtocol(value).toString();
+                  _portController.text = _defaultPort(value).toString();
                 }
+                _testResult = null;
                 _saveResult = null;
                 _isInputChanged = true;
               });
@@ -261,7 +289,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.smtp_port,
+              labelText: l10n.smtp_port,
             ),
             onChanged: _onPortChanged,
           ),
@@ -271,8 +299,8 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.smtp_login,
-              helperText: AppLocalizations.of(context)!.smtp_loginInfo,
+              labelText: l10n.smtp_login,
+              helperText: l10n.smtp_loginInfo,
             ),
             onChanged: _onChanged,
           ),
@@ -282,18 +310,14 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             obscureText: !_isPasswordVisible,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.smtp_password,
-              helperText: AppLocalizations.of(context)!.smtp_passwordInfo,
+              labelText: l10n.smtp_password,
+              helperText: l10n.smtp_passwordInfo,
               suffixIcon: IconButton(
                 icon: Icon(
-                  _isPasswordVisible
-                      ? Icons.visibility_off
-                      : Icons.visibility,
+                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
                 ),
                 onPressed: () {
-                  setState(() {
-                    _isPasswordVisible = !_isPasswordVisible;
-                  });
+                  setState(() { _isPasswordVisible = !_isPasswordVisible; });
                 },
               ),
             ),
@@ -305,8 +329,8 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.smtp_fromEmail,
-              helperText: AppLocalizations.of(context)!.smtp_fromEmailInfo,
+              labelText: l10n.smtp_fromEmail,
+              helperText: l10n.smtp_fromEmailInfo,
             ),
             onChanged: _onChanged,
           ),
@@ -316,8 +340,8 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.smtp_toEmail,
-              helperText: AppLocalizations.of(context)!.smtp_toEmailInfo,
+              labelText: l10n.smtp_toEmail,
+              helperText: l10n.smtp_toEmailInfo,
             ),
             onChanged: _onChanged,
           ),
@@ -326,21 +350,34 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             controller: _subjectController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.smtp_subject,
-              helperText: AppLocalizations.of(context)!.smtp_subjectInfo,
+              labelText: l10n.smtp_subject,
+              helperText: l10n.smtp_subjectInfo,
             ),
             onChanged: _onChanged,
           ),
         ],
       ),
 
-      bottomNavigationBar: ActionButton(
-        label: AppLocalizations.of(context)!.action_testAndSave,
-        onPressed: _isSaving || !_isInputChanged || !_isFormValid
-          ? null
-          : () => _testAndSaveSettings(AppLocalizations.of(context)!),
-        isSuccess: _saveResult,
-        isInProgress: _isSaving,
+      bottomNavigationBar: Row(
+        children:[
+          Expanded(
+            child: ActionButton(
+              label: l10n.action_test,
+              onPressed: _isTesting || !_isValidInputs ? null : () => _testConnection(l10n),
+              isSuccess: _testResult,
+              isInProgress: _isTesting,
+              layout: 'half-1',
+            ),
+          ),
+          Expanded(
+            child: ActionButton(
+              label: l10n.action_save,
+              onPressed: !_isInputChanged || !_isValidInputs ? null : () => _saveConnection(l10n),
+              isSuccess: _saveResult,
+              layout: 'half-2',
+            ),
+          )
+        ],
       ),
     );
   }

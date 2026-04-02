@@ -53,8 +53,8 @@ object SendCodes {
     const val NETWORK_TIMEOUT = "network_timeout"
     const val RATE_LIMITED = "rate_limited"
     const val SERVER_ERROR = "server_error"
+    const val SMTP_ADDRESS_REJECTED = "smtp_address_rejected"
     const val SMTP_ERROR = "smtp_error"
-    const val SMTP_RECIPIENTS_REJECTED = "smtp_recipients_rejected"
     const val UNAUTHORIZED = "unauthorized"
     const val UNEXPECTED_ERROR = "unexpected_error"
 }
@@ -420,7 +420,7 @@ object SmtpServerProvider : SmsProvider {
         val rootCause = error.cause ?: error
         return when {
             error is AuthenticationFailedException -> SendCodes.UNAUTHORIZED
-            error is SendFailedException -> SendCodes.SMTP_RECIPIENTS_REJECTED
+            error is SendFailedException -> SendCodes.SMTP_ADDRESS_REJECTED
             rootCause is SocketTimeoutException || error is SocketTimeoutException ->
                 SendCodes.NETWORK_TIMEOUT
             rootCause is UnknownHostException || rootCause is ConnectException ||

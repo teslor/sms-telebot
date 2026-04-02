@@ -93,8 +93,7 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
               label: AppLocalizations.of(context)!.action_test,
               onPressed: _testFilters,
               isSuccess: _testResult,
-              expand: false,
-              padding: const EdgeInsets.fromLTRB(20, 20, 7.5, 20),
+              layout: 'half-1',
             ),
           ),
           Expanded(
@@ -102,8 +101,7 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
               label: AppLocalizations.of(context)!.action_save,
               onPressed: _saveFilters,
               isSuccess: _saveResult,
-              expand: false,
-              padding: const EdgeInsets.fromLTRB(7.5, 20, 20, 20),
+              layout: 'half-2',
             ),
           )
         ],

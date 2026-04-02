@@ -229,11 +229,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_badRequest =>
-      'There was a problem processing your request. Ensure all connection parameters are correct.';
+      'Request was rejected. Check the entered connection parameters.';
 
   @override
   String get error_invalidParams =>
-      'Check your connection parameters. Some data is missing or incorrect.';
+      'Invalid connection parameters. Correct them and try again.';
 
   @override
   String get error_networkError =>
@@ -241,7 +241,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_networkTimeout =>
-      'The connection took too long. Check your internet and try again.';
+      'Request timed out. Check your internet and make sure connection parameters are correct.';
 
   @override
   String get error_rateLimited =>
@@ -252,24 +252,24 @@ class AppLocalizationsEn extends AppLocalizations {
       'The server is currently unavailable. Please try again later.';
 
   @override
-  String get error_smtpError =>
-      'The mail server returned an error. Verify your connection parameters.';
+  String get error_smtpAddressRejected =>
+      'The server rejected the sender or recipient email. Check the addresses.';
 
   @override
-  String get error_smtpRecipientsRejected =>
-      'The mail server rejected the recipient. Check the email address.';
+  String get error_smtpError =>
+      'The server returned an error. Check the entered connection parameters.';
 
   @override
   String get error_smtp_forbidden =>
-      'The mail server denied this action. Check sender and recipient permissions.';
+      'Action was rejected by the server. Check access permissions.';
 
   @override
   String get error_smtp_unauthorized =>
-      'SMTP authentication failed. Check your login and password.';
+      'Authorization error. Check your login and password.';
 
   @override
   String get error_tbot_conflict =>
-      'Unable to get chat ID while webhook is active. Delete the webhook or enter Chat ID manually.';
+      'Unable to get chat ID. Remove the active webhook or enter the ID manually.';
 
   @override
   String get error_tbot_forbidden =>
@@ -277,11 +277,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_tbot_unauthorized =>
-      'The bot token is incorrect. Check it and try again.';
+      'Authorization error. Enter a valid token and try again.';
 
   @override
   String get error_tbot_uninitialized =>
-      'Unable to get chat ID. Start conversation with your bot and try again.';
+      'Unable to get chat ID. Start a conversation with your bot in Telegram and try again.';
 
   @override
   String get error_unexpectedError =>

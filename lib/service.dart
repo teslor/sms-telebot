@@ -93,8 +93,8 @@ String getLocalizedError(AppLocalizations l10n, String code, [String? provider])
     'network_timeout' => l10n.error_networkTimeout,
     'rate_limited' => l10n.error_rateLimited,
     'server_error' => l10n.error_serverError,
+    'smtp_address_rejected' => l10n.error_smtpAddressRejected,
     'smtp_error' => l10n.error_smtpError,
-    'smtp_recipients_rejected' => l10n.error_smtpRecipientsRejected,
     'unauthorized' => switch (provider) {
       'smtp_server' => l10n.error_smtp_unauthorized,
       'telegram_bot' => l10n.error_tbot_unauthorized,

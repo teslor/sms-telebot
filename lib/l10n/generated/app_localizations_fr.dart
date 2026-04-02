@@ -231,11 +231,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get error_badRequest =>
-      'Erreur lors du traitement de la requête. Vérifiez les paramètres de connexion.';
+      'La requête a été rejetée. Vérifiez les paramètres de connexion saisis.';
 
   @override
   String get error_invalidParams =>
-      'Paramètres incorrects. Des données sont manquantes ou erronées.';
+      'Paramètres de connexion invalides. Corrigez-les et réessayez.';
 
   @override
   String get error_networkError =>
@@ -243,7 +243,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get error_networkTimeout =>
-      'Délai de connexion dépassé. Vérifiez votre réseau et réessayez.';
+      'Délai d\'attente dépassé. Vérifiez votre connexion internet et assurez-vous que les paramètres de connexion sont corrects.';
 
   @override
   String get error_rateLimited =>
@@ -254,24 +254,24 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le serveur est actuellement indisponible. Veuillez réessayer plus tard.';
 
   @override
-  String get error_smtpError =>
-      'Le serveur de messagerie a renvoyé une erreur. Vérifiez la configuration.';
+  String get error_smtpAddressRejected =>
+      'Le serveur a rejeté l\'e-mail de l\'expéditeur ou du destinataire. Vérifiez les adresses.';
 
   @override
-  String get error_smtpRecipientsRejected =>
-      'Destinataire refusé par le serveur. Vérifiez l\'adresse e-mail.';
+  String get error_smtpError =>
+      'Le serveur a renvoyé une erreur. Vérifiez les paramètres de connexion saisis.';
 
   @override
   String get error_smtp_forbidden =>
-      'Action refusée par le serveur de messagerie. Vérifiez les permissions.';
+      'L\'action a été rejetée par le serveur. Vérifiez les droits d\'accès.';
 
   @override
   String get error_smtp_unauthorized =>
-      'Échec de l\'authentification SMTP. Vérifiez l\'identifiant et le mot de passe.';
+      'Erreur d\'autorisation. Vérifiez l\'identifiant et le mot de passe.';
 
   @override
   String get error_tbot_conflict =>
-      'Impossible d\'obtenir l\'ID du chat avec un webhook actif. Supprimez le webhook ou saisissez l\'ID manuellement.';
+      'Impossible d\'obtenir l\'ID du chat. Supprimez le webhook actif ou saisissez l\'ID manuellement.';
 
   @override
   String get error_tbot_forbidden =>
@@ -279,11 +279,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get error_tbot_unauthorized =>
-      'Le jeton (token) du bot est incorrect. Vérifiez-le et réessayez.';
+      'Erreur d\'autorisation. Saisissez un jeton valide et réessayez.';
 
   @override
   String get error_tbot_uninitialized =>
-      'Impossible d\'obtenir l\'ID du chat. Lancez une conversation avec votre bot et réessayez.';
+      'Impossible d\'obtenir l\'ID du chat. Démarrez un dialogue avec votre bot dans Telegram et réessayez.';
 
   @override
   String get error_unexpectedError =>

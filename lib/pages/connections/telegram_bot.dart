@@ -17,9 +17,9 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
   late TextEditingController _botTokenController;
   late TextEditingController _chatIdController;
 
-  bool _isSaving = false;
+  bool _isTesting = false;
   bool _isInputChanged = false;
-  bool _isBotTokenCorrect = false;
+  bool? _testResult;
   bool? _saveResult;
 
   void _showErrorMessage(String message) {
@@ -35,7 +35,6 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     final config = context.read<AppState>().config;
     _botTokenController = TextEditingController(text: config['botToken'] ?? '');
     _chatIdController = TextEditingController(text: config['chatId']?.toString() ?? '');
-    _isBotTokenCorrect = _validateBotToken(_botTokenController.text);
   }
 
   @override
@@ -45,26 +44,40 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     super.dispose();
   }
 
-  bool _validateBotToken(String value) {
-    final regex = RegExp(r'^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$');
-    return regex.hasMatch(value);
+  bool get _isValidInputs {
+    final botTokenRegex = RegExp(r'^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$');
+    final isBotTokenValid = botTokenRegex.hasMatch(_botTokenController.text);
+    final chatId = _chatIdController.text.trim();
+    final isChatIdValid = chatId.isEmpty || int.tryParse(chatId) != null;
+    return isBotTokenValid && isChatIdValid;
   }
 
-  Future<void> _testAndSaveSettings(AppLocalizations l10n) async {
-    setState(() { _isSaving = true; _saveResult = null; });
+  Future<void> _testConnection(AppLocalizations l10n) async {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    final appState = context.read<AppState>();
-    String testBotToken = _botTokenController.text;
-    String testChatId = _chatIdController.text;
+    setState(() {
+      _isTesting = true;
+      _testResult = null;
+    });
+    if (!_isValidInputs) {
+      setState(() {
+        _isTesting = false;
+        _testResult = false;
+        _showErrorMessage(getLocalizedError(l10n, 'invalid_params'));
+      });
+      return;
+    }
 
-    final String helloMessage = AppLocalizations.of(context)?.sms_hello ?? '=^•⩊•^=';
+    final appState = context.read<AppState>();
+    final botToken = _botTokenController.text;
+    String chatId = _chatIdController.text;
+    final String helloMessage = l10n.sms_hello;
 
     try {
-      if (testChatId.isEmpty) {
-        final result = await getUpdates(testBotToken);
+      if (chatId.isEmpty) {
+        final result = await getUpdates(botToken);
         if (result.chatId != null) {
-          testChatId = result.chatId!;
+          chatId = result.chatId!;
         } else {
           _showErrorMessage(getLocalizedError(l10n, result.code, 'telegram_bot'));
           return;
@@ -73,39 +86,66 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
 
       final result = await sendToProviderNative(
         provider: 'telegram_bot',
-        config: { 'botToken': testBotToken,'chatId': testChatId },
+        config: { 'botToken': botToken,'chatId': chatId },
         body: helloMessage,
         deviceLabel: appState.deviceLabel,
       );
 
       if (result.isSuccess) {
-        await appState.updateConnectionData({ 'botToken': testBotToken, 'chatId': testChatId });
         if (mounted) {
-          setState(() { 
-            _saveResult = true; 
-            _chatIdController.text = testChatId; 
-            _isInputChanged = false; 
-          });
+          setState(() { _testResult = true; });
         }
-        return;
-      }
-
-      if (mounted) {
-        setState(() { _saveResult = false; });
-        _showErrorMessage(getLocalizedError(l10n, result.code, 'telegram_bot'));
+      } else {
+        if (mounted) {
+          setState(() { _testResult = false; });
+          _showErrorMessage(getLocalizedError(l10n, result.code, 'telegram_bot'));
+        }
       }
     } catch (e) {
+      if (mounted) {
+        setState(() { _testResult = false; });
+        _showErrorMessage(getLocalizedError(l10n, 'unexpected_error'));
+      }
+    } finally {
+      if (mounted) setState(() { _isTesting = false; });
+    }
+  }
+
+  Future<void> _saveConnection(AppLocalizations l10n) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    if (!_isValidInputs) {
+      setState(() {
+        _saveResult = false;
+        _showErrorMessage(getLocalizedError(l10n, 'invalid_params'));
+      });
+      return;
+    }
+
+    final appState = context.read<AppState>();
+    try {
+      await appState.updateConnectionData({
+        'botToken': _botTokenController.text.trim(),
+        'chatId': _chatIdController.text.trim(),
+      });
+      if (mounted) {
+        setState(() {
+          _saveResult = true;
+          _isInputChanged = false;
+        });
+      }
+    } catch (_) {
       if (mounted) {
         setState(() { _saveResult = false; });
         _showErrorMessage(getLocalizedError(l10n, 'unexpected_error'));
       }
-    } finally {
-      if (mounted) setState(() { _isSaving = false; });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -115,12 +155,12 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
             controller: _botTokenController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.telebot_token,
-              helperText: AppLocalizations.of(context)!.telebot_tokenInfo,
+              labelText: l10n.telebot_token,
+              helperText: l10n.telebot_tokenInfo,
               helperMaxLines: 2,
             ),
             onChanged: (String value) {
-              setState(() { _saveResult = null; _isInputChanged = true; _isBotTokenCorrect = _validateBotToken(value); });
+              setState(() { _saveResult = null; _isInputChanged = true; });
             },
           ),
           const SizedBox(height: 20),
@@ -128,8 +168,8 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
             controller: _chatIdController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.telebot_chatId,
-              helperText: AppLocalizations.of(context)!.telebot_chatIdInfo,
+              labelText: l10n.telebot_chatId,
+              helperText: l10n.telebot_chatIdInfo,
               helperMaxLines: 2,
             ),
             keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: true),
@@ -141,13 +181,26 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
         ],
       ),
 
-      bottomNavigationBar: ActionButton(
-        label: AppLocalizations.of(context)!.action_testAndSave,
-        onPressed: _isSaving || !_isInputChanged || !_isBotTokenCorrect
-          ? null
-          : () => _testAndSaveSettings(AppLocalizations.of(context)!),
-        isSuccess: _saveResult,
-        isInProgress: _isSaving,
+      bottomNavigationBar: Row(
+        children:[
+          Expanded(
+            child: ActionButton(
+              label: l10n.action_test,
+              onPressed: _isTesting || !_isValidInputs ? null : () => _testConnection(l10n),
+              isSuccess: _testResult,
+              isInProgress: _isTesting,
+              layout: 'half-1',
+            ),
+          ),
+          Expanded(
+            child: ActionButton(
+              label: l10n.action_save,
+              onPressed: !_isInputChanged || !_isValidInputs ? null : () => _saveConnection(l10n),
+              isSuccess: _saveResult,
+              layout: 'half-2',
+            ),
+          )
+        ],
       ),
     );
   }

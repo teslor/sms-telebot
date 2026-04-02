@@ -529,13 +529,13 @@ abstract class AppLocalizations {
   /// No description provided for @error_badRequest.
   ///
   /// In en, this message translates to:
-  /// **'There was a problem processing your request. Ensure all connection parameters are correct.'**
+  /// **'Request was rejected. Check the entered connection parameters.'**
   String get error_badRequest;
 
   /// No description provided for @error_invalidParams.
   ///
   /// In en, this message translates to:
-  /// **'Check your connection parameters. Some data is missing or incorrect.'**
+  /// **'Invalid connection parameters. Correct them and try again.'**
   String get error_invalidParams;
 
   /// No description provided for @error_networkError.
@@ -547,7 +547,7 @@ abstract class AppLocalizations {
   /// No description provided for @error_networkTimeout.
   ///
   /// In en, this message translates to:
-  /// **'The connection took too long. Check your internet and try again.'**
+  /// **'Request timed out. Check your internet and make sure connection parameters are correct.'**
   String get error_networkTimeout;
 
   /// No description provided for @error_rateLimited.
@@ -562,34 +562,34 @@ abstract class AppLocalizations {
   /// **'The server is currently unavailable. Please try again later.'**
   String get error_serverError;
 
+  /// No description provided for @error_smtpAddressRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'The server rejected the sender or recipient email. Check the addresses.'**
+  String get error_smtpAddressRejected;
+
   /// No description provided for @error_smtpError.
   ///
   /// In en, this message translates to:
-  /// **'The mail server returned an error. Verify your connection parameters.'**
+  /// **'The server returned an error. Check the entered connection parameters.'**
   String get error_smtpError;
-
-  /// No description provided for @error_smtpRecipientsRejected.
-  ///
-  /// In en, this message translates to:
-  /// **'The mail server rejected the recipient. Check the email address.'**
-  String get error_smtpRecipientsRejected;
 
   /// No description provided for @error_smtp_forbidden.
   ///
   /// In en, this message translates to:
-  /// **'The mail server denied this action. Check sender and recipient permissions.'**
+  /// **'Action was rejected by the server. Check access permissions.'**
   String get error_smtp_forbidden;
 
   /// No description provided for @error_smtp_unauthorized.
   ///
   /// In en, this message translates to:
-  /// **'SMTP authentication failed. Check your login and password.'**
+  /// **'Authorization error. Check your login and password.'**
   String get error_smtp_unauthorized;
 
   /// No description provided for @error_tbot_conflict.
   ///
   /// In en, this message translates to:
-  /// **'Unable to get chat ID while webhook is active. Delete the webhook or enter Chat ID manually.'**
+  /// **'Unable to get chat ID. Remove the active webhook or enter the ID manually.'**
   String get error_tbot_conflict;
 
   /// No description provided for @error_tbot_forbidden.
@@ -601,13 +601,13 @@ abstract class AppLocalizations {
   /// No description provided for @error_tbot_unauthorized.
   ///
   /// In en, this message translates to:
-  /// **'The bot token is incorrect. Check it and try again.'**
+  /// **'Authorization error. Enter a valid token and try again.'**
   String get error_tbot_unauthorized;
 
   /// No description provided for @error_tbot_uninitialized.
   ///
   /// In en, this message translates to:
-  /// **'Unable to get chat ID. Start conversation with your bot and try again.'**
+  /// **'Unable to get chat ID. Start a conversation with your bot in Telegram and try again.'**
   String get error_tbot_uninitialized;
 
   /// No description provided for @error_unexpectedError.

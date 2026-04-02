@@ -5,8 +5,7 @@ class ActionButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool? isSuccess;
   final bool isInProgress;
-  final EdgeInsetsGeometry padding;
-  final bool expand;
+  final String? layout;
 
   const ActionButton({
     super.key,
@@ -14,8 +13,7 @@ class ActionButton extends StatelessWidget {
     required this.onPressed,
     required this.isSuccess,
     this.isInProgress = false,
-    this.padding = const EdgeInsets.all(20),
-    this.expand = true,
+    this.layout,
   });
 
   static const double iconSize = 20;
@@ -40,12 +38,12 @@ class ActionButton extends StatelessWidget {
       ),
     );
 
-    final content = expand ? SizedBox(width: double.infinity, child: button) : button;
-    if (padding == EdgeInsets.zero) return content;
+    final padding = switch (layout) {
+      'half-1' => const EdgeInsets.fromLTRB(20, 20, 7.5, 20),
+      'half-2' => const EdgeInsets.fromLTRB(7.5, 20, 20, 20),
+      _ => const EdgeInsets.all(20)
+    };
 
-    return Padding(
-      padding: padding,
-      child: content,
-    );
+    return Padding(padding: padding, child: button);
   }
 }

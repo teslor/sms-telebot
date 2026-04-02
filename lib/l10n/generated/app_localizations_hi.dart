@@ -229,11 +229,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get error_badRequest =>
-      'अनुरोध प्रोसेस करने में समस्या हुई। कृपया कनेक्शन मापदंडों की जांच करें।';
+      'अनुरोध अस्वीकार कर दिया गया। दर्ज किए गए कनेक्शन पैरामीटर जांचें।';
 
   @override
   String get error_invalidParams =>
-      'कनेक्शन मापदंडों की जांच करें। कुछ डेटा गायब है या गलत है।';
+      'कनेक्शन पैरामीटर अमान्य हैं। उन्हें ठीक करें और फिर से प्रयास करें।';
 
   @override
   String get error_networkError =>
@@ -241,7 +241,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get error_networkTimeout =>
-      'कनेक्शन में बहुत समय लगा। अपना इंटरनेट जांचें और फिर से प्रयास करें।';
+      'समय सीमा समाप्त हो गई। इंटरनेट जांचें और सुनिश्चित करें कि दर्ज किए गए कनेक्शन पैरामीटर सही हैं।';
 
   @override
   String get error_rateLimited =>
@@ -252,24 +252,24 @@ class AppLocalizationsHi extends AppLocalizations {
       'सर्वर वर्तमान में उपलब्ध नहीं है। कृपया बाद में प्रयास करें।';
 
   @override
-  String get error_smtpError =>
-      'मेल सर्वर ने त्रुटि दी। अपने कनेक्शन मापदंडों को सत्यापित करें।';
+  String get error_smtpAddressRejected =>
+      'सर्वर ने प्रेषक या प्राप्तकर्ता का ईमेल अस्वीकार कर दिया। पते जांचें।';
 
   @override
-  String get error_smtpRecipientsRejected =>
-      'मेल सर्वर ने प्राप्तकर्ता को अस्वीकार कर दिया। ईमेल पता जांचें।';
+  String get error_smtpError =>
+      'सर्वर ने त्रुटि लौटाई। दर्ज किए गए कनेक्शन पैरामीटर जांचें।';
 
   @override
   String get error_smtp_forbidden =>
-      'मेल सर्वर ने इस कार्रवाई को रोक दिया। अनुमतियों की जांच करें।';
+      'कार्रवाई सर्वर द्वारा अस्वीकार कर दी गई। एक्सेस अधिकार जांचें।';
 
   @override
   String get error_smtp_unauthorized =>
-      'SMTP प्रमाणीकरण विफल। लॉगिन और पासवर्ड जांचें।';
+      'प्राधिकरण त्रुटि। लॉगिन और पासवर्ड जांचें।';
 
   @override
   String get error_tbot_conflict =>
-      'वेबहुक सक्रिय होने पर चैट आईडी प्राप्त नहीं की जा सकती। वेबहुक हटाएं या आईडी मैन्युअल रूप से दर्ज करें।';
+      'चैट आईडी प्राप्त नहीं हो सकी। सक्रिय वेबहुक हटाएं या आईडी मैन्युअल रूप से दर्ज करें।';
 
   @override
   String get error_tbot_forbidden =>
@@ -277,11 +277,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get error_tbot_unauthorized =>
-      'बॉट टोकन गलत है। इसे जांचें और फिर से प्रयास करें।';
+      'प्राधिकरण त्रुटि। सही टोकन दर्ज करें और फिर से प्रयास करें।';
 
   @override
   String get error_tbot_uninitialized =>
-      'चैट आईडी प्राप्त करने में असमर्थ। अपने बॉट के साथ बातचीत शुरू करें और फिर से प्रयास करें।';
+      'चैट आईडी प्राप्त नहीं हो सकी। Telegram में अपने बॉट के साथ संवाद शुरू करें और फिर से प्रयास करें।';
 
   @override
   String get error_unexpectedError =>

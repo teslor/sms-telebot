@@ -229,11 +229,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get error_badRequest =>
-      'Ошибка при обработке запроса. Проверьте параметры подключения.';
+      'Запрос отклонён. Проверьте введённые параметры подключения.';
 
   @override
   String get error_invalidParams =>
-      'Проверьте параметры подключения. Данные отсутствуют или некорректны.';
+      'Некорректные параметры подключения. Исправьте и попробуйте снова.';
 
   @override
   String get error_networkError =>
@@ -241,7 +241,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get error_networkTimeout =>
-      'Превышено время ожидания. Проверьте интернет и попробуйте снова.';
+      'Превышено время ожидания. Проверьте интернет и убедитесь, что введены корректные параметры подключения.';
 
   @override
   String get error_rateLimited =>
@@ -252,24 +252,24 @@ class AppLocalizationsRu extends AppLocalizations {
       'Сервер временно недоступен. Пожалуйста, попробуйте позже.';
 
   @override
-  String get error_smtpError =>
-      'Почтовый сервер вернул ошибку. Проверьте параметры подключения.';
+  String get error_smtpAddressRejected =>
+      'Сервер отклонил email отправителя или получателя. Проверьте адреса.';
 
   @override
-  String get error_smtpRecipientsRejected =>
-      'Почтовый сервер отклонил получателя. Проверьте адрес почты.';
+  String get error_smtpError =>
+      'Сервер вернул ошибку. Проверьте введённые параметры подключения.';
 
   @override
   String get error_smtp_forbidden =>
-      'Действие запрещено почтовым сервером. Проверьте права доступа.';
+      'Действие отклонено сервером. Проверьте права доступа.';
 
   @override
   String get error_smtp_unauthorized =>
-      'Ошибка авторизации SMTP. Проверьте логин и пароль.';
+      'Ошибка авторизации. Проверьте логин и пароль.';
 
   @override
   String get error_tbot_conflict =>
-      'Не удалось получить ID чата при активном webhook. Удалите его или введите ID вручную.';
+      'Не удалось получить ID чата. Удалите активный webhook или введите ID вручную.';
 
   @override
   String get error_tbot_forbidden =>
@@ -277,11 +277,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get error_tbot_unauthorized =>
-      'Неверный токен бота. Проверьте его и попробуйте снова.';
+      'Ошибка авторизации. Введите корректный токен и попробуйте снова.';
 
   @override
   String get error_tbot_uninitialized =>
-      'Не удалось получить ID чата. Начните диалог с ботом и попробуйте снова.';
+      'Не удалось получить ID чата. Начните диалог с ботом в Telegram и попробуйте снова.';
 
   @override
   String get error_unexpectedError =>
