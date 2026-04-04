@@ -51,8 +51,8 @@ class SmsReceiver : BroadcastReceiver() {
     }
 
     private fun processSmsInBackground(context: Context, intent: Intent) {
-        val dbHelper = DbHelper.getInstance(context)
-        val isRunning = dbHelper.getBoolSetting("isRunning")
+        val dbManager = DbManager.getInstance(context)
+        val isRunning = dbManager.getBoolSetting("isRunning")
         if (!isRunning) return
 
         // Extract all message parts, for multipart SMS we concatenate bodies
@@ -75,12 +75,12 @@ class SmsReceiver : BroadcastReceiver() {
 
         // Android/network may redeliver the same SMS back-to-back
         // If it's a duplicate, do not schedule background work
-        val lastReceivedId = dbHelper.getLastReceivedSmsId()
+        val lastReceivedId = dbManager.getLastReceivedSmsId()
         if (smsId == lastReceivedId) return
 
         // Immediately save all SMS information to sms_history
         val deviceReceivedAt = System.currentTimeMillis()
-        dbHelper.insertSmsHistory(
+        dbManager.insertSmsHistory(
             id = smsId,
             sender = sender,
             body = body,
@@ -93,11 +93,11 @@ class SmsReceiver : BroadcastReceiver() {
         if (Random.nextInt(10) == 0) {
             // Take current device time minus 24 hours in milliseconds
             val timeLimit = System.currentTimeMillis() - (24 * 60 * 60 * 1000L)
-            dbHelper.deleteOldSms(timeLimit)
+            dbManager.deleteOldSms(timeLimit)
         }
 
         // Get all active forwarding rules
-        val activeRules = dbHelper.getActiveRules()
+        val activeRules = dbManager.getActiveRules()
         val matchedRuleIds = mutableListOf<Int>()
 
         // Iterate through all rules and check filters

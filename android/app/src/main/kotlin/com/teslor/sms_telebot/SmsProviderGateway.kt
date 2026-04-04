@@ -106,7 +106,7 @@ object SmsProviderGateway {
 // ================================================================================
 
 object TelegramBotProvider : SmsProvider {
-    override val id: String = SmsContract.Providers.TELEGRAM_BOT
+    override val id: String = AppContract.Providers.TELEGRAM_BOT
 
     override fun send(configJson: String?, payload: SmsForwardPayload): ProviderSendResult {
         if (configJson.isNullOrBlank()) {
@@ -307,8 +307,7 @@ object TelegramBotProvider : SmsProvider {
 // ================================================================================
 
 object SmtpServerProvider : SmsProvider {
-    override val id: String = SmsContract.Providers.SMTP_SERVER
-    private const val TAG = "SmtpServerProvider"
+    override val id: String = AppContract.Providers.SMTP_SERVER
 
     override fun send(configJson: String?, payload: SmsForwardPayload): ProviderSendResult {
         if (configJson.isNullOrBlank()) {

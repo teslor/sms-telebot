@@ -30,8 +30,8 @@ class SmsForwardWorker(
     }
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        val dbHelper = DbHelper.getInstance(applicationContext)
-        val isRunning = dbHelper.getBoolSetting("isRunning")
+        val dbManager = DbManager.getInstance(applicationContext)
+        val isRunning = dbManager.getBoolSetting("isRunning")
         if (!isRunning) return@withContext Result.success()
 
         // Read input data from receiver
@@ -43,18 +43,18 @@ class SmsForwardWorker(
 
         try {
             // Check if SMS exists and was not already sent
-            val smsData = dbHelper.getSmsById(smsId) ?: return@withContext Result.failure()
+            val smsData = dbManager.getSmsById(smsId) ?: return@withContext Result.failure()
             if (smsData.status != 0) {
                 return@withContext Result.success() // already processed (deduplication)
             }
 
             // Get rules from DB by their IDs
-            val rules = dbHelper.getRulesByIds(ruleIds)
+            val rules = dbManager.getRulesByIds(ruleIds)
             if (rules.isEmpty()) return@withContext Result.success()
 
             // Read common settings
-            val deviceLabel = dbHelper.getSetting("deviceLabel").orEmpty()
-            val l10nSmsFrom = dbHelper.getSetting("l10nSmsFrom").orEmpty().ifBlank { "SMS from" }
+            val deviceLabel = dbManager.getSetting("deviceLabel").orEmpty()
+            val l10nSmsFrom = dbManager.getSetting("l10nSmsFrom").orEmpty().ifBlank { "SMS from" }
 
             // Start parallel sending
             val results = coroutineScope {
@@ -72,7 +72,7 @@ class SmsForwardWorker(
                 // If at least one send is successful - save the status
                 val newStatus = if (successCount == rules.size) 1 else 2 // 1 = all ok, 2 = partially
 
-                dbHelper.updateSmsHistory(
+                dbManager.updateSmsHistory(
                     id = smsId,
                     updates = mapOf(
                         "status" to newStatus,

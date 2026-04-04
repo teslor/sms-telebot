@@ -14,6 +14,7 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        val secureStorage = SecureStorageManager.getInstance(context)
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, MAIN_CHANNEL)
             .setMethodCallHandler { call, result ->
@@ -56,6 +57,7 @@ class MainActivity : FlutterActivity() {
                             }
                         }
                     }
+
                     "checkFilters" -> {
                         val mode = call.argument<Int>("mode") ?: 0
                         val sender = call.argument<String>("sender") ?: ""
@@ -86,6 +88,36 @@ class MainActivity : FlutterActivity() {
                         val isValid = SmsFilters.isValidRegex(text)
                         result.success(isValid)
                     }
+
+                    "saveSecret" -> {
+                        val id = call.argument<String>("id")
+                        val secret = call.argument<String>("secret")
+                        if (id != null && secret != null) {
+                            val saveResult = secureStorage.saveSecret(id, secret)
+                            result.success(saveResult.toMap())
+                        } else {
+                            result.success(SecretResult(isSuccess = false, code = "unexpected_error").toMap())
+                        }
+                    }
+                    "readSecret" -> {
+                        val id = call.argument<String>("id")
+                        if (id != null) {
+                            val readResult = secureStorage.readSecret(id)
+                            result.success(readResult.toMap())
+                        } else {
+                            result.success(SecretResult(isSuccess = false, code = "unexpected_error").toMap())
+                        }
+                    }
+                    "deleteSecret" -> {
+                        val id = call.argument<String>("id")
+                        if (id != null) {
+                            val deleteResult = secureStorage.deleteSecret(id)
+                            result.success(deleteResult.toMap())
+                        } else {
+                            result.success(SecretResult(isSuccess = false, code = "unexpected_error").toMap())
+                        }
+                    }
+
                     else -> result.notImplemented()
                 }
             }

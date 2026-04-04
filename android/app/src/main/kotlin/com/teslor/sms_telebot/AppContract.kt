@@ -3,7 +3,7 @@ package com.teslor.sms_telebot
 import org.json.JSONArray
 import org.json.JSONObject
 
-object SmsContract {
+object AppContract {
     object Providers {
         const val TELEGRAM_BOT = "telegram_bot"
         const val SMTP_SERVER = "smtp_server"
@@ -15,7 +15,7 @@ object SmsContract {
 }
 
 object SmsFilters {
-    private val filterKeys = SmsContract.Keys.FILTER_KEYS
+    private val filterKeys = AppContract.Keys.FILTER_KEYS
 
     data class Lists(
         val whitelistSenders: List<String>,

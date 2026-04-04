@@ -10,18 +10,20 @@ data class SmsData(val sender: String, val body: String, val status: Int)
 data class ForwardingRule(val id: Int, val filterMode: Int, val filtersJson: String?)
 data class ForwardingRuleConfig(val id: Int, val provider: String, val configJson: String?)
 
-class DbHelper private constructor(private val context: Context) {
+class DbManager private constructor(private val context: Context) {
+
+    private val TAG = "Database"
     private val dbLock = Any()
     @Volatile
     private var database: SQLiteDatabase? = null
 
     companion object {
         @Volatile
-        private var instance: DbHelper? = null
+        private var instance: DbManager? = null
 
         // Singleton pattern to keep a single DB instance for the whole app
-        fun getInstance(context: Context): DbHelper = instance ?: synchronized(this) {
-            instance ?: DbHelper(context.applicationContext).also { instance = it }
+        fun getInstance(context: Context): DbManager = instance ?: synchronized(this) {
+            instance ?: DbManager(context.applicationContext).also { instance = it }
         }
     }
 
@@ -29,8 +31,8 @@ class DbHelper private constructor(private val context: Context) {
     private fun getOrOpenDatabase(): SQLiteDatabase? {
         database?.let { if (it.isOpen) return it }
 
-        val dbFile = context.getDatabasePath("sms_telebot.db")
-        if (!dbFile.exists()) return null
+        val mainDb = context.getDatabasePath("main.db")
+        if (!mainDb.exists()) return null
 
         // Slow path: ensure only one thread opens/stores the connection
         synchronized(dbLock) {
@@ -38,7 +40,7 @@ class DbHelper private constructor(private val context: Context) {
 
             return try {
                 SQLiteDatabase.openDatabase(
-                    dbFile.absolutePath,
+                    mainDb.absolutePath,
                     null,
                     SQLiteDatabase.OPEN_READWRITE
                 ).apply {
@@ -48,7 +50,7 @@ class DbHelper private constructor(private val context: Context) {
                     database = opened
                 }
             } catch (e: SQLiteException) {
-                Log.e("DbHelper", "Error opening database. Maybe it doesn't exist yet", e)
+                Log.e(TAG, "Error opening database. Maybe it doesn't exist yet", e)
                 null
             }
         }
@@ -59,7 +61,7 @@ class DbHelper private constructor(private val context: Context) {
         return try {
             block(db)
         } catch (e: SQLiteException) {
-            Log.e("DbHelper", "Database operation failed", e)
+            Log.e(TAG, "Database operation failed", e)
             null
         }
     }
