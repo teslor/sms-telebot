@@ -1,10 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../extensions/build_context_x.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../service.dart';
 import '../state.dart';
 import '../widgets/action_button.dart';
 import 'connections/registry.dart';
 import 'rule_page.dart';
+
+Future<void> _runAppStateAction(
+  BuildContext context,
+  Future<CallResult> Function() action, {
+  String? provider,
+}) async {
+  final l10n = AppLocalizations.of(context)!;
+  try {
+    final result = await action();
+    if (!context.mounted) return;
+    if (!result.isSuccess) {
+      context.showErrorSnack(getLocalizedError(l10n, result.code, provider));
+    }
+  } catch (_) {
+    if (!context.mounted) return;
+    context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
+  }
+}
 
 class RulesMainPage extends StatelessWidget {
   const RulesMainPage({super.key});
@@ -96,7 +116,11 @@ class RulesPage extends StatelessWidget {
           if (selectedProvider == null || !context.mounted) return;
           final l10n = AppLocalizations.of(context)!;
           final name = _providerName(selectedProvider, l10n);
-          await appState.addRule(provider: selectedProvider, name: name, autoSelect: true);
+          await _runAppStateAction(
+            context,
+            () => appState.addRule(name: name, provider: selectedProvider, autoSelect: true),
+            provider: selectedProvider,
+          );
         },
       ),
     );
@@ -123,9 +147,13 @@ class RuleCard extends StatelessWidget {
               return ListTile(
                 leading: const Icon(Icons.control_point_duplicate),
                 title: Text(AppLocalizations.of(context)!.action_duplicate),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(bottomSheetContext);
-                  appState.duplicateRule(rule);
+                  await _runAppStateAction(
+                    context,
+                    () => appState.duplicateRule(rule),
+                    provider: rule['provider']
+                  );
                 },
               );
             }
@@ -161,9 +189,13 @@ class RuleCard extends StatelessWidget {
                         child: Text(AppLocalizations.of(context)!.action_cancel),
                       ),
                       TextButton(
-                        onPressed: () {
-                          appState.deleteRule(rule['id']);
-                          Navigator.pop(dialogContext);
+                        onPressed: () async {
+                          await _runAppStateAction(
+                            context,
+                            () => appState.deleteRule(rule['id']),
+                            provider: rule['provider'],
+                          );
+                          if (dialogContext.mounted) Navigator.pop(dialogContext);
                         },
                         child: Text(
                           AppLocalizations.of(context)!.action_delete,
@@ -189,8 +221,12 @@ class RuleCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 15),
       child: InkWell(
-        onTap: () {
-          appState.selectRule(rule);
+        onTap: () async {
+          await _runAppStateAction(
+            context,
+            () => appState.selectRule(rule),
+            provider: rule['provider'],
+          );
         },
         onLongPress: () {
           _showActionMenu(context, appState);
@@ -210,8 +246,16 @@ class RuleCard extends StatelessWidget {
               Switch(
                 value: isActive,
                 activeColor: Colors.green,
-                onChanged: (value) {
-                  appState.toggleRuleActive(rule['id'], value);
+                onChanged: (value) async {
+                  if (value && rule['config_json'] == null) {
+                    context.showErrorSnack(AppLocalizations.of(context)!.rule_noParams);
+                    return;
+                  }
+                  await _runAppStateAction(
+                    context,
+                    () => appState.toggleRuleActive(rule['id'], value),
+                    provider: rule['provider'],
+                  );
                 },
               ),
             ],

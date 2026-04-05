@@ -97,7 +97,7 @@ class DbManager private constructor(private val context: Context) {
                 "forwarding_rules",
                 arrayOf("id", "filter_mode", "filters_json"),
                 "is_active = 1",
-                null, null, null, null
+                null, null, null, "name ASC"
             ).use { cursor ->
                 val list = mutableListOf<ForwardingRule>()
                 while (cursor.moveToNext()) {
@@ -125,7 +125,7 @@ class DbManager private constructor(private val context: Context) {
                 "forwarding_rules",
                 arrayOf("id", "provider", "config_json"),
                 "id IN ($placeholders) AND is_active = 1",
-                stringArgs, null, null, null
+                stringArgs, null, null, "name ASC"
             ).use { cursor ->
                 val list = mutableListOf<ForwardingRuleConfig>()
                 while (cursor.moveToNext()) {

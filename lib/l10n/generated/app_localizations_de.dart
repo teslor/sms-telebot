@@ -71,6 +71,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Diese Aktion kann nicht rückgängig gemacht werden.';
 
   @override
+  String get rule_noParams =>
+      'Bitte konfigurieren Sie diese Regel, bevor Sie sie aktivieren.';
+
+  @override
   String get rules => 'REGELN';
 
   @override
@@ -289,4 +293,12 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get error_unexpectedError =>
       'Ein unerwarteter Fehler ist aufgetreten. Bitte später versuchen.';
+
+  @override
+  String get error_secretsError =>
+      'Kein Zugriff auf den sicheren Speicher. Versuchen Sie es erneut. Wenn der Fehler bestehen bleibt, starten Sie die App neu und prüfen Sie Passwörter/Tokens in den Weiterleitungsregeln.';
+
+  @override
+  String get warn_secretsRecovered =>
+      'Der sichere Speicher wurde nach einem Absturz wiederhergestellt. Gespeicherte Passwörter/Tokens wurden möglicherweise gelöscht. Prüfen Sie die Weiterleitungsregeln und geben Sie die Daten erneut ein.';
 }

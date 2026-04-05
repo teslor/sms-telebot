@@ -40,6 +40,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -49,8 +51,8 @@ class _SettingsPageState extends State<SettingsPage> {
             controller: _deviceLabelController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.settings_deviceLabel,
-              helperText: AppLocalizations.of(context)!.settings_deviceLabelInfo,
+              labelText: l10n.settings_deviceLabel,
+              helperText: l10n.settings_deviceLabelInfo,
               helperMaxLines: 2,
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
@@ -62,7 +64,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
 
       bottomNavigationBar: ActionButton(
-        label: AppLocalizations.of(context)!.action_save,
+        label: l10n.action_save,
         onPressed: !_isInputChanged ? null : _saveSettings,
         isSuccess: _saveResult,
       ),

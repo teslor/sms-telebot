@@ -20,6 +20,7 @@
   "rule_copySuffix": "Kopie",
   "rule_deleteHeader": "Regel löschen?",
   "rule_deleteText": "Diese Aktion kann nicht rückgängig gemacht werden.",
+  "rule_noParams": "Bitte konfigurieren Sie diese Regel, bevor Sie sie aktivieren.",
   "rules": "REGELN",
   "rules_empty": "Noch keine Regeln\nErstellen Sie die erste!",
   "connection": "Verbindung",
@@ -83,5 +84,7 @@
   "error_tbot_forbidden": "Telegram hat die Aktion verweigert. Bot-Zugriff auf den Chat prüfen.",
   "error_tbot_unauthorized": "Autorisierungsfehler. Geben Sie ein gültiges Token ein und versuchen Sie es erneut.",
   "error_tbot_uninitialized": "Chat-ID konnte nicht abgerufen werden. Starten Sie einen Dialog mit Ihrem Bot in Telegram und versuchen Sie es erneut.",
-  "error_unexpectedError": "Ein unerwarteter Fehler ist aufgetreten. Bitte später versuchen."
+  "error_unexpectedError": "Ein unerwarteter Fehler ist aufgetreten. Bitte später versuchen.",
+  "error_secretsError": "Kein Zugriff auf den sicheren Speicher. Versuchen Sie es erneut. Wenn der Fehler bestehen bleibt, starten Sie die App neu und prüfen Sie Passwörter/Tokens in den Weiterleitungsregeln.",
+  "warn_secretsRecovered": "Der sichere Speicher wurde nach einem Absturz wiederhergestellt. Gespeicherte Passwörter/Tokens wurden möglicherweise gelöscht. Prüfen Sie die Weiterleitungsregeln und geben Sie die Daten erneut ein."
 }

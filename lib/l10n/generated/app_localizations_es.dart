@@ -69,6 +69,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get rule_deleteText => 'Esta acción no se puede deshacer.';
 
   @override
+  String get rule_noParams => 'Configura esta regla antes de activarla.';
+
+  @override
   String get rules => 'REGLAS';
 
   @override
@@ -287,4 +290,12 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get error_unexpectedError =>
       'Ocurrió un error inesperado. Inténtelo más tarde.';
+
+  @override
+  String get error_secretsError =>
+      'No se pudo acceder al almacenamiento seguro. Inténtelo de nuevo. Si el error persiste, reinicie la aplicación y verifique las contraseñas/tokens en las reglas de reenvío.';
+
+  @override
+  String get warn_secretsRecovered =>
+      'El almacenamiento seguro se recuperó tras un fallo; es posible que se hayan eliminado las contraseñas/tokens guardados. Revise las reglas de reenvío y vuelva a introducir los datos.';
 }

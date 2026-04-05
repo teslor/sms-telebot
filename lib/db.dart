@@ -4,16 +4,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'constants.dart';
 
-class LocalDb {
+class MainDb {
   // Singleton pattern to keep a single DB instance for the whole app
-  static final LocalDb instance = LocalDb._init();
+  static final MainDb instance = MainDb._init();
   static Database? _database;
 
-  LocalDb._init();
+  MainDb._init();
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('sms_telebot.db');
+    _database = await _initDB('main.db');
     return _database!;
   }
 
@@ -53,7 +53,8 @@ class LocalDb {
         is_active INTEGER DEFAULT 1,
         filter_mode INTEGER DEFAULT 0,
         config_json TEXT DEFAULT NULL,
-        filters_json TEXT DEFAULT NULL
+        filters_json TEXT DEFAULT NULL,
+        created_at INTEGER
       )
     ''');
 
@@ -105,7 +106,7 @@ class LocalDb {
     // Build JSON for the first rule
     final chatId = prefs.getString('chatId') ?? '';
     final filterMode = prefs.getInt('filterMode') ?? 0;
-    final configJson = jsonEncode({'botToken': botToken, 'chatId': chatId});
+    final configJson = jsonEncode({'chatId': chatId});
 
     // Local helper to safely parse JSON arrays
     List<dynamic> parseList(String key) {
@@ -128,7 +129,10 @@ class LocalDb {
 
     // Create the default rule using the currently opened DB executor to avoid
     // re-entering instance.database while the database is still opening
-    await insertRule(filterMode: filterMode, configJson: configJson, filtersJson: filtersJson, executor: db);
+    await insertRule(
+      isActive: 1, filterMode: filterMode,
+      configJson: configJson, filtersJson: filtersJson, executor: db,
+    );
 
     // Clear SharedPreferences permanently
     await prefs.clear();
@@ -191,16 +195,16 @@ class LocalDb {
   /// Get ALL rules from forwarding_rules
   Future<List<Map<String, dynamic>>> getAllRules() async {
     final db = await instance.database;
-    return await db.query('forwarding_rules', orderBy: 'id ASC');
+    return await db.query('forwarding_rules', orderBy: 'name ASC');
   }
 
   /// Create a new rule in forwarding_rules
   Future<int> insertRule({
     String name = 'Telegram Bot',
     String provider = 'telegram_bot',
-    int isActive = 1,
+    int isActive = 0,
     int filterMode = 0,
-    required String configJson,
+    String? configJson,
     String? filtersJson,
     DatabaseExecutor? executor,
   }) async {
@@ -212,6 +216,7 @@ class LocalDb {
       'filter_mode': filterMode,
       'config_json': configJson,
       'filters_json': filtersJson,
+      'created_at': DateTime.now().millisecondsSinceEpoch,
     });
   }
 

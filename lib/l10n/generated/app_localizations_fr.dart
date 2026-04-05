@@ -70,6 +70,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rule_deleteText => 'Cette action est irréversible.';
 
   @override
+  String get rule_noParams =>
+      'Veuillez configurer cette règle avant de l\'activer.';
+
+  @override
   String get rules => 'RÈGLES';
 
   @override
@@ -288,4 +292,12 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get error_unexpectedError =>
       'Une erreur inattendue est survenue. Veuillez réessayer plus tard.';
+
+  @override
+  String get error_secretsError =>
+      'Impossible d\'accéder au stockage sécurisé. Réessayez. Si l\'erreur persiste, redémarrez l\'application et vérifiez les mots de passe/tokens dans les règles de transfert.';
+
+  @override
+  String get warn_secretsRecovered =>
+      'Le stockage sécurisé a été restauré après un plantage ; les mots de passe/tokens enregistrés ont peut-être été supprimés. Vérifiez les règles de transfert et ressaisissez les données.';
 }

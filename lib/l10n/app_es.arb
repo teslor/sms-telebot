@@ -20,6 +20,7 @@
   "rule_copySuffix": "copia",
   "rule_deleteHeader": "¿Eliminar regla?",
   "rule_deleteText": "Esta acción no se puede deshacer.",
+  "rule_noParams": "Configura esta regla antes de activarla.",
   "rules": "REGLAS",
   "rules_empty": "Aún no hay reglas\n¡Crea la primera!",
   "connection": "Conexión",
@@ -83,5 +84,7 @@
   "error_tbot_forbidden": "Telegram denegó la acción. Asegúrese de que el bot tiene acceso al chat.",
   "error_tbot_unauthorized": "Error de autorización. Ingrese un token válido e inténtelo de nuevo.",
   "error_tbot_uninitialized": "No se pudo obtener el ID del chat. Inicie un diálogo con su bot en Telegram e inténtelo de nuevo.",
-  "error_unexpectedError": "Ocurrió un error inesperado. Inténtelo más tarde."
+  "error_unexpectedError": "Ocurrió un error inesperado. Inténtelo más tarde.",
+  "error_secretsError": "No se pudo acceder al almacenamiento seguro. Inténtelo de nuevo. Si el error persiste, reinicie la aplicación y verifique las contraseñas/tokens en las reglas de reenvío.",
+  "warn_secretsRecovered": "El almacenamiento seguro se recuperó tras un fallo; es posible que se hayan eliminado las contraseñas/tokens guardados. Revise las reglas de reenvío y vuelva a introducir los datos."
 }

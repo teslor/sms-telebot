@@ -20,6 +20,7 @@
   "rule_copySuffix": "cópia",
   "rule_deleteHeader": "Excluir regra?",
   "rule_deleteText": "Esta ação não pode ser desfeita.",
+  "rule_noParams": "Configure esta regra antes de ativá-la.",
   "rules": "REGRAS",
   "rules_empty": "Ainda não há regras\nCrie a primeira!",
   "connection": "Conexão",
@@ -83,5 +84,7 @@
   "error_tbot_conflict": "Não foi possível obter o ID do chat. Remova o webhook ativo ou informe o ID manualmente.",
   "error_tbot_unauthorized": "Erro de autorização. Informe um token válido e tente novamente.",
   "error_tbot_uninitialized": "Não foi possível obter o ID do chat. Inicie uma conversa com seu bot no Telegram e tente novamente.",
-  "error_unexpectedError": "Ocorreu um erro inesperado. Tente novamente mais tarde."
+  "error_unexpectedError": "Ocorreu um erro inesperado. Tente novamente mais tarde.",
+  "error_secretsError": "Não foi possível acessar o armazenamento seguro. Tente novamente. Se o erro persistir, reinicie o app e verifique as senhas/tokens nas regras de encaminhamento.",
+  "warn_secretsRecovered": "O armazenamento seguro foi recuperado após uma falha; senhas/tokens salvos podem ter sido apagados. Verifique as regras de encaminhamento e insira os dados novamente."
 }

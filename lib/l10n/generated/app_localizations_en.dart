@@ -69,6 +69,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rule_deleteText => 'This action cannot be undone.';
 
   @override
+  String get rule_noParams => 'Please configure this rule before enabling it.';
+
+  @override
   String get rules => 'RULES';
 
   @override
@@ -286,4 +289,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get error_unexpectedError =>
       'An unexpected error occurred. Please try again later.';
+
+  @override
+  String get error_secretsError =>
+      'Unable to access secure storage. Try again. If the error persists, restart the app and check passwords/tokens in the forwarding rules.';
+
+  @override
+  String get warn_secretsRecovered =>
+      'Secure storage was recovered after a crash, saved passwords/tokens may have been deleted. Check the forwarding rules and enter the data again.';
 }

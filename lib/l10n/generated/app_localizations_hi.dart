@@ -69,6 +69,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get rule_deleteText => 'इस कार्रवाई को वापस नहीं लिया जा सकता।';
 
   @override
+  String get rule_noParams =>
+      'इस नियम को सक्रिय करने से पहले कृपया इसे कॉन्फ़िगर करें।';
+
+  @override
   String get rules => 'नियम';
 
   @override
@@ -286,4 +290,12 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get error_unexpectedError =>
       'एक अप्रत्याशित त्रुटि हुई। कृपया बाद में प्रयास करें।';
+
+  @override
+  String get error_secretsError =>
+      'सुरक्षित स्टोरेज तक पहुंच नहीं हो सकी। फिर से प्रयास करें। यदि त्रुटि बनी रहती है, तो ऐप को पुनः शुरू करें और फ़ॉरवर्डिंग नियमों में पासवर्ड/टोकन जांचें।';
+
+  @override
+  String get warn_secretsRecovered =>
+      'क्रैश के बाद सुरक्षित स्टोरेज पुनर्प्राप्त किया गया; सहेजे गए पासवर्ड/टोकन हटाए गए हो सकते हैं। फ़ॉरवर्डिंग नियम जांचें और डेटा फिर से दर्ज करें।';
 }

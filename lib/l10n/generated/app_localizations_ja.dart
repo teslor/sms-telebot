@@ -69,6 +69,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rule_deleteText => 'この操作は元に戻せません。';
 
   @override
+  String get rule_noParams => 'このルールを有効にする前に設定してください。';
+
+  @override
   String get rules => 'ルール';
 
   @override
@@ -274,4 +277,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get error_unexpectedError => '予期しないエラーが発生しました。後でもう一度お試しください。';
+
+  @override
+  String get error_secretsError =>
+      '安全なストレージにアクセスできません。再試行してください。問題が続く場合はアプリを再起動し、転送ルールのパスワード/トークンを確認してください。';
+
+  @override
+  String get warn_secretsRecovered =>
+      'クラッシュ後に安全なストレージが復旧されました。保存済みのパスワード/トークンが削除された可能性があります。転送ルールを確認し、データを再入力してください。';
 }

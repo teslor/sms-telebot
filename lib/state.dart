@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'dart:convert';
 import 'dart:async';
@@ -11,7 +10,6 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Timer? _smsStatsTimer;
-  static const MethodChannel _mainChannel = MethodChannel(AppConst.mainChannel);
 
   // App settings
   bool isRunning = false;
@@ -48,9 +46,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     // Save l10n required for background process after first frame when context is available
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final localizations = AppLocalizations.of(navigatorKey.currentContext!)!;
-      final current = await LocalDb.instance.getSetting('l10nSmsFrom');
+      final current = await MainDb.instance.getSetting('l10nSmsFrom');
       if (current != localizations.sms_from) {
-        await LocalDb.instance.saveSetting('l10nSmsFrom', localizations.sms_from);
+        await MainDb.instance.saveSetting('l10nSmsFrom', localizations.sms_from);
       }
     });
 
@@ -71,7 +69,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> startProcessing() async {
     isRunning = true;
-    await LocalDb.instance.saveBoolSetting('isRunning', true);
+    await MainDb.instance.saveBoolSetting('isRunning', true);
     _startSmsStatsPolling();
     notifyListeners();
   }
@@ -79,7 +77,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> stopProcessing() async {
     isRunning = false;
     _stopSmsStatsPolling();
-    await LocalDb.instance.saveBoolSetting('isRunning', false);
+    await MainDb.instance.saveBoolSetting('isRunning', false);
     notifyListeners();
   }
 
@@ -99,13 +97,13 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> _loadSettings() async {
-    isRunning = await LocalDb.instance.getBoolSetting('isRunning');
-    deviceLabel = await LocalDb.instance.getSetting('deviceLabel') ?? '';
+    isRunning = await MainDb.instance.getBoolSetting('isRunning');
+    deviceLabel = await MainDb.instance.getSetting('deviceLabel') ?? '';
     notifyListeners();
   }
 
   Future<void> _loadRules() async {
-    rules = await LocalDb.instance.getAllRules();
+    rules = await MainDb.instance.getAllRules();
 
     // Refresh selected rule data if it exists
     if (selectedRule != null) {
@@ -120,13 +118,13 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> _loadSmsStats() async {
-    final newReceivedCount = await LocalDb.instance.getReceivedSmsCount();
-    final newLastSms = await LocalDb.instance.getLastSentSms();
+    final newReceivedCount = await MainDb.instance.getReceivedSmsCount();
+    final newLastSms = await MainDb.instance.getLastSentSms();
     final newId = newLastSms?['id'];
 
     if (newReceivedCount != smsReceivedCount || newId != lastSmsId) {
       smsReceivedCount = newReceivedCount;
-      smsSentCount = await LocalDb.instance.getSentSmsCount();
+      smsSentCount = await MainDb.instance.getSentSmsCount();
       lastSmsId = newId;
       lastSms = newLastSms;
       notifyListeners();
@@ -134,21 +132,31 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   // ================================================================================
-  // Rules management
+  // Rules
   // ================================================================================
 
-  void selectRule(Map<String, dynamic>? rule) {
+  Future<CallResult> selectRule(Map<String, dynamic>? rule) async {
     selectedRule = rule;
+    CallResult result = okResult();
+
     if (rule != null) {
       filterMode = rule['filter_mode'] ?? 0;
-      config = safeDecode(rule['config_json']) ?? {};
       final filters = safeDecode(rule['filters_json']) ?? {};
-
       filterLists = {
-        for (var key in AppConst.filterKeys) key: []
+        for (var key in AppConst.filterKeys) key: List<String>.from(filters[key] ?? [])
       };
-      for (var key in AppConst.filterKeys) {
-        filterLists[key] = List<String>.from(filters[key] ?? []);
+
+      config = safeDecode(rule['config_json']) ?? {};
+      result = await readSecretNative(rule['id'].toString());
+      if (result.isSuccess) {
+        final secret = result.data;
+        if (secret != null && secret.isNotEmpty) {
+          if (rule['provider'] == 'telegram_bot') {
+            config['botToken'] = secret;
+          } else {
+            config['password'] = secret;
+          }
+        }
       }
     } else {
       filterMode = 0;
@@ -156,97 +164,79 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       filterLists = {for (var key in AppConst.filterKeys) key: []};
     }
     notifyListeners();
+    return result;
   }
 
-  Future<void> updateRuleName(int id, String name) async {
-    await LocalDb.instance.updateRuleField(id, 'name', name);
+  Future<CallResult> updateRuleName(int id, String name) async {
+    await MainDb.instance.updateRuleField(id, 'name', name);
     await _loadRules();
+    return okResult();
   }
 
-  Future<void> toggleRuleActive(int id, bool isActive) async {
-    await LocalDb.instance.updateRuleField(id, 'is_active', isActive ? 1 : 0);
+  Future<CallResult> toggleRuleActive(int id, bool isActive) async {
+    await MainDb.instance.updateRuleField(id, 'is_active', isActive ? 1 : 0);
     await _loadRules();
+    return okResult();
   }
 
-  Future<void> deleteRule(int id) async {
-    await LocalDb.instance.deleteRule(id);
+  Future<CallResult> deleteRule(int id) async {
+    await MainDb.instance.deleteRule(id);
     await _loadRules();
+    return okResult();
   }
 
-  Map<String, dynamic> _defaultConfigForProvider(String provider) {
-    switch (provider) {
-      case 'smtp_server':
-        return {
-          'host': '', 'protocol': 'starttls', 'port': 587,
-          'login': '', 'password': '', 'fromEmail': '', 'toEmail': '', 'subject': '',
-        };
-      case 'telegram_bot':
-      default:
-        return {'botToken': '', 'chatId': ''};
-    }
-  }
-
-  Future<void> addRule({required String provider, required String name, bool autoSelect = false}) async {
-    final configJson = jsonEncode(_defaultConfigForProvider(provider));
-
-    final insertedRuleId = await LocalDb.instance.insertRule(
-      provider: provider,
-      name: name,
-      isActive: 0,
-      configJson: configJson,
-    );
-
+  Future<CallResult> addRule({required String name, required String provider, bool autoSelect = false}) async {
+    final newRuleId = await MainDb.instance.insertRule(name: name, provider: provider);
     await _loadRules();
 
-    if (!autoSelect) return;
-    final createdRule = rules.where((rule) => rule['id'] == insertedRuleId).firstOrNull;
-    if (createdRule != null) selectRule(createdRule);
+    if (!autoSelect) return okResult();
+    final newRule = rules.where((rule) => rule['id'] == newRuleId).firstOrNull;
+    if (newRule != null) selectRule(newRule);
+    return okResult();
   }
 
-  Future<void> duplicateRule(Map<String, dynamic> ruleToCopy) async {
+  Future<CallResult> duplicateRule(Map<String, dynamic> ruleToCopy) async {
     String newName =
-        '${ruleToCopy['name']} (${AppLocalizations.of(navigatorKey.currentContext!)!.rule_copySuffix})';
+      '${ruleToCopy['name']} (${AppLocalizations.of(navigatorKey.currentContext!)!.rule_copySuffix})';
+    CallResult result = okResult();
 
-    await LocalDb.instance.insertRule(
-      name: newName,
-      isActive: 0,
-      filterMode: ruleToCopy['filter_mode'],
-      configJson: ruleToCopy['config_json'],
-      filtersJson: ruleToCopy['filters_json'],
-    );
+    result = await readSecretNative(ruleToCopy['id'].toString());
+    if (result.isSuccess) {
+      final newRuleId = await MainDb.instance.insertRule(
+        name: newName,
+        provider: ruleToCopy['provider'],
+        filterMode: ruleToCopy['filter_mode'],
+        configJson: ruleToCopy['config_json'],
+        filtersJson: ruleToCopy['filters_json'],
+      );
+
+      final secret = result.data;
+      if (secret != null && secret.isNotEmpty) {
+        result = await saveSecretNative(newRuleId.toString(), secret);
+      }
+    } else {
+      return result;
+    }
+
     await _loadRules();
+    return result;
   }
 
-  Future<void> updateConnectionData(Map<String, dynamic> newConfig) async {
-    if (selectedRule == null) return;
+  Future<CallResult> updateRuleConfig(Map<String, dynamic> newConfig, String? secret) async {
+    CallResult result = okResult();
+    
+    if (selectedRule == null) return result;
     final ruleId = selectedRule!['id'];
 
-    await LocalDb.instance.updateRuleField(ruleId, 'config_json', jsonEncode(newConfig));
+    await MainDb.instance.updateRuleField(ruleId, 'config_json', jsonEncode(newConfig));
+    result = await saveSecretNative(ruleId.toString(), secret ?? '');
     await _loadRules();
+    return result;
   }
 
-  Future<void> updateDeviceLabel(String newDeviceLabel) async {
-    await LocalDb.instance.saveSetting('deviceLabel', newDeviceLabel);
-    deviceLabel = newDeviceLabel;
-    notifyListeners();
-  }
-
-  Future<bool> checkFiltersNative(String sender, String sms) async {
-    try {
-      final result = await _mainChannel.invokeMethod<bool>('checkFilters', {
-        'sender': sender,
-        'sms': sms,
-        'mode': filterMode,
-        'whitelistSenders': filterLists[AppConst.filterKeys[0]] ?? <String>[],
-        'whitelistBody': filterLists[AppConst.filterKeys[1]] ?? <String>[],
-        'blacklistSenders': filterLists[AppConst.filterKeys[2]] ?? <String>[],
-        'blacklistBody': filterLists[AppConst.filterKeys[3]] ?? <String>[],
-      });
-      return result ?? false;
-    } catch (_) {
-      return false;
-    }
-  }
+  // ================================================================================
+  // Filters
+  // ================================================================================
 
   void setFilterMode(int newMode) {
     filterMode = newMode;
@@ -263,8 +253,8 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
-  Future<void> saveFilters() async {
-    if (selectedRule == null) return;
+  Future<CallResult> saveFilters() async {
+    if (selectedRule == null) return okResult();
     final ruleId = selectedRule!['id'];
 
     final Map<String, dynamic> filtersMap = {};
@@ -273,20 +263,27 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     }
     final String filtersJson = jsonEncode(filtersMap);
 
-    await LocalDb.instance.updateRule(ruleId, {
+    await MainDb.instance.updateRule(ruleId, {
       'filter_mode': filterMode,
       'filters_json': filtersJson,
     });
 
     await _loadRules();
+    return okResult();
+  }
+
+  // ================================================================================
+  // Misc
+  // ================================================================================
+
+  Future<CallResult> updateDeviceLabel(String newDeviceLabel) async {
+    await MainDb.instance.saveSetting('deviceLabel', newDeviceLabel);
+    deviceLabel = newDeviceLabel;
+    return okResult();
   }
 
   bool get canStartProcessing {
-    return rules.any((r) {
-      if (r['is_active'] != 1) return false;
-      final cfg = safeDecode(r['config_json']) ?? {};
-      return cfg.isNotEmpty && cfg.values.every((v) => v != null && v.toString().isNotEmpty);
-    });
+    return rules.any((r) => r['is_active'] == 1 && r['config_json'] != null);
   }
 
   @override

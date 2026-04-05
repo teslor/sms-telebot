@@ -69,6 +69,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get rule_deleteText => 'Это действие нельзя отменить.';
 
   @override
+  String get rule_noParams =>
+      'Чтобы активировать правило, нужно сначала задать параметры подключения.';
+
+  @override
   String get rules => 'ПРАВИЛА';
 
   @override
@@ -286,4 +290,12 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get error_unexpectedError =>
       'Произошла непредвиденная ошибка. Пожалуйста, попробуйте позже.';
+
+  @override
+  String get error_secretsError =>
+      'Не удалось получить доступ к защищённому хранилищу. Попробуйте ещё раз. Если ошибка повторяется, перезапустите приложение и проверьте пароли/токены в правилах.';
+
+  @override
+  String get warn_secretsRecovered =>
+      'Защищённое хранилище было восстановлено после сбоя, сохранённые пароли/токены могли быть удалены. Проверьте правила пересылки и введите данные заново.';
 }

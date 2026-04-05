@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../../extensions/build_context_x.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../state.dart';
 import '../../service.dart';
@@ -21,13 +22,6 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
   bool _isInputChanged = false;
   bool? _testResult;
   bool? _saveResult;
-
-  void _showErrorMessage(String message) {
-    if (message.isEmpty) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
 
   @override
   void initState() {
@@ -63,7 +57,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
       setState(() {
         _isTesting = false;
         _testResult = false;
-        _showErrorMessage(getLocalizedError(l10n, 'invalid_params'));
+        context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
       });
       return;
     }
@@ -76,17 +70,21 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     try {
       if (chatId.isEmpty) {
         final result = await getUpdates(botToken);
-        if (result.chatId != null) {
-          chatId = result.chatId!;
+        if (result.isSuccess) {
+          chatId = result.data!;
         } else {
-          _showErrorMessage(getLocalizedError(l10n, result.code, 'telegram_bot'));
-          return;
+          if (mounted) {
+            setState(() { _testResult = false; });
+            context.showErrorSnack(getLocalizedError(l10n, result.code, 'telegram_bot'));
+            return;
+          }
         }
       }
 
       final result = await sendToProviderNative(
         provider: 'telegram_bot',
-        config: { 'botToken': botToken,'chatId': chatId },
+        config: { 'chatId': chatId },
+        secret: botToken,
         body: helloMessage,
         deviceLabel: appState.deviceLabel,
       );
@@ -98,13 +96,13 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
       } else {
         if (mounted) {
           setState(() { _testResult = false; });
-          _showErrorMessage(getLocalizedError(l10n, result.code, 'telegram_bot'));
+          context.showErrorSnack(getLocalizedError(l10n, result.code, 'telegram_bot'));
         }
       }
     } catch (e) {
       if (mounted) {
         setState(() { _testResult = false; });
-        _showErrorMessage(getLocalizedError(l10n, 'unexpected_error'));
+        context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     } finally {
       if (mounted) setState(() { _isTesting = false; });
@@ -117,27 +115,29 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     if (!_isValidInputs) {
       setState(() {
         _saveResult = false;
-        _showErrorMessage(getLocalizedError(l10n, 'invalid_params'));
+        context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
       });
       return;
     }
 
     final appState = context.read<AppState>();
+    final secret = _botTokenController.text;
     try {
-      await appState.updateConnectionData({
-        'botToken': _botTokenController.text.trim(),
-        'chatId': _chatIdController.text.trim(),
-      });
-      if (mounted) {
-        setState(() {
-          _saveResult = true;
-          _isInputChanged = false;
-        });
+      final result = await appState.updateRuleConfig({'chatId': _chatIdController.text.trim()}, secret);
+      if (!mounted) return;
+      if (!result.isSuccess) {
+        setState(() { _saveResult = false; });
+        context.showErrorSnack(getLocalizedError(l10n, result.code));
+        return;
       }
+      setState(() {
+        _saveResult = true;
+        _isInputChanged = false;
+      });
     } catch (_) {
       if (mounted) {
         setState(() { _saveResult = false; });
-        _showErrorMessage(getLocalizedError(l10n, 'unexpected_error'));
+        context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     }
   }

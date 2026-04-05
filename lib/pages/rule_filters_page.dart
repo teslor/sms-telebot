@@ -29,7 +29,7 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
     final appState = context.read<AppState>();
     final sender = _senderChipsKey.currentState?.inputController.text ?? '';
     final sms = _smsChipsKey.currentState?.inputController.text ?? '';
-    final result = await appState.checkFiltersNative(sender, sms);
+    final result = await checkFiltersNative(sender, sms, appState.filterMode, appState.filterLists);
     if (!mounted) return;
     setState(() {
       _testResult = result;
@@ -48,6 +48,7 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: ListView(
@@ -57,9 +58,9 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
             showSelectedIcon: false,
             style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 12))),
             segments: <ButtonSegment<int>>[
-              ButtonSegment<int>(value: 0, label: Text(AppLocalizations.of(context)!.filters_off, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
-              ButtonSegment<int>(value: 1, label: Text(AppLocalizations.of(context)!.filters_whitelist, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
-              ButtonSegment<int>(value: 2, label: Text(AppLocalizations.of(context)!.filters_blacklist, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
+              ButtonSegment<int>(value: 0, label: Text(l10n.filters_off, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
+              ButtonSegment<int>(value: 1, label: Text(l10n.filters_whitelist, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
+              ButtonSegment<int>(value: 2, label: Text(l10n.filters_blacklist, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
             ],
             selected: <int>{appState.filterMode},
             onSelectionChanged: (Set<int> newSelection) {
@@ -71,16 +72,16 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
           ChipsWidget(
             key: _senderChipsKey,
             listName: _getListNames()[0],
-            labelText: AppLocalizations.of(context)!.filters_sender,
-            helperText: AppLocalizations.of(context)!.filters_senderInfo,
+            labelText: l10n.filters_sender,
+            helperText: l10n.filters_senderInfo,
             prefixIcon: const Icon(Icons.person_outline_rounded)
           ),
           const SizedBox(height: 20),
           ChipsWidget(
             key: _smsChipsKey,
             listName: _getListNames()[1],
-            labelText: AppLocalizations.of(context)!.filters_text,
-            helperText: AppLocalizations.of(context)!.filters_textInfo,
+            labelText: l10n.filters_text,
+            helperText: l10n.filters_textInfo,
             prefixIcon: const Icon(Icons.sms_outlined)
           ),
         ],
@@ -90,7 +91,7 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
         children:[
           Expanded(
             child: ActionButton(
-              label: AppLocalizations.of(context)!.action_test,
+              label: l10n.action_test,
               onPressed: _testFilters,
               isSuccess: _testResult,
               layout: 'half-1',
@@ -98,7 +99,7 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
           ),
           Expanded(
             child: ActionButton(
-              label: AppLocalizations.of(context)!.action_save,
+              label: l10n.action_save,
               onPressed: _saveFilters,
               isSuccess: _saveResult,
               layout: 'half-2',

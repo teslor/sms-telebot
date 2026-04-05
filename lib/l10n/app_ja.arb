@@ -20,6 +20,7 @@
   "rule_copySuffix": "コピー",
   "rule_deleteHeader": "ルールを削除しますか？",
   "rule_deleteText": "この操作は元に戻せません。",
+  "rule_noParams": "このルールを有効にする前に設定してください。",
   "rules": "ルール",
   "rules_empty": "まだルールがありません\n最初のルールを作成しましょう！",
   "connection": "接続",
@@ -83,5 +84,7 @@
   "error_tbot_conflict": "チャットIDを取得できませんでした。アクティブなWebhookを削除するか、IDを手動で入力してください。",
   "error_tbot_unauthorized": "認証エラーです。有効なトークンを入力して再試行してください。",
   "error_tbot_uninitialized": "チャットIDを取得できませんでした。Telegramでボットとの会話を開始してから再試行してください。",
-  "error_unexpectedError": "予期しないエラーが発生しました。後でもう一度お試しください。"
+  "error_unexpectedError": "予期しないエラーが発生しました。後でもう一度お試しください。",
+  "error_secretsError": "安全なストレージにアクセスできません。再試行してください。問題が続く場合はアプリを再起動し、転送ルールのパスワード/トークンを確認してください。",
+  "warn_secretsRecovered": "クラッシュ後に安全なストレージが復旧されました。保存済みのパスワード/トークンが削除された可能性があります。転送ルールを確認し、データを再入力してください。"
 }

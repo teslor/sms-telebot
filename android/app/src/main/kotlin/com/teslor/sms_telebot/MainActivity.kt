@@ -23,7 +23,8 @@ class MainActivity : FlutterActivity() {
                 when (call.method) {
                     "sendToProvider" -> {
                         val provider = call.argument<String>("provider") ?: ""
-                        val configJson = call.argument<String>("configJson")
+                        val configJson = call.argument<String>("configJson") ?: ""
+                        val secret = call.argument<String>("secret") ?: ""
                         val sender = call.argument<String>("sender") ?: ""
                         val body = call.argument<String>("body") ?: ""
                         val deviceLabel = call.argument<String>("deviceLabel") ?: ""
@@ -33,6 +34,7 @@ class MainActivity : FlutterActivity() {
                                 val sendResult = SmsProviderGateway.send(
                                     providerId = provider,
                                     configJson = configJson,
+                                    secret = secret,
                                     payload = SmsForwardPayload(
                                         sender = sender,
                                         body = body,
@@ -49,7 +51,7 @@ class MainActivity : FlutterActivity() {
                                     result.success(
                                         ProviderSendResult(
                                             isSuccess = false,
-                                            code = SendCodes.UNEXPECTED_ERROR,
+                                            code = Codes.UNEXPECTED_ERROR,
                                             info = e.message ?: "Unexpected error"
                                         ).toMap()
                                     )
@@ -96,7 +98,7 @@ class MainActivity : FlutterActivity() {
                             val saveResult = secureStorage.saveSecret(id, secret)
                             result.success(saveResult.toMap())
                         } else {
-                            result.success(SecretResult(isSuccess = false, code = "unexpected_error").toMap())
+                            result.success(SecretResult(isSuccess = false, code = Codes.UNEXPECTED_ERROR).toMap())
                         }
                     }
                     "readSecret" -> {
@@ -105,7 +107,7 @@ class MainActivity : FlutterActivity() {
                             val readResult = secureStorage.readSecret(id)
                             result.success(readResult.toMap())
                         } else {
-                            result.success(SecretResult(isSuccess = false, code = "unexpected_error").toMap())
+                            result.success(SecretResult(isSuccess = false, code = Codes.UNEXPECTED_ERROR).toMap())
                         }
                     }
                     "deleteSecret" -> {
@@ -114,7 +116,7 @@ class MainActivity : FlutterActivity() {
                             val deleteResult = secureStorage.deleteSecret(id)
                             result.success(deleteResult.toMap())
                         } else {
-                            result.success(SecretResult(isSuccess = false, code = "unexpected_error").toMap())
+                            result.success(SecretResult(isSuccess = false, code = Codes.UNEXPECTED_ERROR).toMap())
                         }
                     }
 

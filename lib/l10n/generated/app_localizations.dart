@@ -232,6 +232,12 @@ abstract class AppLocalizations {
   /// **'This action cannot be undone.'**
   String get rule_deleteText;
 
+  /// No description provided for @rule_noParams.
+  ///
+  /// In en, this message translates to:
+  /// **'Please configure this rule before enabling it.'**
+  String get rule_noParams;
+
   /// No description provided for @rules.
   ///
   /// In en, this message translates to:
@@ -615,6 +621,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An unexpected error occurred. Please try again later.'**
   String get error_unexpectedError;
+
+  /// No description provided for @error_secretsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to access secure storage. Try again. If the error persists, restart the app and check passwords/tokens in the forwarding rules.'**
+  String get error_secretsError;
+
+  /// No description provided for @warn_secretsRecovered.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure storage was recovered after a crash, saved passwords/tokens may have been deleted. Check the forwarding rules and enter the data again.'**
+  String get warn_secretsRecovered;
 }
 
 class _AppLocalizationsDelegate

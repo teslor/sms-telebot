@@ -8,27 +8,28 @@ class HelpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final appLabelColor = Theme.of(context).colorScheme.secondary;
 
     final List<String> guideItems = [
-      AppLocalizations.of(context)!.help_howToUse_01,
-      AppLocalizations.of(context)!.help_howToUse_02,
-      AppLocalizations.of(context)!.help_howToUse_03,
-      AppLocalizations.of(context)!.help_howToUse_04,
-      AppLocalizations.of(context)!.help_howToUse_04l,      
-      AppLocalizations.of(context)!.help_howToUse_05,
-      AppLocalizations.of(context)!.help_howToUse_06,
+      l10n.help_howToUse_01,
+      l10n.help_howToUse_02,
+      l10n.help_howToUse_03,
+      l10n.help_howToUse_04,
+      l10n.help_howToUse_04l,      
+      l10n.help_howToUse_05,
+      l10n.help_howToUse_06,
     ];
     final List<String> filterItems = [
-      AppLocalizations.of(context)!.help_filters_01,
-      AppLocalizations.of(context)!.help_filters_02,
-      AppLocalizations.of(context)!.help_filters_03,
-      AppLocalizations.of(context)!.help_filters_04,
+      l10n.help_filters_01,
+      l10n.help_filters_02,
+      l10n.help_filters_03,
+      l10n.help_filters_04,
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.help_about),
+        title: Text(l10n.help_about),
         centerTitle: true,
         elevation: 2,
       ),
@@ -53,13 +54,13 @@ class HelpPage extends StatelessWidget {
               ],
             ),
           ),
-          Text(AppLocalizations.of(context)!.help_appInfo),
+          Text(l10n.help_appInfo),
           const SizedBox(height: 10),
 
-          Center(child: Text(AppLocalizations.of(context)!.help_howToUse,style: TextStyle(fontSize: 18, height: 2.5))),
+          Center(child: Text(l10n.help_howToUse,style: TextStyle(fontSize: 18, height: 2.5))),
           GuideList(items: guideItems, warnIndices: [5, 6]),
 
-          Center(child: Text(AppLocalizations.of(context)!.help_filters,style: TextStyle(fontSize: 18, height: 2.5))),
+          Center(child: Text(l10n.help_filters,style: TextStyle(fontSize: 18, height: 2.5))),
           GuideList(items: filterItems, warnIndices: []),
         ],
       ),

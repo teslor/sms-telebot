@@ -69,6 +69,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get rule_deleteText => '此操作无法撤销。';
 
   @override
+  String get rule_noParams => '请先配置此规则，再启用它。';
+
+  @override
   String get rules => '规则';
 
   @override
@@ -268,4 +271,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get error_unexpectedError => '发生了意外错误。请稍后再试。';
+
+  @override
+  String get error_secretsError =>
+      '无法访问安全存储。请重试。如果问题仍然存在，请重启应用，并检查转发规则中的密码/令牌。';
+
+  @override
+  String get warn_secretsRecovered =>
+      '崩溃后安全存储已恢复，已保存的密码/令牌可能已被删除。请检查转发规则并重新输入数据。';
 }

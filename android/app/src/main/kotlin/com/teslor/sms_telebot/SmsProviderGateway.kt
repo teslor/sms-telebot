@@ -44,24 +44,9 @@ data class ProviderSendResult(
     }
 }
 
-object SendCodes {
-    const val OK = "ok"
-    const val BAD_REQUEST = "bad_request"
-    const val FORBIDDEN = "forbidden"
-    const val INVALID_PARAMS = "invalid_params"
-    const val NETWORK_ERROR = "network_error"
-    const val NETWORK_TIMEOUT = "network_timeout"
-    const val RATE_LIMITED = "rate_limited"
-    const val SERVER_ERROR = "server_error"
-    const val SMTP_ADDRESS_REJECTED = "smtp_address_rejected"
-    const val SMTP_ERROR = "smtp_error"
-    const val UNAUTHORIZED = "unauthorized"
-    const val UNEXPECTED_ERROR = "unexpected_error"
-}
-
 interface SmsProvider {
     val id: String
-    fun send(configJson: String?, payload: SmsForwardPayload): ProviderSendResult
+    fun send(configJson: String, secret: String, payload: SmsForwardPayload): ProviderSendResult
 
     // Universal factory for creating ProviderSendResult and logging
     fun buildResult(
@@ -90,14 +75,19 @@ object SmsProviderGateway {
         SmtpServerProvider
     ).associateBy { it.id }
 
-    fun send(providerId: String, configJson: String?, payload: SmsForwardPayload): ProviderSendResult {
+    fun send(
+        providerId: String,
+        configJson: String,
+        secret: String,
+        payload: SmsForwardPayload
+    ): ProviderSendResult {
         val provider = providers[providerId.lowercase()]
             ?: return ProviderSendResult(
                 isSuccess = false,
-                code = SendCodes.UNEXPECTED_ERROR,
+                code = Codes.UNEXPECTED_ERROR,
                 info = "Unknown provider: $providerId"
             )
-        return provider.send(configJson, payload)
+        return provider.send(configJson, secret, payload)
     }
 }
 
@@ -106,25 +96,25 @@ object SmsProviderGateway {
 // ================================================================================
 
 object TelegramBotProvider : SmsProvider {
-    override val id: String = AppContract.Providers.TELEGRAM_BOT
+    override val id: String = SmsProviders.TELEGRAM_BOT
 
-    override fun send(configJson: String?, payload: SmsForwardPayload): ProviderSendResult {
-        if (configJson.isNullOrBlank()) {
+    override fun send(configJson: String, secret: String, payload: SmsForwardPayload): ProviderSendResult {
+        if (configJson.isBlank()) {
             return buildResult(
                 isSuccess = false,
-                code = SendCodes.INVALID_PARAMS,
+                code = Codes.INVALID_PARAMS,
                 info = "Bot connection data is empty"
             )
         }
 
         return try {
             val json = JSONObject(configJson)
-            val token = json.optString("botToken", "")
+            val token = secret
             val chatId = json.optString("chatId", "")
             if (token.isBlank() || chatId.isBlank()) {
                 return buildResult(
                     isSuccess = false,
-                    code = SendCodes.INVALID_PARAMS,
+                    code = Codes.INVALID_PARAMS,
                     info = "Bot token and chat ID are required"
                 )
             }
@@ -144,7 +134,7 @@ object TelegramBotProvider : SmsProvider {
         } catch (e: Exception) {
             buildResult(
                 isSuccess = false,
-                code = SendCodes.UNEXPECTED_ERROR,
+                code = Codes.UNEXPECTED_ERROR,
                 info = e.message ?: "Unexpected error",
                 exception = e
             )
@@ -187,18 +177,18 @@ object TelegramBotProvider : SmsProvider {
     private fun mapApiResult(result: ApiResult): ProviderSendResult {
         // Prefer Telegram "ok=true", but keep HTTP 200 fallback for malformed/missing body
         if (result.ok == true || (result.statusCode == 200 && result.errorCode == null)) {
-            return buildResult(isSuccess = true, code = SendCodes.OK, info = "Sent successfully")
+            return buildResult(isSuccess = true, code = Codes.OK, info = "Sent successfully")
         }
 
         if (result.error != null) {
             val rootCause = result.error.cause ?: result.error
             val code = when {
                 rootCause is SocketTimeoutException || result.error is SocketTimeoutException -> 
-                    SendCodes.NETWORK_TIMEOUT
+                    Codes.NETWORK_TIMEOUT
                 rootCause is UnknownHostException || rootCause is ConnectException || 
                 result.error is UnknownHostException || result.error is ConnectException -> 
-                    SendCodes.NETWORK_ERROR
-                else -> SendCodes.NETWORK_ERROR
+                    Codes.NETWORK_ERROR
+                else -> Codes.NETWORK_ERROR
             }
             return buildResult(
                 isSuccess = false,
@@ -222,14 +212,14 @@ object TelegramBotProvider : SmsProvider {
 
         // Final fallback when body has no Telegram error_code (proxy/html/partial body cases)
         return when (result.statusCode) {
-            400 -> buildResult(false, SendCodes.BAD_REQUEST, "Bad request")
-            401 -> buildResult(false, SendCodes.UNAUTHORIZED, "Bot token is incorrect")
-            403 -> buildResult(false, SendCodes.FORBIDDEN, "Bot has no access to the chat")
-            429 -> buildResult(false, SendCodes.RATE_LIMITED, "Too many requests", true)
-            in 500..599 -> buildResult(false, SendCodes.SERVER_ERROR, "Server error", true)
+            400 -> buildResult(false, Codes.BAD_REQUEST, "Bad request")
+            401 -> buildResult(false, Codes.UNAUTHORIZED, "Bot token is incorrect")
+            403 -> buildResult(false, Codes.FORBIDDEN, "Bot has no access to the chat")
+            429 -> buildResult(false, Codes.RATE_LIMITED, "Too many requests", true)
+            in 500..599 -> buildResult(false, Codes.SERVER_ERROR, "Server error", true)
             else -> buildResult(
                 isSuccess = false,
-                code = SendCodes.UNEXPECTED_ERROR,
+                code = Codes.UNEXPECTED_ERROR,
                 info = "Telegram API returned status ${result.statusCode ?: "unknown"}",
             )
         }
@@ -238,22 +228,22 @@ object TelegramBotProvider : SmsProvider {
     private fun isRetryable(code: String): Boolean {
         // Retry only codes that are expected to recover without user action
         return when (code) {
-            SendCodes.RATE_LIMITED,
-            SendCodes.SERVER_ERROR,
-            SendCodes.NETWORK_ERROR,
-            SendCodes.NETWORK_TIMEOUT -> true
+            Codes.RATE_LIMITED,
+            Codes.SERVER_ERROR,
+            Codes.NETWORK_ERROR,
+            Codes.NETWORK_TIMEOUT -> true
             else -> false
         }
     }
 
     private fun mapErrorCode(errorCode: Int): String {
         return when (errorCode) {
-            400 -> SendCodes.BAD_REQUEST
-            401 -> SendCodes.UNAUTHORIZED
-            403 -> SendCodes.FORBIDDEN
-            429 -> SendCodes.RATE_LIMITED
-            in 500..599 -> SendCodes.SERVER_ERROR
-            else -> SendCodes.UNEXPECTED_ERROR
+            400 -> Codes.BAD_REQUEST
+            401 -> Codes.UNAUTHORIZED
+            403 -> Codes.FORBIDDEN
+            429 -> Codes.RATE_LIMITED
+            in 500..599 -> Codes.SERVER_ERROR
+            else -> Codes.UNEXPECTED_ERROR
         }
     }
 
@@ -307,13 +297,13 @@ object TelegramBotProvider : SmsProvider {
 // ================================================================================
 
 object SmtpServerProvider : SmsProvider {
-    override val id: String = AppContract.Providers.SMTP_SERVER
+    override val id: String = SmsProviders.SMTP_SERVER
 
-    override fun send(configJson: String?, payload: SmsForwardPayload): ProviderSendResult {
-        if (configJson.isNullOrBlank()) {
+    override fun send(configJson: String, secret: String, payload: SmsForwardPayload): ProviderSendResult {
+        if (configJson.isBlank()) {
             return buildResult(
                 isSuccess = false,
-                code = SendCodes.INVALID_PARAMS,
+                code = Codes.INVALID_PARAMS,
                 info = "SMTP config is empty"
             )
         }
@@ -326,7 +316,7 @@ object SmtpServerProvider : SmsProvider {
             protocol = json.optString("protocol", "starttls")
             val port = json.optInt("port", 587)
             val login = json.optString("login", "")
-            val password = json.optString("password", "")
+            val password = secret
             val fromEmail = json.optString("fromEmail", "").ifBlank { login }
             val toEmail = json.optString("toEmail", "")
             var subject = json.optString("subject", "")
@@ -334,7 +324,7 @@ object SmtpServerProvider : SmsProvider {
             if (host.isBlank() || login.isBlank() || password.isBlank() || toEmail.isBlank()) {
                 return buildResult(
                     isSuccess = false,
-                    code = SendCodes.INVALID_PARAMS,
+                    code = Codes.INVALID_PARAMS,
                     info = "host, login, password and toEmail are required"
                 )
             }
@@ -398,7 +388,7 @@ object SmtpServerProvider : SmsProvider {
             Transport.send(message)
             buildResult(
                 isSuccess = true,
-                code = SendCodes.OK,
+                code = Codes.OK,
                 info = "Sent successfully"
             )
         } catch (e: Exception) {
@@ -418,22 +408,22 @@ object SmtpServerProvider : SmsProvider {
     private fun mapErrorCode(error: Throwable): String {
         val rootCause = error.cause ?: error
         return when {
-            error is AuthenticationFailedException -> SendCodes.UNAUTHORIZED
-            error is SendFailedException -> SendCodes.SMTP_ADDRESS_REJECTED
+            error is AuthenticationFailedException -> Codes.UNAUTHORIZED
+            error is SendFailedException -> Codes.SMTP_ADDRESS_REJECTED
             rootCause is SocketTimeoutException || error is SocketTimeoutException ->
-                SendCodes.NETWORK_TIMEOUT
+                Codes.NETWORK_TIMEOUT
             rootCause is UnknownHostException || rootCause is ConnectException ||
             error is UnknownHostException || error is ConnectException ->
-                SendCodes.NETWORK_ERROR
-            error is MessagingException -> SendCodes.SMTP_ERROR
-            else -> SendCodes.UNEXPECTED_ERROR
+                Codes.NETWORK_ERROR
+            error is MessagingException -> Codes.SMTP_ERROR
+            else -> Codes.UNEXPECTED_ERROR
         }
     }
 
     private fun isRetryable(code: String): Boolean {
         return when (code) {
-            SendCodes.NETWORK_TIMEOUT,
-            SendCodes.NETWORK_ERROR -> true
+            Codes.NETWORK_TIMEOUT,
+            Codes.NETWORK_ERROR -> true
             else -> false
         }
     }

@@ -20,6 +20,7 @@
   "rule_copySuffix": "copy",
   "rule_deleteHeader": "Delete rule?",
   "rule_deleteText": "This action cannot be undone.",
+  "rule_noParams": "Please configure this rule before enabling it.",
   "rules": "RULES",
   "rules_empty": "No rules yet\nCreate your first one!",
   "connection": "Connection",
@@ -83,5 +84,7 @@
   "error_tbot_forbidden": "Telegram denied this action. Make sure the bot has access to the chat.",
   "error_tbot_unauthorized": "Authorization error. Enter a valid token and try again.",
   "error_tbot_uninitialized": "Unable to get chat ID. Start a conversation with your bot in Telegram and try again.",
-  "error_unexpectedError": "An unexpected error occurred. Please try again later."
+  "error_unexpectedError": "An unexpected error occurred. Please try again later.",
+  "error_secretsError": "Unable to access secure storage. Try again. If the error persists, restart the app and check passwords/tokens in the forwarding rules.",
+  "warn_secretsRecovered": "Secure storage was recovered after a crash, saved passwords/tokens may have been deleted. Check the forwarding rules and enter the data again."
 }

@@ -31,6 +31,7 @@ class SmsForwardWorker(
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val dbManager = DbManager.getInstance(applicationContext)
+        val secretStorage = SecureStorageManager.getInstance(applicationContext)
         val isRunning = dbManager.getBoolSetting("isRunning")
         if (!isRunning) return@withContext Result.success()
 
@@ -60,7 +61,9 @@ class SmsForwardWorker(
             val results = coroutineScope {
                 rules.map { rule ->
                     async {
-                        processRule(rule, smsData.sender, smsData.body, deviceLabel, l10nSmsFrom)
+                        val secretResult = secretStorage.readSecret(rule.id.toString())
+                        val secret = if (secretResult.isSuccess) secretResult.data ?: "" else ""
+                        processRule(rule, secret, smsData.sender, smsData.body, deviceLabel, l10nSmsFrom)
                     }
                 }.awaitAll()
             }
@@ -92,15 +95,17 @@ class SmsForwardWorker(
 
     // Router by providers for forwarding
     private fun processRule(
-        rule: ForwardingRuleConfig, 
-        sender: String, 
-        body: String, 
-        deviceLabel: String, 
+        rule: ForwardingRuleConfig,
+        secret: String,
+        sender: String,
+        body: String,
+        deviceLabel: String,
         l10nSmsFrom: String
     ): ProviderSendResult {
         return SmsProviderGateway.send(
             providerId = rule.provider,
-            configJson = rule.configJson,
+            configJson = rule.configJson ?: "",
+            secret = secret,
             payload = SmsForwardPayload(
                 sender = sender,
                 body = body,

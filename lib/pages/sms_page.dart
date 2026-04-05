@@ -11,6 +11,8 @@ class SmsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
+    final l10n = AppLocalizations.of(context)!;
+
     final smsReceivedCount = appState.smsReceivedCount;
     final smsSentCount = appState.smsSentCount;
     final lastSms = appState.lastSms;
@@ -24,13 +26,13 @@ class SmsPage extends StatelessWidget {
               constraints: BoxConstraints(minHeight: constraints.maxHeight - 40),
               child: !appState.isRunning ? Center(
                 child: Text(
-                  AppLocalizations.of(context)!.sms_welcome,
+                  l10n.sms_welcome,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 18),
                 ),
               ) : smsReceivedCount == 0 ? Center(
                 child: Text(
-                  AppLocalizations.of(context)!.sms_empty,
+                  l10n.sms_empty,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 18),
                 ),
@@ -39,9 +41,9 @@ class SmsPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildSmsCard(context, AppLocalizations.of(context)!.sms_received, smsReceivedCount.toString()),
+                      _buildSmsCard(context, l10n.sms_received, smsReceivedCount.toString()),
                       SizedBox(width: 15),
-                      _buildSmsCard(context, AppLocalizations.of(context)!.sms_sent, smsSentCount.toString()),
+                      _buildSmsCard(context, l10n.sms_sent, smsSentCount.toString()),
                     ],
                   ),
                   SizedBox(height: 15),
@@ -53,7 +55,7 @@ class SmsPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(
-                              '${AppLocalizations.of(context)!.sms_sent} • ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.fromMillisecondsSinceEpoch(lastSms['sent_at']))}',
+                              '${l10n.sms_sent} • ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.fromMillisecondsSinceEpoch(lastSms['sent_at']))}',
                               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface.withAlpha(128))
                             ),
                             const SizedBox(height: 4),
@@ -76,7 +78,7 @@ class SmsPage extends StatelessWidget {
       ),
 
       bottomNavigationBar: ActionButton(
-        label: appState.isRunning ? AppLocalizations.of(context)!.sms_stop : AppLocalizations.of(context)!.sms_start,
+        label: appState.isRunning ? l10n.sms_stop : l10n.sms_start,
         isSuccess: null,
         onPressed: (!appState.canStartProcessing && !appState.isRunning) ? null : () async {
           if (appState.isRunning) {

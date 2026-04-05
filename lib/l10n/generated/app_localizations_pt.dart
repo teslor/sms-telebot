@@ -69,6 +69,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get rule_deleteText => 'Esta ação não pode ser desfeita.';
 
   @override
+  String get rule_noParams => 'Configure esta regra antes de ativá-la.';
+
+  @override
   String get rules => 'REGRAS';
 
   @override
@@ -286,4 +289,12 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get error_unexpectedError =>
       'Ocorreu um erro inesperado. Tente novamente mais tarde.';
+
+  @override
+  String get error_secretsError =>
+      'Não foi possível acessar o armazenamento seguro. Tente novamente. Se o erro persistir, reinicie o app e verifique as senhas/tokens nas regras de encaminhamento.';
+
+  @override
+  String get warn_secretsRecovered =>
+      'O armazenamento seguro foi recuperado após uma falha; senhas/tokens salvos podem ter sido apagados. Verifique as regras de encaminhamento e insira os dados novamente.';
 }

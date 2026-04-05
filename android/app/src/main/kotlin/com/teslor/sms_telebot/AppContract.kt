@@ -3,19 +3,34 @@ package com.teslor.sms_telebot
 import org.json.JSONArray
 import org.json.JSONObject
 
-object AppContract {
-    object Providers {
-        const val TELEGRAM_BOT = "telegram_bot"
-        const val SMTP_SERVER = "smtp_server"
-    }
+object Codes {
+    // General/Network
+    const val OK = "ok"
+    const val BAD_REQUEST = "bad_request"
+    const val FORBIDDEN = "forbidden"
+    const val INVALID_PARAMS = "invalid_params"
+    const val NETWORK_ERROR = "network_error"
+    const val NETWORK_TIMEOUT = "network_timeout"
+    const val RATE_LIMITED = "rate_limited"
+    const val SERVER_ERROR = "server_error"
+    const val SMTP_ADDRESS_REJECTED = "smtp_address_rejected"
+    const val SMTP_ERROR = "smtp_error"
+    const val UNAUTHORIZED = "unauthorized"
+    const val UNEXPECTED_ERROR = "unexpected_error"
 
-    object Keys {
-        val FILTER_KEYS = listOf("whitelistSenders", "whitelistBody", "blacklistSenders", "blacklistBody")
-    }
+    // Secure storage
+    const val SECRETS_ERROR = "secrets_error"
+    const val SECRETS_RECOVERED = "secrets_recovered"
+}
+
+object SmsProviders {
+    const val TELEGRAM_BOT = "telegram_bot"
+    const val SMTP_SERVER = "smtp_server"
 }
 
 object SmsFilters {
-    private val filterKeys = AppContract.Keys.FILTER_KEYS
+    private val filterKeys =
+        listOf("whitelistSenders", "whitelistBody", "blacklistSenders", "blacklistBody")
 
     data class Lists(
         val whitelistSenders: List<String>,

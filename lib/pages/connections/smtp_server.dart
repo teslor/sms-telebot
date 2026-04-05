@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../../extensions/build_context_x.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../state.dart';
 import '../../service.dart';
@@ -29,13 +30,6 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
   bool _isPasswordVisible = false;
   bool _isPortManuallyEdited = false;
   String _protocol = 'starttls';
-
-  void _showErrorMessage(String message) {
-    if (message.isEmpty) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
 
   @override
   void initState() {
@@ -122,7 +116,6 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
       'protocol': _protocol,
       'port': _parsePort(_portController.text.trim()),
       'login': _loginController.text.trim(),
-      'password': _passwordController.text,
       'fromEmail': _fromEmailController.text.trim(),
       'toEmail': _parseRecipientEmails(_toEmailController.text).join(', '),
       'subject': _subjectController.text.trim(),
@@ -140,7 +133,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
       setState(() {
         _isTesting = false;
         _testResult = false;
-        _showErrorMessage(getLocalizedError(l10n, 'invalid_params'));
+        context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
       });
       return;
     }
@@ -152,6 +145,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
       final result = await sendToProviderNative(
         provider: 'smtp_server',
         config: config,
+        secret: _passwordController.text,
         body: l10n.sms_hello,
         deviceLabel: appState.deviceLabel,
       );
@@ -163,13 +157,13 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
       } else {
         if (mounted) {
           setState(() { _testResult = false; });
-          _showErrorMessage(getLocalizedError(l10n, result.code, 'smtp_server'));
+          context.showErrorSnack(getLocalizedError(l10n, result.code, 'smtp_server'));
         }
       }
     } catch (_) {
       if (mounted) {
         setState(() { _testResult = false; });
-        _showErrorMessage(getLocalizedError(l10n, 'unexpected_error'));
+        context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     } finally {
       if (mounted) setState(() { _isTesting = false; });
@@ -182,25 +176,30 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
     if (!_isValidInputs) {
       setState(() {
         _saveResult = false;
-        _showErrorMessage(getLocalizedError(l10n, 'invalid_params'));
+        context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
       });
       return;
     }
 
     final appState = context.read<AppState>();
     final config = _buildConfig();
+    final secret = _passwordController.text;
     try {
-      await appState.updateConnectionData(config);
-      if (mounted) {
-        setState(() {
-          _saveResult = true;
-          _isInputChanged = false;
-        });
+      final result = await appState.updateRuleConfig(config, secret);
+      if (!mounted) return;
+      if (!result.isSuccess) {
+        setState(() { _saveResult = false; });
+        context.showErrorSnack(getLocalizedError(l10n, result.code));
+        return;
       }
+      setState(() {
+        _saveResult = true;
+        _isInputChanged = false;
+      });
     } catch (_) {
       if (mounted) {
         setState(() { _saveResult = false; });
-        _showErrorMessage(getLocalizedError(l10n, 'unexpected_error'));
+        context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     }
   }
