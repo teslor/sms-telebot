@@ -78,6 +78,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     isRunning = false;
     _stopSmsStatsPolling();
     await MainDb.instance.saveBoolSetting('isRunning', false);
+    stopWorkersNative();
     notifyListeners();
   }
 

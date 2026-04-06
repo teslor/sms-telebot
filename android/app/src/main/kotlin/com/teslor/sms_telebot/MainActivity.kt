@@ -3,6 +3,7 @@ package com.teslor.sms_telebot
 import android.content.pm.ApplicationInfo
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
+import androidx.work.WorkManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -118,6 +119,11 @@ class MainActivity : FlutterActivity() {
                         } else {
                             result.success(SecretResult(isSuccess = false, code = Codes.UNEXPECTED_ERROR).toMap())
                         }
+                    }
+
+                    "stopWorkers" -> {
+                        WorkManager.getInstance(applicationContext).cancelAllWork()
+                        result.success(true)
                     }
 
                     else -> result.notImplemented()
