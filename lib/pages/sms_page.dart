@@ -15,12 +15,12 @@ class SmsPage extends StatelessWidget {
 
     final smsReceivedCount = appState.smsReceivedCount;
     final smsSentCount = appState.smsSentCount;
-    final lastSms = appState.lastSms;
+    final smsReceivedList = appState.smsReceivedList;
 
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) => ListView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
           children: [
             ConstrainedBox(
               constraints: BoxConstraints(minHeight: constraints.maxHeight - 40),
@@ -46,30 +46,9 @@ class SmsPage extends StatelessWidget {
                       _buildSmsCard(context, l10n.sms_sent, smsSentCount.toString()),
                     ],
                   ),
-                  SizedBox(height: 15),
-                  if (lastSms != null)
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              '${l10n.sms_sent} • ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.fromMillisecondsSinceEpoch(lastSms['sent_at']))}',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface.withAlpha(128))
-                            ),
-                            const SizedBox(height: 4),
-                            RichText(
-                              textScaler: MediaQuery.textScalerOf(context),
-                              text: TextSpan(style: DefaultTextStyle.of(context).style.copyWith(fontSize: 14), children: [
-                                TextSpan(text: '${lastSms['sender']}: ', style: TextStyle(fontWeight: FontWeight.w500)),
-                                TextSpan(text: lastSms['body']),
-                              ]),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  const SizedBox(height: 15),
+                  if (smsReceivedList.isNotEmpty)
+                    ...smsReceivedList.map((sms) => _buildRecentSmsItem(context, sms)),
                 ],
               ),
             ),
@@ -94,6 +73,7 @@ class SmsPage extends StatelessWidget {
   Widget _buildSmsCard(BuildContext context, String title, String value) {
     return Expanded(
       child: Card(
+        margin: EdgeInsets.zero,
         color: Theme.of(context).colorScheme.secondaryContainer,
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -104,6 +84,62 @@ class SmsPage extends StatelessWidget {
               Text(value, style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecentSmsItem(BuildContext context, Map<String, dynamic> sms) {
+    final theme = Theme.of(context);
+    final textStyleMuted = TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: theme.colorScheme.onSurface.withAlpha(150));
+    
+    final receivedDate = DateFormat('dd.MM HH:mm').format(DateTime.fromMillisecondsSinceEpoch(sms['received_at']));
+    final isSent = sms['status'] != 0 && sms['sent_at'] != null;
+    final sentDate = isSent 
+        ? DateFormat('dd.MM HH:mm').format(DateTime.fromMillisecondsSinceEpoch(sms['sent_at'])) 
+        : null;
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 15),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.arrow_downward_rounded, size: 14, color: theme.colorScheme.primary),
+                    const SizedBox(width: 4),
+                    Text(receivedDate, style: textStyleMuted),
+                  ],
+                ),
+                if (isSent)
+                  Row(
+                    children: [
+                      Text(sentDate!, style: textStyleMuted),
+                      const SizedBox(width: 4),
+                      Icon(Icons.arrow_upward_rounded, size: 14, color: Colors.green.shade600),
+                    ],
+                  ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            RichText(
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              textScaler: MediaQuery.textScalerOf(context),
+              text: TextSpan(
+                style: DefaultTextStyle.of(context).style.copyWith(fontSize: 14), 
+                children: [
+                  TextSpan(text: '${sms['sender']}: ', style: TextStyle(fontWeight: FontWeight.w600)),
+                  TextSpan(text: sms['body']),
+                ]
+              ),
+            ),
+          ],
         ),
       ),
     );

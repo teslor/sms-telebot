@@ -52,7 +52,7 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
 
     return Scaffold(
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 15),
         children:[
           SegmentedButton<int>(
             showSelectedIcon: false,

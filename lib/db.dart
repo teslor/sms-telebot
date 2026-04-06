@@ -272,15 +272,14 @@ class MainDb {
     return Sqflite.firstIntValue(result) ?? 0;
   }
 
-  /// Get the latest SMS with non-zero status
-  Future<Map<String, dynamic>?> getLastSentSms() async {
+  /// Get the latest [limit] SMS received in the last 24 hours
+  Future<List<Map<String, dynamic>>> getRecentSmsList({int limit = 10}) async {
     final db = await instance.database;
+    final limitTime = DateTime.now().millisecondsSinceEpoch - (24 * 60 * 60 * 1000);
 
-    final result = await db.query(
-      'sms_history', where: 'status != 0', orderBy: 'sent_at DESC', limit: 1,
+    return await db.query(
+      'sms_history', where: 'received_at >= ?', whereArgs: [limitTime],
+      orderBy: 'received_at DESC', limit: limit,
     );
-
-    if (result.isNotEmpty) return result.first;
-    return null;
   }
 }

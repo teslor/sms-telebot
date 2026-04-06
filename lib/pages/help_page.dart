@@ -33,36 +33,38 @@ class HelpPage extends StatelessWidget {
         centerTitle: true,
         elevation: 2,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(25.0),
-        children: [
-          Text(AppConst.appName, style: TextStyle(fontSize: 20, color: appLabelColor)),
-          Transform.translate(
-            offset: const Offset(0, -5),
-            child: Row(
-              children: [
-                Text('${AppConst.appVersion}, ', style: TextStyle(color: appLabelColor)),
-                InkWell(
-                  onTap: () { launchURL('https://github.com/teslor/sms-telebot'); },
-                  child: Row(
-                    children: [
-                      Text('GitHub', style: TextStyle(color: appLabelColor, decoration: TextDecoration.underline )),
-                      Icon(Icons.star_border_rounded, color: appLabelColor, size: 16),
-                    ],
-                  )
-                ),
-              ],
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(25.0),
+          children: [
+            Text(AppConst.appName, style: TextStyle(fontSize: 20, color: appLabelColor)),
+            Transform.translate(
+              offset: const Offset(0, -5),
+              child: Row(
+                children: [
+                  Text('${AppConst.appVersion}, ', style: TextStyle(color: appLabelColor)),
+                  InkWell(
+                    onTap: () { launchURL('https://github.com/teslor/sms-telebot'); },
+                    child: Row(
+                      children: [
+                        Text('GitHub', style: TextStyle(color: appLabelColor, decoration: TextDecoration.underline )),
+                        Icon(Icons.star_border_rounded, color: appLabelColor, size: 16),
+                      ],
+                    )
+                  ),
+                ],
+              ),
             ),
-          ),
-          Text(l10n.help_appInfo),
-          const SizedBox(height: 10),
-
-          Center(child: Text(l10n.help_howToUse,style: TextStyle(fontSize: 18, height: 2.5))),
-          GuideList(items: guideItems, warnIndices: [5, 6]),
-
-          Center(child: Text(l10n.help_filters,style: TextStyle(fontSize: 18, height: 2.5))),
-          GuideList(items: filterItems, warnIndices: []),
-        ],
+            Text(l10n.help_appInfo),
+            const SizedBox(height: 10),
+        
+            Center(child: Text(l10n.help_howToUse,style: TextStyle(fontSize: 18, height: 2.5))),
+            GuideList(items: guideItems, warnIndices: [5, 6]),
+        
+            Center(child: Text(l10n.help_filters,style: TextStyle(fontSize: 18, height: 2.5))),
+            GuideList(items: filterItems, warnIndices: []),
+          ],
+        ),
       ),
     );
   }

@@ -29,8 +29,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   // SMS stats
   int smsReceivedCount = 0;
   int smsSentCount = 0;
-  Map? lastSms;
-  String? lastSmsId;
+  List<Map<String, dynamic>> smsReceivedList = [];
 
   AppState() {
     WidgetsBinding.instance.addObserver(this);
@@ -120,14 +119,15 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> _loadSmsStats() async {
     final newReceivedCount = await MainDb.instance.getReceivedSmsCount();
-    final newLastSms = await MainDb.instance.getLastSentSms();
-    final newId = newLastSms?['id'];
+    final newList = await MainDb.instance.getRecentSmsList(limit: 10);
 
-    if (newReceivedCount != smsReceivedCount || newId != lastSmsId) {
+    final newFirstSmsId = newList.isNotEmpty ? newList.first['id'] : null;
+    final currentFirstSmsId = smsReceivedList.isNotEmpty ? smsReceivedList.first['id'] : null;    
+
+    if (newReceivedCount != smsReceivedCount || newFirstSmsId != currentFirstSmsId) {
       smsReceivedCount = newReceivedCount;
       smsSentCount = await MainDb.instance.getSentSmsCount();
-      lastSmsId = newId;
-      lastSms = newLastSms;
+      smsReceivedList = newList;
       notifyListeners();
     }
   }

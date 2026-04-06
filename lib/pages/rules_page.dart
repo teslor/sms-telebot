@@ -100,7 +100,7 @@ class RulesPage extends StatelessWidget {
           ),
         )
         : ListView.builder(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
           itemCount: rules.length,
           itemBuilder: (context, index) {
             final rule = rules[index];

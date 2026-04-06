@@ -148,7 +148,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
 
     return Scaffold(
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 15),
         children:[
           const SizedBox(height: 5),
           TextField(
