@@ -1,3 +1,6 @@
+// Copyright (c) 2025-2026 Pavel D. (teslor)
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 package com.teslor.sms_telebot
 
 import org.json.JSONArray
