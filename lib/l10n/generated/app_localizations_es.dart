@@ -24,16 +24,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get action_test => 'Probar';
 
   @override
-  String get action_testAndSave => 'Probar y guardar';
-
-  @override
   String get sms => 'SMS';
 
   @override
   String get sms_welcome => 'Toca Iniciar para\nempezar a reenviar SMS';
 
   @override
-  String get sms_empty => 'No hay SMS entrantes\nen la sesión actual';
+  String get sms_empty => 'No hay SMS entrantes\nen las últimas 24 horas';
 
   @override
   String get sms_hello => '¡Hola desde SMS Telebot! =^•⩊•^=';
@@ -75,25 +72,25 @@ class AppLocalizationsEs extends AppLocalizations {
   String get rules => 'REGLAS';
 
   @override
-  String get rules_empty => 'Aún no hay reglas\n¡Crea la primera!';
+  String get rules_empty => 'Aún no hay reglas.\n¡Añade la primera!';
 
   @override
   String get connection => 'Conexión';
 
   @override
-  String get telebot => 'Bot de Telegram';
+  String get tbot => 'Bot de Telegram';
 
   @override
-  String get telebot_token => 'Token del bot';
+  String get tbot_token => 'Token del bot';
 
   @override
-  String get telebot_tokenInfo => 'Token obtenido de @BotFather';
+  String get tbot_tokenInfo => 'Token obtenido de @BotFather';
 
   @override
-  String get telebot_chatId => 'ID del chat';
+  String get tbot_chatId => 'ID del chat';
 
   @override
-  String get telebot_chatIdInfo => 'ID del chat con tu bot (opcional)';
+  String get tbot_chatIdInfo => 'ID del chat con tu bot (opcional)';
 
   @override
   String get smtp => 'Servidor SMTP';
@@ -182,35 +179,65 @@ class AppLocalizationsEs extends AppLocalizations {
       'App para reenviar automáticamente mensajes SMS entrantes a un bot de Telegram';
 
   @override
-  String get help_howToUse => 'Cómo usar';
+  String get help_info => 'Introducción';
 
   @override
-  String get help_howToUse_01 =>
-      'Si aún no tienes un bot de Telegram, usa @BotFather para crear uno y obtener su token. Es simple y gratuito.';
+  String get help_info_01 =>
+      'La aplicación reenvía SMS a un bot de Telegram o a un correo electrónico. Necesitará su propio bot o una cuenta con acceso SMTP.';
 
   @override
-  String get help_howToUse_02 =>
-      'Abre un chat con tu bot en Telegram, inicia una conversación o envía cualquier mensaje. Esto es necesario para obtener automáticamente el ID del chat.';
+  String get help_info_02 =>
+      'Para cada conexión se crea una regla de reenvío, que define qué SMS enviar y a dónde. Las reglas se pueden duplicar, activar y desactivar según sea necesario.';
 
   @override
-  String get help_howToUse_03 =>
-      'Abre la app, en configuración del bot, introduce el token y prueba los ajustes (también puedes establecer el ID del chat si lo conoces). Si la prueba es exitosa, la configuración se guarda y se envía un mensaje de bienvenida al chat de Telegram.';
+  String get help_info_03 =>
+      'Cuando llega un SMS, la aplicación revisa las reglas activas e intenta reenviarlo. Si falla por motivos técnicos (por ejemplo, falta de internet), la aplicación lo reintentará más tarde.';
 
   @override
-  String get help_howToUse_04 =>
-      '¡Listo! La app ya está lista para reenviar los SMS entrantes a tu bot. Toca Iniciar para activar el reenvío de SMS o Detener para desactivarlo.';
+  String get help_info_04 =>
+      'Al reenviar SMS desde varios teléfonos, puede configurar una etiqueta de dispositivo en los ajustes; esta se envía junto con el SMS para identificar el teléfono emisor.';
 
   @override
-  String get help_howToUse_04l =>
-      'Al reenviar SMS desde varios dispositivos, puedes configurar una etiqueta de dispositivo en ajustes para identificar el teléfono receptor.';
-
-  @override
-  String get help_howToUse_05 =>
+  String get help_info_05 =>
       'Se recomienda desactivar la optimización de batería para la app, ya que el sistema puede limitar la actividad de las aplicaciones en segundo plano para ahorrar energía.';
 
   @override
-  String get help_howToUse_06 =>
+  String get help_info_06 =>
       'Asegúrate de mantener la conexión a internet habilitada para que la app funcione.';
+
+  @override
+  String get help_tbot => 'Conexión de Bot de Telegram';
+
+  @override
+  String get help_tbot_01 =>
+      'Si aún no tienes un bot de Telegram, usa @BotFather para crear uno y obtener su token. Es simple y gratuito.';
+
+  @override
+  String get help_tbot_02 =>
+      'Abre un chat con tu bot en Telegram, inicia una conversación o envía cualquier mensaje. Esto es necesario para obtener automáticamente el ID del chat.';
+
+  @override
+  String get help_tbot_03 =>
+      'Vaya a la app, cree una regla para el bot de Telegram e introduzca el token (también puede indicar el ID del chat si lo conoce). Pruebe la configuración y guarde. Si es correcta, recibirá un mensaje de bienvenida.';
+
+  @override
+  String get help_tbot_04 =>
+      '¡Listo! Todo está configurado para reenviar SMS a su bot. Active la regla y pulse Iniciar para comenzar.';
+
+  @override
+  String get help_smtp => 'Conexión de servidor SMTP';
+
+  @override
+  String get help_smtp_01 =>
+      'Para el reenvío de SMS, es mejor crear un correo electrónico independiente (no un alias): este servirá como nombre de usuario. Especialmente importante para Gmail y servicios similares.';
+
+  @override
+  String get help_smtp_02 =>
+      'Cree una regla y complete los parámetros de conexión. Generalmente se requiere una \'contraseña de aplicación\' (generada en los ajustes de seguridad del correo).';
+
+  @override
+  String get help_smtp_03 =>
+      'Pruebe y guarde la configuración, active la regla y pulse Iniciar.';
 
   @override
   String get help_filters => 'Filtros';

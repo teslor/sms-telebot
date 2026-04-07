@@ -24,16 +24,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get action_test => 'टेस्ट करें';
 
   @override
-  String get action_testAndSave => 'टेस्ट और सहेजें';
-
-  @override
   String get sms => 'SMS';
 
   @override
   String get sms_welcome => 'SMS फ़ॉरवर्डिंग शुरू करने के लिए\nस्टार्ट दबाएँ';
 
   @override
-  String get sms_empty => 'वर्तमान सत्र में\nकोई SMS नहीं';
+  String get sms_empty => 'पिछले 24 घंटों में\nकोई इनकमिंग SMS नहीं';
 
   @override
   String get sms_hello => 'SMS Telebot से नमस्ते! =^•⩊•^=';
@@ -76,25 +73,25 @@ class AppLocalizationsHi extends AppLocalizations {
   String get rules => 'नियम';
 
   @override
-  String get rules_empty => 'अभी तक कोई नियम नहीं है\nपहला बनाएं!';
+  String get rules_empty => 'अभी तक कोई नियम नहीं है।\nपहला जोड़ें!';
 
   @override
   String get connection => 'कनेक्शन';
 
   @override
-  String get telebot => 'Telegram बॉट';
+  String get tbot => 'Telegram बॉट';
 
   @override
-  String get telebot_token => 'बॉट टोकन';
+  String get tbot_token => 'बॉट टोकन';
 
   @override
-  String get telebot_tokenInfo => '@BotFather से प्राप्त टोकन';
+  String get tbot_tokenInfo => '@BotFather से प्राप्त टोकन';
 
   @override
-  String get telebot_chatId => 'चैट ID';
+  String get tbot_chatId => 'चैट ID';
 
   @override
-  String get telebot_chatIdInfo => 'आपके बॉट के साथ चैट की ID (वैकल्पिक)';
+  String get tbot_chatIdInfo => 'आपके बॉट के साथ चैट की ID (वैकल्पिक)';
 
   @override
   String get smtp => 'SMTP सर्वर';
@@ -182,35 +179,65 @@ class AppLocalizationsHi extends AppLocalizations {
       'आने वाले SMS संदेशों को स्वचालित रूप से Telegram बॉट को भेजने के लिए ऐप';
 
   @override
-  String get help_howToUse => 'उपयोग कैसे करें';
+  String get help_info => 'त्वरित अवलोकन';
 
   @override
-  String get help_howToUse_01 =>
-      'यदि आपके पास अभी तक Telegram बॉट नहीं है, तो @BotFather का उपयोग करके एक बनाएं और इसका टोकन प्राप्त करें। यह आसान और मुफ़्त है।';
+  String get help_info_01 =>
+      'यह ऐप आने वाले SMS को Telegram बॉट या ईमेल पर फॉरवर्ड करता है। इसके लिए आपको अपने बॉट या SMTP एक्सेस वाले ईमेल की आवश्यकता होगी।';
 
   @override
-  String get help_howToUse_02 =>
-      'Telegram में अपने बॉट के साथ चैट खोलें, बातचीत शुरू करें या कोई संदेश भेजें। यह अगले चरण के लिए चैट ID स्वचालित रूप से प्राप्त करने के लिए आवश्यक है।';
+  String get help_info_02 =>
+      'प्रत्येक कनेक्शन के पैरामीटर \'फॉरवर्डिंग नियमों\' में सेट किए जाते हैं, जिससे आप चुन सकते हैं कि कौन सा SMS कहाँ भेजना है। आप नियमों को कॉपी कर सकते हैं और जब चाहें चालू या बंद कर सकते हैं।';
 
   @override
-  String get help_howToUse_03 =>
-      'ऐप खोलें, बॉट सेटिंग्स में टोकन दर्ज करें और सेटिंग्स का परीक्षण करें (यदि आप जानते हैं तो चैट ID भी सेट कर सकते हैं)। यदि परीक्षण सफल होता है, तो सेटिंग्स सहेज ली जाती हैं और Telegram चैट में एक स्वागत संदेश भेजा जाता है।';
+  String get help_info_03 =>
+      'SMS आने पर, ऐप सभी सक्रिय नियमों की जाँच करता है और उसे भेजने का प्रयास करता है। यदि तकनीकी कारणों से (जैसे इंटरनेट न होना) विफल रहता है, तो स्वतः पुनः प्रयास किया जाएगा।';
 
   @override
-  String get help_howToUse_04 =>
-      'बस! अब ऐप आपके बॉट को आने वाले SMS आगे भेजने के लिए तैयार है। SMS फ़ॉरवर्डिंग सक्षम करने के लिए स्टार्ट दबाएँ, या उसे बंद करने के लिए स्टॉप दबाएँ।';
-
-  @override
-  String get help_howToUse_04l =>
+  String get help_info_04 =>
       'कई डिवाइस से SMS भेजते समय, रिसीविंग फ़ोन की पहचान के लिए सेटिंग्स में डिवाइस लेबल सेट कर सकते हैं।';
 
   @override
-  String get help_howToUse_05 =>
+  String get help_info_05 =>
       'ऐप के लिए बैटरी ऑप्टिमाइज़ेशन बंद करने की सलाह दी जाती है, क्योंकि सिस्टम बैटरी बचाने के लिए बैकग्राउंड में ऐप्स की गतिविधि को सीमित कर सकता है।';
 
   @override
-  String get help_howToUse_06 =>
+  String get help_info_06 =>
       'सुनिश्चित करें कि ऐप काम करने के लिए इंटरनेट कनेक्शन सक्षम रखें।';
+
+  @override
+  String get help_tbot => 'Telegram बॉट कनेक्ट करना';
+
+  @override
+  String get help_tbot_01 =>
+      'यदि आपके पास अभी तक Telegram बॉट नहीं है, तो @BotFather का उपयोग करके एक बनाएं और इसका टोकन प्राप्त करें। यह आसान और मुफ़्त है।';
+
+  @override
+  String get help_tbot_02 =>
+      'Telegram में अपने बॉट के साथ चैट खोलें, बातचीत शुरू करें या कोई संदेश भेजें। यह अगले चरण के लिए चैट ID स्वचालित रूप से प्राप्त करने के लिए आवश्यक है।';
+
+  @override
+  String get help_tbot_03 =>
+      'ऐप में Telegram बॉट के लिए एक नियम बनाएँ और टोकन दर्ज करें (यदि पता हो तो चैट आईडी भी सेट कर सकते हैं)। सेटिंग्स का परीक्षण करें और फिर सेव करें। सफल होने पर एक स्वागत संदेश आएगा।';
+
+  @override
+  String get help_tbot_04 =>
+      'हो गया! अब आपका बॉट SMS प्राप्त करने के लिए तैयार है। नियम चालू करें और शुरू करने के लिए \'Start\' दबाएँ।';
+
+  @override
+  String get help_smtp => 'SMTP सर्वर कनेक्ट करना';
+
+  @override
+  String get help_smtp_01 =>
+      'फॉरवर्डिंग के लिए एक अलग ईमेल (alias नहीं) रखने की सलाह दी जाती है — यही आपका लॉगिन होगा। विशेष रूप से Gmail जैसी सेवाओं के लिए।';
+
+  @override
+  String get help_smtp_02 =>
+      'एक नियम बनाएँ और कनेक्शन विवरण भरें। आमतौर पर \'ऐप पासवर्ड\' की आवश्यकता होती है (जो ईमेल सुरक्षा सेटिंग्स में जनरेट होता है)।';
+
+  @override
+  String get help_smtp_03 =>
+      'सेटिंग्स टेस्ट करें और सेव करें, नियम चालू करें और \'Start\' दबाएँ।';
 
   @override
   String get help_filters => 'फ़िल्टर';

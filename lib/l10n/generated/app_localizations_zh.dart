@@ -24,16 +24,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get action_test => '测试';
 
   @override
-  String get action_testAndSave => '测试并保存';
-
-  @override
   String get sms => '短信';
 
   @override
   String get sms_welcome => '点按“开始”即可\n开始转发短信';
 
   @override
-  String get sms_empty => '当前会话中\n无接收短信';
+  String get sms_empty => '过去24小时内\n没有收到短信';
 
   @override
   String get sms_hello => '来自 SMS Telebot 的问候！=^•⩊•^=';
@@ -75,25 +72,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get rules => '规则';
 
   @override
-  String get rules_empty => '还没有规则\n创建第一条！';
+  String get rules_empty => '还没有规则。\n添加第一条！';
 
   @override
   String get connection => '连接';
 
   @override
-  String get telebot => 'Telegram 机器人';
+  String get tbot => 'Telegram 机器人';
 
   @override
-  String get telebot_token => '机器人令牌';
+  String get tbot_token => '机器人令牌';
 
   @override
-  String get telebot_tokenInfo => '从 @BotFather 获取的令牌';
+  String get tbot_tokenInfo => '从 @BotFather 获取的令牌';
 
   @override
-  String get telebot_chatId => '聊天 ID';
+  String get tbot_chatId => '聊天 ID';
 
   @override
-  String get telebot_chatIdInfo => '与您的机器人的聊天 ID（可选）';
+  String get tbot_chatIdInfo => '与您的机器人的聊天 ID（可选）';
 
   @override
   String get smtp => 'SMTP 服务器';
@@ -180,32 +177,59 @@ class AppLocalizationsZh extends AppLocalizations {
   String get help_appInfo => '自动将接收的短信转发至 Telegram 机器人的应用';
 
   @override
-  String get help_howToUse => '使用方法';
+  String get help_info => '简介';
 
   @override
-  String get help_howToUse_01 =>
+  String get help_info_01 =>
+      '此应用可将短信转发至 Telegram 机器人或电子邮件。您需要拥有自己的机器人或具有 SMTP 访问权限的邮箱。';
+
+  @override
+  String get help_info_02 =>
+      '为每个连接创建转发规则——它决定转发哪些短信以及转发到哪里。规则可以根据需要进行复制、启用或禁用。';
+
+  @override
+  String get help_info_03 =>
+      '收到短信时，应用会检查激活的规则并尝试转发。如果由于技术原因（例如没有网络）失败，应用会在稍后重试。';
+
+  @override
+  String get help_info_04 => '从多部手机转发短信时，您可以在设置中设置设备标签——它会随短信一起发送，以便识别发送短信的手机。';
+
+  @override
+  String get help_info_05 => '建议为本应用关闭电池优化，因为系统可能会为节省电量而限制应用在后台运行。';
+
+  @override
+  String get help_info_06 => '确保保持互联网连接以使应用正常工作。';
+
+  @override
+  String get help_tbot => '连接 Telegram 机器人';
+
+  @override
+  String get help_tbot_01 =>
       '如果您还没有 Telegram 机器人，请使用 @BotFather 创建一个并获取其令牌。这很简单且免费。';
 
   @override
-  String get help_howToUse_02 =>
+  String get help_tbot_02 =>
       '在 Telegram 中打开与您的机器人的聊天，开始对话或发送任何消息。这是自动获取聊天 ID 所必需的。';
 
   @override
-  String get help_howToUse_03 =>
-      '打开应用，在机器人设置中输入令牌并测试设置（如果知道聊天 ID，也可以设置）。如果测试成功，设置将被保存，并向 Telegram 聊天发送欢迎消息。';
+  String get help_tbot_03 =>
+      '在应用中创建机器人规则并输入 Token（如果知道 Chat ID 也可以填入）。请务必测试设置后保存。测试成功后，您将收到一条欢迎消息。';
 
   @override
-  String get help_howToUse_04 =>
-      '就这样！应用现在已准备好将接收的短信转发给你的机器人。点按“开始”以启用短信转发，或点按“停止”将其关闭。';
+  String get help_tbot_04 => '完成！现在已准备好向您的机器人转发短信。开启规则并点击“开始”即可。';
 
   @override
-  String get help_howToUse_04l => '从多个设备转发短信时，可以在设置中设置设备标签以识别接收手机。';
+  String get help_smtp => '连接 SMTP 服务器';
 
   @override
-  String get help_howToUse_05 => '建议为本应用关闭电池优化，因为系统可能会为节省电量而限制应用在后台运行。';
+  String get help_smtp_01 =>
+      '对于短信转发，最好创建一个独立的电子邮箱（不要使用别名）：它也将作为登录用户名。对于 Gmail 和类似服务尤其如此。';
 
   @override
-  String get help_howToUse_06 => '确保保持互联网连接以使应用正常工作。';
+  String get help_smtp_02 => '创建规则并填写连接参数。通常需要“应用专用密码”（在邮箱的安全设置中生成）。';
+
+  @override
+  String get help_smtp_03 => '测试并保存设置，开启规则并点击“开始”。';
 
   @override
   String get help_filters => '筛选器';

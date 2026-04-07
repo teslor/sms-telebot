@@ -155,8 +155,8 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
             controller: _botTokenController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              labelText: l10n.telebot_token,
-              helperText: l10n.telebot_tokenInfo,
+              labelText: l10n.tbot_token,
+              helperText: l10n.tbot_tokenInfo,
               helperMaxLines: 2,
             ),
             onChanged: (String value) {
@@ -168,8 +168,8 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
             controller: _chatIdController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              labelText: l10n.telebot_chatId,
-              helperText: l10n.telebot_chatIdInfo,
+              labelText: l10n.tbot_chatId,
+              helperText: l10n.tbot_chatIdInfo,
               helperMaxLines: 2,
             ),
             keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: true),

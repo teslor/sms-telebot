@@ -24,9 +24,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get action_test => 'Testen';
 
   @override
-  String get action_testAndSave => 'Testen & Speichern';
-
-  @override
   String get sms => 'SMS';
 
   @override
@@ -34,7 +31,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Tippen Sie auf Start, um\nSMS-Weiterleitung zu starten';
 
   @override
-  String get sms_empty => 'Keine eingehenden SMS\nin aktueller Sitzung';
+  String get sms_empty => 'Keine eingehenden SMS\nin den letzten 24 Stunden';
 
   @override
   String get sms_hello => 'Hallo von SMS Telebot! =^•⩊•^=';
@@ -78,25 +75,25 @@ class AppLocalizationsDe extends AppLocalizations {
   String get rules => 'REGELN';
 
   @override
-  String get rules_empty => 'Noch keine Regeln\nErstellen Sie die erste!';
+  String get rules_empty => 'Noch keine Regeln.\nFügen Sie die erste hinzu!';
 
   @override
   String get connection => 'Verbindung';
 
   @override
-  String get telebot => 'Telegram-Bot';
+  String get tbot => 'Telegram-Bot';
 
   @override
-  String get telebot_token => 'Bot-Token';
+  String get tbot_token => 'Bot-Token';
 
   @override
-  String get telebot_tokenInfo => 'Token vom @BotFather erhalten';
+  String get tbot_tokenInfo => 'Token vom @BotFather erhalten';
 
   @override
-  String get telebot_chatId => 'Chat-ID';
+  String get tbot_chatId => 'Chat-ID';
 
   @override
-  String get telebot_chatIdInfo => 'ID des Chats mit Ihrem Bot (optional)';
+  String get tbot_chatIdInfo => 'ID des Chats mit Ihrem Bot (optional)';
 
   @override
   String get smtp => 'SMTP-Server';
@@ -185,35 +182,65 @@ class AppLocalizationsDe extends AppLocalizations {
       'App zum automatischen Weiterleiten eingehender SMS an einen Telegram-Bot';
 
   @override
-  String get help_howToUse => 'Anleitung';
+  String get help_info => 'Einführung';
 
   @override
-  String get help_howToUse_01 =>
-      'Falls Sie noch keinen Telegram-Bot haben, erstellen Sie einen mit @BotFather und erhalten Sie dessen Token. Es ist einfach und kostenlos.';
+  String get help_info_01 =>
+      'Die App leitet SMS an einen Telegram-Bot oder eine E-Mail-Adresse weiter. Sie benötigen einen eigenen Bot oder ein Konto mit SMTP-Zugriff.';
 
   @override
-  String get help_howToUse_02 =>
-      'Öffnen Sie einen Chat mit Ihrem Bot in Telegram, starten Sie ein Gespräch oder senden Sie eine Nachricht. Dies ist erforderlich, um die Chat-ID automatisch abzurufen.';
+  String get help_info_02 =>
+      'Für jede Verbindung wird eine Weiterleitungsregel erstellt – sie legt fest, welche SMS wohin gesendet werden. Regeln können dupliziert sowie nach Bedarf ein- oder ausgeschaltet werden.';
 
   @override
-  String get help_howToUse_03 =>
-      'Öffnen Sie die App, geben Sie in den Bot-Einstellungen das Token ein und testen Sie die Einstellungen (Sie können auch die Chat-ID angeben, falls bekannt). Bei erfolgreichem Test werden die Einstellungen gespeichert und eine Begrüßungsnachricht an den Telegram-Chat gesendet.';
+  String get help_info_03 =>
+      'Bei einer eingehenden SMS prüft die App die aktiven Regeln und versucht die Weiterleitung. Schlägt dies aus technischen Gründen fehl (z. B. kein Internet), wird die App den Versuch später wiederholen.';
 
   @override
-  String get help_howToUse_04 =>
-      'Fertig! Die App ist jetzt bereit, eingehende SMS an Ihren Bot weiterzuleiten. Tippen Sie auf Start, um die SMS-Weiterleitung zu aktivieren, oder auf Stopp, um sie zu deaktivieren.';
+  String get help_info_04 =>
+      'Beim Weiterleiten von SMS von mehreren Telefonen können Sie in den Einstellungen eine Gerätebezeichnung festlegen – diese wird mit der SMS gesendet, um das Empfängertelefon zu identifizieren.';
 
   @override
-  String get help_howToUse_04l =>
-      'Beim Weiterleiten von SMS von mehreren Geräten können Sie in den Einstellungen ein Gerätelabel festlegen, um das empfangende Telefon zu identifizieren.';
-
-  @override
-  String get help_howToUse_05 =>
+  String get help_info_05 =>
       'Es wird empfohlen, die Akkuoptimierung für diese App zu deaktivieren, da das System zur Energieeinsparung die Arbeit von Apps im Hintergrund einschränken kann.';
 
   @override
-  String get help_howToUse_06 =>
+  String get help_info_06 =>
       'Stellen Sie sicher, dass die Internetverbindung aktiviert ist, damit die App funktioniert.';
+
+  @override
+  String get help_tbot => 'Telegram-Bot verbinden';
+
+  @override
+  String get help_tbot_01 =>
+      'Falls Sie noch keinen Telegram-Bot haben, erstellen Sie einen mit @BotFather und erhalten Sie dessen Token. Es ist einfach und kostenlos.';
+
+  @override
+  String get help_tbot_02 =>
+      'Öffnen Sie einen Chat mit Ihrem Bot in Telegram, starten Sie ein Gespräch oder senden Sie eine Nachricht. Dies ist erforderlich, um die Chat-ID automatisch abzurufen.';
+
+  @override
+  String get help_tbot_03 =>
+      'Erstellen Sie in der App eine Regel für den Telegram-Bot und geben Sie das Token ein (optional auch die Chat-ID). Testen Sie die Einstellungen und speichern Sie diese. Bei Erfolg erhalten Sie eine Begrüßungsnachricht.';
+
+  @override
+  String get help_tbot_04 =>
+      'Fertig! Jetzt ist alles bereit, um SMS an Ihren Bot weiterzuleiten. Aktivieren Sie die Regel und tippen Sie auf Start.';
+
+  @override
+  String get help_smtp => 'SMTP-Server verbinden';
+
+  @override
+  String get help_smtp_01 =>
+      'Für die SMS-Weiterleitung sollten Sie am besten ein separates E-Mail-Konto einrichten (kein Alias): Dieses dient gleichzeitig als Login. Besonders relevant für Gmail und ähnliche Dienste.';
+
+  @override
+  String get help_smtp_02 =>
+      'Erstellen Sie eine Regel und füllen Sie die Verbindungsparameter aus. Meist wird ein App-Passwort benötigt (in den Sicherheitseinstellungen Ihres E-Mail-Anbieters zu erstellen).';
+
+  @override
+  String get help_smtp_03 =>
+      'Einstellungen testen und speichern, Regel aktivieren und auf Start drücken.';
 
   @override
   String get help_filters => 'Filter';

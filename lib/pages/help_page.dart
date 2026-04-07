@@ -11,14 +11,24 @@ class HelpPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final appLabelColor = Theme.of(context).colorScheme.secondary;
 
-    final List<String> guideItems = [
-      l10n.help_howToUse_01,
-      l10n.help_howToUse_02,
-      l10n.help_howToUse_03,
-      l10n.help_howToUse_04,
-      l10n.help_howToUse_04l,      
-      l10n.help_howToUse_05,
-      l10n.help_howToUse_06,
+    final List<String> infoItems = [
+      l10n.help_info_01,
+      l10n.help_info_02,
+      l10n.help_info_03,
+      l10n.help_info_04,      
+      l10n.help_info_05,
+      l10n.help_info_06,
+    ];
+    final List<String> tbotItems = [
+      l10n.help_tbot_01,
+      l10n.help_tbot_02,
+      l10n.help_tbot_03,
+      l10n.help_tbot_04,
+    ];
+    final List<String> smtpItems = [
+      l10n.help_smtp_01,
+      l10n.help_smtp_02,
+      l10n.help_smtp_03,
     ];
     final List<String> filterItems = [
       l10n.help_filters_01,
@@ -35,7 +45,7 @@ class HelpPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(25.0),
+          padding: const EdgeInsets.all(20.0),
           children: [
             Text(AppConst.appName, style: TextStyle(fontSize: 20, color: appLabelColor)),
             Transform.translate(
@@ -58,9 +68,15 @@ class HelpPage extends StatelessWidget {
             Text(l10n.help_appInfo),
             const SizedBox(height: 10),
         
-            Center(child: Text(l10n.help_howToUse,style: TextStyle(fontSize: 18, height: 2.5))),
-            GuideList(items: guideItems, warnIndices: [5, 6]),
-        
+            Center(child: Text(l10n.help_info,style: TextStyle(fontSize: 18, height: 2.5))),
+            GuideList(items: infoItems, warnIndices: [4, 5]),
+
+            Center(child: Text(l10n.help_tbot,style: TextStyle(fontSize: 18, height: 2.5))),
+            GuideList(items: tbotItems, warnIndices: []),
+
+            Center(child: Text(l10n.help_smtp,style: TextStyle(fontSize: 18, height: 2.5))),
+            GuideList(items: smtpItems, warnIndices: []),
+
             Center(child: Text(l10n.help_filters,style: TextStyle(fontSize: 18, height: 2.5))),
             GuideList(items: filterItems, warnIndices: []),
           ],
@@ -87,8 +103,8 @@ class GuideList extends StatelessWidget {
       children: List.generate(items.length, (index) {
         return ListTile(
           contentPadding: const EdgeInsets.all(0),
-          leading: warnIndices.contains(index) ? const Icon(Icons.error_outline_rounded, size: 18) :
-                   const Icon(Icons.check_circle_outline_rounded, size: 18),
+          leading: warnIndices.contains(index) ? const Icon(Icons.info_outline_rounded, color: Colors.blueAccent, size: 18) :
+                   const Icon(Icons.check_circle_outline_rounded, color: Colors.green, size: 18),
           minLeadingWidth: 18,
           subtitle: Text(items[index]),
         );

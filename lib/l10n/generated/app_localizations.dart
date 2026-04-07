@@ -142,12 +142,6 @@ abstract class AppLocalizations {
   /// **'Test'**
   String get action_test;
 
-  /// No description provided for @action_testAndSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Test and save'**
-  String get action_testAndSave;
-
   /// No description provided for @sms.
   ///
   /// In en, this message translates to:
@@ -163,7 +157,7 @@ abstract class AppLocalizations {
   /// No description provided for @sms_empty.
   ///
   /// In en, this message translates to:
-  /// **'No incoming SMS\nin current session'**
+  /// **'No incoming SMS\nin the last 24 hours'**
   String get sms_empty;
 
   /// No description provided for @sms_hello.
@@ -247,7 +241,7 @@ abstract class AppLocalizations {
   /// No description provided for @rules_empty.
   ///
   /// In en, this message translates to:
-  /// **'No rules yet\nCreate your first one!'**
+  /// **'No rules yet.\nAdd your first one!'**
   String get rules_empty;
 
   /// No description provided for @connection.
@@ -256,35 +250,35 @@ abstract class AppLocalizations {
   /// **'Connection'**
   String get connection;
 
-  /// No description provided for @telebot.
+  /// No description provided for @tbot.
   ///
   /// In en, this message translates to:
   /// **'Telegram bot'**
-  String get telebot;
+  String get tbot;
 
-  /// No description provided for @telebot_token.
+  /// No description provided for @tbot_token.
   ///
   /// In en, this message translates to:
   /// **'Bot token'**
-  String get telebot_token;
+  String get tbot_token;
 
-  /// No description provided for @telebot_tokenInfo.
+  /// No description provided for @tbot_tokenInfo.
   ///
   /// In en, this message translates to:
   /// **'Bot token you\'ve got from @BotFather'**
-  String get telebot_tokenInfo;
+  String get tbot_tokenInfo;
 
-  /// No description provided for @telebot_chatId.
+  /// No description provided for @tbot_chatId.
   ///
   /// In en, this message translates to:
   /// **'Chat ID'**
-  String get telebot_chatId;
+  String get tbot_chatId;
 
-  /// No description provided for @telebot_chatIdInfo.
+  /// No description provided for @tbot_chatIdInfo.
   ///
   /// In en, this message translates to:
   /// **'ID of a chat with your bot (optional)'**
-  String get telebot_chatIdInfo;
+  String get tbot_chatIdInfo;
 
   /// No description provided for @smtp.
   ///
@@ -454,53 +448,101 @@ abstract class AppLocalizations {
   /// **'App to automatically forward incoming SMS messages to a Telegram bot'**
   String get help_appInfo;
 
-  /// No description provided for @help_howToUse.
+  /// No description provided for @help_info.
   ///
   /// In en, this message translates to:
-  /// **'How to use'**
-  String get help_howToUse;
+  /// **'Intro'**
+  String get help_info;
 
-  /// No description provided for @help_howToUse_01.
+  /// No description provided for @help_info_01.
   ///
   /// In en, this message translates to:
-  /// **'If you don\'t have a Telegram bot yet, use @BotFather bot to create one and get its token. It\'s simple and free.'**
-  String get help_howToUse_01;
+  /// **'The app forwards SMS to a Telegram bot or an email address. You will need your own bot or an email account with SMTP access.'**
+  String get help_info_01;
 
-  /// No description provided for @help_howToUse_02.
+  /// No description provided for @help_info_02.
   ///
   /// In en, this message translates to:
-  /// **'Open a chat with your bot in Telegram, start a conversation, or send any message. This is needed to automatically retrieve the chat id for the next step.'**
-  String get help_howToUse_02;
+  /// **'A forwarding rule is created for each connection — it defines which SMS to send and where. Rules can be duplicated, enabled, or disabled as needed.'**
+  String get help_info_02;
 
-  /// No description provided for @help_howToUse_03.
+  /// No description provided for @help_info_03.
   ///
   /// In en, this message translates to:
-  /// **'Go to the app, in bot settings, enter the token, and test settings (you can also set the chat id if you know it). If the test is successful, the settings are saved, and a hello message is sent to the Telegram chat.'**
-  String get help_howToUse_03;
+  /// **'When an SMS arrives, the app checks active rules and attempts to forward it. If it fails due to technical reasons (e.g., no internet), the app will retry later.'**
+  String get help_info_03;
 
-  /// No description provided for @help_howToUse_04.
+  /// No description provided for @help_info_04.
   ///
   /// In en, this message translates to:
-  /// **'That\'s it! The app is now ready to forward incoming SMS to your bot. Tap Start to enable SMS forwarding, or tap Stop to turn it off.'**
-  String get help_howToUse_04;
+  /// **'When forwarding SMS from multiple phones, you can set a device label in the settings — it is sent along with the SMS to identify the receiving phone.'**
+  String get help_info_04;
 
-  /// No description provided for @help_howToUse_04l.
-  ///
-  /// In en, this message translates to:
-  /// **'When forwarding SMS from multiple devices, you can set a device label in settings to identify the receiving phone.'**
-  String get help_howToUse_04l;
-
-  /// No description provided for @help_howToUse_05.
+  /// No description provided for @help_info_05.
   ///
   /// In en, this message translates to:
   /// **'It is recommended to disable battery optimization for the app, since the system may restrict background activity to save power.'**
-  String get help_howToUse_05;
+  String get help_info_05;
 
-  /// No description provided for @help_howToUse_06.
+  /// No description provided for @help_info_06.
   ///
   /// In en, this message translates to:
   /// **'Make sure to keep the internet connection enabled for the app to work.'**
-  String get help_howToUse_06;
+  String get help_info_06;
+
+  /// No description provided for @help_tbot.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting a Telegram Bot'**
+  String get help_tbot;
+
+  /// No description provided for @help_tbot_01.
+  ///
+  /// In en, this message translates to:
+  /// **'If you don\'t have a Telegram bot yet, use @BotFather bot to create one and get its token. It\'s simple and free.'**
+  String get help_tbot_01;
+
+  /// No description provided for @help_tbot_02.
+  ///
+  /// In en, this message translates to:
+  /// **'Open a chat with your bot in Telegram, start a conversation, or send any message. This is needed to automatically retrieve the chat id for the next step.'**
+  String get help_tbot_02;
+
+  /// No description provided for @help_tbot_03.
+  ///
+  /// In en, this message translates to:
+  /// **'In the app, create a Telegram bot rule and enter the token (you can also set a Chat ID if you know it). Test the settings, then save. A welcome message will arrive upon a successful test.'**
+  String get help_tbot_03;
+
+  /// No description provided for @help_tbot_04.
+  ///
+  /// In en, this message translates to:
+  /// **'Done! Everything is set up to forward SMS to your bot. Enable the rule and press Start to begin.'**
+  String get help_tbot_04;
+
+  /// No description provided for @help_smtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting an SMTP Server'**
+  String get help_smtp;
+
+  /// No description provided for @help_smtp_01.
+  ///
+  /// In en, this message translates to:
+  /// **'It is best to create a dedicated email for SMS forwarding (not an alias): it will also serve as your login. This is especially relevant for Gmail and similar services.'**
+  String get help_smtp_01;
+
+  /// No description provided for @help_smtp_02.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a rule and fill in the connection details. Usually, an \'App Password\' is required (generated in your email provider\'s security settings).'**
+  String get help_smtp_02;
+
+  /// No description provided for @help_smtp_03.
+  ///
+  /// In en, this message translates to:
+  /// **'Test and save the settings, enable the rule, and press Start.'**
+  String get help_smtp_03;
 
   /// No description provided for @help_filters.
   ///

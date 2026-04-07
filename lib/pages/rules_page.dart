@@ -44,7 +44,7 @@ class RulesPage extends StatelessWidget {
 
   String _providerName(String provider, AppLocalizations l10n) {
     return switch (provider) {
-      'telegram_bot' => l10n.telebot,
+      'telegram_bot' => l10n.tbot,
       'smtp_server' => l10n.smtp,
       _ => provider,
     };

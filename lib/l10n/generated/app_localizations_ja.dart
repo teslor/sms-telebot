@@ -24,16 +24,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get action_test => 'テスト';
 
   @override
-  String get action_testAndSave => 'テストして保存';
-
-  @override
   String get sms => 'SMS';
 
   @override
   String get sms_welcome => '「開始」をタップして\nSMSの転送を開始します';
 
   @override
-  String get sms_empty => '現在のセッションに\n受信SMSはありません';
+  String get sms_empty => '過去24時間の\n受信SMSはありません';
 
   @override
   String get sms_hello => 'SMS Telebotからこんにちは！=^•⩊•^=';
@@ -75,25 +72,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rules => 'ルール';
 
   @override
-  String get rules_empty => 'まだルールがありません\n最初のルールを作成しましょう！';
+  String get rules_empty => 'ルールはまだありません。\n最初のルールを追加しましょう！';
 
   @override
   String get connection => '接続';
 
   @override
-  String get telebot => 'Telegramボット';
+  String get tbot => 'Telegramボット';
 
   @override
-  String get telebot_token => 'ボットトークン';
+  String get tbot_token => 'ボットトークン';
 
   @override
-  String get telebot_tokenInfo => '@BotFatherから取得したトークン';
+  String get tbot_tokenInfo => '@BotFatherから取得したトークン';
 
   @override
-  String get telebot_chatId => 'チャットID';
+  String get tbot_chatId => 'チャットID';
 
   @override
-  String get telebot_chatIdInfo => 'ボットとのチャットのID（オプション）';
+  String get tbot_chatIdInfo => 'ボットとのチャットのID（オプション）';
 
   @override
   String get smtp => 'SMTPサーバー';
@@ -180,34 +177,62 @@ class AppLocalizationsJa extends AppLocalizations {
   String get help_appInfo => '受信したSMSメッセージを自動的にTelegramボットに転送するアプリ';
 
   @override
-  String get help_howToUse => '使い方';
+  String get help_info => 'परिचय';
 
   @override
-  String get help_howToUse_01 =>
-      'Telegramボットをまだお持ちでない場合は、@BotFatherを使用して作成し、トークンを取得してください。簡単で無料です。';
+  String get help_info_01 =>
+      'यह ऐप SMS को Telegram बॉट या ईमेल पर फॉरवर्ड करता है। इसके लिए आपको अपने बॉट या SMTP एक्सेस वाले ईमेल की आवश्यकता होगी।';
 
   @override
-  String get help_howToUse_02 =>
-      'Telegramでボットとのチャットを開き、会話を開始するか、メッセージを送信してください。これは次のステップでチャットIDを自動的に取得するために必要です。';
+  String get help_info_02 =>
+      'प्रत्येक कनेक्शन के लिए एक फॉरवर्डिंग नियम बनाया जाता है — यह तय करता है कि कौन सा SMS कहाँ भेजना है। नियमों को ज़रूरत के अनुसार कॉपी, चालू या बंद किया जा सकता है।';
 
   @override
-  String get help_howToUse_03 =>
-      'アプリを開き、ボット設定でトークンを入力して設定をテストします（チャットIDがわかっている場合は設定することもできます）。テストが成功すると、設定が保存され、Telegramチャットにウェルカムメッセージが送信されます。';
+  String get help_info_03 =>
+      'SMS आने पर, ऐप सक्रिय नियमों की जाँच करता है और फॉरवर्ड करने का प्रयास करता है। यदि तकनीकी कारणों (जैसे इंटरनेट न होना) से विफल रहता है, तो ऐप बाद में पुनः प्रयास करेगा।';
 
   @override
-  String get help_howToUse_04 =>
-      'これで完了です！アプリは受信したSMSをボットへ転送する準備ができました。「開始」をタップするとSMS転送が有効になり、「停止」をタップすると無効になります。';
+  String get help_info_04 =>
+      'कई फोन से SMS फॉरवर्ड करते समय, आप सेटिंग्स में एक डिवाइस लेबल सेट कर सकते हैं — इसे भेजने वाले फोन की पहचान करने के लिए SMS के साथ भेजा जाता है।';
 
   @override
-  String get help_howToUse_04l =>
-      '複数のデバイスからSMSを転送する場合、設定でデバイスラベルを設定して受信電話を識別できます。';
-
-  @override
-  String get help_howToUse_05 =>
+  String get help_info_05 =>
       'バッテリー節約のためにシステムがバックグラウンドでのアプリ動作を制限する場合があるため、このアプリのバッテリー最適化を無効にすることを推奨します。';
 
   @override
-  String get help_howToUse_06 => 'アプリが動作するように、インターネット接続を有効にしておいてください。';
+  String get help_info_06 => 'アプリが動作するように、インターネット接続を有効にしておいてください。';
+
+  @override
+  String get help_tbot => 'Telegramボットの接続';
+
+  @override
+  String get help_tbot_01 =>
+      'Telegramボットをまだお持ちでない場合は、@BotFatherを使用して作成し、トークンを取得してください。簡単で無料です。';
+
+  @override
+  String get help_tbot_02 =>
+      'Telegramでボットとのチャットを開き、会話を開始するか、メッセージを送信してください。これは次のステップでチャットIDを自動的に取得するために必要です。';
+
+  @override
+  String get help_tbot_03 =>
+      'アプリ内でボット用のルールを作成し、トークンを入力してください（チャットIDがわかる場合は入力も可能です）。設定をテストしてから保存してください。成功するとウェルカムメッセージが届きます。';
+
+  @override
+  String get help_tbot_04 => '完了です！ボットへのSMS転送設定が整いました。ルールを有効にして「開始」をタップしてください。';
+
+  @override
+  String get help_smtp => 'SMTPサーバーの接続';
+
+  @override
+  String get help_smtp_01 =>
+      'SMS फॉरवर्डिंग के लिए एक अलग ईमेल (alias नहीं) बनाना सबसे अच्छा है: यही आपका लॉगिन भी होगा। Gmail और इसी तरह की सेवाओं के लिए यह विशेष रूप से महत्वपूर्ण है।';
+
+  @override
+  String get help_smtp_02 =>
+      'ルールを作成し、接続パラメータを入力します。通常は「アプリパスワード」（メールサービスのセキュリティ設定で生成）が必要です。';
+
+  @override
+  String get help_smtp_03 => '設定をテストして保存し、ルールを有効にして「開始」を押してください。';
 
   @override
   String get help_filters => 'フィルター';

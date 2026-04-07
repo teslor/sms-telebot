@@ -24,16 +24,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get action_test => 'Test';
 
   @override
-  String get action_testAndSave => 'Test and save';
-
-  @override
   String get sms => 'SMS';
 
   @override
   String get sms_welcome => 'Tap Start to begin\nforwarding SMS';
 
   @override
-  String get sms_empty => 'No incoming SMS\nin current session';
+  String get sms_empty => 'No incoming SMS\nin the last 24 hours';
 
   @override
   String get sms_hello => 'Hello from SMS Telebot! =^•⩊•^=';
@@ -75,25 +72,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rules => 'RULES';
 
   @override
-  String get rules_empty => 'No rules yet\nCreate your first one!';
+  String get rules_empty => 'No rules yet.\nAdd your first one!';
 
   @override
   String get connection => 'Connection';
 
   @override
-  String get telebot => 'Telegram bot';
+  String get tbot => 'Telegram bot';
 
   @override
-  String get telebot_token => 'Bot token';
+  String get tbot_token => 'Bot token';
 
   @override
-  String get telebot_tokenInfo => 'Bot token you\'ve got from @BotFather';
+  String get tbot_tokenInfo => 'Bot token you\'ve got from @BotFather';
 
   @override
-  String get telebot_chatId => 'Chat ID';
+  String get tbot_chatId => 'Chat ID';
 
   @override
-  String get telebot_chatIdInfo => 'ID of a chat with your bot (optional)';
+  String get tbot_chatIdInfo => 'ID of a chat with your bot (optional)';
 
   @override
   String get smtp => 'SMTP server';
@@ -181,35 +178,65 @@ class AppLocalizationsEn extends AppLocalizations {
       'App to automatically forward incoming SMS messages to a Telegram bot';
 
   @override
-  String get help_howToUse => 'How to use';
+  String get help_info => 'Intro';
 
   @override
-  String get help_howToUse_01 =>
-      'If you don\'t have a Telegram bot yet, use @BotFather bot to create one and get its token. It\'s simple and free.';
+  String get help_info_01 =>
+      'The app forwards SMS to a Telegram bot or an email address. You will need your own bot or an email account with SMTP access.';
 
   @override
-  String get help_howToUse_02 =>
-      'Open a chat with your bot in Telegram, start a conversation, or send any message. This is needed to automatically retrieve the chat id for the next step.';
+  String get help_info_02 =>
+      'A forwarding rule is created for each connection — it defines which SMS to send and where. Rules can be duplicated, enabled, or disabled as needed.';
 
   @override
-  String get help_howToUse_03 =>
-      'Go to the app, in bot settings, enter the token, and test settings (you can also set the chat id if you know it). If the test is successful, the settings are saved, and a hello message is sent to the Telegram chat.';
+  String get help_info_03 =>
+      'When an SMS arrives, the app checks active rules and attempts to forward it. If it fails due to technical reasons (e.g., no internet), the app will retry later.';
 
   @override
-  String get help_howToUse_04 =>
-      'That\'s it! The app is now ready to forward incoming SMS to your bot. Tap Start to enable SMS forwarding, or tap Stop to turn it off.';
+  String get help_info_04 =>
+      'When forwarding SMS from multiple phones, you can set a device label in the settings — it is sent along with the SMS to identify the receiving phone.';
 
   @override
-  String get help_howToUse_04l =>
-      'When forwarding SMS from multiple devices, you can set a device label in settings to identify the receiving phone.';
-
-  @override
-  String get help_howToUse_05 =>
+  String get help_info_05 =>
       'It is recommended to disable battery optimization for the app, since the system may restrict background activity to save power.';
 
   @override
-  String get help_howToUse_06 =>
+  String get help_info_06 =>
       'Make sure to keep the internet connection enabled for the app to work.';
+
+  @override
+  String get help_tbot => 'Connecting a Telegram Bot';
+
+  @override
+  String get help_tbot_01 =>
+      'If you don\'t have a Telegram bot yet, use @BotFather bot to create one and get its token. It\'s simple and free.';
+
+  @override
+  String get help_tbot_02 =>
+      'Open a chat with your bot in Telegram, start a conversation, or send any message. This is needed to automatically retrieve the chat id for the next step.';
+
+  @override
+  String get help_tbot_03 =>
+      'In the app, create a Telegram bot rule and enter the token (you can also set a Chat ID if you know it). Test the settings, then save. A welcome message will arrive upon a successful test.';
+
+  @override
+  String get help_tbot_04 =>
+      'Done! Everything is set up to forward SMS to your bot. Enable the rule and press Start to begin.';
+
+  @override
+  String get help_smtp => 'Connecting an SMTP Server';
+
+  @override
+  String get help_smtp_01 =>
+      'It is best to create a dedicated email for SMS forwarding (not an alias): it will also serve as your login. This is especially relevant for Gmail and similar services.';
+
+  @override
+  String get help_smtp_02 =>
+      'Create a rule and fill in the connection details. Usually, an \'App Password\' is required (generated in your email provider\'s security settings).';
+
+  @override
+  String get help_smtp_03 =>
+      'Test and save the settings, enable the rule, and press Start.';
 
   @override
   String get help_filters => 'Filters';

@@ -68,17 +68,17 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> startProcessing() async {
     isRunning = true;
+    notifyListeners();
     await MainDb.instance.saveBoolSetting('isRunning', true);
     _startSmsStatsPolling();
-    notifyListeners();
   }
 
   Future<void> stopProcessing() async {
     isRunning = false;
+    notifyListeners();
     _stopSmsStatsPolling();
     await MainDb.instance.saveBoolSetting('isRunning', false);
     stopWorkersNative();
-    notifyListeners();
   }
 
   @override
