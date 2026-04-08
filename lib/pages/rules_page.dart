@@ -66,9 +66,10 @@ class RulesPage extends StatelessWidget {
       showDragHandle: true,
       useSafeArea: true,
       builder: (sheetContext) {
+        final bottomInset = MediaQuery.viewPaddingOf(sheetContext).bottom;
         return ListView.separated(
           shrinkWrap: true,
-          padding: EdgeInsets.zero,
+          padding: EdgeInsets.only(bottom: bottomInset),
           itemCount: providers.length,
           separatorBuilder: (_, _) => const Divider(height: 1),
           itemBuilder: (itemContext, index) {
@@ -96,7 +97,8 @@ class RulesPage extends StatelessWidget {
         ? Center(
           child: Text(
             AppLocalizations.of(context)!.rules_empty,
-            style: TextStyle(fontSize: 18),
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 18),
           ),
         )
         : ListView.builder(
@@ -137,9 +139,10 @@ class RuleCard extends StatelessWidget {
       showDragHandle: true,
       useSafeArea: true,
       builder: (BuildContext bottomSheetContext) {
+        final bottomInset = MediaQuery.viewPaddingOf(bottomSheetContext).bottom;
         return ListView.separated(
           shrinkWrap: true,
-          padding: EdgeInsets.zero,
+          padding: EdgeInsets.only(bottom: bottomInset),
           itemCount: 2,
           separatorBuilder: (_, _) => const Divider(height: 1),
           itemBuilder: (itemContext, index) {

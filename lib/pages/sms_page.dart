@@ -16,45 +16,33 @@ class SmsPage extends StatelessWidget {
     final smsReceivedCount = appState.smsReceivedCount;
     final smsSentCount = appState.smsSentCount;
     final smsReceivedList = appState.smsReceivedList;
+    final isEmptyState = !appState.isRunning || smsReceivedCount == 0;
 
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) => ListView(
+      body: isEmptyState
+        ? Center(
+          child: Text(
+            !appState.isRunning ? l10n.sms_welcome : l10n.sms_empty,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 18),
+          ),
+        )
+        : ListView(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
           children: [
-            ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight - 40),
-              child: !appState.isRunning ? Center(
-                child: Text(
-                  l10n.sms_welcome,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18),
-                ),
-              ) : smsReceivedCount == 0 ? Center(
-                child: Text(
-                  l10n.sms_empty,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18),
-                ),
-              ) : Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildSmsCard(context, l10n.sms_received, smsReceivedCount.toString()),
-                      SizedBox(width: 15),
-                      _buildSmsCard(context, l10n.sms_sent, smsSentCount.toString()),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  if (smsReceivedList.isNotEmpty)
-                    ...smsReceivedList.map((sms) => _buildRecentSmsItem(context, sms)),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildSmsCard(context, l10n.sms_received, smsReceivedCount.toString()),
+                const SizedBox(width: 15),
+                _buildSmsCard(context, l10n.sms_sent, smsSentCount.toString()),
+              ],
             ),
+            const SizedBox(height: 15),
+            if (smsReceivedList.isNotEmpty)
+              ...smsReceivedList.map((sms) => _buildRecentSmsItem(context, sms)),
           ],
         ),
-      ),
 
       bottomNavigationBar: ActionButton(
         label: appState.isRunning ? l10n.sms_stop : l10n.sms_start,

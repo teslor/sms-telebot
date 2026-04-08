@@ -15,7 +15,7 @@ class TelegramBotConnection extends StatefulWidget {
 }
 
 class _TelegramBotConnectionState extends State<TelegramBotConnection> {
-  late TextEditingController _botTokenController;
+  late TextEditingController _tokenController;
   late TextEditingController _chatIdController;
 
   bool _isTesting = false;
@@ -27,24 +27,20 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
   void initState() {
     super.initState();
     final config = context.read<AppState>().config;
-    _botTokenController = TextEditingController(text: config['botToken'] ?? '');
+    _tokenController = TextEditingController(text: config['token'] ?? '');
     _chatIdController = TextEditingController(text: config['chatId']?.toString() ?? '');
   }
 
   @override
   void dispose() {
-    _botTokenController.dispose();
+    _tokenController.dispose();
     _chatIdController.dispose();
     super.dispose();
   }
 
-  bool get _isValidInputs {
-    final botTokenRegex = RegExp(r'^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$');
-    final isBotTokenValid = botTokenRegex.hasMatch(_botTokenController.text);
-    final chatId = _chatIdController.text.trim();
-    final isChatIdValid = chatId.isEmpty || int.tryParse(chatId) != null;
-    return isBotTokenValid && isChatIdValid;
-  }
+  static final _tokenRegex = RegExp(r'^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$');
+  bool get _isValidToken => _tokenRegex.hasMatch(_tokenController.text);
+  bool get _isValidChatId => int.tryParse(_chatIdController.text.trim()) != null;
 
   Future<void> _testConnection(AppLocalizations l10n) async {
     FocusManager.instance.primaryFocus?.unfocus();
@@ -53,7 +49,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
       _isTesting = true;
       _testResult = null;
     });
-    if (!_isValidInputs) {
+    if (!_isValidToken) {
       setState(() {
         _isTesting = false;
         _testResult = false;
@@ -63,15 +59,16 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     }
 
     final appState = context.read<AppState>();
-    final botToken = _botTokenController.text;
+    final token = _tokenController.text;
     String chatId = _chatIdController.text;
     final String helloMessage = l10n.sms_hello;
 
     try {
       if (chatId.isEmpty) {
-        final result = await getUpdates(botToken);
+        final result = await getUpdates(token);
         if (result.isSuccess) {
           chatId = result.data!;
+          _chatIdController.text = chatId;
         } else {
           if (mounted) {
             setState(() { _testResult = false; });
@@ -84,7 +81,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
       final result = await sendToProviderNative(
         provider: 'telegram_bot',
         config: { 'chatId': chatId },
-        secret: botToken,
+        secret: token,
         body: helloMessage,
         deviceLabel: appState.deviceLabel,
       );
@@ -112,7 +109,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
   Future<void> _saveConnection(AppLocalizations l10n) async {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    if (!_isValidInputs) {
+    if (!(_isValidToken && _isValidChatId)) {
       setState(() {
         _saveResult = false;
         context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
@@ -121,7 +118,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     }
 
     final appState = context.read<AppState>();
-    final secret = _botTokenController.text;
+    final secret = _tokenController.text;
     try {
       final result = await appState.updateRuleConfig({'chatId': _chatIdController.text.trim()}, secret);
       if (!mounted) return;
@@ -152,7 +149,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
         children:[
           const SizedBox(height: 5),
           TextField(
-            controller: _botTokenController,
+            controller: _tokenController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               labelText: l10n.tbot_token,
@@ -186,7 +183,9 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
           Expanded(
             child: ActionButton(
               label: l10n.action_test,
-              onPressed: _isTesting || !_isValidInputs ? null : () => _testConnection(l10n),
+              onPressed: _isTesting || !_isValidToken
+                  ? null
+                  : () => _testConnection(l10n),
               isSuccess: _testResult,
               isInProgress: _isTesting,
               layout: 'half-1',
@@ -195,7 +194,9 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
           Expanded(
             child: ActionButton(
               label: l10n.action_save,
-              onPressed: !_isInputChanged || !_isValidInputs ? null : () => _saveConnection(l10n),
+              onPressed: !_isInputChanged || !(_isValidToken && _isValidChatId)
+                  ? null
+                  : () => _saveConnection(l10n),
               isSuccess: _saveResult,
               layout: 'half-2',
             ),

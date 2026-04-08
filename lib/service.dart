@@ -51,8 +51,8 @@ Future<CallResult> getUpdates(String? token) async {
     }
 
     final Map<String, dynamic> jsonResponse = json.decode(response.body);
-
-    final firstResult = jsonResponse['result']?[0]; // empty if chat is not initiated
+    final result = jsonResponse['result'];
+    final firstResult = (result is List && result.isNotEmpty) ? result.first : null; // empty if chat is not initiated
     if (firstResult?['message']?['chat']?['id'] != null) {
       return okResult(firstResult['message']['chat']['id'].toString());
     }
