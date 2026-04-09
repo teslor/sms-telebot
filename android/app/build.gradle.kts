@@ -21,6 +21,12 @@ android {
 
     packaging {
         resources {
+            // Merge mail configuration files
+            merges += "META-INF/javamail.default.address.map"
+            merges += "META-INF/javamail.default.providers"
+            merges += "META-INF/javamail.providers"
+            merges += "META-INF/mailcap"
+
             // Avoid duplicate META-INF files from jakarta.mail and jakarta.activation
             excludes += "META-INF/NOTICE.md"
             excludes += "META-INF/LICENSE.md"
