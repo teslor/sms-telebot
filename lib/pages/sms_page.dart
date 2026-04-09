@@ -7,6 +7,11 @@ import '../widgets/action_button.dart';
 
 class SmsPage extends StatelessWidget {
   const SmsPage({super.key});
+  static const int _statusReceived = 0;
+  static const int _statusFailedFinal = 1;
+  static const int _statusFailedRetry = 2;
+  static const int _statusSentPartial = 3;
+  static const int _statusSentAll = 4;
 
   @override
   Widget build(BuildContext context) {
@@ -82,10 +87,12 @@ class SmsPage extends StatelessWidget {
     final textStyleMuted = TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: theme.colorScheme.onSurface.withAlpha(150));
     
     final receivedDate = DateFormat('dd.MM HH:mm').format(DateTime.fromMillisecondsSinceEpoch(sms['received_at']));
-    final isSent = sms['status'] != 0 && sms['sent_at'] != null;
-    final sentDate = isSent 
-        ? DateFormat('dd.MM HH:mm').format(DateTime.fromMillisecondsSinceEpoch(sms['sent_at'])) 
-        : null;
+    final status = (sms['status'] as num?)?.toInt() ?? _statusReceived;
+    final sentAt = (sms['sent_at'] as num?)?.toInt();
+    final lastAttemptAt = (sms['last_attempt_at'] as num?)?.toInt();
+    final activityAt = sentAt ?? lastAttemptAt;
+    final activityDate = activityAt == null ? null : DateFormat('dd.MM HH:mm').format(DateTime.fromMillisecondsSinceEpoch(activityAt));
+    final statusVisual = _statusVisual(theme, status);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 15),
@@ -104,12 +111,14 @@ class SmsPage extends StatelessWidget {
                     Text(receivedDate, style: textStyleMuted),
                   ],
                 ),
-                if (isSent)
+                if (status != _statusReceived)
                   Row(
                     children: [
-                      Text(sentDate!, style: textStyleMuted),
-                      const SizedBox(width: 4),
-                      Icon(Icons.arrow_upward_rounded, size: 14, color: Colors.green.shade600),
+                      if (activityDate != null) ...[
+                        Text(activityDate, style: textStyleMuted),
+                        const SizedBox(width: 4),
+                      ],
+                      Icon(statusVisual.icon, size: 14, color: statusVisual.color),
                     ],
                   ),
               ],
@@ -131,5 +140,15 @@ class SmsPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  ({IconData icon, Color color}) _statusVisual(ThemeData theme, int status) {
+    return switch (status) {
+      _statusSentAll => (icon: Icons.arrow_upward_rounded, color: Colors.green.shade600),
+      _statusSentPartial => (icon: Icons.arrow_upward_rounded, color: Colors.lime.shade600),
+      _statusFailedRetry => (icon: Icons.autorenew_rounded, color: Colors.orange),
+      _statusFailedFinal => (icon: Icons.error_outline_rounded, color: theme.colorScheme.error),
+      _ => (icon: Icons.schedule_rounded, color: theme.colorScheme.onSurfaceVariant),
+    };
   }
 }

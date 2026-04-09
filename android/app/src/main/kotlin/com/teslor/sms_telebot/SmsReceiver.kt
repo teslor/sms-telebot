@@ -89,7 +89,7 @@ class SmsReceiver : BroadcastReceiver() {
             body = body,
             smscAt = timestamp,
             receivedAt = deviceReceivedAt,
-            status = 0 // 0 = received, not yet sent
+            status = SmsSendStatus.RECEIVED
         )
 
         // Cleanup old SMS with 10% probability

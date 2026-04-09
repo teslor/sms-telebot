@@ -7,6 +7,8 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
@@ -42,13 +44,24 @@ class SmsForwardWorker(
         val smsId = inputData.getString("sms_id") ?: return@withContext Result.failure()
         val ruleIds = inputData.getIntArray("rule_ids") ?: return@withContext Result.failure()
 
+        // Ensure device has internet connectivity
+        if (!hasValidatedInternet()) {
+            dbManager.updateSmsHistory(
+                id = smsId,
+                updates = mapOf("status" to SmsSendStatus.FAILED_RETRY)
+            )
+            return@withContext Result.retry()
+        }
+
         // Guard against concurrent duplicate execution for the same SMS
         if (!inFlightSmsIds.add(smsId)) return@withContext Result.success()
 
         try {
             // Check if SMS exists and was not already sent
             val smsData = dbManager.getSmsById(smsId) ?: return@withContext Result.failure()
-            if (smsData.status != 0) {
+            val shouldBeProcessed =
+                smsData.status == SmsSendStatus.RECEIVED || smsData.status == SmsSendStatus.FAILED_RETRY
+            if (!shouldBeProcessed) {
                 return@withContext Result.success() // already processed (deduplication)
             }
 
@@ -59,6 +72,8 @@ class SmsForwardWorker(
             // Read common settings
             val deviceLabel = dbManager.getSetting("deviceLabel").orEmpty()
             val l10nSmsFrom = dbManager.getSetting("l10nSmsFrom").orEmpty().ifBlank { "SMS from" }
+            val lastAttemptAt = System.currentTimeMillis()
+            val nextAttemptCount = smsData.attemptCount + 1
 
             // Start parallel sending
             val results = coroutineScope {
@@ -71,24 +86,41 @@ class SmsForwardWorker(
                 }.awaitAll()
             }
 
-            val successCount = results.count { it.isSuccess } // count the number of successful sends
+            val successCount = results.count { it.isSuccess }
             val shouldRetry = results.any { !it.isSuccess && it.shouldRetry }
 
             return@withContext if (successCount > 0) {
-                // If at least one send is successful - save the status
-                val newStatus = if (successCount == rules.size) 1 else 2 // 1 = all ok, 2 = partially
+                val newStatus = if (successCount == rules.size) SmsSendStatus.SENT_ALL else SmsSendStatus.SENT_PARTIAL
 
                 dbManager.updateSmsHistory(
                     id = smsId,
                     updates = mapOf(
                         "status" to newStatus,
-                        "sent_at" to System.currentTimeMillis()
+                        "sent_at" to System.currentTimeMillis(),
+                        "last_attempt_at" to lastAttemptAt,
+                        "attempt_count" to nextAttemptCount,
                     )
                 )
                 Result.success()
             } else if (shouldRetry) {
+                dbManager.updateSmsHistory(
+                    id = smsId,
+                    updates = mapOf(
+                        "status" to SmsSendStatus.FAILED_RETRY,
+                        "last_attempt_at" to lastAttemptAt,
+                        "attempt_count" to nextAttemptCount,
+                    )
+                )
                 Result.retry() // retry only when at least one failure is temporary
             } else {
+                dbManager.updateSmsHistory(
+                    id = smsId,
+                    updates = mapOf(
+                        "status" to SmsSendStatus.FAILED_FINAL,
+                        "last_attempt_at" to lastAttemptAt,
+                        "attempt_count" to nextAttemptCount,
+                    )
+                )
                 Result.failure() // all failures are permanent, no retry needed
             }
         } finally {
@@ -139,6 +171,15 @@ class SmsForwardWorker(
             .setSmallIcon(R.mipmap.ic_launcher)
             .setOngoing(true)
             .build()
+    }
+
+    private fun hasValidatedInternet(): Boolean {
+        val connectivityManager =
+            applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
 
     companion object {

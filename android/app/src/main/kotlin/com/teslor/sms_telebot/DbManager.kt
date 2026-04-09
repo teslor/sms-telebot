@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.util.Log
 
-data class SmsData(val sender: String, val body: String, val status: Int)
+data class SmsData(val sender: String, val body: String, val status: Int, val attemptCount: Int)
 data class ForwardingRule(val id: Int, val filterMode: Int, val filtersJson: String?)
 data class ForwardingRuleConfig(val id: Int, val provider: String, val configJson: String?)
 
@@ -153,9 +153,15 @@ class DbManager private constructor(private val context: Context) {
     fun getSmsById(id: String): SmsData? {
         return withDatabase { db ->
             db.query(
-                "sms_history", arrayOf("sender", "body", "status"), "id = ?", arrayOf(id), null, null, null
+                "sms_history", arrayOf("sender", "body", "status", "attempt_count"),
+                "id = ?", arrayOf(id), null, null, null
             ).use {
-                if (it.moveToFirst()) SmsData(it.getString(0), it.getString(1), it.getInt(2)) else null
+                if (it.moveToFirst()) {
+                    SmsData(
+                        sender = it.getString(0), body = it.getString(1),
+                        status = it.getInt(2), attemptCount = it.getInt(3),
+                    )
+                } else { null }
             }
         }
     }

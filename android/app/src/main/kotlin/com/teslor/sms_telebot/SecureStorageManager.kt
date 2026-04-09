@@ -130,41 +130,41 @@ class SecureStorageManager private constructor(context: Context) {
 
     // Save a secret (password, token etc.)
     fun saveSecret(id: String, secret: String): SecretResult {
-        val prefs = sharedPreferences ?: return SecretResult(isSuccess = false, code = Codes.SECRETS_ERROR)
+        val prefs = sharedPreferences ?: return SecretResult(isSuccess = false, code = ResultCode.SECRETS_ERROR)
         return try {
             prefs.edit().putString(id, secret).apply()
-            SecretResult(isSuccess = true, code = Codes.OK)
+            SecretResult(isSuccess = true, code = ResultCode.OK)
         } catch (e: Exception) {
             Log.e(TAG, "Error while writing key $id", e)
-            SecretResult(isSuccess = false, code = Codes.SECRETS_ERROR)
+            SecretResult(isSuccess = false, code = ResultCode.SECRETS_ERROR)
         }
     }
 
     // Read a secret
     fun readSecret(id: String): SecretResult {
-        val prefs = sharedPreferences ?: return SecretResult(isSuccess = false, code = Codes.SECRETS_ERROR)
+        val prefs = sharedPreferences ?: return SecretResult(isSuccess = false, code = ResultCode.SECRETS_ERROR)
         return try {
             val value = prefs.getString(id, null)
             if (recoveredWithDataLoss && value == null) {
-                SecretResult(isSuccess = false, code = Codes.SECRETS_RECOVERED)
+                SecretResult(isSuccess = false, code = ResultCode.SECRETS_RECOVERED)
             } else {
-                SecretResult(isSuccess = true, code = Codes.OK, data = value)
+                SecretResult(isSuccess = true, code = ResultCode.OK, data = value)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error while reading key $id", e)
-            SecretResult(isSuccess = false, code = Codes.SECRETS_ERROR)
+            SecretResult(isSuccess = false, code = ResultCode.SECRETS_ERROR)
         }
     }
 
     // Delete a secret
     fun deleteSecret(id: String): SecretResult {
-        val prefs = sharedPreferences ?: return SecretResult(isSuccess = false, code = Codes.SECRETS_ERROR)
+        val prefs = sharedPreferences ?: return SecretResult(isSuccess = false, code = ResultCode.SECRETS_ERROR)
         return try {
             prefs.edit().remove(id).apply()
-            SecretResult(isSuccess = true, code = Codes.OK)
+            SecretResult(isSuccess = true, code = ResultCode.OK)
         } catch (e: Exception) {
             Log.e(TAG, "Error while deleting key $id", e)
-            SecretResult(isSuccess = false, code = Codes.SECRETS_ERROR)
+            SecretResult(isSuccess = false, code = ResultCode.SECRETS_ERROR)
         }
     }
 }

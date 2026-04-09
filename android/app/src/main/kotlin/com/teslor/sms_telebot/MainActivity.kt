@@ -55,7 +55,7 @@ class MainActivity : FlutterActivity() {
                                     result.success(
                                         ProviderSendResult(
                                             isSuccess = false,
-                                            code = Codes.UNEXPECTED_ERROR,
+                                            code = ResultCode.UNEXPECTED_ERROR,
                                             info = e.message ?: "Unexpected error"
                                         ).toMap()
                                     )
@@ -102,7 +102,7 @@ class MainActivity : FlutterActivity() {
                             val saveResult = secureStorage.saveSecret(id, secret)
                             result.success(saveResult.toMap())
                         } else {
-                            result.success(SecretResult(isSuccess = false, code = Codes.UNEXPECTED_ERROR).toMap())
+                            result.success(SecretResult(isSuccess = false, code = ResultCode.UNEXPECTED_ERROR).toMap())
                         }
                     }
                     "readSecret" -> {
@@ -111,7 +111,7 @@ class MainActivity : FlutterActivity() {
                             val readResult = secureStorage.readSecret(id)
                             result.success(readResult.toMap())
                         } else {
-                            result.success(SecretResult(isSuccess = false, code = Codes.UNEXPECTED_ERROR).toMap())
+                            result.success(SecretResult(isSuccess = false, code = ResultCode.UNEXPECTED_ERROR).toMap())
                         }
                     }
                     "deleteSecret" -> {
@@ -120,7 +120,7 @@ class MainActivity : FlutterActivity() {
                             val deleteResult = secureStorage.deleteSecret(id)
                             result.success(deleteResult.toMap())
                         } else {
-                            result.success(SecretResult(isSuccess = false, code = Codes.UNEXPECTED_ERROR).toMap())
+                            result.success(SecretResult(isSuccess = false, code = ResultCode.UNEXPECTED_ERROR).toMap())
                         }
                     }
 

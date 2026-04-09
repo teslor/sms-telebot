@@ -6,7 +6,7 @@ package com.teslor.sms_telebot
 import org.json.JSONArray
 import org.json.JSONObject
 
-object Codes {
+object ResultCode {
     // General/Network
     const val OK = "ok"
     const val BAD_REQUEST = "bad_request"
@@ -26,9 +26,17 @@ object Codes {
     const val SECRETS_RECOVERED = "secrets_recovered"
 }
 
-object SmsProviders {
+object SmsProviderId {
     const val TELEGRAM_BOT = "telegram_bot"
     const val SMTP_SERVER = "smtp_server"
+}
+
+object SmsSendStatus {
+    const val RECEIVED = 0
+    const val FAILED_FINAL = 1
+    const val FAILED_RETRY = 2
+    const val SENT_PARTIAL = 3
+    const val SENT_ALL = 4
 }
 
 object SmsFilters {

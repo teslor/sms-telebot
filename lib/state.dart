@@ -30,6 +30,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   int smsReceivedCount = 0;
   int smsSentCount = 0;
   List<Map<String, dynamic>> smsReceivedList = [];
+  String smsReceivedListHash = '';
 
   AppState() {
     WidgetsBinding.instance.addObserver(this);
@@ -119,15 +120,19 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> _loadSmsStats() async {
     final newReceivedCount = await MainDb.instance.getReceivedSmsCount();
+    final newSentCount = await MainDb.instance.getSentSmsCount();
     final newList = await MainDb.instance.getRecentSmsList(limit: 10);
+    final statusesSum = newList
+      .fold<int>(0, (sum, sms) => sum + ((sms['status'] as num?)?.toInt() ?? 0));
+    final attemptsSum = newList
+      .fold<int>(0, (sum, sms) => sum + ((sms['attempt_count'] as num?)?.toInt() ?? 0));
+    final newHash = '$newReceivedCount$newSentCount$statusesSum$attemptsSum';
 
-    final newFirstSmsId = newList.isNotEmpty ? newList.first['id'] : null;
-    final currentFirstSmsId = smsReceivedList.isNotEmpty ? smsReceivedList.first['id'] : null;    
-
-    if (newReceivedCount != smsReceivedCount || newFirstSmsId != currentFirstSmsId) {
+    if (newHash != smsReceivedListHash) {
       smsReceivedCount = newReceivedCount;
-      smsSentCount = await MainDb.instance.getSentSmsCount();
+      smsSentCount = newSentCount;
       smsReceivedList = newList;
+      smsReceivedListHash = newHash;
       notifyListeners();
     }
   }

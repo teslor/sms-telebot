@@ -1,8 +1,5 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import 'constants.dart';
 
 class MainDb {
   // Singleton pattern to keep a single DB instance for the whole app
@@ -50,7 +47,7 @@ class MainDb {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         provider TEXT,
-        is_active INTEGER DEFAULT 1,
+        is_active INTEGER DEFAULT 0,
         filter_mode INTEGER DEFAULT 0,
         config_json TEXT DEFAULT NULL,
         filters_json TEXT DEFAULT NULL,
@@ -65,7 +62,9 @@ class MainDb {
         body TEXT,
         smsc_at INTEGER,
         received_at INTEGER,
+        last_attempt_at INTEGER,
         sent_at INTEGER,
+        attempt_count INTEGER DEFAULT 0,
         status INTEGER DEFAULT 0
       )
     ''');
@@ -79,63 +78,6 @@ class MainDb {
         message TEXT
       )
     ''');
-
-    await _migrateFromPrefs(db);
-  }
-
-  // Migrate data from SharedPreferences
-  Future<void> _migrateFromPrefs(Database db) async {
-    final prefs = await SharedPreferences.getInstance();
-    final botToken = prefs.getString('botToken');
-
-    // If botToken is empty, the migration has already been done before
-    // Exit immediately to avoid wasting resources
-    if (botToken == null || botToken.isEmpty) return;
-
-    // Move settings into app_settings
-    final deviceLabel = prefs.getString('deviceLabel') ?? '';
-    final isRunning = prefs.getBool('isRunning') ?? false;
-    final l10nSmsFrom = prefs.getString('l10nSmsFrom') ?? '';
-
-    final settingsBatch = db.batch();
-    settingsBatch.insert('app_settings', {'key': 'deviceLabel', 'value': deviceLabel});
-    settingsBatch.insert('app_settings', {'key': 'isRunning','value': isRunning ? '1' : '0'});
-    settingsBatch.insert('app_settings', {'key': 'l10nSmsFrom', 'value': l10nSmsFrom});
-    await settingsBatch.commit();
-
-    // Build JSON for the first rule
-    final chatId = prefs.getString('chatId') ?? '';
-    final filterMode = prefs.getInt('filterMode') ?? 0;
-    final configJson = jsonEncode({'chatId': chatId});
-
-    // Local helper to safely parse JSON arrays
-    List<dynamic> parseList(String key) {
-      final str = prefs.getString(key);
-      if (str == null || str.isEmpty) return [];
-      try {
-        return jsonDecode(str) as List<dynamic>;
-      } catch (e) {
-        return [];
-      }
-    }
-
-    // Map old keys to the new naming scheme
-    final filtersJson = jsonEncode({
-      AppConst.filterKeys[0]: parseList('wSenders'),
-      AppConst.filterKeys[1]: parseList('wSms'),
-      AppConst.filterKeys[2]: parseList('bSenders'),
-      AppConst.filterKeys[3]: parseList('bSms'),
-    });
-
-    // Create the default rule using the currently opened DB executor to avoid
-    // re-entering instance.database while the database is still opening
-    await insertRule(
-      isActive: 1, filterMode: filterMode,
-      configJson: configJson, filtersJson: filtersJson, executor: db,
-    );
-
-    // Clear SharedPreferences permanently
-    await prefs.clear();
   }
 
   // ================================================================================
@@ -259,14 +201,13 @@ class MainDb {
     return Sqflite.firstIntValue(result) ?? 0;
   }
 
-  /// Get the number of SMS messages with non-zero status in the last 24 hours
+  /// Get the number of SMS messages successfully sent in the last 24 hours
   Future<int> getSentSmsCount() async {
     final db = await instance.database;
     final limitTime = DateTime.now().millisecondsSinceEpoch - (24 * 60 * 60 * 1000);
 
-    // Non-zero status is treated as successfully sent
     final result = await db.rawQuery(
-      'SELECT COUNT(*) FROM sms_history WHERE status != 0 AND sent_at >= ?',
+      'SELECT COUNT(*) FROM sms_history WHERE status IN (3, 4) AND sent_at >= ?',
       [limitTime],
     );
     return Sqflite.firstIntValue(result) ?? 0;
