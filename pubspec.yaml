@@ -1,7 +1,7 @@
 name: sms_telebot
-description: "App to automatically forward incoming SMS messages to a Telegram bot."
+description: "App to automatically forward incoming SMS messages."
 publish_to: 'none'
-version: 0.5.1
+version: 0.6.0+1
 
 environment:
   sdk: '>=3.7.2 <4.0.0'
