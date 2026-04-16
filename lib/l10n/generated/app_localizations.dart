@@ -142,59 +142,83 @@ abstract class AppLocalizations {
   /// **'Test'**
   String get action_test;
 
-  /// No description provided for @sms.
+  /// No description provided for @msg_list.
   ///
   /// In en, this message translates to:
-  /// **'SMS'**
-  String get sms;
+  /// **'Messages'**
+  String get msg_list;
 
-  /// No description provided for @sms_welcome.
+  /// No description provided for @msg_welcome.
   ///
   /// In en, this message translates to:
-  /// **'Tap Start to begin\nforwarding SMS'**
-  String get sms_welcome;
+  /// **'Tap Start\nto enable monitoring'**
+  String get msg_welcome;
 
-  /// No description provided for @sms_empty.
+  /// No description provided for @msg_empty.
   ///
   /// In en, this message translates to:
-  /// **'No incoming SMS\nin the last 24 hours'**
-  String get sms_empty;
+  /// **'No messages\nin the last 24 hours'**
+  String get msg_empty;
 
-  /// No description provided for @sms_hello.
+  /// No description provided for @msg_hello.
   ///
   /// In en, this message translates to:
-  /// **'Hello from SMS Telebot! =^•⩊•^='**
-  String get sms_hello;
+  /// **'Hello! =^•⩊•^='**
+  String get msg_hello;
 
-  /// No description provided for @sms_from.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS from'**
-  String get sms_from;
-
-  /// No description provided for @sms_received.
+  /// No description provided for @msg_received.
   ///
   /// In en, this message translates to:
   /// **'Received'**
-  String get sms_received;
+  String get msg_received;
 
-  /// No description provided for @sms_sent.
+  /// No description provided for @msg_sent.
   ///
   /// In en, this message translates to:
   /// **'Forwarded'**
-  String get sms_sent;
+  String get msg_sent;
 
-  /// No description provided for @sms_start.
+  /// No description provided for @msg_start.
   ///
   /// In en, this message translates to:
   /// **'Start'**
-  String get sms_start;
+  String get msg_start;
 
-  /// No description provided for @sms_stop.
+  /// No description provided for @msg_stop.
   ///
   /// In en, this message translates to:
   /// **'Stop'**
-  String get sms_stop;
+  String get msg_stop;
+
+  /// No description provided for @msg_from.
+  ///
+  /// In en, this message translates to:
+  /// **'Message from'**
+  String get msg_from;
+
+  /// No description provided for @msg_smsFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS from'**
+  String get msg_smsFrom;
+
+  /// No description provided for @msg_system_lowBattery.
+  ///
+  /// In en, this message translates to:
+  /// **'Low battery'**
+  String get msg_system_lowBattery;
+
+  /// No description provided for @msg_system_chargerConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Charger connected'**
+  String get msg_system_chargerConnected;
+
+  /// No description provided for @msg_system_chargerDisconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Charger disconnected'**
+  String get msg_system_chargerDisconnected;
 
   /// No description provided for @rule.
   ///
@@ -205,7 +229,7 @@ abstract class AppLocalizations {
   /// No description provided for @rule_add.
   ///
   /// In en, this message translates to:
-  /// **'Add forwarding rule'**
+  /// **'Add rule'**
   String get rule_add;
 
   /// No description provided for @rule_copySuffix.
@@ -235,7 +259,7 @@ abstract class AppLocalizations {
   /// No description provided for @rules.
   ///
   /// In en, this message translates to:
-  /// **'RULES'**
+  /// **'Rules'**
   String get rules;
 
   /// No description provided for @rules_empty.
@@ -415,14 +439,38 @@ abstract class AppLocalizations {
   /// No description provided for @filters_textInfo.
   ///
   /// In en, this message translates to:
-  /// **'Add filters for SMS text'**
+  /// **'Add text filters'**
   String get filters_textInfo;
 
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
-  /// **'SETTINGS'**
+  /// **'Settings'**
   String get settings;
+
+  /// No description provided for @settings_forwardEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Events to forward'**
+  String get settings_forwardEvents;
+
+  /// No description provided for @settings_forwardSms.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming SMS'**
+  String get settings_forwardSms;
+
+  /// No description provided for @settings_notifyLowBattery.
+  ///
+  /// In en, this message translates to:
+  /// **'Low battery'**
+  String get settings_notifyLowBattery;
+
+  /// No description provided for @settings_notifyChargerState.
+  ///
+  /// In en, this message translates to:
+  /// **'Charger connection'**
+  String get settings_notifyChargerState;
 
   /// No description provided for @settings_deviceLabel.
   ///

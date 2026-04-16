@@ -24,7 +24,7 @@ import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 
 /**
- * Background worker that sends an incoming SMS to providers.
+ * Background worker that forwards an incoming message via configured providers.
  */
 class SmsForwardWorker(
     appContext: Context,
@@ -53,12 +53,12 @@ class SmsForwardWorker(
         if (!dbManager.getBoolSetting("isRunning")) return@withContext Result.success()
 
         // Read input data from receiver
-        val smsId = inputData.getString("sms_id") ?: return@withContext Result.failure()
+        val smsId = inputData.getString("message_id") ?: return@withContext Result.failure()
         val ruleIds = inputData.getIntArray("rule_ids") ?: return@withContext Result.failure()
 
         // Ensure device has internet connectivity
         if (!hasValidatedInternet()) {
-            dbManager.updateSmsHistory(
+            dbManager.updateMessagesHistory(
                 id = smsId,
                 updates = mapOf("status" to SmsSendStatus.FAILED_RETRY)
             )
@@ -66,7 +66,7 @@ class SmsForwardWorker(
         }
 
         // Check if SMS exists and was not already sent
-        val smsData = dbManager.getSmsById(smsId) ?: return@withContext Result.failure()
+        val smsData = dbManager.getMessageById(smsId) ?: return@withContext Result.failure()
         val shouldBeProcessed =
             smsData.status == SmsSendStatus.RECEIVED || smsData.status == SmsSendStatus.FAILED_RETRY
         if (!shouldBeProcessed) {
@@ -102,7 +102,7 @@ class SmsForwardWorker(
         return@withContext if (successCount > 0) {
             val newStatus = if (successCount == rules.size) SmsSendStatus.SENT_ALL else SmsSendStatus.SENT_PARTIAL
 
-            dbManager.updateSmsHistory(
+            dbManager.updateMessagesHistory(
                 id = smsId,
                 updates = mapOf(
                     "status" to newStatus,
@@ -113,7 +113,7 @@ class SmsForwardWorker(
             )
             Result.success()
         } else if (shouldRetry) {
-            dbManager.updateSmsHistory(
+            dbManager.updateMessagesHistory(
                 id = smsId,
                 updates = mapOf(
                     "status" to SmsSendStatus.FAILED_RETRY,
@@ -123,7 +123,7 @@ class SmsForwardWorker(
             )
             Result.retry() // retry only when at least one failure is temporary
         } else {
-            dbManager.updateSmsHistory(
+            dbManager.updateMessagesHistory(
                 id = smsId,
                 updates = mapOf(
                     "status" to SmsSendStatus.FAILED_FINAL,

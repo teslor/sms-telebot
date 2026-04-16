@@ -10,7 +10,7 @@
 
     <application
         android:label="SMS Telebot"
-        android:name="${applicationName}"
+        android:name=".SmsTelebotApp"
         android:enableOnBackInvokedCallback="true"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"

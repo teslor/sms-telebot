@@ -105,7 +105,7 @@ class _AppViewState extends State<AppView> {
           NavigationDestination(
             selectedIcon: const Icon(Icons.messenger),
             icon: const Icon(Icons.messenger_outline_outlined),
-            label: AppLocalizations.of(context)!.sms,
+            label: AppLocalizations.of(context)!.msg_list,
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.checklist_rtl),

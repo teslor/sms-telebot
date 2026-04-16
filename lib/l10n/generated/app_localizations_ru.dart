@@ -24,37 +24,49 @@ class AppLocalizationsRu extends AppLocalizations {
   String get action_test => 'Проверить';
 
   @override
-  String get sms => 'СМС';
+  String get msg_list => 'Сообщения';
 
   @override
-  String get sms_welcome => 'Нажмите Старт, чтобы\nначать пересылку СМС';
+  String get msg_welcome => 'Нажмите Старт, чтобы\nвключить мониторинг';
 
   @override
-  String get sms_empty => 'Нет входящих СМС\nза последние 24 часа';
+  String get msg_empty => 'Нет соообщений\nза последние 24 часа';
 
   @override
-  String get sms_hello => 'Привет от SMS Telebot! =^•⩊•^=';
+  String get msg_hello => 'Привет! =^•⩊•^=';
 
   @override
-  String get sms_from => 'СМС от';
+  String get msg_received => 'Получено';
 
   @override
-  String get sms_received => 'Получено';
+  String get msg_sent => 'Переслано';
 
   @override
-  String get sms_sent => 'Переслано';
+  String get msg_start => 'Старт';
 
   @override
-  String get sms_start => 'Старт';
+  String get msg_stop => 'Стоп';
 
   @override
-  String get sms_stop => 'Стоп';
+  String get msg_from => 'Сообщение от';
+
+  @override
+  String get msg_smsFrom => 'СМС от';
+
+  @override
+  String get msg_system_lowBattery => 'Низкий уровень заряда';
+
+  @override
+  String get msg_system_chargerConnected => 'Зарядка подключена';
+
+  @override
+  String get msg_system_chargerDisconnected => 'Зарядка отключена';
 
   @override
   String get rule => 'Правило';
 
   @override
-  String get rule_add => 'Добавить правило пересылки';
+  String get rule_add => 'Добавить правило';
 
   @override
   String get rule_copySuffix => 'копия';
@@ -70,7 +82,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Чтобы активировать правило, нужно сначала задать параметры подключения.';
 
   @override
-  String get rules => 'ПРАВИЛА';
+  String get rules => 'Правила';
 
   @override
   String get rules_empty => 'Правил пока нет.\nДобавьте первое!';
@@ -160,10 +172,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get filters_text => 'Сообщение';
 
   @override
-  String get filters_textInfo => 'Добавьте фильтры для текста СМС';
+  String get filters_textInfo => 'Добавьте текстовые фильтры';
 
   @override
-  String get settings => 'НАСТРОЙКИ';
+  String get settings => 'Настройки';
+
+  @override
+  String get settings_forwardEvents => 'События для пересылки';
+
+  @override
+  String get settings_forwardSms => 'Входящие СМС';
+
+  @override
+  String get settings_notifyLowBattery => 'Низкий заряд батареи';
+
+  @override
+  String get settings_notifyChargerState => 'Подключение зарядки';
 
   @override
   String get settings_deviceLabel => 'Метка устройства';

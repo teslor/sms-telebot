@@ -42,15 +42,13 @@ class DbManager private constructor(private val context: Context) {
             database?.let { if (it.isOpen) return it }
 
             return try {
-                SQLiteDatabase.openDatabase(
-                    mainDb.absolutePath,
-                    null,
-                    SQLiteDatabase.OPEN_READWRITE
-                ).apply {
+                val flags = SQLiteDatabase.OPEN_READWRITE or SQLiteDatabase.ENABLE_WRITE_AHEAD_LOGGING
+                SQLiteDatabase.openDatabase(mainDb.absolutePath, null, flags).apply {
+                    rawQuery("PRAGMA busy_timeout = 5000", null).use { }
                     enableWriteAheadLogging()
                     setForeignKeyConstraintsEnabled(true)
-                }.also { opened ->
-                    database = opened
+                }.also {
+                    opened -> database = opened
                 }
             } catch (e: SQLiteException) {
                 Log.e(TAG, "Error opening database. Maybe it doesn't exist yet", e)
@@ -146,14 +144,14 @@ class DbManager private constructor(private val context: Context) {
     }
 
     // ================================================================================
-    // SMS_HISTORY
+    // MESSAGES_HISTORY
     // ================================================================================
 
-    // Get SMS data by ID
-    fun getSmsById(id: String): SmsData? {
+    // Get message data by ID
+    fun getMessageById(id: String): SmsData? {
         return withDatabase { db ->
             db.query(
-                "sms_history", arrayOf("sender", "body", "status", "attempt_count"),
+                "messages_history", arrayOf("sender", "body", "status", "attempt_count"),
                 "id = ?", arrayOf(id), null, null, null
             ).use {
                 if (it.moveToFirst()) {
@@ -170,7 +168,7 @@ class DbManager private constructor(private val context: Context) {
     fun getLastReceivedSmsId(): String? {
         return withDatabase { db ->
             db.query(
-                "sms_history", arrayOf("id"), null, null, null, null, "received_at DESC", "1"
+                "messages_history", arrayOf("id"), null, null, null, null, "received_at DESC", "1"
             ).use {
                 if (it.moveToFirst()) it.getString(0) else null
             }
@@ -178,18 +176,18 @@ class DbManager private constructor(private val context: Context) {
     }
 
     // Create a new record
-    fun insertSmsHistory(id: String, sender: String, body: String, smscAt: Long, receivedAt: Long, sentAt: Long? = null, status: Int = 0): Boolean {
+    fun insertMessagesHistory(id: String, type: String, sender: String, body: String, sourceAt: Long, receivedAt: Long, sentAt: Long? = null, status: Int = 0): Boolean {
         return withDatabase { db ->
             val values = ContentValues().apply {
-                put("id", id); put("sender", sender); put("body", body); put("smsc_at", smscAt)
-                put("received_at", receivedAt); put("sent_at", sentAt); put("status", status)
+                put("id", id); put("type", type); put("sender", sender); put("body", body)
+                put("source_at", sourceAt); put("received_at", receivedAt); put("sent_at", sentAt); put("status", status)
             }
-            db.insertWithOnConflict("sms_history", null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1L
+            db.insertWithOnConflict("messages_history", null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1L
         } ?: false
     }
 
     // Update a specific record by ID
-    fun updateSmsHistory(id: String, updates: Map<String, Any?>): Boolean {
+    fun updateMessagesHistory(id: String, updates: Map<String, Any?>): Boolean {
         if (updates.isEmpty()) return false
         return withDatabase { db ->
             val values = ContentValues().apply {
@@ -201,14 +199,14 @@ class DbManager private constructor(private val context: Context) {
                     }
                 }
             }
-            db.update("sms_history", values, "id = ?", arrayOf(id)) > 0
+            db.update("messages_history", values, "id = ?", arrayOf(id)) > 0
         } ?: false
     }
 
     // Delete old SMS records
-    fun deleteOldSms(timestampLimit: Long): Int {
+    fun deleteOldMessages(timestampLimit: Long): Int {
         return withDatabase { db ->
-            db.delete("sms_history", "received_at < ?", arrayOf(timestampLimit.toString()))
+            db.delete("messages_history", "received_at < ?", arrayOf(timestampLimit.toString()))
         } ?: 0
     }
 }

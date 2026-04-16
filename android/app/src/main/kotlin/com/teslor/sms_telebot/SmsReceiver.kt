@@ -17,33 +17,24 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
-import java.security.MessageDigest
 import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
- * Receives incoming SMS from the Android system.
- *
- * This receiver runs even if the Flutter UI process is not alive.
- * Its job is intentionally tiny: extract the SMS data and schedule
- * reliable background work via WorkManager.
+ * Receives SMS and schedules its processing via WorkManager.
  */
 class SmsReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != Telephony.Sms.Intents.SMS_RECEIVED_ACTION) return
 
-        val permission = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.RECEIVE_SMS
-        )
+        val permission = ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS)
         if (permission != PackageManager.PERMISSION_GRANTED) return
 
         // Call goAsync() to avoid blocking UI thread when reading/writing DB
         val pendingResult = goAsync()
-
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 processSmsInBackground(context, intent)
@@ -70,33 +61,30 @@ class SmsReceiver : BroadcastReceiver() {
 
         // Within a 5 second window, the ID for the same sender/body will be the same
         val timeWindow = timestamp / 5000L
-        val rawSmsId = "$sender|$timeWindow|$body"
-        val smsId = MessageDigest.getInstance("SHA-256")
-            .digest(rawSmsId.toByteArray())
-            .joinToString(separator = "") { byte -> "%02x".format(byte.toInt() and 0xff) }
-            .take(16)
+        val smsId = SmsHelpers.generateId("$sender|$timeWindow|$body")
 
         // Android/network may redeliver the same SMS back-to-back
         // If it's a duplicate, do not schedule background work
         val lastReceivedId = dbManager.getLastReceivedSmsId()
         if (smsId == lastReceivedId) return
 
-        // Immediately save all SMS information to sms_history
+        // Immediately save all SMS information to messages_history
         val deviceReceivedAt = System.currentTimeMillis()
-        dbManager.insertSmsHistory(
+        dbManager.insertMessagesHistory(
             id = smsId,
+            type = "sms",
             sender = sender,
             body = body,
-            smscAt = timestamp,
+            sourceAt = timestamp,
             receivedAt = deviceReceivedAt,
             status = SmsSendStatus.RECEIVED
         )
 
-        // Cleanup old SMS with 10% probability
+        // Cleanup old messages with 10% probability
         if (Random.nextInt(10) == 0) {
             // Take current device time minus 24 hours in milliseconds
             val timeLimit = System.currentTimeMillis() - (24 * 60 * 60 * 1000L)
-            dbManager.deleteOldSms(timeLimit)
+            dbManager.deleteOldMessages(timeLimit)
         }
 
         // Get all active forwarding rules
@@ -120,13 +108,11 @@ class SmsReceiver : BroadcastReceiver() {
                 if (isMatched) matchedRuleIds.add(rule.id)
             }
         }
-
-        // If no rule passes filtering, break the process
         if (matchedRuleIds.isEmpty()) return
 
         // Prepare WorkManager input, keep it minimal and serializable
         val inputData = Data.Builder()
-            .putString("sms_id", smsId)
+            .putString("message_id", smsId)
             .putIntArray("rule_ids", matchedRuleIds.toIntArray())
             .build()
 
@@ -144,9 +130,8 @@ class SmsReceiver : BroadcastReceiver() {
             .build()
 
         // Ensure only one work request is enqueued per SMS id
-        val uniqueWorkName = "sms_forward:$smsId"
         WorkManager.getInstance(context).enqueueUniqueWork(
-            uniqueWorkName,
+            "sms_forward:$smsId",
             ExistingWorkPolicy.KEEP,
             request
         )

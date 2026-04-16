@@ -24,37 +24,49 @@ class AppLocalizationsEs extends AppLocalizations {
   String get action_test => 'Probar';
 
   @override
-  String get sms => 'SMS';
+  String get msg_list => 'Mensajes';
 
   @override
-  String get sms_welcome => 'Toca Iniciar para\nempezar a reenviar SMS';
+  String get msg_welcome => 'Toca Iniciar\npara habilitar el monitoreo';
 
   @override
-  String get sms_empty => 'No hay SMS entrantes\nen las últimas 24 horas';
+  String get msg_empty => 'No hay mensajes\nen las últimas 24 horas';
 
   @override
-  String get sms_hello => '¡Hola desde SMS Telebot! =^•⩊•^=';
+  String get msg_hello => '¡Hola! =^•⩊•^=';
 
   @override
-  String get sms_from => 'SMS de';
+  String get msg_received => 'Recibido';
 
   @override
-  String get sms_received => 'Recibido';
+  String get msg_sent => 'Reenviado';
 
   @override
-  String get sms_sent => 'Reenviado';
+  String get msg_start => 'Iniciar';
 
   @override
-  String get sms_start => 'Iniciar';
+  String get msg_stop => 'Detener';
 
   @override
-  String get sms_stop => 'Detener';
+  String get msg_from => 'Mensaje de';
+
+  @override
+  String get msg_smsFrom => 'SMS de';
+
+  @override
+  String get msg_system_lowBattery => 'Batería baja';
+
+  @override
+  String get msg_system_chargerConnected => 'Cargador conectado';
+
+  @override
+  String get msg_system_chargerDisconnected => 'Cargador desconectado';
 
   @override
   String get rule => 'Regla';
 
   @override
-  String get rule_add => 'Añadir regla de reenvío';
+  String get rule_add => 'Añadir regla';
 
   @override
   String get rule_copySuffix => 'copia';
@@ -69,7 +81,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get rule_noParams => 'Configura esta regla antes de activarla.';
 
   @override
-  String get rules => 'REGLAS';
+  String get rules => 'Reglas';
 
   @override
   String get rules_empty => 'Aún no hay reglas.\n¡Añade la primera!';
@@ -160,10 +172,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get filters_text => 'Mensaje';
 
   @override
-  String get filters_textInfo => 'Añade filtros para el texto del SMS';
+  String get filters_textInfo => 'Añade filtros de texto';
 
   @override
-  String get settings => 'CONFIGURACIÓN';
+  String get settings => 'Configuración';
+
+  @override
+  String get settings_forwardEvents => 'Eventos a reenviar';
+
+  @override
+  String get settings_forwardSms => 'SMS entrantes';
+
+  @override
+  String get settings_notifyLowBattery => 'Batería baja';
+
+  @override
+  String get settings_notifyChargerState => 'Estado del cargador';
 
   @override
   String get settings_deviceLabel => 'Etiqueta del dispositivo';

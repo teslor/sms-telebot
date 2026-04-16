@@ -61,7 +61,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     final appState = context.read<AppState>();
     final token = _tokenController.text;
     String chatId = _chatIdController.text;
-    final String helloMessage = l10n.sms_hello;
+    final String helloMessage = l10n.msg_hello;
 
     try {
       if (chatId.isEmpty) {

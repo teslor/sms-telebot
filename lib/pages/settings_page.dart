@@ -13,6 +13,11 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   late TextEditingController _deviceLabelController;
+
+  bool _forwardSms = false;
+  bool _notifyLowBattery = false;
+  bool _notifyChargerState = false;
+
   bool _isInputChanged = false;
   bool? _saveResult;
 
@@ -20,7 +25,11 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     final appState = context.read<AppState>();
+    
     _deviceLabelController = TextEditingController(text: appState.deviceLabel);
+    _forwardSms = appState.forwardSms;
+    _notifyLowBattery = appState.notifyLowBattery;
+    _notifyChargerState = appState.notifyChargerState;
   }
 
   @override
@@ -29,36 +38,109 @@ class _SettingsPageState extends State<SettingsPage> {
     super.dispose();
   }
 
+  void _onSettingChanged() {
+    setState(() {
+      _saveResult = null;
+      _isInputChanged = true;
+    });
+  }
+
   Future<void> _saveSettings() async {
     final appState = context.read<AppState>();
     FocusManager.instance.primaryFocus?.unfocus();
-    await appState.updateDeviceLabel(_deviceLabelController.text);
+    
+    await appState.updateSettings(
+      forwardSms: _forwardSms,
+      notifyLowBattery: _notifyLowBattery,
+      notifyChargerState: _notifyChargerState,
+      deviceLabel: _deviceLabelController.text,
+    );
+    
     if (mounted) {
-      setState(() { _saveResult = true; _isInputChanged = false; });
+      setState(() { 
+        _saveResult = true; 
+        _isInputChanged = false; 
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 15),
         children: [
-          const SizedBox(height: 5),
+          Padding(
+            padding: const EdgeInsets.only(left: 2, bottom: 8),
+            child: Text(
+              l10n.settings_forwardEvents,
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+
+          Card(
+            margin: EdgeInsets.zero,
+            elevation: 0,
+            color: theme.colorScheme.surfaceContainerLow, 
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: theme.colorScheme.outlineVariant),
+            ),
+            child: Column(
+              children: [
+                SwitchListTile(
+                  title: Text(l10n.settings_forwardSms),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  value: _forwardSms,
+                  onChanged: (bool value) {
+                    _forwardSms = value;
+                    _onSettingChanged();
+                  },
+                ),
+                const Divider(height: 1),
+                SwitchListTile(
+                  title: Text(l10n.settings_notifyLowBattery),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  value: _notifyLowBattery,
+                  onChanged: (bool value) {
+                    _notifyLowBattery = value;
+                    _onSettingChanged();
+                  },
+                ),
+                const Divider(height: 1),
+                SwitchListTile(
+                  title: Text(l10n.settings_notifyChargerState),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  value: _notifyChargerState,
+                  onChanged: (bool value) {
+                    _notifyChargerState = value;
+                    _onSettingChanged();
+                  },
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+          const Divider(height: 1),
+          const SizedBox(height: 20),
+
           TextField(
             controller: _deviceLabelController,
             decoration: InputDecoration(
-              border: const OutlineInputBorder(),
+              border: OutlineInputBorder(),
               labelText: l10n.settings_deviceLabel,
               helperText: l10n.settings_deviceLabelInfo,
               helperMaxLines: 2,
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
-            onChanged: (String value) {
-              setState(() { _saveResult = null; _isInputChanged = true; });
-            },
+            onChanged: (String value) => _onSettingChanged(),
           ),
         ],
       ),

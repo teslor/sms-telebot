@@ -24,37 +24,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String get action_test => 'Test';
 
   @override
-  String get sms => 'SMS';
+  String get msg_list => 'Messages';
 
   @override
-  String get sms_welcome => 'Tap Start to begin\nforwarding SMS';
+  String get msg_welcome => 'Tap Start\nto enable monitoring';
 
   @override
-  String get sms_empty => 'No incoming SMS\nin the last 24 hours';
+  String get msg_empty => 'No messages\nin the last 24 hours';
 
   @override
-  String get sms_hello => 'Hello from SMS Telebot! =^•⩊•^=';
+  String get msg_hello => 'Hello! =^•⩊•^=';
 
   @override
-  String get sms_from => 'SMS from';
+  String get msg_received => 'Received';
 
   @override
-  String get sms_received => 'Received';
+  String get msg_sent => 'Forwarded';
 
   @override
-  String get sms_sent => 'Forwarded';
+  String get msg_start => 'Start';
 
   @override
-  String get sms_start => 'Start';
+  String get msg_stop => 'Stop';
 
   @override
-  String get sms_stop => 'Stop';
+  String get msg_from => 'Message from';
+
+  @override
+  String get msg_smsFrom => 'SMS from';
+
+  @override
+  String get msg_system_lowBattery => 'Low battery';
+
+  @override
+  String get msg_system_chargerConnected => 'Charger connected';
+
+  @override
+  String get msg_system_chargerDisconnected => 'Charger disconnected';
 
   @override
   String get rule => 'Rule';
 
   @override
-  String get rule_add => 'Add forwarding rule';
+  String get rule_add => 'Add rule';
 
   @override
   String get rule_copySuffix => 'copy';
@@ -69,7 +81,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rule_noParams => 'Please configure this rule before enabling it.';
 
   @override
-  String get rules => 'RULES';
+  String get rules => 'Rules';
 
   @override
   String get rules_empty => 'No rules yet.\nAdd your first one!';
@@ -159,10 +171,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filters_text => 'Message';
 
   @override
-  String get filters_textInfo => 'Add filters for SMS text';
+  String get filters_textInfo => 'Add text filters';
 
   @override
-  String get settings => 'SETTINGS';
+  String get settings => 'Settings';
+
+  @override
+  String get settings_forwardEvents => 'Events to forward';
+
+  @override
+  String get settings_forwardSms => 'Incoming SMS';
+
+  @override
+  String get settings_notifyLowBattery => 'Low battery';
+
+  @override
+  String get settings_notifyChargerState => 'Charger connection';
 
   @override
   String get settings_deviceLabel => 'Device label';

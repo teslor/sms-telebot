@@ -24,37 +24,49 @@ class AppLocalizationsZh extends AppLocalizations {
   String get action_test => '测试';
 
   @override
-  String get sms => '短信';
+  String get msg_list => '消息';
 
   @override
-  String get sms_welcome => '点按“开始”即可\n开始转发短信';
+  String get msg_welcome => '点按“开始”\n即可启用监控';
 
   @override
-  String get sms_empty => '过去24小时内\n没有收到短信';
+  String get msg_empty => '过去24小时内\n没有消息';
 
   @override
-  String get sms_hello => '来自 SMS Telebot 的问候！=^•⩊•^=';
+  String get msg_hello => '你好！=^•⩊•^=';
 
   @override
-  String get sms_from => '短信来自';
+  String get msg_received => '已接收';
 
   @override
-  String get sms_received => '已接收';
+  String get msg_sent => '已转发';
 
   @override
-  String get sms_sent => '已转发';
+  String get msg_start => '开始';
 
   @override
-  String get sms_start => '开始';
+  String get msg_stop => '停止';
 
   @override
-  String get sms_stop => '停止';
+  String get msg_from => '消息来自';
+
+  @override
+  String get msg_smsFrom => '短信来自';
+
+  @override
+  String get msg_system_lowBattery => '电量低';
+
+  @override
+  String get msg_system_chargerConnected => '充电器已连接';
+
+  @override
+  String get msg_system_chargerDisconnected => '充电器已断开';
 
   @override
   String get rule => '规则';
 
   @override
-  String get rule_add => '添加转发规则';
+  String get rule_add => '添加规则';
 
   @override
   String get rule_copySuffix => '副本';
@@ -159,10 +171,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get filters_text => '消息';
 
   @override
-  String get filters_textInfo => '添加短信文本筛选器';
+  String get filters_textInfo => '添加文本筛选器';
 
   @override
   String get settings => '设置';
+
+  @override
+  String get settings_forwardEvents => '要转发的事件';
+
+  @override
+  String get settings_forwardSms => '接收短信';
+
+  @override
+  String get settings_notifyLowBattery => '电量低';
+
+  @override
+  String get settings_notifyChargerState => '充电器连接状态';
 
   @override
   String get settings_deviceLabel => '设备标签';

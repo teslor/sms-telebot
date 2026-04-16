@@ -5,13 +5,22 @@ class MainDb {
   // Singleton pattern to keep a single DB instance for the whole app
   static final MainDb instance = MainDb._init();
   static Database? _database;
+  static Future<Database>? _openingDatabase;
 
   MainDb._init();
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('main.db');
-    return _database!;
+    if (_openingDatabase != null) return _openingDatabase!;
+
+    // Prevent parallel openDatabase/init races across isolates/tasks
+    _openingDatabase = _initDB('main.db');
+    try {
+      _database = await _openingDatabase!;
+      return _database!;
+    } finally {
+      _openingDatabase = null;
+    }
   }
 
   // Database initialization
@@ -19,16 +28,32 @@ class MainDb {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(
+    final db = await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onConfigure: _onConfigure,
       onCreate: _onCreate,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute('ALTER TABLE sms_history RENAME TO messages_history');
+          await db.execute('ALTER TABLE messages_history ADD COLUMN type TEXT DEFAULT "sms"');
+          await db.execute('ALTER TABLE messages_history RENAME COLUMN smsc_at TO source_at');
+          await db.execute('ALTER TABLE event_log RENAME TO app_logs');
+          await db.execute('DROP INDEX IF EXISTS idx_sh_received_at');
+          await db.execute('CREATE INDEX idx_mh_received_at ON messages_history(received_at)');
+        }
+      },
     );
+
+    // Ensure default data is present
+    await _seedDefaults(db);
+
+    return db;
   }
 
   // Enable WAL mode for concurrent Dart/Kotlin access
   Future<void> _onConfigure(Database db) async {
+    await db.rawQuery('PRAGMA busy_timeout = 5000');
     await db.rawQuery('PRAGMA journal_mode = WAL');
     await db.execute('PRAGMA foreign_keys = ON');
   }
@@ -56,11 +81,12 @@ class MainDb {
     ''');
 
     await db.execute('''
-      CREATE TABLE sms_history (
+      CREATE TABLE messages_history (
         id TEXT PRIMARY KEY,
+        type TEXT DEFAULT 'sms',
         sender TEXT,
         body TEXT,
-        smsc_at INTEGER,
+        source_at INTEGER,
         received_at INTEGER,
         last_attempt_at INTEGER,
         sent_at INTEGER,
@@ -68,16 +94,37 @@ class MainDb {
         status INTEGER DEFAULT 0
       )
     ''');
-    await db.execute('CREATE INDEX idx_sh_received_at ON sms_history(received_at)');
+    await db.execute('CREATE INDEX idx_mh_received_at ON messages_history(received_at)');
 
     await db.execute('''
-      CREATE TABLE event_log (
+      CREATE TABLE app_logs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         timestamp INTEGER,
         level INTEGER,
         message TEXT
       )
     ''');
+  }
+
+  Future<void> _seedDefaults(Database db) async {
+    final batch = db.batch();
+
+    final defaults = {
+      'isRunning': '0',
+      'forwardSms': '1',
+      'notifyLowBattery': '0',
+      'notifyChargerState': '0',
+      'deviceLabel': '',
+    };
+
+    defaults.forEach((key, value) {
+      batch.insert(
+        'app_settings', {'key': key, 'value': value},
+        conflictAlgorithm: ConflictAlgorithm.ignore,
+      );
+    });
+
+    await batch.commit(noResult: true);
   }
 
   // ================================================================================
@@ -96,6 +143,21 @@ class MainDb {
     return settings;
   }
 
+  /// Save settings bulk
+  Future<void> saveSettings(Map<String, String> settings) async {
+    final db = await instance.database;
+    final batch = db.batch();
+
+    settings.forEach((key, value) {
+      batch.insert(
+        'app_settings', {'key': key, 'value': value},
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    });
+
+    await batch.commit(noResult: true); // noResult speeds up execution if row IDs are not needed
+  }
+
   /// Read a specific setting by key
   Future<String?> getSetting(String key) async {
     final db = await instance.database;
@@ -109,6 +171,14 @@ class MainDb {
     return null;
   }
 
+  /// Insert/Update a setting (creates a row if missing, replaces if exists)
+  Future<int> saveSetting(String key, String value) async {
+    final db = await instance.database;
+    return await db.insert('app_settings', {
+      'key': key, 'value': value,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
   /// Read a boolean setting
   Future<bool> getBoolSetting(String key, {bool defaultValue = false}) async {
     final val = await getSetting(key);
@@ -120,14 +190,6 @@ class MainDb {
   Future<int> saveBoolSetting(String key, bool value) async {
     // Store as '1' or '0' — a common convention for SQLite
     return await saveSetting(key, value ? '1' : '0');
-  }
-
-  /// Insert/Update a setting (creates a row if missing, replaces if exists)
-  Future<int> saveSetting(String key, String value) async {
-    final db = await instance.database;
-    return await db.insert('app_settings', {
-      'key': key, 'value': value,
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   // ================================================================================
@@ -185,41 +247,41 @@ class MainDb {
   }
 
   // ================================================================================
-  // SMS_HISTORY
+  // MESSAGES_HISTORY
   // ================================================================================
 
-  /// Get the number of SMS messages RECEIVED by the phone in the last 24 hours
-  Future<int> getReceivedSmsCount() async {
+  /// Get the number of messages RECEIVED by the phone in the last 24 hours
+  Future<int> getReceivedMessagesCount() async {
     final db = await instance.database;
     // Compute the timestamp: now minus 24 hours (in milliseconds)
     final limitTime = DateTime.now().millisecondsSinceEpoch - (24 * 60 * 60 * 1000);
 
     final result = await db.rawQuery(
-      'SELECT COUNT(*) FROM sms_history WHERE received_at >= ?',
+      'SELECT COUNT(*) FROM messages_history WHERE received_at >= ?',
       [limitTime],
     );
     return Sqflite.firstIntValue(result) ?? 0;
   }
 
-  /// Get the number of SMS messages successfully sent in the last 24 hours
-  Future<int> getSentSmsCount() async {
+  /// Get the number of messages successfully sent in the last 24 hours
+  Future<int> getSentMessagesCount() async {
     final db = await instance.database;
     final limitTime = DateTime.now().millisecondsSinceEpoch - (24 * 60 * 60 * 1000);
 
     final result = await db.rawQuery(
-      'SELECT COUNT(*) FROM sms_history WHERE status IN (3, 4) AND sent_at >= ?',
+      'SELECT COUNT(*) FROM messages_history WHERE status IN (3, 4) AND sent_at >= ?',
       [limitTime],
     );
     return Sqflite.firstIntValue(result) ?? 0;
   }
 
-  /// Get the latest [limit] SMS received in the last 24 hours
-  Future<List<Map<String, dynamic>>> getRecentSmsList({int limit = 10}) async {
+  /// Get the latest [limit] messages received in the last 24 hours
+  Future<List<Map<String, dynamic>>> getRecentMessages({int limit = 10}) async {
     final db = await instance.database;
     final limitTime = DateTime.now().millisecondsSinceEpoch - (24 * 60 * 60 * 1000);
 
     return await db.query(
-      'sms_history', where: 'received_at >= ?', whereArgs: [limitTime],
+      'messages_history', where: 'received_at >= ?', whereArgs: [limitTime],
       orderBy: 'received_at DESC', limit: limit,
     );
   }

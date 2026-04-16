@@ -24,38 +24,50 @@ class AppLocalizationsFr extends AppLocalizations {
   String get action_test => 'Tester';
 
   @override
-  String get sms => 'SMS';
+  String get msg_list => 'Messages';
 
   @override
-  String get sms_welcome =>
-      'Appuyez sur Démarrer pour\ncommencer à transférer les SMS';
+  String get msg_welcome =>
+      'Appuyez sur Démarrer\npour activer la surveillance';
 
   @override
-  String get sms_empty => 'Aucun SMS entrant\nau cours des dernières 24 heures';
+  String get msg_empty => 'Aucun message\nau cours des 24 dernières heures';
 
   @override
-  String get sms_hello => 'Bonjour de SMS Telebot ! =^•⩊•^=';
+  String get msg_hello => 'Bonjour ! =^•⩊•^=';
 
   @override
-  String get sms_from => 'SMS de';
+  String get msg_received => 'Reçu';
 
   @override
-  String get sms_received => 'Reçu';
+  String get msg_sent => 'Transféré';
 
   @override
-  String get sms_sent => 'Transféré';
+  String get msg_start => 'Démarrer';
 
   @override
-  String get sms_start => 'Démarrer';
+  String get msg_stop => 'Arrêter';
 
   @override
-  String get sms_stop => 'Arrêter';
+  String get msg_from => 'Message de';
+
+  @override
+  String get msg_smsFrom => 'SMS de';
+
+  @override
+  String get msg_system_lowBattery => 'Batterie faible';
+
+  @override
+  String get msg_system_chargerConnected => 'Chargeur branché';
+
+  @override
+  String get msg_system_chargerDisconnected => 'Chargeur débranché';
 
   @override
   String get rule => 'Règle';
 
   @override
-  String get rule_add => 'Ajouter une règle de transfert';
+  String get rule_add => 'Ajouter une règle';
 
   @override
   String get rule_copySuffix => 'copie';
@@ -71,7 +83,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Veuillez configurer cette règle avant de l\'activer.';
 
   @override
-  String get rules => 'RÈGLES';
+  String get rules => 'Règles';
 
   @override
   String get rules_empty =>
@@ -163,10 +175,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get filters_text => 'Message';
 
   @override
-  String get filters_textInfo => 'Ajoutez des filtres pour le texte du SMS';
+  String get filters_textInfo => 'Ajouter des filtres de texte';
 
   @override
-  String get settings => 'PARAMÈTRES';
+  String get settings => 'Paramètres';
+
+  @override
+  String get settings_forwardEvents => 'Événements à transférer';
+
+  @override
+  String get settings_forwardSms => 'SMS entrants';
+
+  @override
+  String get settings_notifyLowBattery => 'Batterie faible';
+
+  @override
+  String get settings_notifyChargerState => 'État du chargeur';
 
   @override
   String get settings_deviceLabel => 'Libellé de l\'appareil';

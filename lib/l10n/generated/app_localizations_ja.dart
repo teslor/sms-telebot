@@ -24,37 +24,49 @@ class AppLocalizationsJa extends AppLocalizations {
   String get action_test => 'テスト';
 
   @override
-  String get sms => 'SMS';
+  String get msg_list => 'メッセージ';
 
   @override
-  String get sms_welcome => '「開始」をタップして\nSMSの転送を開始します';
+  String get msg_welcome => '「開始」をタップして\n監視を有効にします';
 
   @override
-  String get sms_empty => '過去24時間の\n受信SMSはありません';
+  String get msg_empty => '過去24時間の\nメッセージはありません';
 
   @override
-  String get sms_hello => 'SMS Telebotからこんにちは！=^•⩊•^=';
+  String get msg_hello => 'こんにちは！=^•⩊•^=';
 
   @override
-  String get sms_from => '送信元';
+  String get msg_received => '受信';
 
   @override
-  String get sms_received => '受信';
+  String get msg_sent => '転送済み';
 
   @override
-  String get sms_sent => '転送済み';
+  String get msg_start => '開始';
 
   @override
-  String get sms_start => '開始';
+  String get msg_stop => '停止';
 
   @override
-  String get sms_stop => '停止';
+  String get msg_from => 'メッセージの送信元';
+
+  @override
+  String get msg_smsFrom => 'SMSの送信元';
+
+  @override
+  String get msg_system_lowBattery => 'バッテリー残量低下';
+
+  @override
+  String get msg_system_chargerConnected => '充電器接続';
+
+  @override
+  String get msg_system_chargerDisconnected => '充電器切断';
 
   @override
   String get rule => 'ルール';
 
   @override
-  String get rule_add => '転送ルールを追加';
+  String get rule_add => 'ルールを追加';
 
   @override
   String get rule_copySuffix => 'コピー';
@@ -159,10 +171,22 @@ class AppLocalizationsJa extends AppLocalizations {
   String get filters_text => 'メッセージ';
 
   @override
-  String get filters_textInfo => 'SMSテキストのフィルターを追加';
+  String get filters_textInfo => 'テキストフィルターを追加';
 
   @override
   String get settings => '設定';
+
+  @override
+  String get settings_forwardEvents => '転送するイベント';
+
+  @override
+  String get settings_forwardSms => '受信SMS';
+
+  @override
+  String get settings_notifyLowBattery => 'バッテリー残量低下';
+
+  @override
+  String get settings_notifyChargerState => '充電器の接続状態';
 
   @override
   String get settings_deviceLabel => 'デバイスラベル';
@@ -177,23 +201,23 @@ class AppLocalizationsJa extends AppLocalizations {
   String get help_appInfo => '受信したSMSメッセージを自動的にTelegramボットに転送するアプリ';
 
   @override
-  String get help_info => 'परिचय';
+  String get help_info => 'イントロ';
 
   @override
   String get help_info_01 =>
-      'यह ऐप SMS को Telegram बॉट या ईमेल पर फॉरवर्ड करता है। इसके लिए आपको अपने बॉट या SMTP एक्सेस वाले ईमेल की आवश्यकता होगी।';
+      'このアプリはSMSをTelegramボットまたはメールアドレスに転送します。独自のボットまたはSMTPアクセス権を持つメールアカウントが必要です。';
 
   @override
   String get help_info_02 =>
-      'प्रत्येक कनेक्शन के लिए एक फॉरवर्डिंग नियम बनाया जाता है — यह तय करता है कि कौन सा SMS कहाँ भेजना है। नियमों को ज़रूरत के अनुसार कॉपी, चालू या बंद किया जा सकता है।';
+      '各接続に対して転送ルールが作成されます。これにより、どのSMSをどこに送信するかを定義します。ルールは必要に応じて複製、有効化、無効化できます。';
 
   @override
   String get help_info_03 =>
-      'SMS आने पर, ऐप सक्रिय नियमों की जाँच करता है और फॉरवर्ड करने का प्रयास करता है। यदि तकनीकी कारणों (जैसे इंटरनेट न होना) से विफल रहता है, तो ऐप बाद में पुनः प्रयास करेगा।';
+      'SMSが到着すると、アプリはアクティブなルールを確認し、転送を試みます。技術的な理由（インターネットがないなど）で失敗した場合、アプリは後で再試行します。';
 
   @override
   String get help_info_04 =>
-      'कई फोन से SMS फॉरवर्ड करते समय, आप सेटिंग्स में एक डिवाइस लेबल सेट कर सकते हैं — इसे भेजने वाले फोन की पहचान करने के लिए SMS के साथ भेजा जाता है।';
+      '複数の電話からSMSを転送する場合、設定でデバイスラベルを設定できます。これは、SMSと一緒に送信され、受信側の電話を識別するために使用されます。';
 
   @override
   String get help_info_05 =>
@@ -225,7 +249,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get help_smtp_01 =>
-      'SMS फॉरवर्डिंग के लिए एक अलग ईमेल (alias नहीं) बनाना सबसे अच्छा है: यही आपका लॉगिन भी होगा। Gmail और इसी तरह की सेवाओं के लिए यह विशेष रूप से महत्वपूर्ण है।';
+      'SMS転送用の専用メールアドレスを作成することをお勧めします（エイリアスではなく）。これはログインIDとしても使用されます。Gmailや同様のサービスでは特に重要です。';
 
   @override
   String get help_smtp_02 =>

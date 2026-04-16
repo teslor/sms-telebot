@@ -24,37 +24,49 @@ class AppLocalizationsHi extends AppLocalizations {
   String get action_test => 'टेस्ट करें';
 
   @override
-  String get sms => 'SMS';
+  String get msg_list => 'संदेश';
 
   @override
-  String get sms_welcome => 'SMS फ़ॉरवर्डिंग शुरू करने के लिए\nस्टार्ट दबाएँ';
+  String get msg_welcome => 'निगरानी सक्षम करने के लिए\nस्टार्ट दबाएँ';
 
   @override
-  String get sms_empty => 'पिछले 24 घंटों में\nकोई इनकमिंग SMS नहीं';
+  String get msg_empty => 'पिछले 24 घंटों में\nकोई संदेश नहीं';
 
   @override
-  String get sms_hello => 'SMS Telebot से नमस्ते! =^•⩊•^=';
+  String get msg_hello => 'नमस्ते! =^•⩊•^=';
 
   @override
-  String get sms_from => 'SMS प्रेषक';
+  String get msg_received => 'प्राप्त';
 
   @override
-  String get sms_received => 'प्राप्त';
+  String get msg_sent => 'फ़ॉरवर्ड किया गया';
 
   @override
-  String get sms_sent => 'फ़ॉरवर्ड किया गया';
+  String get msg_start => 'स्टार्ट';
 
   @override
-  String get sms_start => 'स्टार्ट';
+  String get msg_stop => 'स्टॉप';
 
   @override
-  String get sms_stop => 'स्टॉप';
+  String get msg_from => 'संदेश प्रेषक';
+
+  @override
+  String get msg_smsFrom => 'SMS प्रेषक';
+
+  @override
+  String get msg_system_lowBattery => 'बैटरी कम';
+
+  @override
+  String get msg_system_chargerConnected => 'चार्जर कनेक्टेड';
+
+  @override
+  String get msg_system_chargerDisconnected => 'चार्जर डिस्कनेक्टेड';
 
   @override
   String get rule => 'नियम';
 
   @override
-  String get rule_add => 'फ़ॉरवर्डिंग नियम जोड़ें';
+  String get rule_add => 'नियम जोड़ें';
 
   @override
   String get rule_copySuffix => 'कॉपी';
@@ -160,10 +172,22 @@ class AppLocalizationsHi extends AppLocalizations {
   String get filters_text => 'संदेश';
 
   @override
-  String get filters_textInfo => 'SMS टेक्स्ट के लिए फ़िल्टर जोड़ें';
+  String get filters_textInfo => 'टेक्स्ट फ़िल्टर जोड़ें';
 
   @override
   String get settings => 'सेटिंग्स';
+
+  @override
+  String get settings_forwardEvents => 'फ़ॉरवर्ड करने के लिए इवेंट्स';
+
+  @override
+  String get settings_forwardSms => 'इनकमिंग SMS';
+
+  @override
+  String get settings_notifyLowBattery => 'बैटरी कम';
+
+  @override
+  String get settings_notifyChargerState => 'चार्जर कनेक्शन';
 
   @override
   String get settings_deviceLabel => 'डिवाइस लेबल';

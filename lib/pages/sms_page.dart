@@ -27,7 +27,7 @@ class SmsPage extends StatelessWidget {
       body: isEmptyState
         ? Center(
           child: Text(
-            !appState.isRunning ? l10n.sms_welcome : l10n.sms_empty,
+            !appState.isRunning ? l10n.msg_welcome : l10n.msg_empty,
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 18),
           ),
@@ -38,9 +38,9 @@ class SmsPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildSmsCard(context, l10n.sms_received, smsReceivedCount.toString()),
+                _buildSmsCard(context, l10n.msg_received, smsReceivedCount.toString()),
                 const SizedBox(width: 15),
-                _buildSmsCard(context, l10n.sms_sent, smsSentCount.toString()),
+                _buildSmsCard(context, l10n.msg_sent, smsSentCount.toString()),
               ],
             ),
             const SizedBox(height: 15),
@@ -50,7 +50,7 @@ class SmsPage extends StatelessWidget {
         ),
 
       bottomNavigationBar: ActionButton(
-        label: appState.isRunning ? l10n.sms_stop : l10n.sms_start,
+        label: appState.isRunning ? l10n.msg_stop : l10n.msg_start,
         isSuccess: null,
         onPressed: (!appState.canStartProcessing && !appState.isRunning) ? null : () async {
           if (appState.isRunning) {
@@ -84,8 +84,14 @@ class SmsPage extends StatelessWidget {
 
   Widget _buildRecentSmsItem(BuildContext context, Map<String, dynamic> sms) {
     final theme = Theme.of(context);
-    final textStyleMuted = TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: theme.colorScheme.onSurface.withAlpha(150));
-    
+    final textStyleMuted = TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: theme.colorScheme.onSurface.withAlpha(150));
+
+    final type = (sms['type'] ?? 'sms').toString();
+    final isSms = type == 'sms';
+    final titleIcon = isSms ? Icons.messenger : Icons.phonelink_setup_rounded;
+    final titleIconColor = isSms ? Colors.amber : theme.colorScheme.primary;
+    final sender = sms['sender']?.toString() ?? '';
+    final bodyText = sms['body']?.toString() ?? '';
     final receivedDate = DateFormat('dd.MM HH:mm').format(DateTime.fromMillisecondsSinceEpoch(sms['received_at']));
     final status = (sms['status'] as num?)?.toInt() ?? _statusReceived;
     final sentAt = (sms['sent_at'] as num?)?.toInt();
@@ -106,7 +112,7 @@ class SmsPage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.arrow_downward_rounded, size: 14, color: theme.colorScheme.primary),
+                    Icon(Icons.arrow_downward_rounded, size: 12, color: theme.colorScheme.primary),
                     const SizedBox(width: 4),
                     Text(receivedDate, style: textStyleMuted),
                   ],
@@ -118,7 +124,7 @@ class SmsPage extends StatelessWidget {
                         Text(activityDate, style: textStyleMuted),
                         const SizedBox(width: 4),
                       ],
-                      Icon(statusVisual.icon, size: 14, color: statusVisual.color),
+                      Icon(statusVisual.icon, size: 12, color: statusVisual.color),
                     ],
                   ),
               ],
@@ -129,10 +135,17 @@ class SmsPage extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               textScaler: MediaQuery.textScalerOf(context),
               text: TextSpan(
-                style: DefaultTextStyle.of(context).style.copyWith(fontSize: 14), 
+                style: DefaultTextStyle.of(context).style.copyWith(fontSize: 14),
                 children: [
-                  TextSpan(text: '${sms['sender']}: ', style: TextStyle(fontWeight: FontWeight.w600)),
-                  TextSpan(text: sms['body']),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 2),
+                      child: Icon(titleIcon, size: 14, color: titleIconColor),
+                    ),
+                  ),
+                  TextSpan(text: ' $sender', style: const TextStyle(fontWeight: FontWeight.w600)),
+                  TextSpan(text: '\n$bodyText'),
                 ]
               ),
             ),

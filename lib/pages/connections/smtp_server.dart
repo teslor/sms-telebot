@@ -146,7 +146,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
         provider: 'smtp_server',
         config: config,
         secret: _passwordController.text,
-        body: l10n.sms_hello,
+        body: l10n.msg_hello,
         deviceLabel: appState.deviceLabel,
       );
 

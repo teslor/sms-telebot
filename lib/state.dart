@@ -13,6 +13,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   // App settings
   bool isRunning = false;
+  bool forwardSms = false;
+  bool notifyLowBattery = false;
+  bool notifyChargerState = false;
   String deviceLabel = '';
 
   // Rule list
@@ -46,10 +49,21 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     // Save l10n required for background process after first frame when context is available
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final localizations = AppLocalizations.of(navigatorKey.currentContext!)!;
-      final current = await MainDb.instance.getSetting('l10nSmsFrom');
-      if (current != localizations.sms_from) {
-        await MainDb.instance.saveSetting('l10nSmsFrom', localizations.sms_from);
-      }
+      final settings = await MainDb.instance.getAllSettings();
+      final l10nSettings = <String, String>{
+        'l10nMessageFrom': localizations.msg_from,
+        'l10nSmsFrom': localizations.msg_smsFrom,
+        'l10nLowBattery': localizations.msg_system_lowBattery,
+        'l10nChargerConnected': localizations.msg_system_chargerConnected,
+        'l10nChargerDisconnected': localizations.msg_system_chargerDisconnected,
+      };
+
+      final l10nChanged = <String, String>{};
+      l10nSettings.forEach((key, value) {
+        if (settings[key] != value) l10nChanged[key] = value;
+      });
+
+      if (l10nChanged.isNotEmpty) await MainDb.instance.saveSettings(l10nChanged);
     });
 
     _loadSmsStats();
@@ -98,8 +112,12 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> _loadSettings() async {
-    isRunning = await MainDb.instance.getBoolSetting('isRunning');
-    deviceLabel = await MainDb.instance.getSetting('deviceLabel') ?? '';
+    final settings = await MainDb.instance.getAllSettings();
+    isRunning = settings['isRunning'] == '1';
+    forwardSms = settings['forwardSms'] == '1';
+    notifyLowBattery = settings['notifyLowBattery'] == '1';
+    notifyChargerState = settings['notifyChargerState'] == '1';
+    deviceLabel = settings['deviceLabel'] ?? '';
     notifyListeners();
   }
 
@@ -119,9 +137,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> _loadSmsStats() async {
-    final newReceivedCount = await MainDb.instance.getReceivedSmsCount();
-    final newSentCount = await MainDb.instance.getSentSmsCount();
-    final newList = await MainDb.instance.getRecentSmsList(limit: 10);
+    final newReceivedCount = await MainDb.instance.getReceivedMessagesCount();
+    final newSentCount = await MainDb.instance.getSentMessagesCount();
+    final newList = await MainDb.instance.getRecentMessages(limit: 10);
     final statusesSum = newList
       .fold<int>(0, (sum, sms) => sum + ((sms['status'] as num?)?.toInt() ?? 0));
     final attemptsSum = newList
@@ -282,9 +300,25 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   // Misc
   // ================================================================================
 
-  Future<CallResult> updateDeviceLabel(String newDeviceLabel) async {
-    await MainDb.instance.saveSetting('deviceLabel', newDeviceLabel);
-    deviceLabel = newDeviceLabel;
+  Future<CallResult> updateSettings({
+    required bool forwardSms,
+    required bool notifyLowBattery,
+    required bool notifyChargerState,
+    required String deviceLabel,
+  }) async {
+    await MainDb.instance.saveSettings({
+      'forwardSms': forwardSms ? '1' : '0',
+      'notifyLowBattery': notifyLowBattery ? '1' : '0',
+      'notifyChargerState': notifyChargerState ? '1' : '0',
+      'deviceLabel': deviceLabel,
+    });
+
+    this.forwardSms = forwardSms;
+    this.notifyLowBattery = notifyLowBattery;
+    this.notifyChargerState = notifyChargerState;
+    this.deviceLabel = deviceLabel;
+
+    notifyListeners();
     return okResult();
   }
 

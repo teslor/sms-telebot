@@ -3,6 +3,7 @@
 
 package com.teslor.sms_telebot
 
+import java.security.MessageDigest
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -37,6 +38,15 @@ object SmsSendStatus {
     const val FAILED_RETRY = 2
     const val SENT_PARTIAL = 3
     const val SENT_ALL = 4
+}
+
+object SmsHelpers {
+    fun generateId(rawId: String): String {
+        return MessageDigest.getInstance("SHA-256")
+            .digest(rawId.toByteArray())
+            .joinToString(separator = "") { byte -> "%02x".format(byte.toInt() and 0xff) }
+            .take(16)
+    }
 }
 
 object SmsFilters {

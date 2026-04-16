@@ -24,38 +24,50 @@ class AppLocalizationsDe extends AppLocalizations {
   String get action_test => 'Testen';
 
   @override
-  String get sms => 'SMS';
+  String get msg_list => 'Nachrichten';
 
   @override
-  String get sms_welcome =>
-      'Tippen Sie auf Start, um\nSMS-Weiterleitung zu starten';
+  String get msg_welcome =>
+      'Tippen Sie auf Start,\num die Überwachung zu aktivieren';
 
   @override
-  String get sms_empty => 'Keine eingehenden SMS\nin den letzten 24 Stunden';
+  String get msg_empty => 'Keine Nachrichten\nin den letzten 24 Stunden';
 
   @override
-  String get sms_hello => 'Hallo von SMS Telebot! =^•⩊•^=';
+  String get msg_hello => 'Hallo! =^•⩊•^=';
 
   @override
-  String get sms_from => 'SMS von';
+  String get msg_received => 'Empfangen';
 
   @override
-  String get sms_received => 'Empfangen';
+  String get msg_sent => 'Weitergeleitet';
 
   @override
-  String get sms_sent => 'Weitergeleitet';
+  String get msg_start => 'Start';
 
   @override
-  String get sms_start => 'Start';
+  String get msg_stop => 'Stopp';
 
   @override
-  String get sms_stop => 'Stopp';
+  String get msg_from => 'Nachricht von';
+
+  @override
+  String get msg_smsFrom => 'SMS von';
+
+  @override
+  String get msg_system_lowBattery => 'Niedriger Akkustand';
+
+  @override
+  String get msg_system_chargerConnected => 'Ladegerät angeschlossen';
+
+  @override
+  String get msg_system_chargerDisconnected => 'Ladegerät getrennt';
 
   @override
   String get rule => 'Regel';
 
   @override
-  String get rule_add => 'Weiterleitungsregel hinzufügen';
+  String get rule_add => 'Regel hinzufügen';
 
   @override
   String get rule_copySuffix => 'Kopie';
@@ -72,7 +84,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Bitte konfigurieren Sie diese Regel, bevor Sie sie aktivieren.';
 
   @override
-  String get rules => 'REGELN';
+  String get rules => 'Regeln';
 
   @override
   String get rules_empty => 'Noch keine Regeln.\nFügen Sie die erste hinzu!';
@@ -162,10 +174,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get filters_text => 'Nachricht';
 
   @override
-  String get filters_textInfo => 'Filter für SMS-Text hinzufügen';
+  String get filters_textInfo => 'Textfilter hinzufügen';
 
   @override
-  String get settings => 'EINSTELLUNGEN';
+  String get settings => 'Einstellungen';
+
+  @override
+  String get settings_forwardEvents => 'Weiterzuleitende Ereignisse';
+
+  @override
+  String get settings_forwardSms => 'Eingehende SMS';
+
+  @override
+  String get settings_notifyLowBattery => 'Niedriger Akkustand';
+
+  @override
+  String get settings_notifyChargerState => 'Ladegerät-Status';
 
   @override
   String get settings_deviceLabel => 'Gerätename';
