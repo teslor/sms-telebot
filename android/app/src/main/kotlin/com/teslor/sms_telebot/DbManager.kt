@@ -9,18 +9,20 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.util.Log
 
-data class SmsData(val sender: String, val body: String, val status: Int, val attemptCount: Int)
+data class MessageData(val sender: String, val body: String, val status: Int, val attemptCount: Int)
 data class ForwardingRule(val id: Int, val filterMode: Int, val filtersJson: String?)
 data class ForwardingRuleConfig(val id: Int, val provider: String, val configJson: String?)
 
 class DbManager private constructor(private val context: Context) {
 
-    private val TAG = "Database"
     private val dbLock = Any()
     @Volatile
     private var database: SQLiteDatabase? = null
 
     companion object {
+        private const val TAG = "Database"
+
+        @Suppress("StaticFieldLeak")
         @Volatile
         private var instance: DbManager? = null
 
@@ -148,14 +150,14 @@ class DbManager private constructor(private val context: Context) {
     // ================================================================================
 
     // Get message data by ID
-    fun getMessageById(id: String): SmsData? {
+    fun getMessageById(id: String): MessageData? {
         return withDatabase { db ->
             db.query(
                 "messages_history", arrayOf("sender", "body", "status", "attempt_count"),
                 "id = ?", arrayOf(id), null, null, null
             ).use {
                 if (it.moveToFirst()) {
-                    SmsData(
+                    MessageData(
                         sender = it.getString(0), body = it.getString(1),
                         status = it.getInt(2), attemptCount = it.getInt(3),
                     )
@@ -164,25 +166,21 @@ class DbManager private constructor(private val context: Context) {
         }
     }
 
-    // Get ID of the last received SMS
-    fun getLastReceivedSmsId(): String? {
-        return withDatabase { db ->
-            db.query(
-                "messages_history", arrayOf("id"), null, null, null, null, "received_at DESC", "1"
-            ).use {
-                if (it.moveToFirst()) it.getString(0) else null
-            }
-        }
-    }
-
-    // Create a new record
+    // Create a new record and cleanup old messages with 10% probability
     fun insertMessagesHistory(id: String, type: String, sender: String, body: String, sourceAt: Long, receivedAt: Long, sentAt: Long? = null, status: Int = 0): Boolean {
         return withDatabase { db ->
             val values = ContentValues().apply {
                 put("id", id); put("type", type); put("sender", sender); put("body", body)
                 put("source_at", sourceAt); put("received_at", receivedAt); put("sent_at", sentAt); put("status", status)
             }
-            db.insertWithOnConflict("messages_history", null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1L
+            val result = db.insertWithOnConflict("messages_history", null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1L
+            
+            if (result && kotlin.random.Random.nextInt(10) == 0) {
+                val timeLimit = System.currentTimeMillis() - (24 * 60 * 60 * 1000L)
+                db.delete("messages_history", "received_at < ?", arrayOf(timeLimit.toString()))
+            }
+            
+            result
         } ?: false
     }
 
@@ -201,12 +199,5 @@ class DbManager private constructor(private val context: Context) {
             }
             db.update("messages_history", values, "id = ?", arrayOf(id)) > 0
         } ?: false
-    }
-
-    // Delete old SMS records
-    fun deleteOldMessages(timestampLimit: Long): Int {
-        return withDatabase { db ->
-            db.delete("messages_history", "received_at < ?", arrayOf(timestampLimit.toString()))
-        } ?: 0
     }
 }

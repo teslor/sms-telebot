@@ -35,11 +35,11 @@ class MainActivity : FlutterActivity() {
 
                         lifecycleScope.launch(Dispatchers.IO) {
                             try {
-                                val sendResult = SmsProviderGateway.send(
+                                val sendResult = SendProviderGateway.send(
                                     providerId = provider,
                                     configJson = configJson,
                                     secret = secret,
-                                    payload = SmsForwardPayload(
+                                    payload = SendProviderPayload(
                                         sender = sender,
                                         body = body,
                                         deviceLabel = deviceLabel,
@@ -53,7 +53,7 @@ class MainActivity : FlutterActivity() {
                             } catch (e: Exception) {
                                 withContext(Dispatchers.Main) {
                                     result.success(
-                                        ProviderSendResult(
+                                        SendProviderResult(
                                             isSuccess = false,
                                             code = ResultCode.UNEXPECTED_ERROR,
                                             info = e.message ?: "Unexpected error"
@@ -67,23 +67,23 @@ class MainActivity : FlutterActivity() {
                     "checkFilters" -> {
                         val mode = call.argument<Int>("mode") ?: 0
                         val sender = call.argument<String>("sender") ?: ""
-                        val sms = call.argument<String>("sms") ?: ""
+                        val body = call.argument<String>("body") ?: ""
                         val whitelistSenders = call.argument<List<String>>("whitelistSenders") ?: emptyList()
                         val whitelistBody = call.argument<List<String>>("whitelistBody") ?: emptyList()
                         val blacklistSenders = call.argument<List<String>>("blacklistSenders") ?: emptyList()
                         val blacklistBody = call.argument<List<String>>("blacklistBody") ?: emptyList()
 
-                        val lists = SmsFilters.Lists(
+                        val lists = MessageFilters.Lists(
                             whitelistSenders = whitelistSenders,
                             whitelistBody = whitelistBody,
                             blacklistSenders = blacklistSenders,
                             blacklistBody = blacklistBody
                         )
 
-                        val ok = SmsFilters.checkFilters(
+                        val ok = MessageFilters.checkFilters(
                             mode = mode,
                             sender = sender,
-                            sms = sms,
+                            body = body,
                             filters = lists
                         )
 
@@ -91,7 +91,7 @@ class MainActivity : FlutterActivity() {
                     }
                     "isValidRegex" -> {
                         val text = call.argument<String>("text") ?: ""
-                        val isValid = SmsFilters.isValidRegex(text)
+                        val isValid = MessageFilters.isValidRegex(text)
                         result.success(isValid)
                     }
 

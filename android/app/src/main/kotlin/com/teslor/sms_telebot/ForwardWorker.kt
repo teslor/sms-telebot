@@ -14,7 +14,6 @@ import android.os.Build
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
-import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -26,7 +25,7 @@ import kotlinx.coroutines.withContext
 /**
  * Background worker that forwards an incoming message via configured providers.
  */
-class SmsForwardWorker(
+class ForwardWorker(
     appContext: Context,
     params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
@@ -53,22 +52,22 @@ class SmsForwardWorker(
         if (!dbManager.getBoolSetting("isRunning")) return@withContext Result.success()
 
         // Read input data from receiver
-        val smsId = inputData.getString("message_id") ?: return@withContext Result.failure()
+        val messageId = inputData.getString("message_id") ?: return@withContext Result.failure()
         val ruleIds = inputData.getIntArray("rule_ids") ?: return@withContext Result.failure()
 
         // Ensure device has internet connectivity
         if (!hasValidatedInternet()) {
             dbManager.updateMessagesHistory(
-                id = smsId,
-                updates = mapOf("status" to SmsSendStatus.FAILED_RETRY)
+                id = messageId,
+                updates = mapOf("status" to SendStatus.FAILED_RETRY)
             )
             return@withContext Result.retry()
         }
 
-        // Check if SMS exists and was not already sent
-        val smsData = dbManager.getMessageById(smsId) ?: return@withContext Result.failure()
+        // Check if message exists and was not already sent
+        val messageData = dbManager.getMessageById(messageId) ?: return@withContext Result.failure()
         val shouldBeProcessed =
-            smsData.status == SmsSendStatus.RECEIVED || smsData.status == SmsSendStatus.FAILED_RETRY
+            messageData.status == SendStatus.RECEIVED || messageData.status == SendStatus.FAILED_RETRY
         if (!shouldBeProcessed) {
             return@withContext Result.success() // already processed
         }
@@ -81,7 +80,7 @@ class SmsForwardWorker(
         val deviceLabel = dbManager.getSetting("deviceLabel").orEmpty()
         val l10nSmsFrom = dbManager.getSetting("l10nSmsFrom").orEmpty().ifBlank { "SMS from" }
         val lastAttemptAt = System.currentTimeMillis()
-        val nextAttemptCount = smsData.attemptCount + 1
+        val nextAttemptCount = messageData.attemptCount + 1
 
         // Start parallel sending
         val results = coroutineScope {
@@ -90,7 +89,7 @@ class SmsForwardWorker(
                     sendSemaphore.withPermit {
                         val secretResult = secretStorage.readSecret(rule.id.toString())
                         val secret = if (secretResult.isSuccess) secretResult.data ?: "" else ""
-                        processRule(rule, secret, smsData.sender, smsData.body, deviceLabel, l10nSmsFrom)
+                        processRule(rule, secret, messageData.sender, messageData.body, deviceLabel, l10nSmsFrom)
                     }
                 }
             }.awaitAll()
@@ -100,10 +99,10 @@ class SmsForwardWorker(
         val shouldRetry = results.any { !it.isSuccess && it.shouldRetry }
 
         return@withContext if (successCount > 0) {
-            val newStatus = if (successCount == rules.size) SmsSendStatus.SENT_ALL else SmsSendStatus.SENT_PARTIAL
+            val newStatus = if (successCount == rules.size) SendStatus.SENT_ALL else SendStatus.SENT_PARTIAL
 
             dbManager.updateMessagesHistory(
-                id = smsId,
+                id = messageId,
                 updates = mapOf(
                     "status" to newStatus,
                     "sent_at" to System.currentTimeMillis(),
@@ -114,9 +113,9 @@ class SmsForwardWorker(
             Result.success()
         } else if (shouldRetry) {
             dbManager.updateMessagesHistory(
-                id = smsId,
+                id = messageId,
                 updates = mapOf(
-                    "status" to SmsSendStatus.FAILED_RETRY,
+                    "status" to SendStatus.FAILED_RETRY,
                     "last_attempt_at" to lastAttemptAt,
                     "attempt_count" to nextAttemptCount,
                 )
@@ -124,9 +123,9 @@ class SmsForwardWorker(
             Result.retry() // retry only when at least one failure is temporary
         } else {
             dbManager.updateMessagesHistory(
-                id = smsId,
+                id = messageId,
                 updates = mapOf(
-                    "status" to SmsSendStatus.FAILED_FINAL,
+                    "status" to SendStatus.FAILED_FINAL,
                     "last_attempt_at" to lastAttemptAt,
                     "attempt_count" to nextAttemptCount,
                 )
@@ -143,12 +142,12 @@ class SmsForwardWorker(
         body: String,
         deviceLabel: String,
         l10nSmsFrom: String
-    ): ProviderSendResult {
-        return SmsProviderGateway.send(
+    ): SendProviderResult {
+        return SendProviderGateway.send(
             providerId = rule.provider,
             configJson = rule.configJson ?: "",
             secret = secret,
-            payload = SmsForwardPayload(
+            payload = SendProviderPayload(
                 sender = sender,
                 body = body,
                 deviceLabel = deviceLabel,
@@ -170,6 +169,7 @@ class SmsForwardWorker(
             manager.createNotificationChannel(channel)
             Notification.Builder(applicationContext, channelId)
         } else {
+            @Suppress("DEPRECATION")
             Notification.Builder(applicationContext)
         }
 
@@ -190,7 +190,7 @@ class SmsForwardWorker(
     }
 
     companion object {
-        const val TAG = "sms_forward_worker"
+        const val TAG = "ForwardWorker"
         private const val FOREGROUND_NOTIFICATION_ID = 1001
         private const val FOREGROUND_CHANNEL_ID = "sms_telebot_forwarding"
         private val sendSemaphore = Semaphore(5)

@@ -17,7 +17,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
-import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,23 +32,25 @@ class SmsReceiver : BroadcastReceiver() {
         val permission = ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS)
         if (permission != PackageManager.PERMISSION_GRANTED) return
 
+        val dbManager = DbManager.getInstance(context)
+        if (!dbManager.getBoolSetting("isRunning")) return
+        if (!dbManager.getBoolSetting("forwardSms")) return
+
         // Call goAsync() to avoid blocking UI thread when reading/writing DB
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                processSmsInBackground(context, intent)
+                processSms(context, intent)
             } finally {
                 pendingResult.finish() // mandatory to finish BroadcastReceiver
             }
         }
     }
 
-    private fun processSmsInBackground(context: Context, intent: Intent) {
+    private fun processSms(context: Context, intent: Intent) {
         val dbManager = DbManager.getInstance(context)
-        val isRunning = dbManager.getBoolSetting("isRunning")
-        if (!isRunning) return
 
-        // Extract all message parts, for multipart SMS we concatenate bodies
+        // Extract all message parts, concatenate bodies for multipart SMS
         val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
         if (messages.isEmpty()) return
 
@@ -59,14 +60,13 @@ class SmsReceiver : BroadcastReceiver() {
 
         if (sender.isBlank() || body.isBlank()) return
 
-        // Within a 5 second window, the ID for the same sender/body will be the same
+        // Within a 5-second window, the ID for the same sender/body will be the same
         val timeWindow = timestamp / 5000L
-        val smsId = SmsHelpers.generateId("$sender|$timeWindow|$body")
+        val smsId = MessageHelpers.generateId("$sender|$timeWindow|$body")
 
         // Android/network may redeliver the same SMS back-to-back
         // If it's a duplicate, do not schedule background work
-        val lastReceivedId = dbManager.getLastReceivedSmsId()
-        if (smsId == lastReceivedId) return
+        if (dbManager.getMessageById(smsId) != null) return
 
         // Immediately save all SMS information to messages_history
         val deviceReceivedAt = System.currentTimeMillis()
@@ -77,15 +77,8 @@ class SmsReceiver : BroadcastReceiver() {
             body = body,
             sourceAt = timestamp,
             receivedAt = deviceReceivedAt,
-            status = SmsSendStatus.RECEIVED
+            status = SendStatus.RECEIVED
         )
-
-        // Cleanup old messages with 10% probability
-        if (Random.nextInt(10) == 0) {
-            // Take current device time minus 24 hours in milliseconds
-            val timeLimit = System.currentTimeMillis() - (24 * 60 * 60 * 1000L)
-            dbManager.deleteOldMessages(timeLimit)
-        }
 
         // Get all active forwarding rules
         val activeRules = dbManager.getActiveRules()
@@ -98,11 +91,11 @@ class SmsReceiver : BroadcastReceiver() {
                 matchedRuleIds.add(rule.id)
             } else {
                 // Decode JSON filters only if filterMode != 0
-                val filters = SmsFilters.fromJson(rule.filtersJson)
-                val isMatched = SmsFilters.checkFilters(
+                val filters = MessageFilters.fromJson(rule.filtersJson)
+                val isMatched = MessageFilters.checkFilters(
                     mode = rule.filterMode,
                     sender = sender,
-                    sms = body,
+                    body = body,
                     filters = filters
                 )
                 if (isMatched) matchedRuleIds.add(rule.id)
@@ -122,11 +115,11 @@ class SmsReceiver : BroadcastReceiver() {
             .build()
 
         // Expedited work tries to run ASAP; if quota is exceeded, it falls back
-        val request = OneTimeWorkRequestBuilder<SmsForwardWorker>()
+        val request = OneTimeWorkRequestBuilder<ForwardWorker>()
             .setInputData(inputData)
             .setConstraints(constraints)
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-            .addTag(SmsForwardWorker.TAG)
+            .addTag(ForwardWorker.TAG)
             .build()
 
         // Ensure only one work request is enqueued per SMS id

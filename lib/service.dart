@@ -155,11 +155,11 @@ Future<CallResult> sendToProviderNative({
   }
 }
 
-Future<bool> checkFiltersNative(String sender, String sms, int mode, Map<String, List<String>> filterLists) async {
+Future<bool> checkFiltersNative(String sender, String body, int mode, Map<String, List<String>> filterLists) async {
   try {
     final result = await _mainChannel.invokeMethod<bool>('checkFilters', {
       'sender': sender,
-      'sms': sms,
+      'body': body,
       'mode': mode,
       'whitelistSenders': filterLists[AppConst.filterKeys[0]] ?? <String>[],
       'whitelistBody': filterLists[AppConst.filterKeys[1]] ?? <String>[],

@@ -15,7 +15,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
-import java.security.MessageDigest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,7 +28,6 @@ class DeviceStatusReceiver : BroadcastReceiver() {
     private val sender = "System"
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("DeviceStatusReceiver", "onReceive: ${intent.action}")
         val action = intent.action ?: return
 
         val dbManager = DbManager.getInstance(context)
@@ -59,26 +57,27 @@ class DeviceStatusReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                processBatteryAlert(context, action, body)
+                processSystemAlert(context, action, body)
             } finally {
                 pendingResult.finish()
             }
         }
     }
 
-    private fun processBatteryAlert(context: Context, action: String, body: String) {
+    private fun processSystemAlert(context: Context, action: String, body: String) {
         val dbManager = DbManager.getInstance(context)
 
-        // Within 2 hours, the ID will be the same
+        // Within time window, the ID will be the same
         val windowMs = when (action) {
-            Intent.ACTION_BATTERY_LOW -> 2 * 60 * 60 * 1000L
-            else -> 5 * 60 * 1000L
+            Intent.ACTION_BATTERY_LOW -> 2 * 60 * 60 * 1000L // 2 hours
+            else -> 5 * 60 * 1000L // 5 minutes
         }
         val now = System.currentTimeMillis()
         val timeWindow = now / windowMs
-        val messageId = SmsHelpers.generateId("$sender|$timeWindow|$action")
+        val messageId = MessageHelpers.generateId("$sender|$timeWindow|$action")
+        Log.d("DeviceStatusReceiver", "messageId: $messageId")
 
-        // Check if this event has already been processed in the current window
+        // Check if the event has already been processed in the current window
         if (dbManager.getMessageById(messageId) != null) return
 
         // Save battery alert to messages_history
@@ -89,7 +88,7 @@ class DeviceStatusReceiver : BroadcastReceiver() {
             body = body,
             sourceAt = 0,
             receivedAt = now,
-            status = SmsSendStatus.RECEIVED
+            status = SendStatus.RECEIVED
         )
 
         val activeRules = dbManager.getActiveRules()
@@ -100,11 +99,11 @@ class DeviceStatusReceiver : BroadcastReceiver() {
             if (rule.filterMode == 0) {
                 matchedRuleIds.add(rule.id)
             } else {
-                val filters = SmsFilters.fromJson(rule.filtersJson)
-                val isMatched = SmsFilters.checkFilters(
+                val filters = MessageFilters.fromJson(rule.filtersJson)
+                val isMatched = MessageFilters.checkFilters(
                     mode = rule.filterMode,
                     sender = sender,
-                    sms = body,
+                    body = body,
                     filters = filters
                 )
                 if (isMatched) matchedRuleIds.add(rule.id)
@@ -112,7 +111,7 @@ class DeviceStatusReceiver : BroadcastReceiver() {
         }
         if (matchedRuleIds.isEmpty()) return
 
-        // Enqueue SmsForwardWorker
+        // Enqueue ForwardWorker
         val inputData = Data.Builder()
             .putString("message_id", messageId)
             .putIntArray("rule_ids", matchedRuleIds.toIntArray())
@@ -122,11 +121,11 @@ class DeviceStatusReceiver : BroadcastReceiver() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val request = OneTimeWorkRequestBuilder<SmsForwardWorker>()
+        val request = OneTimeWorkRequestBuilder<ForwardWorker>()
             .setInputData(inputData)
             .setConstraints(constraints)
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-            .addTag(SmsForwardWorker.TAG)
+            .addTag(ForwardWorker.TAG)
             .build()
 
         WorkManager.getInstance(context).enqueueUniqueWork(

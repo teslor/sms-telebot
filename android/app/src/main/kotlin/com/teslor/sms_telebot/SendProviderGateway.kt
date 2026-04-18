@@ -24,14 +24,19 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 
-data class SmsForwardPayload(
+object SendProviderId {
+    const val TELEGRAM_BOT = "telegram_bot"
+    const val SMTP_SERVER = "smtp_server"
+}
+
+data class SendProviderPayload(
     val sender: String,
     val body: String,
     val deviceLabel: String,
     val l10nSmsFrom: String
 )
 
-data class ProviderSendResult(
+data class SendProviderResult(
     val isSuccess: Boolean,
     val code: String,
     val info: String, // not for UI (logging only)
@@ -47,11 +52,11 @@ data class ProviderSendResult(
     }
 }
 
-interface SmsProvider {
+interface SendProvider {
     val id: String
-    fun send(configJson: String, secret: String, payload: SmsForwardPayload): ProviderSendResult
+    fun send(configJson: String, secret: String, payload: SendProviderPayload): SendProviderResult
 
-    // Universal factory for creating ProviderSendResult and logging
+    // Universal factory for creating SendProviderResult and logging
     fun buildResult(
         isSuccess: Boolean,
         code: String,
@@ -59,21 +64,21 @@ interface SmsProvider {
         shouldRetry: Boolean = false,
         details: String? = null,
         exception: Throwable? = null // Pass Exception to Logcat to draw stacktrace
-    ): ProviderSendResult {
+    ): SendProviderResult {
         val type = if (isSuccess) "send_success" else "send_error"
         val infoStr = LogFormatter.buildInfo(type, info, id, code, details ?: exception?.message)
 
         // Log
-        if (isSuccess) Log.i("SmsProvider", infoStr)
-        else Log.e("SmsProvider", infoStr, exception)
+        if (isSuccess) Log.i("SendProvider", infoStr)
+        else Log.e("SendProvider", infoStr, exception)
 
         // Return object for worker and UI
-        return ProviderSendResult(isSuccess, code, infoStr, shouldRetry)
+        return SendProviderResult(isSuccess, code, infoStr, shouldRetry)
     }
 }
 
-object SmsProviderGateway {
-    private val providers: Map<String, SmsProvider> = listOf(
+object SendProviderGateway {
+    private val providers: Map<String, SendProvider> = listOf(
         TelegramBotProvider,
         SmtpServerProvider
     ).associateBy { it.id }
@@ -82,10 +87,10 @@ object SmsProviderGateway {
         providerId: String,
         configJson: String,
         secret: String,
-        payload: SmsForwardPayload
-    ): ProviderSendResult {
+        payload: SendProviderPayload
+    ): SendProviderResult {
         val provider = providers[providerId.lowercase()]
-            ?: return ProviderSendResult(
+            ?: return SendProviderResult(
                 isSuccess = false,
                 code = ResultCode.UNEXPECTED_ERROR,
                 info = "Unknown provider: $providerId"
@@ -98,10 +103,10 @@ object SmsProviderGateway {
 // TELEGRAM BOT PROVIDER
 // ================================================================================
 
-object TelegramBotProvider : SmsProvider {
-    override val id: String = SmsProviderId.TELEGRAM_BOT
+object TelegramBotProvider : SendProvider {
+    override val id: String = SendProviderId.TELEGRAM_BOT
 
-    override fun send(configJson: String, secret: String, payload: SmsForwardPayload): ProviderSendResult {
+    override fun send(configJson: String, secret: String, payload: SendProviderPayload): SendProviderResult {
         if (configJson.isBlank()) {
             return buildResult(
                 isSuccess = false,
@@ -177,7 +182,7 @@ object TelegramBotProvider : SmsProvider {
         }
     }
 
-    private fun mapApiResult(result: ApiResult): ProviderSendResult {
+    private fun mapApiResult(result: ApiResult): SendProviderResult {
         // Prefer Telegram "ok=true", but keep HTTP 200 fallback for malformed/missing body
         if (result.ok == true || (result.statusCode == 200 && result.errorCode == null)) {
             return buildResult(isSuccess = true, code = ResultCode.OK, info = "Sent successfully")
@@ -299,10 +304,10 @@ object TelegramBotProvider : SmsProvider {
 // SMTP SERVER PROVIDER
 // ================================================================================
 
-object SmtpServerProvider : SmsProvider {
-    override val id: String = SmsProviderId.SMTP_SERVER
+object SmtpServerProvider : SendProvider {
+    override val id: String = SendProviderId.SMTP_SERVER
 
-    override fun send(configJson: String, secret: String, payload: SmsForwardPayload): ProviderSendResult {
+    override fun send(configJson: String, secret: String, payload: SendProviderPayload): SendProviderResult {
         if (configJson.isBlank()) {
             return buildResult(
                 isSuccess = false,
@@ -310,13 +315,11 @@ object SmtpServerProvider : SmsProvider {
                 info = "SMTP config is empty"
             )
         }
-        var host = ""
-        var protocol = ""
 
         return try {
             val json = JSONObject(configJson)
-            host = json.optString("host", "")
-            protocol = json.optString("protocol", "starttls")
+            val host = json.optString("host", "")
+            val protocol = json.optString("protocol", "starttls")
             val port = json.optInt("port", 587)
             val login = json.optString("login", "")
             val password = secret

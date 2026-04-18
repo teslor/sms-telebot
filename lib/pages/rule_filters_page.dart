@@ -28,8 +28,8 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
   void _testFilters() async {
     final appState = context.read<AppState>();
     final sender = _senderChipsKey.currentState?.inputController.text ?? '';
-    final sms = _smsChipsKey.currentState?.inputController.text ?? '';
-    final result = await checkFiltersNative(sender, sms, appState.filterMode, appState.filterLists);
+    final body = _smsChipsKey.currentState?.inputController.text ?? '';
+    final result = await checkFiltersNative(sender, body, appState.filterMode, appState.filterLists);
     if (!mounted) return;
     setState(() {
       _testResult = result;

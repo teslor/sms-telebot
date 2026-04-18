@@ -4,7 +4,6 @@
 package com.teslor.sms_telebot
 
 import java.security.MessageDigest
-import org.json.JSONArray
 import org.json.JSONObject
 
 object ResultCode {
@@ -27,12 +26,7 @@ object ResultCode {
     const val SECRETS_RECOVERED = "secrets_recovered"
 }
 
-object SmsProviderId {
-    const val TELEGRAM_BOT = "telegram_bot"
-    const val SMTP_SERVER = "smtp_server"
-}
-
-object SmsSendStatus {
+object SendStatus {
     const val RECEIVED = 0
     const val FAILED_FINAL = 1
     const val FAILED_RETRY = 2
@@ -40,7 +34,7 @@ object SmsSendStatus {
     const val SENT_ALL = 4
 }
 
-object SmsHelpers {
+object MessageHelpers {
     fun generateId(rawId: String): String {
         return MessageDigest.getInstance("SHA-256")
             .digest(rawId.toByteArray())
@@ -49,7 +43,7 @@ object SmsHelpers {
     }
 }
 
-object SmsFilters {
+object MessageFilters {
     private val filterKeys =
         listOf("whitelistSenders", "whitelistBody", "blacklistSenders", "blacklistBody")
 
@@ -84,14 +78,14 @@ object SmsFilters {
         }
     }
 
-    fun checkFilters(mode: Int, sender: String, sms: String, filters: Lists): Boolean {
+    fun checkFilters(mode: Int, sender: String, body: String, filters: Lists): Boolean {
         return when (mode) {
             0 -> true // filters off
             1 -> { // whitelist
-                hasFilterMatches(sender, filters.whitelistSenders) || hasFilterMatches(sms, filters.whitelistBody)
+                hasFilterMatches(sender, filters.whitelistSenders) || hasFilterMatches(body, filters.whitelistBody)
             }
             else -> { // blacklist
-                !hasFilterMatches(sender, filters.blacklistSenders) && !hasFilterMatches(sms, filters.blacklistBody)
+                !hasFilterMatches(sender, filters.blacklistSenders) && !hasFilterMatches(body, filters.blacklistBody)
             }
         }
     }

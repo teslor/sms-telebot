@@ -6,6 +6,7 @@ package com.teslor.sms_telebot
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import java.io.File
@@ -25,20 +26,23 @@ data class SecretResult(
     }
 }
 
+@Suppress("DEPRECATION")
 class SecureStorageManager private constructor(context: Context) {
 
     // Use applicationContext to avoid memory leaks when called from background services and workers
     private val appContext = context.applicationContext
 
-    private val TAG = "SecureStorage"
-    private val PREFS_FILENAME = "secrets"
     @Volatile
     private var recoveredWithDataLoss = false
+
     private val sharedPreferences: SharedPreferences? by lazy {
         initSecurePrefs()
     }
 
     companion object {
+        private const val TAG = "SecureStorage"
+        private const val PREFS_FILENAME = "secrets"
+
         @Volatile
         private var instance: SecureStorageManager? = null
 
@@ -100,8 +104,15 @@ class SecureStorageManager private constructor(context: Context) {
 
     private fun clearCorruptedPrefsFile() {
         try {
-            val dir = File(appContext.filesDir.parent + "/shared_prefs/")
+            val parentPath = appContext.filesDir.parent
+            if (parentPath == null) {
+                Log.w(TAG, "Cannot clear corrupted prefs: parent dir is null")
+                return
+            }
+
+            val dir = File(parentPath, "shared_prefs")
             val file = File(dir, "$PREFS_FILENAME.xml")
+
             if (file.exists()) {
                 val deleted = file.delete()
                 if (deleted) {
@@ -132,7 +143,7 @@ class SecureStorageManager private constructor(context: Context) {
     fun saveSecret(id: String, secret: String): SecretResult {
         val prefs = sharedPreferences ?: return SecretResult(isSuccess = false, code = ResultCode.SECRETS_ERROR)
         return try {
-            prefs.edit().putString(id, secret).apply()
+            prefs.edit { putString(id, secret) }
             SecretResult(isSuccess = true, code = ResultCode.OK)
         } catch (e: Exception) {
             Log.e(TAG, "Error while writing key $id", e)
@@ -160,7 +171,7 @@ class SecureStorageManager private constructor(context: Context) {
     fun deleteSecret(id: String): SecretResult {
         val prefs = sharedPreferences ?: return SecretResult(isSuccess = false, code = ResultCode.SECRETS_ERROR)
         return try {
-            prefs.edit().remove(id).apply()
+            prefs.edit { remove(id) }
             SecretResult(isSuccess = true, code = ResultCode.OK)
         } catch (e: Exception) {
             Log.e(TAG, "Error while deleting key $id", e)
