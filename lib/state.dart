@@ -9,7 +9,7 @@ import 'service.dart';
 final navigatorKey = GlobalKey<NavigatorState>();
 
 class AppState extends ChangeNotifier with WidgetsBindingObserver {
-  Timer? _smsStatsTimer;
+  Timer? _statsTimer;
 
   // App settings
   bool isRunning = false;
@@ -29,11 +29,11 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     for (var key in AppConst.filterKeys) key: [],
   };
 
-  // SMS stats
-  int smsReceivedCount = 0;
-  int smsSentCount = 0;
-  List<Map<String, dynamic>> smsReceivedList = [];
-  String smsReceivedListHash = '';
+  // Messages stats
+  int receivedCount = 0;
+  int sentCount = 0;
+  List<Map<String, dynamic>> messagesList = [];
+  String messagesListHash = '';
 
   AppState() {
     WidgetsBinding.instance.addObserver(this);
@@ -66,32 +66,32 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       if (l10nChanged.isNotEmpty) await MainDb.instance.saveSettings(l10nChanged);
     });
 
-    _loadSmsStats();
-    if (isRunning) _startSmsStatsPolling();
+    _updateStats();
+    if (isRunning) _startStatsPolling();
   }
 
-  void _startSmsStatsPolling() {
-    _smsStatsTimer ??= Timer.periodic(const Duration(seconds: 5), (_) async {
-      await _loadSmsStats();
+  void _startStatsPolling() {
+    _statsTimer ??= Timer.periodic(const Duration(seconds: 5), (_) async {
+      await _updateStats();
     });
   }
 
-  void _stopSmsStatsPolling() {
-    _smsStatsTimer?.cancel();
-    _smsStatsTimer = null;
+  void _stopStatsPolling() {
+    _statsTimer?.cancel();
+    _statsTimer = null;
   }
 
   Future<void> startProcessing() async {
     isRunning = true;
     notifyListeners();
     await MainDb.instance.saveBoolSetting('isRunning', true);
-    _startSmsStatsPolling();
+    _startStatsPolling();
   }
 
   Future<void> stopProcessing() async {
     isRunning = false;
     notifyListeners();
-    _stopSmsStatsPolling();
+    _stopStatsPolling();
     await MainDb.instance.saveBoolSetting('isRunning', false);
     stopWorkersNative();
   }
@@ -100,13 +100,13 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       if (isRunning) {
-        _loadSmsStats();
-        _startSmsStatsPolling();
+        _updateStats();
+        _startStatsPolling();
       }
     } else if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.detached) {
-      _stopSmsStatsPolling();
+      _stopStatsPolling();
     }
     super.didChangeAppLifecycleState(state);
   }
@@ -136,21 +136,21 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
-  Future<void> _loadSmsStats() async {
+  Future<void> _updateStats() async {
     final newReceivedCount = await MainDb.instance.getReceivedMessagesCount();
     final newSentCount = await MainDb.instance.getSentMessagesCount();
     final newList = await MainDb.instance.getRecentMessages(limit: 10);
     final statusesSum = newList
-      .fold<int>(0, (sum, sms) => sum + ((sms['status'] as num?)?.toInt() ?? 0));
+      .fold<int>(0, (sum, msg) => sum + ((msg['status'] as num?)?.toInt() ?? 0));
     final attemptsSum = newList
-      .fold<int>(0, (sum, sms) => sum + ((sms['attempt_count'] as num?)?.toInt() ?? 0));
+      .fold<int>(0, (sum, msg) => sum + ((msg['attempt_count'] as num?)?.toInt() ?? 0));
     final newHash = '$newReceivedCount$newSentCount$statusesSum$attemptsSum';
 
-    if (newHash != smsReceivedListHash) {
-      smsReceivedCount = newReceivedCount;
-      smsSentCount = newSentCount;
-      smsReceivedList = newList;
-      smsReceivedListHash = newHash;
+    if (newHash != messagesListHash) {
+      receivedCount = newReceivedCount;
+      sentCount = newSentCount;
+      messagesList = newList;
+      messagesListHash = newHash;
       notifyListeners();
     }
   }
@@ -329,7 +329,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _stopSmsStatsPolling();
+    _stopStatsPolling();
     super.dispose();
   }
 }

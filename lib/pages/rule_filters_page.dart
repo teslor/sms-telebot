@@ -15,7 +15,7 @@ class RuleFiltersPage extends StatefulWidget {
 
 class _RuleFiltersPageState extends State<RuleFiltersPage> {
   final GlobalKey<_ChipsWidgetState> _senderChipsKey = GlobalKey<_ChipsWidgetState>();
-  final GlobalKey<_ChipsWidgetState> _smsChipsKey = GlobalKey<_ChipsWidgetState>();
+  final GlobalKey<_ChipsWidgetState> _bodyChipsKey = GlobalKey<_ChipsWidgetState>();
   bool? _testResult;
   bool? _saveResult;
 
@@ -28,7 +28,7 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
   void _testFilters() async {
     final appState = context.read<AppState>();
     final sender = _senderChipsKey.currentState?.inputController.text ?? '';
-    final body = _smsChipsKey.currentState?.inputController.text ?? '';
+    final body = _bodyChipsKey.currentState?.inputController.text ?? '';
     final result = await checkFiltersNative(sender, body, appState.filterMode, appState.filterLists);
     if (!mounted) return;
     setState(() {
@@ -78,7 +78,7 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
           ),
           const SizedBox(height: 20),
           ChipsWidget(
-            key: _smsChipsKey,
+            key: _bodyChipsKey,
             listName: _getListNames()[1],
             labelText: l10n.filters_text,
             helperText: l10n.filters_textInfo,

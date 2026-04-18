@@ -5,8 +5,8 @@ import '../l10n/generated/app_localizations.dart';
 import '../state.dart';
 import '../widgets/action_button.dart';
 
-class SmsPage extends StatelessWidget {
-  const SmsPage({super.key});
+class MessagesPage extends StatelessWidget {
+  const MessagesPage({super.key});
   static const int _statusReceived = 0;
   static const int _statusFailedFinal = 1;
   static const int _statusFailedRetry = 2;
@@ -18,10 +18,10 @@ class SmsPage extends StatelessWidget {
     final appState = context.watch<AppState>();
     final l10n = AppLocalizations.of(context)!;
 
-    final smsReceivedCount = appState.smsReceivedCount;
-    final smsSentCount = appState.smsSentCount;
-    final smsReceivedList = appState.smsReceivedList;
-    final isEmptyState = !appState.isRunning || smsReceivedCount == 0;
+    final receivedCount = appState.receivedCount;
+    final sentCount = appState.sentCount;
+    final messagesList = appState.messagesList;
+    final isEmptyState = !appState.isRunning || receivedCount == 0;
 
     return Scaffold(
       body: isEmptyState
@@ -38,14 +38,14 @@ class SmsPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildSmsCard(context, l10n.msg_received, smsReceivedCount.toString()),
+                _buildInfoCard(context, l10n.msg_received, receivedCount.toString()),
                 const SizedBox(width: 15),
-                _buildSmsCard(context, l10n.msg_sent, smsSentCount.toString()),
+                _buildInfoCard(context, l10n.msg_sent, sentCount.toString()),
               ],
             ),
             const SizedBox(height: 15),
-            if (smsReceivedList.isNotEmpty)
-              ...smsReceivedList.map((sms) => _buildRecentSmsItem(context, sms)),
+            if (messagesList.isNotEmpty)
+              ...messagesList.map((msg) => _buildMessageCard(context, msg)),
           ],
         ),
 
@@ -63,7 +63,7 @@ class SmsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSmsCard(BuildContext context, String title, String value) {
+  Widget _buildInfoCard(BuildContext context, String title, String value) {
     return Expanded(
       child: Card(
         margin: EdgeInsets.zero,
@@ -82,20 +82,20 @@ class SmsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRecentSmsItem(BuildContext context, Map<String, dynamic> sms) {
+  Widget _buildMessageCard(BuildContext context, Map<String, dynamic> msg) {
     final theme = Theme.of(context);
     final textStyleMuted = TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: theme.colorScheme.onSurface.withAlpha(150));
 
-    final type = (sms['type'] ?? 'sms').toString();
+    final type = (msg['type'] ?? 'sms').toString();
     final isSms = type == 'sms';
     final titleIcon = isSms ? Icons.messenger : Icons.phonelink_setup_rounded;
     final titleIconColor = isSms ? Colors.amber : theme.colorScheme.primary;
-    final sender = sms['sender']?.toString() ?? '';
-    final bodyText = sms['body']?.toString() ?? '';
-    final receivedDate = DateFormat('dd.MM HH:mm').format(DateTime.fromMillisecondsSinceEpoch(sms['received_at']));
-    final status = (sms['status'] as num?)?.toInt() ?? _statusReceived;
-    final sentAt = (sms['sent_at'] as num?)?.toInt();
-    final lastAttemptAt = (sms['last_attempt_at'] as num?)?.toInt();
+    final sender = msg['sender']?.toString() ?? '';
+    final bodyText = msg['body']?.toString() ?? '';
+    final receivedDate = DateFormat('dd.MM HH:mm').format(DateTime.fromMillisecondsSinceEpoch(msg['received_at']));
+    final status = (msg['status'] as num?)?.toInt() ?? _statusReceived;
+    final sentAt = (msg['sent_at'] as num?)?.toInt();
+    final lastAttemptAt = (msg['last_attempt_at'] as num?)?.toInt();
     final activityAt = sentAt ?? lastAttemptAt;
     final activityDate = activityAt == null ? null : DateFormat('dd.MM HH:mm').format(DateTime.fromMillisecondsSinceEpoch(activityAt));
     final statusVisual = _statusVisual(theme, status);

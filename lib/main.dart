@@ -5,7 +5,7 @@ import 'l10n/generated/app_localizations.dart';
 import 'constants.dart';
 import 'state.dart';
 import 'styles.dart';
-import 'pages/sms_page.dart';
+import 'pages/messages_page.dart';
 import 'pages/rules_page.dart';
 import 'pages/settings_page.dart';
 import 'pages/help_page.dart';
@@ -121,7 +121,7 @@ class _AppViewState extends State<AppView> {
       ),
       body:
         <Widget>[
-          const SmsPage(),
+          const MessagesPage(),
           const RulesMainPage(),
           const SettingsPage(),
         ][currentPageIndex],
