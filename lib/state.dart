@@ -51,7 +51,6 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       final localizations = AppLocalizations.of(navigatorKey.currentContext!)!;
       final settings = await MainDb.instance.getAllSettings();
       final l10nSettings = <String, String>{
-        'l10nMessageFrom': localizations.msg_from,
         'l10nSmsFrom': localizations.msg_smsFrom,
         'l10nLowBattery': localizations.msg_system_lowBattery,
         'l10nChargerConnected': localizations.msg_system_chargerConnected,

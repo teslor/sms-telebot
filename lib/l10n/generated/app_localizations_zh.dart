@@ -48,10 +48,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get msg_stop => '停止';
 
   @override
-  String get msg_from => '消息来自';
-
-  @override
-  String get msg_smsFrom => '短信来自';
+  String get msg_smsFrom => '短信';
 
   @override
   String get msg_system_lowBattery => '电量低';

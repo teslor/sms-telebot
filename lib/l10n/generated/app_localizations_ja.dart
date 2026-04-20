@@ -48,10 +48,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get msg_stop => '停止';
 
   @override
-  String get msg_from => 'メッセージの送信元';
-
-  @override
-  String get msg_smsFrom => 'SMSの送信元';
+  String get msg_smsFrom => 'メッセージ';
 
   @override
   String get msg_system_lowBattery => 'バッテリー残量低下';

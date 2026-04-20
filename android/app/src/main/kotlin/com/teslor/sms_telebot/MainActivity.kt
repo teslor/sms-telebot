@@ -39,9 +39,11 @@ class MainActivity : FlutterActivity() {
                                     providerId = provider,
                                     configJson = configJson,
                                     secret = secret,
+                                    type = "app",
                                     payload = SendProviderPayload(
                                         sender = sender,
                                         body = body,
+                                        receivedAt = System.currentTimeMillis(),
                                         deviceLabel = deviceLabel,
                                         l10nSmsFrom = ""
                                     )

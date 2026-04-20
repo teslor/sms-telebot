@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
-import android.util.Log
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
@@ -75,7 +74,6 @@ class DeviceStatusReceiver : BroadcastReceiver() {
         val now = System.currentTimeMillis()
         val timeWindow = now / windowMs
         val messageId = MessageHelpers.generateId("$sender|$timeWindow|$action")
-        Log.d("DeviceStatusReceiver", "messageId: $messageId")
 
         // Check if the event has already been processed in the current window
         if (dbManager.getMessageById(messageId) != null) return

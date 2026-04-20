@@ -89,7 +89,7 @@ class ForwardWorker(
                     sendSemaphore.withPermit {
                         val secretResult = secretStorage.readSecret(rule.id.toString())
                         val secret = if (secretResult.isSuccess) secretResult.data ?: "" else ""
-                        processRule(rule, secret, messageData.sender, messageData.body, deviceLabel, l10nSmsFrom)
+                        processRule(rule, secret, messageData.type, messageData.sender, messageData.body, messageData.receivedAt, deviceLabel, l10nSmsFrom)
                     }
                 }
             }.awaitAll()
@@ -138,8 +138,10 @@ class ForwardWorker(
     private fun processRule(
         rule: ForwardingRuleConfig,
         secret: String,
+        type: String,
         sender: String,
         body: String,
+        receivedAt: Long,
         deviceLabel: String,
         l10nSmsFrom: String
     ): SendProviderResult {
@@ -147,9 +149,11 @@ class ForwardWorker(
             providerId = rule.provider,
             configJson = rule.configJson ?: "",
             secret = secret,
+            type = type,
             payload = SendProviderPayload(
                 sender = sender,
                 body = body,
+                receivedAt = receivedAt,
                 deviceLabel = deviceLabel,
                 l10nSmsFrom = l10nSmsFrom
             )

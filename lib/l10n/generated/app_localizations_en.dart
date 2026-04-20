@@ -48,10 +48,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get msg_stop => 'Stop';
 
   @override
-  String get msg_from => 'Message from';
-
-  @override
-  String get msg_smsFrom => 'SMS from';
+  String get msg_smsFrom => 'SMS';
 
   @override
   String get msg_system_lowBattery => 'Low battery';

@@ -48,10 +48,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get msg_stop => 'Parar';
 
   @override
-  String get msg_from => 'Mensagem de';
-
-  @override
-  String get msg_smsFrom => 'SMS de';
+  String get msg_smsFrom => 'SMS';
 
   @override
   String get msg_system_lowBattery => 'Bateria fraca';

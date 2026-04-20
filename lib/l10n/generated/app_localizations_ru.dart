@@ -30,7 +30,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get msg_welcome => 'Нажмите Старт, чтобы\nвключить мониторинг';
 
   @override
-  String get msg_empty => 'Нет соообщений\nза последние 24 часа';
+  String get msg_empty => 'Нет сообщений\nза последние 24 часа';
 
   @override
   String get msg_hello => 'Привет! =^•⩊•^=';
@@ -48,10 +48,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get msg_stop => 'Стоп';
 
   @override
-  String get msg_from => 'Сообщение от';
-
-  @override
-  String get msg_smsFrom => 'СМС от';
+  String get msg_smsFrom => 'СМС';
 
   @override
   String get msg_system_lowBattery => 'Низкий уровень заряда';

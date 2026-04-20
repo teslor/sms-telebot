@@ -137,7 +137,7 @@ Future<CallResult> sendToProviderNative({
   required Map<String, dynamic> config,
   required String secret,
   required String body,
-  String sender = '',
+  String sender = AppConst.appName,
   String deviceLabel = '',
 }) async {
   try {

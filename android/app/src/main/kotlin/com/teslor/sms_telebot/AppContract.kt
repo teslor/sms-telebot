@@ -4,7 +4,13 @@
 package com.teslor.sms_telebot
 
 import java.security.MessageDigest
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import org.json.JSONObject
+
+data class FormattedMessage(val subject: String, val text: String)
 
 object ResultCode {
     // General/Network
@@ -41,6 +47,53 @@ object MessageHelpers {
             .joinToString(separator = "") { byte -> "%02x".format(byte.toInt() and 0xff) }
             .take(16)
     }
+
+    fun format(
+        provider: String, type: String, sender: String, body: String,
+        receivedAt: Long, deviceLabel: String, l10nSms: String
+    ): FormattedMessage {
+        val dt = Instant.ofEpochMilli(receivedAt)
+            .atZone(ZoneId.systemDefault()).toLocalDateTime()
+        val time = dt.format(DateTimeFormatter.ofPattern(
+            if (dt.toLocalDate() == LocalDate.now()) "HH:mm" else "dd.MM HH:mm"
+        ))
+
+        return when (provider) {
+            SendProviderId.TELEGRAM_BOT -> {
+                val s = escapeHtml(sender)
+                val b = escapeHtml(body)
+                val l = escapeHtml(deviceLabel)
+                val lb = if (l.isNotBlank()) " ($l)" else ""
+                val sysSrc = l.ifBlank { s }
+
+                val head = when (type) {
+                    "sms" -> "💬 <b>$s</b>$lb 🕒 <i>$time</i>"
+                    "sys" -> "⚙️ <b>$sysSrc</b> 🕒 <i>$time</i>"
+                    "app" -> "🤖 <b>$s</b>"
+                    else  -> s
+                }
+                FormattedMessage(subject = "", text = "$head\n$b")
+            }
+
+            SendProviderId.SMTP_SERVER -> {
+                val lb = if (deviceLabel.isNotBlank()) " ($deviceLabel)" else ""
+                val sysSrc = deviceLabel.ifBlank { sender }
+    
+                val (subject, head) = when (type) {
+                    "sms" -> "$l10nSms: $sender$lb" to "💬 $sender$lb 🕒 $time"
+                    "sys" -> "$sysSrc: $body" to "⚙️ $sysSrc 🕒 $time"
+                    "app" -> "$sender: $body" to "🤖 $sender"
+                    else  -> sender to sender
+                }
+                FormattedMessage(subject = subject, text = "$head\n\n$body")
+            }
+
+            else -> FormattedMessage(subject = sender, text = body)
+        }
+    }
+
+    fun escapeHtml(t: String) =
+        t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 }
 
 object MessageFilters {

@@ -61,7 +61,6 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     final appState = context.read<AppState>();
     final token = _tokenController.text;
     String chatId = _chatIdController.text;
-    final String helloMessage = l10n.msg_hello;
 
     try {
       if (chatId.isEmpty) {
@@ -82,7 +81,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
         provider: 'telegram_bot',
         config: { 'chatId': chatId },
         secret: token,
-        body: helloMessage,
+        body: l10n.msg_hello,
         deviceLabel: appState.deviceLabel,
       );
 

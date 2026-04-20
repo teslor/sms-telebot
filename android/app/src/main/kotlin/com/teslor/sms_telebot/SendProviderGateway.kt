@@ -32,6 +32,7 @@ object SendProviderId {
 data class SendProviderPayload(
     val sender: String,
     val body: String,
+    val receivedAt: Long,
     val deviceLabel: String,
     val l10nSmsFrom: String
 )
@@ -54,7 +55,7 @@ data class SendProviderResult(
 
 interface SendProvider {
     val id: String
-    fun send(configJson: String, secret: String, payload: SendProviderPayload): SendProviderResult
+    fun send(configJson: String, secret: String, type: String, payload: SendProviderPayload): SendProviderResult
 
     // Universal factory for creating SendProviderResult and logging
     fun buildResult(
@@ -87,6 +88,7 @@ object SendProviderGateway {
         providerId: String,
         configJson: String,
         secret: String,
+        type: String,
         payload: SendProviderPayload
     ): SendProviderResult {
         val provider = providers[providerId.lowercase()]
@@ -95,7 +97,7 @@ object SendProviderGateway {
                 code = ResultCode.UNEXPECTED_ERROR,
                 info = "Unknown provider: $providerId"
             )
-        return provider.send(configJson, secret, payload)
+        return provider.send(configJson, secret, type, payload)
     }
 }
 
@@ -106,7 +108,7 @@ object SendProviderGateway {
 object TelegramBotProvider : SendProvider {
     override val id: String = SendProviderId.TELEGRAM_BOT
 
-    override fun send(configJson: String, secret: String, payload: SendProviderPayload): SendProviderResult {
+    override fun send(configJson: String, secret: String, type: String, payload: SendProviderPayload): SendProviderResult {
         if (configJson.isBlank()) {
             return buildResult(
                 isSuccess = false,
@@ -127,17 +129,16 @@ object TelegramBotProvider : SendProvider {
                 )
             }
 
-            val senderEscaped = escapeHtml(payload.sender)
-            val deviceLabelEscaped = escapeHtml(payload.deviceLabel)
-            val bodyEscaped = escapeHtml(payload.body)
-            val deviceInfo = if (deviceLabelEscaped.isNotBlank()) " <i>($deviceLabelEscaped)</i>" else ""
-            val message = if (senderEscaped.isBlank()) {
-                "$bodyEscaped$deviceInfo"
-            } else {
-                "${payload.l10nSmsFrom} <b>$senderEscaped</b>$deviceInfo:\n$bodyEscaped"
-            }
-
-            val result = sendRequest(token, chatId, message)
+            val msg = MessageHelpers.format(
+                provider = id,
+                type = type,
+                sender = payload.sender,
+                body = payload.body,
+                receivedAt = payload.receivedAt,
+                deviceLabel = payload.deviceLabel,
+                l10nSms = payload.l10nSmsFrom
+            )
+            val result = sendRequest(token, chatId, msg.text)
             mapApiResult(result)
         } catch (e: Exception) {
             buildResult(
@@ -284,13 +285,6 @@ object TelegramBotProvider : SendProvider {
         val description: String? = null
     )
 
-    private fun escapeHtml(text: String): String {
-        return text
-            .replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-    }
-
     private val httpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS)
@@ -307,7 +301,7 @@ object TelegramBotProvider : SendProvider {
 object SmtpServerProvider : SendProvider {
     override val id: String = SendProviderId.SMTP_SERVER
 
-    override fun send(configJson: String, secret: String, payload: SendProviderPayload): SendProviderResult {
+    override fun send(configJson: String, secret: String, type: String, payload: SendProviderPayload): SendProviderResult {
         if (configJson.isBlank()) {
             return buildResult(
                 isSuccess = false,
@@ -325,7 +319,7 @@ object SmtpServerProvider : SendProvider {
             val password = secret
             val fromEmail = json.optString("fromEmail", "").ifBlank { login }
             val toEmail = json.optString("toEmail", "")
-            var subject = json.optString("subject", "")
+            val subject = json.optString("subject", "")
 
             if (host.isBlank() || login.isBlank() || password.isBlank() || toEmail.isBlank()) {
                 return buildResult(
@@ -333,23 +327,6 @@ object SmtpServerProvider : SendProvider {
                     code = ResultCode.INVALID_PARAMS,
                     info = "host, login, password and toEmail are required"
                 )
-            }
-
-            val sender = payload.sender
-            val deviceLabel = payload.deviceLabel
-            val body = payload.body
-            val deviceInfo = if (deviceLabel.isNotBlank()) " ($deviceLabel)" else ""
-
-            val messageText = if (sender.isBlank()) {
-                if (subject.isBlank()) subject = "SMS Telebot"
-                "$body$deviceInfo"
-            } else {
-                if (subject.isBlank()) {
-                    subject = "${payload.l10nSmsFrom} $sender$deviceInfo"
-                    body
-                } else {
-                    "${payload.l10nSmsFrom} $sender$deviceInfo:\n$body"
-                }
             }
 
             val props = Properties()
@@ -379,17 +356,26 @@ object SmtpServerProvider : SendProvider {
                     return PasswordAuthentication(login, password)
                 }
             })
-
             val fromAddress = InternetAddress(fromEmail, true).apply { validate() }
             val toAddresses = InternetAddress.parse(toEmail, true).also {
                 addresses -> addresses.forEach { it.validate() }
             }
-            val safeSubject = sanitizeMailHeader(subject) 
+
+            val msg = MessageHelpers.format(
+                provider = id,
+                type = type,
+                sender = payload.sender,
+                body = payload.body,
+                receivedAt = payload.receivedAt,
+                deviceLabel = payload.deviceLabel,
+                l10nSms = payload.l10nSmsFrom
+            )
+
             val message = MimeMessage(session)
             message.setFrom(fromAddress)
             message.setRecipients(Message.RecipientType.TO, toAddresses)
-            message.setSubject(safeSubject, "UTF-8")
-            message.setText(messageText, "UTF-8")
+            message.setSubject(sanitizeMailHeader(subject.ifBlank { msg.subject }), "UTF-8")
+            message.setText(msg.text, "UTF-8")
 
             Transport.send(message)
             buildResult(

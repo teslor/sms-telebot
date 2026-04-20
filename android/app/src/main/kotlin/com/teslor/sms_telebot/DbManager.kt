@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.util.Log
 
-data class MessageData(val sender: String, val body: String, val status: Int, val attemptCount: Int)
+data class MessageData(val type: String, val sender: String, val body: String, val receivedAt: Long, val attemptCount: Int, val status: Int)
 data class ForwardingRule(val id: Int, val filterMode: Int, val filtersJson: String?)
 data class ForwardingRuleConfig(val id: Int, val provider: String, val configJson: String?)
 
@@ -153,13 +153,18 @@ class DbManager private constructor(private val context: Context) {
     fun getMessageById(id: String): MessageData? {
         return withDatabase { db ->
             db.query(
-                "messages_history", arrayOf("sender", "body", "status", "attempt_count"),
+                "messages_history", 
+                arrayOf("type", "sender", "body", "received_at", "attempt_count", "status"),
                 "id = ?", arrayOf(id), null, null, null
             ).use {
                 if (it.moveToFirst()) {
                     MessageData(
-                        sender = it.getString(0), body = it.getString(1),
-                        status = it.getInt(2), attemptCount = it.getInt(3),
+                        type = it.getString(0),
+                        sender = it.getString(1),
+                        body = it.getString(2),
+                        receivedAt = it.getLong(3),
+                        attemptCount = it.getInt(4),
+                        status = it.getInt(5)
                     )
                 } else { null }
             }

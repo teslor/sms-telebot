@@ -190,16 +190,10 @@ abstract class AppLocalizations {
   /// **'Stop'**
   String get msg_stop;
 
-  /// No description provided for @msg_from.
-  ///
-  /// In en, this message translates to:
-  /// **'Message from'**
-  String get msg_from;
-
   /// No description provided for @msg_smsFrom.
   ///
   /// In en, this message translates to:
-  /// **'SMS from'**
+  /// **'SMS'**
   String get msg_smsFrom;
 
   /// No description provided for @msg_system_lowBattery.

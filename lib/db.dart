@@ -37,7 +37,12 @@ class MainDb {
         if (oldVersion < 2) {
           await db.execute('ALTER TABLE sms_history RENAME TO messages_history');
           await db.execute('ALTER TABLE messages_history ADD COLUMN type TEXT DEFAULT "sms"');
-          await db.execute('ALTER TABLE messages_history RENAME COLUMN smsc_at TO source_at');
+          try {
+            await db.execute('ALTER TABLE messages_history RENAME COLUMN smsc_at TO source_at');
+          } on DatabaseException {
+            await db.execute('ALTER TABLE messages_history ADD COLUMN source_at INTEGER');
+            await db.execute('UPDATE messages_history SET source_at = smsc_at WHERE source_at IS NULL');
+          }
           await db.execute('ALTER TABLE event_log RENAME TO app_logs');
           await db.execute('DROP INDEX IF EXISTS idx_sh_received_at');
           await db.execute('CREATE INDEX idx_mh_received_at ON messages_history(received_at)');

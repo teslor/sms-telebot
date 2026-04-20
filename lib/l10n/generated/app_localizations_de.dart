@@ -49,10 +49,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get msg_stop => 'Stopp';
 
   @override
-  String get msg_from => 'Nachricht von';
-
-  @override
-  String get msg_smsFrom => 'SMS von';
+  String get msg_smsFrom => 'SMS';
 
   @override
   String get msg_system_lowBattery => 'Niedriger Akkustand';
