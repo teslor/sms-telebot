@@ -115,6 +115,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     final settings = await MainDb.instance.getAllSettings();
     isRunning = settings['isRunning'] == '1';
     forwardSms = settings['forwardSms'] == '1';
+    forwardCalls = settings['forwardCalls'] == '1';
     notifyLowBattery = settings['notifyLowBattery'] == '1';
     notifyChargerState = settings['notifyChargerState'] == '1';
     deviceLabel = settings['deviceLabel'] ?? '';
@@ -259,25 +260,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   // ================================================================================
-  // Filters
+  // Misc
   // ================================================================================
 
-  void setFilterMode(int newMode) {
-    filterMode = newMode;
-    notifyListeners();
-  }
-
-  void addToFilterList(String listName, String item) {
-    filterLists[listName]!.add(item);
-    notifyListeners();
-  }
-
-  void removeFromFilterList(String listName, String item) {
-    filterLists[listName]!.remove(item);
-    notifyListeners();
-  }
-
-  Future<CallResult> saveFilters() async {
+  Future<CallResult> updateFilters(int filterMode, Map<String, List<String>> filterLists) async {
     if (selectedRule == null) return okResult();
     final ruleId = selectedRule!['id'];
 
@@ -292,13 +278,14 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       'filters_json': filtersJson,
     });
 
+    this.filterMode = filterMode;
+    this.filterLists = {
+      for (var key in AppConst.filterKeys) key: List<String>.from(filterLists[key] ?? []),
+    };
+
     await _loadRules();
     return okResult();
   }
-
-  // ================================================================================
-  // Misc
-  // ================================================================================
 
   Future<CallResult> updateSettings({
     required bool forwardSms,
