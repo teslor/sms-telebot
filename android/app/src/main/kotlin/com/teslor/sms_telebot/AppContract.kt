@@ -49,14 +49,18 @@ object MessageHelpers {
     }
 
     fun format(
-        provider: String, type: String, sender: String, body: String,
-        receivedAt: Long, deviceLabel: String, l10nSms: String
+        provider: String, type: String,
+        sender: String, body: String, receivedAt: Long, labels: Map<String, String>
     ): FormattedMessage {
         val dt = Instant.ofEpochMilli(receivedAt)
             .atZone(ZoneId.systemDefault()).toLocalDateTime()
         val time = dt.format(DateTimeFormatter.ofPattern(
             if (dt.toLocalDate() == LocalDate.now()) "HH:mm" else "dd.MM HH:mm"
         ))
+
+        val deviceLabel = labels["deviceLabel"] ?: ""
+        val l10nSms = labels["l10nSms"] ?: ""
+        val l10nCall = labels["l10nCall"] ?: ""
 
         return when (provider) {
             SendProviderId.TELEGRAM_BOT -> {
@@ -68,11 +72,12 @@ object MessageHelpers {
 
                 val head = when (type) {
                     "sms" -> "💬 <b>$s</b>$lb 🕒 <i>$time</i>"
+                    "call" -> "📞 <b>$s</b>$lb 🕒 <i>$time</i>"
                     "sys" -> "⚙️ <b>$sysSrc</b> 🕒 <i>$time</i>"
-                    "app" -> "🤖 <b>$s</b>"
+                    "app" -> "🤖 <b>$s</b>$lb"
                     else  -> s
                 }
-                FormattedMessage(subject = "", text = "$head\n$b")
+                FormattedMessage(subject = "", text = head + if (b.isNotBlank()) "\n$b" else "")
             }
 
             SendProviderId.SMTP_SERVER -> {
@@ -81,11 +86,12 @@ object MessageHelpers {
     
                 val (subject, head) = when (type) {
                     "sms" -> "$l10nSms: $sender$lb" to "💬 $sender$lb 🕒 $time"
+                    "call" -> "$l10nCall: $sender$lb" to "📞 $sender$lb 🕒 $time"
                     "sys" -> "$sysSrc: $body" to "⚙️ $sysSrc 🕒 $time"
-                    "app" -> "$sender: $body" to "🤖 $sender"
+                    "app" -> "$sender$lb: $body" to "🤖 $sender$lb"
                     else  -> sender to sender
                 }
-                FormattedMessage(subject = subject, text = "$head\n\n$body")
+                FormattedMessage(subject = subject, text = head + if (body.isNotBlank()) "\n\n$body" else "")
             }
 
             else -> FormattedMessage(subject = sender, text = body)

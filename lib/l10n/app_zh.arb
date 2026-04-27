@@ -13,10 +13,11 @@
   "msg_sent": "已转发",
   "msg_start": "开始",
   "msg_stop": "停止",
-  "msg_smsFrom": "短信",
-  "msg_system_lowBattery": "电量低",
-  "msg_system_chargerConnected": "充电器已连接",
-  "msg_system_chargerDisconnected": "充电器已断开",
+  "msg_sms": "短信",
+  "msg_call": "通话",
+  "msg_lowBattery": "电量低",
+  "msg_chargerConnected": "充电器已连接",
+  "msg_chargerDisconnected": "充电器已断开",
   "rule": "规则",
   "rule_add": "添加规则",
   "rule_copySuffix": "副本",
@@ -57,6 +58,7 @@
   "settings": "设置",
   "settings_forwardEvents": "要转发的事件",
   "settings_forwardSms": "接收短信",
+  "settings_forwardCalls": "来电",
   "settings_notifyLowBattery": "电量低",
   "settings_notifyChargerState": "充电器连接状态",
   "settings_deviceLabel": "设备标签",
@@ -100,5 +102,6 @@
   "error_tbot_uninitialized": "无法获取聊天 ID。请先在 Telegram 中与机器人开始对话，然后重试。",
   "error_unexpectedError": "发生了意外错误。请稍后再试。",
   "error_secretsError": "无法访问安全存储。请重试。如果问题仍然存在，请重启应用，并检查转发规则中的密码/令牌。",
-  "warn_secretsRecovered": "崩溃后安全存储已恢复，已保存的密码/令牌可能已被删除。请检查转发规则并重新输入数据。"
+  "warn_secretsRecovered": "崩溃后安全存储已恢复，已保存的密码/令牌可能已被删除。请检查转发规则并重新输入数据。",
+  "warn_permissionsRequired": "要开始监控，请授予所需权限。"
 }

@@ -13,10 +13,11 @@
   "msg_sent": "Weitergeleitet",
   "msg_start": "Start",
   "msg_stop": "Stopp",
-  "msg_smsFrom": "SMS",
-  "msg_system_lowBattery": "Niedriger Akkustand",
-  "msg_system_chargerConnected": "Ladegerät angeschlossen",
-  "msg_system_chargerDisconnected": "Ladegerät getrennt",
+  "msg_sms": "SMS",
+  "msg_call": "Anruf",
+  "msg_lowBattery": "Niedriger Akkustand",
+  "msg_chargerConnected": "Ladegerät angeschlossen",
+  "msg_chargerDisconnected": "Ladegerät getrennt",
   "rule": "Regel",
   "rule_add": "Regel hinzufügen",
   "rule_copySuffix": "Kopie",
@@ -57,6 +58,7 @@
   "settings": "Einstellungen",
   "settings_forwardEvents": "Weiterzuleitende Ereignisse",
   "settings_forwardSms": "Eingehende SMS",
+  "settings_forwardCalls": "Eingehende Anrufe",
   "settings_notifyLowBattery": "Niedriger Akkustand",
   "settings_notifyChargerState": "Ladegerät-Status",
   "settings_deviceLabel": "Gerätename",
@@ -100,5 +102,6 @@
   "error_tbot_uninitialized": "Chat-ID konnte nicht abgerufen werden. Starten Sie einen Dialog mit Ihrem Bot in Telegram und versuchen Sie es erneut.",
   "error_unexpectedError": "Ein unerwarteter Fehler ist aufgetreten. Bitte später versuchen.",
   "error_secretsError": "Kein Zugriff auf den sicheren Speicher. Versuchen Sie es erneut. Wenn der Fehler bestehen bleibt, starten Sie die App neu und prüfen Sie Passwörter/Tokens in den Weiterleitungsregeln.",
-  "warn_secretsRecovered": "Der sichere Speicher wurde nach einem Absturz wiederhergestellt. Gespeicherte Passwörter/Tokens wurden möglicherweise gelöscht. Prüfen Sie die Weiterleitungsregeln und geben Sie die Daten erneut ein."
+  "warn_secretsRecovered": "Der sichere Speicher wurde nach einem Absturz wiederhergestellt. Gespeicherte Passwörter/Tokens wurden möglicherweise gelöscht. Prüfen Sie die Weiterleitungsregeln und geben Sie die Daten erneut ein.",
+  "warn_permissionsRequired": "Um mit der Überwachung zu beginnen, erteilen Sie bitte die erforderlichen Berechtigungen."
 }

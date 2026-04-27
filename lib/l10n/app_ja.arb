@@ -13,10 +13,11 @@
   "msg_sent": "転送済み",
   "msg_start": "開始",
   "msg_stop": "停止",
-  "msg_smsFrom": "メッセージ",
-  "msg_system_lowBattery": "バッテリー残量低下",
-  "msg_system_chargerConnected": "充電器接続",
-  "msg_system_chargerDisconnected": "充電器切断",
+  "msg_sms": "メッセージ",
+  "msg_call": "通話",
+  "msg_lowBattery": "バッテリー残量低下",
+  "msg_chargerConnected": "充電器接続",
+  "msg_chargerDisconnected": "充電器切断",
   "rule": "ルール",
   "rule_add": "ルールを追加",
   "rule_copySuffix": "コピー",
@@ -56,7 +57,8 @@
   "filters_textInfo": "テキストフィルターを追加",
   "settings": "設定",
   "settings_forwardEvents": "転送するイベント",
-  "settings_forwardSms": "受信SMS",
+  "settings_forwardSms": "受信したSMS",
+  "settings_forwardCalls": "着信通話",
   "settings_notifyLowBattery": "バッテリー残量低下",
   "settings_notifyChargerState": "充電器の接続状態",
   "settings_deviceLabel": "デバイスラベル",
@@ -100,5 +102,6 @@
   "error_tbot_uninitialized": "チャットIDを取得できませんでした。Telegramでボットとの会話を開始してから再試行してください。",
   "error_unexpectedError": "予期しないエラーが発生しました。後でもう一度お試しください。",
   "error_secretsError": "安全なストレージにアクセスできません。再試行してください。問題が続く場合はアプリを再起動し、転送ルールのパスワード/トークンを確認してください。",
-  "warn_secretsRecovered": "クラッシュ後に安全なストレージが復旧されました。保存済みのパスワード/トークンが削除された可能性があります。転送ルールを確認し、データを再入力してください。"
+  "warn_secretsRecovered": "クラッシュ後に安全なストレージが復旧されました。保存済みのパスワード/トークンが削除された可能性があります。転送ルールを確認し、データを再入力してください。",
+  "warn_permissionsRequired": "監視を開始するには、必要な権限を許可してください。"
 }

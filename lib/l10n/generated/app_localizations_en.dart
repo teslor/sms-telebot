@@ -48,16 +48,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get msg_stop => 'Stop';
 
   @override
-  String get msg_smsFrom => 'SMS';
+  String get msg_sms => 'SMS';
 
   @override
-  String get msg_system_lowBattery => 'Low battery';
+  String get msg_call => 'Call';
 
   @override
-  String get msg_system_chargerConnected => 'Charger connected';
+  String get msg_lowBattery => 'Low battery';
 
   @override
-  String get msg_system_chargerDisconnected => 'Charger disconnected';
+  String get msg_chargerConnected => 'Charger connected';
+
+  @override
+  String get msg_chargerDisconnected => 'Charger disconnected';
 
   @override
   String get rule => 'Rule';
@@ -178,6 +181,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings_forwardSms => 'Incoming SMS';
+
+  @override
+  String get settings_forwardCalls => 'Incoming calls';
 
   @override
   String get settings_notifyLowBattery => 'Low battery';
@@ -345,4 +351,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get warn_secretsRecovered =>
       'Secure storage was recovered after a crash, saved passwords/tokens may have been deleted. Check the forwarding rules and enter the data again.';
+
+  @override
+  String get warn_permissionsRequired =>
+      'To start monitoring, please grant the required permissions.';
 }

@@ -48,16 +48,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get msg_stop => 'Detener';
 
   @override
-  String get msg_smsFrom => 'SMS';
+  String get msg_sms => 'SMS';
 
   @override
-  String get msg_system_lowBattery => 'Batería baja';
+  String get msg_call => 'Llamada';
 
   @override
-  String get msg_system_chargerConnected => 'Cargador conectado';
+  String get msg_lowBattery => 'Batería baja';
 
   @override
-  String get msg_system_chargerDisconnected => 'Cargador desconectado';
+  String get msg_chargerConnected => 'Cargador conectado';
+
+  @override
+  String get msg_chargerDisconnected => 'Cargador desconectado';
 
   @override
   String get rule => 'Regla';
@@ -179,6 +182,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settings_forwardSms => 'SMS entrantes';
+
+  @override
+  String get settings_forwardCalls => 'Llamadas entrantes';
 
   @override
   String get settings_notifyLowBattery => 'Batería baja';
@@ -346,4 +352,8 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get warn_secretsRecovered =>
       'El almacenamiento seguro se recuperó tras un fallo; es posible que se hayan eliminado las contraseñas/tokens guardados. Revise las reglas de reenvío y vuelva a introducir los datos.';
+
+  @override
+  String get warn_permissionsRequired =>
+      'Para iniciar el monitoreo, conceda los permisos necesarios.';
 }

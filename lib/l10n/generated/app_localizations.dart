@@ -190,29 +190,35 @@ abstract class AppLocalizations {
   /// **'Stop'**
   String get msg_stop;
 
-  /// No description provided for @msg_smsFrom.
+  /// No description provided for @msg_sms.
   ///
   /// In en, this message translates to:
   /// **'SMS'**
-  String get msg_smsFrom;
+  String get msg_sms;
 
-  /// No description provided for @msg_system_lowBattery.
+  /// No description provided for @msg_call.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get msg_call;
+
+  /// No description provided for @msg_lowBattery.
   ///
   /// In en, this message translates to:
   /// **'Low battery'**
-  String get msg_system_lowBattery;
+  String get msg_lowBattery;
 
-  /// No description provided for @msg_system_chargerConnected.
+  /// No description provided for @msg_chargerConnected.
   ///
   /// In en, this message translates to:
   /// **'Charger connected'**
-  String get msg_system_chargerConnected;
+  String get msg_chargerConnected;
 
-  /// No description provided for @msg_system_chargerDisconnected.
+  /// No description provided for @msg_chargerDisconnected.
   ///
   /// In en, this message translates to:
   /// **'Charger disconnected'**
-  String get msg_system_chargerDisconnected;
+  String get msg_chargerDisconnected;
 
   /// No description provided for @rule.
   ///
@@ -453,6 +459,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Incoming SMS'**
   String get settings_forwardSms;
+
+  /// No description provided for @settings_forwardCalls.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming calls'**
+  String get settings_forwardCalls;
 
   /// No description provided for @settings_notifyLowBattery.
   ///
@@ -717,6 +729,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Secure storage was recovered after a crash, saved passwords/tokens may have been deleted. Check the forwarding rules and enter the data again.'**
   String get warn_secretsRecovered;
+
+  /// No description provided for @warn_permissionsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'To start monitoring, please grant the required permissions.'**
+  String get warn_permissionsRequired;
 }
 
 class _AppLocalizationsDelegate

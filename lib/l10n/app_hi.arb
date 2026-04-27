@@ -13,10 +13,11 @@
   "msg_sent": "फ़ॉरवर्ड किया गया",
   "msg_start": "स्टार्ट",
   "msg_stop": "स्टॉप",
-  "msg_smsFrom": "SMS",
-  "msg_system_lowBattery": "बैटरी कम",
-  "msg_system_chargerConnected": "चार्जर कनेक्टेड",
-  "msg_system_chargerDisconnected": "चार्जर डिस्कनेक्टेड",
+  "msg_sms": "SMS",
+  "msg_call": "कॉल",
+  "msg_lowBattery": "बैटरी कम",
+  "msg_chargerConnected": "चार्जर कनेक्टेड",
+  "msg_chargerDisconnected": "चार्जर डिस्कनेक्टेड",
   "rule": "नियम",
   "rule_add": "नियम जोड़ें",
   "rule_copySuffix": "कॉपी",
@@ -57,6 +58,7 @@
   "settings": "सेटिंग्स",
   "settings_forwardEvents": "फ़ॉरवर्ड करने के लिए इवेंट्स",
   "settings_forwardSms": "इनकमिंग SMS",
+  "settings_forwardCalls": "इनकमिंग कॉल",
   "settings_notifyLowBattery": "बैटरी कम",
   "settings_notifyChargerState": "चार्जर कनेक्शन",
   "settings_deviceLabel": "डिवाइस लेबल",
@@ -100,5 +102,6 @@
   "error_tbot_uninitialized": "चैट आईडी प्राप्त नहीं हो सकी। Telegram में अपने बॉट के साथ संवाद शुरू करें और फिर से प्रयास करें।",
   "error_unexpectedError": "एक अप्रत्याशित त्रुटि हुई। कृपया बाद में प्रयास करें।",
   "error_secretsError": "सुरक्षित स्टोरेज तक पहुंच नहीं हो सकी। फिर से प्रयास करें। यदि त्रुटि बनी रहती है, तो ऐप को पुनः शुरू करें और फ़ॉरवर्डिंग नियमों में पासवर्ड/टोकन जांचें।",
-  "warn_secretsRecovered": "क्रैश के बाद सुरक्षित स्टोरेज पुनर्प्राप्त किया गया; सहेजे गए पासवर्ड/टोकन हटाए गए हो सकते हैं। फ़ॉरवर्डिंग नियम जांचें और डेटा फिर से दर्ज करें।"
+  "warn_secretsRecovered": "क्रैश के बाद सुरक्षित स्टोरेज पुनर्प्राप्त किया गया; सहेजे गए पासवर्ड/टोकन हटाए गए हो सकते हैं। फ़ॉरवर्डिंग नियम जांचें और डेटा फिर से दर्ज करें।",
+  "warn_permissionsRequired": "निगरानी शुरू करने के लिए, कृपया आवश्यक अनुमति दें।"
 }

@@ -44,8 +44,9 @@ class MainActivity : FlutterActivity() {
                                         sender = sender,
                                         body = body,
                                         receivedAt = System.currentTimeMillis(),
-                                        deviceLabel = deviceLabel,
-                                        l10nSmsFrom = ""
+                                        labels = mapOf(
+                                            "deviceLabel" to deviceLabel,
+                                        ),
                                     )
                                 )
 

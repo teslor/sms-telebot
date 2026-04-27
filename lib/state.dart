@@ -14,6 +14,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   // App settings
   bool isRunning = false;
   bool forwardSms = false;
+  bool forwardCalls = false;
   bool notifyLowBattery = false;
   bool notifyChargerState = false;
   String deviceLabel = '';
@@ -43,7 +44,6 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> _init() async {
     await _loadSettings();
     await _loadRules();
-    await getSmsPermission();
     await getNotificationPermission();
 
     // Save l10n required for background process after first frame when context is available
@@ -51,10 +51,11 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       final localizations = AppLocalizations.of(navigatorKey.currentContext!)!;
       final settings = await MainDb.instance.getAllSettings();
       final l10nSettings = <String, String>{
-        'l10nSmsFrom': localizations.msg_smsFrom,
-        'l10nLowBattery': localizations.msg_system_lowBattery,
-        'l10nChargerConnected': localizations.msg_system_chargerConnected,
-        'l10nChargerDisconnected': localizations.msg_system_chargerDisconnected,
+        'l10nSms': localizations.msg_sms,
+        'l10nCall': localizations.msg_call,
+        'l10nLowBattery': localizations.msg_lowBattery,
+        'l10nChargerConnected': localizations.msg_chargerConnected,
+        'l10nChargerDisconnected': localizations.msg_chargerDisconnected,
       };
 
       final l10nChanged = <String, String>{};
@@ -301,18 +302,21 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<CallResult> updateSettings({
     required bool forwardSms,
+    required bool forwardCalls,
     required bool notifyLowBattery,
     required bool notifyChargerState,
     required String deviceLabel,
   }) async {
     await MainDb.instance.saveSettings({
       'forwardSms': forwardSms ? '1' : '0',
+      'forwardCalls': forwardCalls ? '1' : '0',
       'notifyLowBattery': notifyLowBattery ? '1' : '0',
       'notifyChargerState': notifyChargerState ? '1' : '0',
       'deviceLabel': deviceLabel,
     });
 
     this.forwardSms = forwardSms;
+    this.forwardCalls = forwardCalls;
     this.notifyLowBattery = notifyLowBattery;
     this.notifyChargerState = notifyChargerState;
     this.deviceLabel = deviceLabel;
@@ -322,7 +326,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   bool get canStartProcessing {
-    return rules.any((r) => r['is_active'] == 1 && r['config_json'] != null);
+    bool hasActiveRules = rules.any((r) => r['is_active'] == 1 && r['config_json'] != null);
+    bool hasActiveEvents = forwardSms || forwardCalls || notifyLowBattery || notifyChargerState;
+    return hasActiveRules && hasActiveEvents;
   }
 
   @override

@@ -48,16 +48,19 @@ class AppLocalizationsHi extends AppLocalizations {
   String get msg_stop => 'स्टॉप';
 
   @override
-  String get msg_smsFrom => 'SMS';
+  String get msg_sms => 'SMS';
 
   @override
-  String get msg_system_lowBattery => 'बैटरी कम';
+  String get msg_call => 'कॉल';
 
   @override
-  String get msg_system_chargerConnected => 'चार्जर कनेक्टेड';
+  String get msg_lowBattery => 'बैटरी कम';
 
   @override
-  String get msg_system_chargerDisconnected => 'चार्जर डिस्कनेक्टेड';
+  String get msg_chargerConnected => 'चार्जर कनेक्टेड';
+
+  @override
+  String get msg_chargerDisconnected => 'चार्जर डिस्कनेक्टेड';
 
   @override
   String get rule => 'नियम';
@@ -179,6 +182,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settings_forwardSms => 'इनकमिंग SMS';
+
+  @override
+  String get settings_forwardCalls => 'इनकमिंग कॉल';
 
   @override
   String get settings_notifyLowBattery => 'बैटरी कम';
@@ -346,4 +352,8 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get warn_secretsRecovered =>
       'क्रैश के बाद सुरक्षित स्टोरेज पुनर्प्राप्त किया गया; सहेजे गए पासवर्ड/टोकन हटाए गए हो सकते हैं। फ़ॉरवर्डिंग नियम जांचें और डेटा फिर से दर्ज करें।';
+
+  @override
+  String get warn_permissionsRequired =>
+      'निगरानी शुरू करने के लिए, कृपया आवश्यक अनुमति दें।';
 }

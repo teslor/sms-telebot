@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../state.dart';
+import '../service.dart';
 import '../widgets/action_button.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -15,6 +16,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late TextEditingController _deviceLabelController;
 
   bool _forwardSms = false;
+  bool _forwardCalls = false;
   bool _notifyLowBattery = false;
   bool _notifyChargerState = false;
 
@@ -28,6 +30,7 @@ class _SettingsPageState extends State<SettingsPage> {
     
     _deviceLabelController = TextEditingController(text: appState.deviceLabel);
     _forwardSms = appState.forwardSms;
+    _forwardCalls = appState.forwardCalls;
     _notifyLowBattery = appState.notifyLowBattery;
     _notifyChargerState = appState.notifyChargerState;
   }
@@ -51,11 +54,12 @@ class _SettingsPageState extends State<SettingsPage> {
     
     await appState.updateSettings(
       forwardSms: _forwardSms,
+      forwardCalls: _forwardCalls,
       notifyLowBattery: _notifyLowBattery,
       notifyChargerState: _notifyChargerState,
       deviceLabel: _deviceLabelController.text,
     );
-    
+
     if (mounted) {
       setState(() { 
         _saveResult = true; 
@@ -98,8 +102,20 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text(l10n.settings_forwardSms),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                   value: _forwardSms,
-                  onChanged: (bool value) {
+                  onChanged: (bool value) async {
+                    if (value && !await getSmsPermissions(openSettings: true)) return;
                     _forwardSms = value;
+                    _onSettingChanged();
+                  },
+                ),
+                const Divider(height: 1),
+                SwitchListTile(
+                  title: Text(l10n.settings_forwardCalls),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  value: _forwardCalls,
+                  onChanged: (bool value) async {
+                    if (value && !await getPhonePermissions(openSettings: true)) return;
+                    _forwardCalls = value;
                     _onSettingChanged();
                   },
                 ),

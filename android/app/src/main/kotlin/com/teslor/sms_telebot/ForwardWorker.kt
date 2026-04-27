@@ -48,8 +48,8 @@ class ForwardWorker(
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val dbManager = DbManager.getInstance(applicationContext)
-        val secretStorage = SecureStorageManager.getInstance(applicationContext)
         if (!dbManager.getBoolSetting("isRunning")) return@withContext Result.success()
+        val secretStorage = SecureStorageManager.getInstance(applicationContext)
 
         // Read input data from receiver
         val messageId = inputData.getString("message_id") ?: return@withContext Result.failure()
@@ -76,20 +76,23 @@ class ForwardWorker(
         val rules = dbManager.getRulesByIds(ruleIds)
         if (rules.isEmpty()) return@withContext Result.success()
 
-        // Read common settings
-        val deviceLabel = dbManager.getSetting("deviceLabel").orEmpty()
-        val l10nSmsFrom = dbManager.getSetting("l10nSmsFrom").orEmpty().ifBlank { "SMS from" }
-        val lastAttemptAt = System.currentTimeMillis()
-        val nextAttemptCount = messageData.attemptCount + 1
+        // Read labels, required for formatting
+        val labels = mapOf(
+            "deviceLabel" to dbManager.getSetting("deviceLabel").orEmpty(),
+            "l10nSms" to dbManager.getSetting("l10nSms").orEmpty().ifBlank { "SMS" },
+            "l10nCall" to dbManager.getSetting("l10nCall").orEmpty().ifBlank { "Call" },
+        )
 
         // Start parallel sending
+        val lastAttemptAt = System.currentTimeMillis()
+        val nextAttemptCount = messageData.attemptCount + 1
         val results = coroutineScope {
             rules.map { rule ->
                 async {
                     sendSemaphore.withPermit {
                         val secretResult = secretStorage.readSecret(rule.id.toString())
                         val secret = if (secretResult.isSuccess) secretResult.data ?: "" else ""
-                        processRule(rule, secret, messageData.type, messageData.sender, messageData.body, messageData.receivedAt, deviceLabel, l10nSmsFrom)
+                        processRule(rule, secret, messageData.type, messageData.sender, messageData.body, messageData.receivedAt, labels)
                     }
                 }
             }.awaitAll()
@@ -142,8 +145,7 @@ class ForwardWorker(
         sender: String,
         body: String,
         receivedAt: Long,
-        deviceLabel: String,
-        l10nSmsFrom: String
+        labels: Map<String, String>
     ): SendProviderResult {
         return SendProviderGateway.send(
             providerId = rule.provider,
@@ -154,8 +156,7 @@ class ForwardWorker(
                 sender = sender,
                 body = body,
                 receivedAt = receivedAt,
-                deviceLabel = deviceLabel,
-                l10nSmsFrom = l10nSmsFrom
+                labels = labels,
             )
         )
     }

@@ -49,16 +49,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get msg_stop => 'Stopp';
 
   @override
-  String get msg_smsFrom => 'SMS';
+  String get msg_sms => 'SMS';
 
   @override
-  String get msg_system_lowBattery => 'Niedriger Akkustand';
+  String get msg_call => 'Anruf';
 
   @override
-  String get msg_system_chargerConnected => 'Ladegerät angeschlossen';
+  String get msg_lowBattery => 'Niedriger Akkustand';
 
   @override
-  String get msg_system_chargerDisconnected => 'Ladegerät getrennt';
+  String get msg_chargerConnected => 'Ladegerät angeschlossen';
+
+  @override
+  String get msg_chargerDisconnected => 'Ladegerät getrennt';
 
   @override
   String get rule => 'Regel';
@@ -181,6 +184,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settings_forwardSms => 'Eingehende SMS';
+
+  @override
+  String get settings_forwardCalls => 'Eingehende Anrufe';
 
   @override
   String get settings_notifyLowBattery => 'Niedriger Akkustand';
@@ -349,4 +355,8 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get warn_secretsRecovered =>
       'Der sichere Speicher wurde nach einem Absturz wiederhergestellt. Gespeicherte Passwörter/Tokens wurden möglicherweise gelöscht. Prüfen Sie die Weiterleitungsregeln und geben Sie die Daten erneut ein.';
+
+  @override
+  String get warn_permissionsRequired =>
+      'Um mit der Überwachung zu beginnen, erteilen Sie bitte die erforderlichen Berechtigungen.';
 }

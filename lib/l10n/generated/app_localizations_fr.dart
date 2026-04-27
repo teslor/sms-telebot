@@ -49,16 +49,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get msg_stop => 'Arrêter';
 
   @override
-  String get msg_smsFrom => 'SMS';
+  String get msg_sms => 'SMS';
 
   @override
-  String get msg_system_lowBattery => 'Batterie faible';
+  String get msg_call => 'Appel';
 
   @override
-  String get msg_system_chargerConnected => 'Chargeur branché';
+  String get msg_lowBattery => 'Batterie faible';
 
   @override
-  String get msg_system_chargerDisconnected => 'Chargeur débranché';
+  String get msg_chargerConnected => 'Chargeur branché';
+
+  @override
+  String get msg_chargerDisconnected => 'Chargeur débranché';
 
   @override
   String get rule => 'Règle';
@@ -182,6 +185,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settings_forwardSms => 'SMS entrants';
+
+  @override
+  String get settings_forwardCalls => 'Appels entrants';
 
   @override
   String get settings_notifyLowBattery => 'Batterie faible';
@@ -349,4 +355,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get warn_secretsRecovered =>
       'Le stockage sécurisé a été restauré après un plantage ; les mots de passe/tokens enregistrés ont peut-être été supprimés. Vérifiez les règles de transfert et ressaisissez les données.';
+
+  @override
+  String get warn_permissionsRequired =>
+      'Pour démarrer la surveillance, veuillez accorder les autorisations requises.';
 }

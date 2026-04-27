@@ -48,16 +48,19 @@ class AppLocalizationsPt extends AppLocalizations {
   String get msg_stop => 'Parar';
 
   @override
-  String get msg_smsFrom => 'SMS';
+  String get msg_sms => 'SMS';
 
   @override
-  String get msg_system_lowBattery => 'Bateria fraca';
+  String get msg_call => 'Chamada';
 
   @override
-  String get msg_system_chargerConnected => 'Carregador conectado';
+  String get msg_lowBattery => 'Bateria fraca';
 
   @override
-  String get msg_system_chargerDisconnected => 'Carregador desconectado';
+  String get msg_chargerConnected => 'Carregador conectado';
+
+  @override
+  String get msg_chargerDisconnected => 'Carregador desconectado';
 
   @override
   String get rule => 'Regra';
@@ -177,7 +180,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settings_forwardEvents => 'Eventos para encaminhar';
 
   @override
-  String get settings_forwardSms => 'SMS recebido';
+  String get settings_forwardSms => 'SMS recebidos';
+
+  @override
+  String get settings_forwardCalls => 'Chamadas recebidas';
 
   @override
   String get settings_notifyLowBattery => 'Bateria fraca';
@@ -345,4 +351,8 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get warn_secretsRecovered =>
       'O armazenamento seguro foi recuperado após uma falha; senhas/tokens salvos podem ter sido apagados. Verifique as regras de encaminhamento e insira os dados novamente.';
+
+  @override
+  String get warn_permissionsRequired =>
+      'Para iniciar o monitoramento, conceda as permissões necessárias.';
 }

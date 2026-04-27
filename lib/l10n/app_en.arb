@@ -13,10 +13,11 @@
   "msg_sent": "Forwarded",
   "msg_start": "Start",
   "msg_stop": "Stop",
-  "msg_smsFrom": "SMS",
-  "msg_system_lowBattery": "Low battery",
-  "msg_system_chargerConnected": "Charger connected",
-  "msg_system_chargerDisconnected": "Charger disconnected",
+  "msg_sms": "SMS",
+  "msg_call": "Call",
+  "msg_lowBattery": "Low battery",
+  "msg_chargerConnected": "Charger connected",
+  "msg_chargerDisconnected": "Charger disconnected",
   "rule": "Rule",
   "rule_add": "Add rule",
   "rule_copySuffix": "copy",
@@ -57,6 +58,7 @@
   "settings": "Settings",
   "settings_forwardEvents": "Events to forward",
   "settings_forwardSms": "Incoming SMS",
+  "settings_forwardCalls": "Incoming calls",
   "settings_notifyLowBattery": "Low battery",
   "settings_notifyChargerState": "Charger connection",
   "settings_deviceLabel": "Device label",
@@ -100,5 +102,6 @@
   "error_tbot_uninitialized": "Unable to get chat ID. Start a conversation with your bot in Telegram and try again.",
   "error_unexpectedError": "An unexpected error occurred. Please try again later.",
   "error_secretsError": "Unable to access secure storage. Try again. If the error persists, restart the app and check passwords/tokens in the forwarding rules.",
-  "warn_secretsRecovered": "Secure storage was recovered after a crash, saved passwords/tokens may have been deleted. Check the forwarding rules and enter the data again."
+  "warn_secretsRecovered": "Secure storage was recovered after a crash, saved passwords/tokens may have been deleted. Check the forwarding rules and enter the data again.",
+  "warn_permissionsRequired": "To start monitoring, please grant the required permissions."
 }

@@ -13,10 +13,11 @@
   "msg_sent": "Transféré",
   "msg_start": "Démarrer",
   "msg_stop": "Arrêter",
-  "msg_smsFrom": "SMS",
-  "msg_system_lowBattery": "Batterie faible",
-  "msg_system_chargerConnected": "Chargeur branché",
-  "msg_system_chargerDisconnected": "Chargeur débranché",
+  "msg_sms": "SMS",
+  "msg_call": "Appel",
+  "msg_lowBattery": "Batterie faible",
+  "msg_chargerConnected": "Chargeur branché",
+  "msg_chargerDisconnected": "Chargeur débranché",
   "rule": "Règle",
   "rule_add": "Ajouter une règle",
   "rule_copySuffix": "copie",
@@ -57,6 +58,7 @@
   "settings": "Paramètres",
   "settings_forwardEvents": "Événements à transférer",
   "settings_forwardSms": "SMS entrants",
+  "settings_forwardCalls": "Appels entrants",
   "settings_notifyLowBattery": "Batterie faible",
   "settings_notifyChargerState": "État du chargeur",
   "settings_deviceLabel": "Libellé de l'appareil",
@@ -100,5 +102,6 @@
   "error_tbot_uninitialized": "Impossible d'obtenir l'ID du chat. Démarrez un dialogue avec votre bot dans Telegram et réessayez.",
   "error_unexpectedError": "Une erreur inattendue est survenue. Veuillez réessayer plus tard.",
   "error_secretsError": "Impossible d'accéder au stockage sécurisé. Réessayez. Si l'erreur persiste, redémarrez l'application et vérifiez les mots de passe/tokens dans les règles de transfert.",
-  "warn_secretsRecovered": "Le stockage sécurisé a été restauré après un plantage ; les mots de passe/tokens enregistrés ont peut-être été supprimés. Vérifiez les règles de transfert et ressaisissez les données."
+  "warn_secretsRecovered": "Le stockage sécurisé a été restauré après un plantage ; les mots de passe/tokens enregistrés ont peut-être été supprimés. Vérifiez les règles de transfert et ressaisissez les données.",
+  "warn_permissionsRequired": "Pour démarrer la surveillance, veuillez accorder les autorisations requises."
 }

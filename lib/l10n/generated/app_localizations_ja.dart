@@ -48,16 +48,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get msg_stop => '停止';
 
   @override
-  String get msg_smsFrom => 'メッセージ';
+  String get msg_sms => 'メッセージ';
 
   @override
-  String get msg_system_lowBattery => 'バッテリー残量低下';
+  String get msg_call => '通話';
 
   @override
-  String get msg_system_chargerConnected => '充電器接続';
+  String get msg_lowBattery => 'バッテリー残量低下';
 
   @override
-  String get msg_system_chargerDisconnected => '充電器切断';
+  String get msg_chargerConnected => '充電器接続';
+
+  @override
+  String get msg_chargerDisconnected => '充電器切断';
 
   @override
   String get rule => 'ルール';
@@ -177,7 +180,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_forwardEvents => '転送するイベント';
 
   @override
-  String get settings_forwardSms => '受信SMS';
+  String get settings_forwardSms => '受信したSMS';
+
+  @override
+  String get settings_forwardCalls => '着信通話';
 
   @override
   String get settings_notifyLowBattery => 'バッテリー残量低下';
@@ -331,4 +337,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get warn_secretsRecovered =>
       'クラッシュ後に安全なストレージが復旧されました。保存済みのパスワード/トークンが削除された可能性があります。転送ルールを確認し、データを再入力してください。';
+
+  @override
+  String get warn_permissionsRequired => '監視を開始するには、必要な権限を許可してください。';
 }

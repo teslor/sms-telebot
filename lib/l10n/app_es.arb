@@ -13,10 +13,11 @@
   "msg_sent": "Reenviado",
   "msg_start": "Iniciar",
   "msg_stop": "Detener",
-  "msg_smsFrom": "SMS",
-  "msg_system_lowBattery": "Batería baja",
-  "msg_system_chargerConnected": "Cargador conectado",
-  "msg_system_chargerDisconnected": "Cargador desconectado",
+  "msg_sms": "SMS",
+  "msg_call": "Llamada",
+  "msg_lowBattery": "Batería baja",
+  "msg_chargerConnected": "Cargador conectado",
+  "msg_chargerDisconnected": "Cargador desconectado",
   "rule": "Regla",
   "rule_add": "Añadir regla",
   "rule_copySuffix": "copia",
@@ -57,6 +58,7 @@
   "settings": "Configuración",
   "settings_forwardEvents": "Eventos a reenviar",
   "settings_forwardSms": "SMS entrantes",
+  "settings_forwardCalls": "Llamadas entrantes",
   "settings_notifyLowBattery": "Batería baja",
   "settings_notifyChargerState": "Estado del cargador",
   "settings_deviceLabel": "Etiqueta del dispositivo",
@@ -100,5 +102,6 @@
   "error_tbot_uninitialized": "No se pudo obtener el ID del chat. Inicie un diálogo con su bot en Telegram e inténtelo de nuevo.",
   "error_unexpectedError": "Ocurrió un error inesperado. Inténtelo más tarde.",
   "error_secretsError": "No se pudo acceder al almacenamiento seguro. Inténtelo de nuevo. Si el error persiste, reinicie la aplicación y verifique las contraseñas/tokens en las reglas de reenvío.",
-  "warn_secretsRecovered": "El almacenamiento seguro se recuperó tras un fallo; es posible que se hayan eliminado las contraseñas/tokens guardados. Revise las reglas de reenvío y vuelva a introducir los datos."
+  "warn_secretsRecovered": "El almacenamiento seguro se recuperó tras un fallo; es posible que se hayan eliminado las contraseñas/tokens guardados. Revise las reglas de reenvío y vuelva a introducir los datos.",
+  "warn_permissionsRequired": "Para iniciar el monitoreo, conceda los permisos necesarios."
 }

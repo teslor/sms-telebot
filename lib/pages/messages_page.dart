@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import '../../extensions/build_context_x.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../state.dart';
+import '../service.dart';
 import '../widgets/action_button.dart';
 
 class MessagesPage extends StatelessWidget {
@@ -56,6 +58,18 @@ class MessagesPage extends StatelessWidget {
           if (appState.isRunning) {
             await appState.stopProcessing();
           } else {
+            bool canStart = true;
+            if (appState.forwardSms && !await getSmsPermissions()) {
+              canStart = false;
+            }
+            if (appState.forwardCalls && !await getPhonePermissions()) {
+              canStart = false;
+            }
+            if (!canStart) {
+              if (!context.mounted) return;
+              context.showErrorSnack(l10n.warn_permissionsRequired);
+              return;
+            }
             await appState.startProcessing();
           }
         },
@@ -88,8 +102,12 @@ class MessagesPage extends StatelessWidget {
 
     final type = (msg['type'] ?? 'sms').toString();
     final isSms = type == 'sms';
-    final titleIcon = isSms ? Icons.messenger : Icons.phonelink_setup_rounded;
-    final titleIconColor = isSms ? Colors.amber : theme.colorScheme.primary;
+    final titleIcon = isSms
+        ? Icons.messenger
+        : (type == 'call' ? Icons.call : Icons.phonelink_setup_rounded);
+    final titleIconColor = isSms
+        ? Colors.amber
+        : (type == 'call' ? Colors.green : theme.colorScheme.primary);
     final sender = msg['sender']?.toString() ?? '';
     final bodyText = msg['body']?.toString() ?? '';
     final receivedDate = DateFormat('dd.MM HH:mm').format(DateTime.fromMillisecondsSinceEpoch(msg['received_at']));
@@ -145,7 +163,7 @@ class MessagesPage extends StatelessWidget {
                     ),
                   ),
                   TextSpan(text: ' $sender', style: const TextStyle(fontWeight: FontWeight.w600)),
-                  TextSpan(text: '\n$bodyText'),
+                  if (bodyText.isNotEmpty) TextSpan(text: '\n$bodyText'),
                 ]
               ),
             ),

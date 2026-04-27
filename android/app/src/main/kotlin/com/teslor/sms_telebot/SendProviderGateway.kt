@@ -33,8 +33,7 @@ data class SendProviderPayload(
     val sender: String,
     val body: String,
     val receivedAt: Long,
-    val deviceLabel: String,
-    val l10nSmsFrom: String
+    val labels: Map<String, String>
 )
 
 data class SendProviderResult(
@@ -135,8 +134,7 @@ object TelegramBotProvider : SendProvider {
                 sender = payload.sender,
                 body = payload.body,
                 receivedAt = payload.receivedAt,
-                deviceLabel = payload.deviceLabel,
-                l10nSms = payload.l10nSmsFrom
+                labels = payload.labels,
             )
             val result = sendRequest(token, chatId, msg.text)
             mapApiResult(result)
@@ -367,8 +365,7 @@ object SmtpServerProvider : SendProvider {
                 sender = payload.sender,
                 body = payload.body,
                 receivedAt = payload.receivedAt,
-                deviceLabel = payload.deviceLabel,
-                l10nSms = payload.l10nSmsFrom
+                labels = payload.labels,
             )
 
             val message = MimeMessage(session)

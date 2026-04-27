@@ -14,16 +14,26 @@ typedef CallResult = ({bool isSuccess, String code, String? data});
 CallResult okResult([String? data]) => (isSuccess: true, code: 'ok', data: data);
 CallResult errorResult([String code = 'unexpected_error', String? data]) => (isSuccess: false, code: code, data: data);
 
-Future<bool> getSmsPermission() async {
-  if (await Permission.sms.status == PermissionStatus.granted) {
-    return true;
-  } else {
-    if (await Permission.sms.request() == PermissionStatus.granted) {
-      return true;
-    } else {
-      return false;
-    }
+Future<bool> getSmsPermissions({bool openSettings = false}) async {
+  final statusBeforeRequest = await Permission.sms.status;
+  final status = await Permission.sms.request();
+  if (status.isGranted) return true;
+
+  if (openSettings && statusBeforeRequest.isPermanentlyDenied) {
+    await openAppSettings();
   }
+  return false;
+}
+
+Future<bool> getPhonePermissions({bool openSettings = false}) async {
+  final statusBeforeRequest = await Permission.phone.status;
+  final status = await Permission.phone.request();
+  if (status.isGranted) return true;
+
+  if (openSettings && statusBeforeRequest.isPermanentlyDenied) {
+    await openAppSettings();
+  }
+  return false;
 }
 
 Future<void> getNotificationPermission() async {

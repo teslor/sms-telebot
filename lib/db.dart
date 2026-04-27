@@ -116,7 +116,8 @@ class MainDb {
 
     final defaults = {
       'isRunning': '0',
-      'forwardSms': '1',
+      'forwardSms': '0',
+      'forwardCalls': '0',
       'notifyLowBattery': '0',
       'notifyChargerState': '0',
       'deviceLabel': '',

@@ -48,16 +48,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get msg_stop => '停止';
 
   @override
-  String get msg_smsFrom => '短信';
+  String get msg_sms => '短信';
 
   @override
-  String get msg_system_lowBattery => '电量低';
+  String get msg_call => '通话';
 
   @override
-  String get msg_system_chargerConnected => '充电器已连接';
+  String get msg_lowBattery => '电量低';
 
   @override
-  String get msg_system_chargerDisconnected => '充电器已断开';
+  String get msg_chargerConnected => '充电器已连接';
+
+  @override
+  String get msg_chargerDisconnected => '充电器已断开';
 
   @override
   String get rule => '规则';
@@ -178,6 +181,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings_forwardSms => '接收短信';
+
+  @override
+  String get settings_forwardCalls => '来电';
 
   @override
   String get settings_notifyLowBattery => '电量低';
@@ -324,4 +330,7 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get warn_secretsRecovered =>
       '崩溃后安全存储已恢复，已保存的密码/令牌可能已被删除。请检查转发规则并重新输入数据。';
+
+  @override
+  String get warn_permissionsRequired => '要开始监控，请授予所需权限。';
 }

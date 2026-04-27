@@ -13,10 +13,11 @@
   "msg_sent": "Encaminhado",
   "msg_start": "Iniciar",
   "msg_stop": "Parar",
-  "msg_smsFrom": "SMS",
-  "msg_system_lowBattery": "Bateria fraca",
-  "msg_system_chargerConnected": "Carregador conectado",
-  "msg_system_chargerDisconnected": "Carregador desconectado",
+  "msg_sms": "SMS",
+  "msg_call": "Chamada",
+  "msg_lowBattery": "Bateria fraca",
+  "msg_chargerConnected": "Carregador conectado",
+  "msg_chargerDisconnected": "Carregador desconectado",
   "rule": "Regra",
   "rule_add": "Adicionar regra",
   "rule_copySuffix": "cópia",
@@ -56,7 +57,8 @@
   "filters_textInfo": "Adicionar filtros de texto",
   "settings": "Configurações",
   "settings_forwardEvents": "Eventos para encaminhar",
-  "settings_forwardSms": "SMS recebido",
+  "settings_forwardSms": "SMS recebidos",
+  "settings_forwardCalls": "Chamadas recebidas",
   "settings_notifyLowBattery": "Bateria fraca",
   "settings_notifyChargerState": "Estado do carregador",
   "settings_deviceLabel": "Rótulo do dispositivo",
@@ -100,5 +102,6 @@
   "error_tbot_uninitialized": "Não foi possível obter o ID do chat. Inicie uma conversa com seu bot no Telegram e tente novamente.",
   "error_unexpectedError": "Ocorreu um erro inesperado. Tente novamente mais tarde.",
   "error_secretsError": "Não foi possível acessar o armazenamento seguro. Tente novamente. Se o erro persistir, reinicie o app e verifique as senhas/tokens nas regras de encaminhamento.",
-  "warn_secretsRecovered": "O armazenamento seguro foi recuperado após uma falha; senhas/tokens salvos podem ter sido apagados. Verifique as regras de encaminhamento e insira os dados novamente."
+  "warn_secretsRecovered": "O armazenamento seguro foi recuperado após uma falha; senhas/tokens salvos podem ter sido apagados. Verifique as regras de encaminhamento e insira os dados novamente.",
+  "warn_permissionsRequired": "Para iniciar o monitoramento, conceda as permissões necessárias."
 }

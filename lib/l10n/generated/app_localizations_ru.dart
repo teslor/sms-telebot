@@ -48,16 +48,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get msg_stop => 'Стоп';
 
   @override
-  String get msg_smsFrom => 'СМС';
+  String get msg_sms => 'СМС';
 
   @override
-  String get msg_system_lowBattery => 'Низкий уровень заряда';
+  String get msg_call => 'Звонок';
 
   @override
-  String get msg_system_chargerConnected => 'Зарядка подключена';
+  String get msg_lowBattery => 'Низкий уровень заряда';
 
   @override
-  String get msg_system_chargerDisconnected => 'Зарядка отключена';
+  String get msg_chargerConnected => 'Зарядка подключена';
+
+  @override
+  String get msg_chargerDisconnected => 'Зарядка отключена';
 
   @override
   String get rule => 'Правило';
@@ -179,6 +182,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settings_forwardSms => 'Входящие СМС';
+
+  @override
+  String get settings_forwardCalls => 'Входящие звонки';
 
   @override
   String get settings_notifyLowBattery => 'Низкий заряд батареи';
@@ -346,4 +352,8 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get warn_secretsRecovered =>
       'Защищённое хранилище было восстановлено после сбоя, сохранённые пароли/токены могли быть удалены. Проверьте правила пересылки и введите данные заново.';
+
+  @override
+  String get warn_permissionsRequired =>
+      'Чтобы начать мониторинг, пожалуйста, предоставьте необходимые разрешения.';
 }
