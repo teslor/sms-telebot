@@ -7,13 +7,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OutOfQuotaPolicy
-import androidx.work.WorkManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -64,8 +57,6 @@ class DeviceStatusReceiver : BroadcastReceiver() {
     }
 
     private fun processSystemAlert(context: Context, action: String, body: String) {
-        val dbManager = DbManager.getInstance(context)
-
         // Within time window, the ID will be the same
         val windowMs = when (action) {
             Intent.ACTION_BATTERY_LOW -> 2 * 60 * 60 * 1000L // 2 hours
@@ -73,63 +64,16 @@ class DeviceStatusReceiver : BroadcastReceiver() {
         }
         val now = System.currentTimeMillis()
         val timeWindow = now / windowMs
-        val messageId = MessageHelpers.generateId("$sender|$timeWindow|$action")
+        val messageId = MessageHelpers.generateId("$action|$sender|$timeWindow")
 
-        // Check if the event has already been processed in the current window
-        if (dbManager.getMessageById(messageId) != null) return
-
-        // Save battery alert to messages_history
-        dbManager.insertMessagesHistory(
+        MessageProcessor.processAndForward(
+            context = context,
             id = messageId,
             type = "sys",
             sender = sender,
             body = body,
-            sourceAt = 0,
+            sourceAt = now,
             receivedAt = now,
-            status = SendStatus.RECEIVED
-        )
-
-        val activeRules = dbManager.getActiveRules()
-        val matchedRuleIds = mutableListOf<Int>()
-
-        // Iterate through all rules and check filters
-        for (rule in activeRules) {
-            if (rule.filterMode == 0) {
-                matchedRuleIds.add(rule.id)
-            } else {
-                val filters = MessageFilters.fromJson(rule.filtersJson)
-                val isMatched = MessageFilters.checkFilters(
-                    mode = rule.filterMode,
-                    sender = sender,
-                    body = body,
-                    filters = filters
-                )
-                if (isMatched) matchedRuleIds.add(rule.id)
-            }
-        }
-        if (matchedRuleIds.isEmpty()) return
-
-        // Enqueue ForwardWorker
-        val inputData = Data.Builder()
-            .putString("message_id", messageId)
-            .putIntArray("rule_ids", matchedRuleIds.toIntArray())
-            .build()
-
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val request = OneTimeWorkRequestBuilder<ForwardWorker>()
-            .setInputData(inputData)
-            .setConstraints(constraints)
-            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-            .addTag(ForwardWorker.TAG)
-            .build()
-
-        WorkManager.getInstance(context).enqueueUniqueWork(
-            "sys_forward:$messageId",
-            ExistingWorkPolicy.KEEP,
-            request
         )
     }
 }
