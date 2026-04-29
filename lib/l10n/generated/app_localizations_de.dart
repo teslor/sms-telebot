@@ -195,6 +195,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings_notifyChargerState => 'Ladegerät-Status';
 
   @override
+  String get settings_enableForeground => 'Immer im Hintergrund ausführen';
+
+  @override
   String get settings_deviceLabel => 'Gerätename';
 
   @override

@@ -61,6 +61,7 @@
   "settings_forwardCalls": "Eingehende Anrufe",
   "settings_notifyLowBattery": "Niedriger Akkustand",
   "settings_notifyChargerState": "Ladegerät-Status",
+  "settings_enableForeground": "Immer im Hintergrund ausführen",
   "settings_deviceLabel": "Gerätename",
   "settings_deviceLabelInfo": "Benutzerdefinierte Bezeichnung (optional)",
   "help_about": "Über",

@@ -19,6 +19,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _forwardCalls = false;
   bool _notifyLowBattery = false;
   bool _notifyChargerState = false;
+  bool _enableForeground = false;
 
   bool _isInputChanged = false;
   bool? _saveResult;
@@ -33,6 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _forwardCalls = appState.forwardCalls;
     _notifyLowBattery = appState.notifyLowBattery;
     _notifyChargerState = appState.notifyChargerState;
+    _enableForeground = appState.enableForeground;
   }
 
   @override
@@ -51,12 +53,13 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _saveSettings() async {
     final appState = context.read<AppState>();
     FocusManager.instance.primaryFocus?.unfocus();
-    
+
     await appState.updateSettings(
       forwardSms: _forwardSms,
       forwardCalls: _forwardCalls,
       notifyLowBattery: _notifyLowBattery,
       notifyChargerState: _notifyChargerState,
+      enableForeground: _enableForeground,
       deviceLabel: _deviceLabelController.text,
     );
 
@@ -103,7 +106,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                   value: _forwardSms,
                   onChanged: (bool value) async {
-                    if (value && !await getSmsPermissions(openSettings: true)) return;
+                    if (value && !await getSmsPermission(openSettings: true)) return;
                     _forwardSms = value;
                     _onSettingChanged();
                   },
@@ -114,7 +117,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                   value: _forwardCalls,
                   onChanged: (bool value) async {
-                    if (value && !await getPhonePermissions(openSettings: true)) return;
+                    if (value && !await getPhonePermission(openSettings: true)) return;
                     _forwardCalls = value;
                     _onSettingChanged();
                   },
@@ -144,7 +147,27 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           const SizedBox(height: 20),
-          const Divider(height: 1),
+
+          Card(
+            margin: EdgeInsets.zero,
+            elevation: 0,
+            color: theme.colorScheme.surfaceContainerLow,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: theme.colorScheme.outlineVariant),
+            ),
+            child: SwitchListTile(
+              title: Text(l10n.settings_enableForeground),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+              value: _enableForeground,
+              onChanged: (bool value) async {
+                if (value && !await getNotificationPermission(openSettings: true)) return;
+                _enableForeground = value;
+                _onSettingChanged();
+              },
+            ),
+          ),
+
           const SizedBox(height: 20),
 
           TextField(

@@ -192,6 +192,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_notifyChargerState => 'Charger connection';
 
   @override
+  String get settings_enableForeground => 'Always run in background';
+
+  @override
   String get settings_deviceLabel => 'Device label';
 
   @override

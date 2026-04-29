@@ -61,6 +61,7 @@
   "settings_forwardCalls": "Incoming calls",
   "settings_notifyLowBattery": "Low battery",
   "settings_notifyChargerState": "Charger connection",
+  "settings_enableForeground": "Always run in background",
   "settings_deviceLabel": "Device label",
   "settings_deviceLabelInfo": "Custom label (optional)",
   "help_about": "About",

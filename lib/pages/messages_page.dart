@@ -7,13 +7,50 @@ import '../state.dart';
 import '../service.dart';
 import '../widgets/action_button.dart';
 
-class MessagesPage extends StatelessWidget {
+class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
+  
+  @override
+  State<MessagesPage> createState() => _MessagesPageState();
+}
+
+class _MessagesPageState extends State<MessagesPage> {
   static const int _statusReceived = 0;
   static const int _statusFailedFinal = 1;
   static const int _statusFailedRetry = 2;
   static const int _statusSentPartial = 3;
   static const int _statusSentAll = 4;
+
+  bool _isStarting = false;
+
+  Future<void> _handleAction(
+    BuildContext context,
+    AppState appState,
+    AppLocalizations l10n,
+  ) async {
+    if (appState.isRunning) {
+      await appState.stopProcessing();
+      return;
+    }
+
+    setState(() => _isStarting = true);
+    bool canStart = true;
+    if (appState.forwardSms && !await getSmsPermission()) canStart = false;
+    if (appState.forwardCalls && !await getPhonePermission()) canStart = false;
+    if (appState.enableForeground && !await getNotificationPermission()) canStart = false;
+
+    if (!canStart) {
+      setState(() => _isStarting = false);
+      if (context.mounted) context.showErrorSnack(l10n.warn_permissionsRequired);
+      return;
+    }
+
+    final result = await appState.startProcessing();
+    setState(() => _isStarting = false);
+    if (!result.isSuccess && context.mounted) {
+      context.showErrorSnack(getLocalizedError(l10n, result.code));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,25 +91,12 @@ class MessagesPage extends StatelessWidget {
       bottomNavigationBar: ActionButton(
         label: appState.isRunning ? l10n.msg_stop : l10n.msg_start,
         isSuccess: null,
-        onPressed: (!appState.canStartProcessing && !appState.isRunning) ? null : () async {
-          if (appState.isRunning) {
-            await appState.stopProcessing();
-          } else {
-            bool canStart = true;
-            if (appState.forwardSms && !await getSmsPermissions()) {
-              canStart = false;
-            }
-            if (appState.forwardCalls && !await getPhonePermissions()) {
-              canStart = false;
-            }
-            if (!canStart) {
-              if (!context.mounted) return;
-              context.showErrorSnack(l10n.warn_permissionsRequired);
-              return;
-            }
-            await appState.startProcessing();
-          }
-        },
+        onPressed: (appState.canStartProcessing || appState.isRunning)
+            ? () {
+                if (_isStarting) return;
+                _handleAction(context, appState, l10n);
+              }
+            : null,
       ),
     );
   }

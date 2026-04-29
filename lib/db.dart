@@ -120,6 +120,7 @@ class MainDb {
       'forwardCalls': '0',
       'notifyLowBattery': '0',
       'notifyChargerState': '0',
+      'enableForeground': '0',
       'deviceLabel': '',
     };
 

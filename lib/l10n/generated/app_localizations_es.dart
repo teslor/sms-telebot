@@ -193,6 +193,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settings_notifyChargerState => 'Estado del cargador';
 
   @override
+  String get settings_enableForeground => 'Ejecutar siempre en segundo plano';
+
+  @override
   String get settings_deviceLabel => 'Etiqueta del dispositivo';
 
   @override

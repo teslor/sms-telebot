@@ -3,8 +3,10 @@
 
 package com.teslor.sms_telebot
 
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.work.WorkManager
 import io.flutter.embedding.android.FlutterActivity
@@ -14,7 +16,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Main activity that handles method calls from Flutter.
+ */
 class MainActivity : FlutterActivity() {
+
+    companion object {
+        private const val MAIN_CHANNEL = "sms_telebot/main"
+    }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -127,18 +136,35 @@ class MainActivity : FlutterActivity() {
                         }
                     }
 
+                    "startForegroundService" -> {
+                        try {
+                            ContextCompat.startForegroundService(
+                                this, Intent(this, ForegroundService::class.java)
+                            )
+                            result.success(null)
+                        } catch (e: SecurityException) {
+                            Log.e("MainChannel", "SecurityException while starting ForegroundService", e)
+                            result.error("security_exception", e.message, null)
+                        } catch (e: IllegalStateException) {
+                            Log.e("MainChannel", "ForegroundService start is not allowed in the current app state", e)
+                            result.error("service_start_not_allowed", e.message, null)
+                        } catch (e: Exception) {
+                            Log.e("MainChannel", "Unexpected error while starting ForegroundService", e)
+                            result.error("unexpected_error", e.message, null)
+                        }
+                    }
+                    "stopForegroundService" -> {
+                        stopService(Intent(this, ForegroundService::class.java))
+                        result.success(null)
+                    }
                     "stopWorkers" -> {
                         WorkManager.getInstance(applicationContext).cancelAllWork()
-                        result.success(true)
+                        result.success(null)
                     }
 
                     else -> result.notImplemented()
                 }
             }
-    }
-
-    companion object {
-        private const val MAIN_CHANNEL = "sms_telebot/main"
     }
 
     private fun isDebugBuild(): Boolean {

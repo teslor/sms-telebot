@@ -61,6 +61,7 @@
   "settings_forwardCalls": "Chamadas recebidas",
   "settings_notifyLowBattery": "Bateria fraca",
   "settings_notifyChargerState": "Estado do carregador",
+  "settings_enableForeground": "Sempre executar em segundo plano",
   "settings_deviceLabel": "Rótulo do dispositivo",
   "settings_deviceLabelInfo": "Rótulo personalizado (opcional)",
   "help_about": "Sobre",

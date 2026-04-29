@@ -30,6 +30,13 @@ class ForwardWorker(
     params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
 
+    companion object {
+        const val TAG = "ForwardWorker"
+        private const val CHANNEL_ID = "sms_telebot_worker"
+        private const val NOTIFICATION_ID = 1001
+        private val sendSemaphore = Semaphore(5)
+    }
+
     override suspend fun getForegroundInfo(): ForegroundInfo {
         // Required for expedited WorkManager tasks; provide a minimal notification
         val notification = createForegroundNotification()
@@ -37,12 +44,12 @@ class ForwardWorker(
         // Use typed foreground service for Android 10+
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ForegroundInfo(
-                FOREGROUND_NOTIFICATION_ID,
+                NOTIFICATION_ID,
                 notification,
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
             )
         } else {
-            ForegroundInfo(FOREGROUND_NOTIFICATION_ID, notification)
+            ForegroundInfo(NOTIFICATION_ID, notification)
         }
     }
 
@@ -163,12 +170,12 @@ class ForwardWorker(
 
     private fun createForegroundNotification(): Notification {
         val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channelId = FOREGROUND_CHANNEL_ID
+        val channelId = CHANNEL_ID
 
         val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                "SMS Telebot Forwarding",
+                "SMS Telebot worker",
                 NotificationManager.IMPORTANCE_LOW
             )
             manager.createNotificationChannel(channel)
@@ -192,12 +199,5 @@ class ForwardWorker(
         val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
             capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-    }
-
-    companion object {
-        const val TAG = "ForwardWorker"
-        private const val FOREGROUND_NOTIFICATION_ID = 1001
-        private const val FOREGROUND_CHANNEL_ID = "sms_telebot_forwarding"
-        private val sendSemaphore = Semaphore(5)
     }
 }

@@ -192,6 +192,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_notifyChargerState => '充电器连接状态';
 
   @override
+  String get settings_enableForeground => '始终在后台运行';
+
+  @override
   String get settings_deviceLabel => '设备标签';
 
   @override

@@ -193,6 +193,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settings_notifyChargerState => 'Подключение зарядки';
 
   @override
+  String get settings_enableForeground => 'Постоянная работа в фоне';
+
+  @override
   String get settings_deviceLabel => 'Метка устройства';
 
   @override

@@ -196,6 +196,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settings_notifyChargerState => 'État du chargeur';
 
   @override
+  String get settings_enableForeground => 'Toujours exécuter en arrière-plan';
+
+  @override
   String get settings_deviceLabel => 'Libellé de l\'appareil';
 
   @override

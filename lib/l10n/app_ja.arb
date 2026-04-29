@@ -61,6 +61,7 @@
   "settings_forwardCalls": "着信通話",
   "settings_notifyLowBattery": "バッテリー残量低下",
   "settings_notifyChargerState": "充電器の接続状態",
+  "settings_enableForeground": "常にバックグラウンドで実行",
   "settings_deviceLabel": "デバイスラベル",
   "settings_deviceLabelInfo": "カスタムラベル（オプション）",
   "help_about": "このアプリについて",

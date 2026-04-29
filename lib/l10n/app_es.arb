@@ -61,6 +61,7 @@
   "settings_forwardCalls": "Llamadas entrantes",
   "settings_notifyLowBattery": "Batería baja",
   "settings_notifyChargerState": "Estado del cargador",
+  "settings_enableForeground": "Ejecutar siempre en segundo plano",
   "settings_deviceLabel": "Etiqueta del dispositivo",
   "settings_deviceLabelInfo": "Etiqueta personalizada (opcional)",
   "help_about": "Acerca de",

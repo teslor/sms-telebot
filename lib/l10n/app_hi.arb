@@ -61,6 +61,7 @@
   "settings_forwardCalls": "इनकमिंग कॉल",
   "settings_notifyLowBattery": "बैटरी कम",
   "settings_notifyChargerState": "चार्जर कनेक्शन",
+  "settings_enableForeground": "हमेशा बैकग्राउंड में चलाएं",
   "settings_deviceLabel": "डिवाइस लेबल",
   "settings_deviceLabelInfo": "कस्टम लेबल (वैकल्पिक)",
   "help_about": "ऐप के बारे में",

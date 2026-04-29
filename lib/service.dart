@@ -14,7 +14,7 @@ typedef CallResult = ({bool isSuccess, String code, String? data});
 CallResult okResult([String? data]) => (isSuccess: true, code: 'ok', data: data);
 CallResult errorResult([String code = 'unexpected_error', String? data]) => (isSuccess: false, code: code, data: data);
 
-Future<bool> getSmsPermissions({bool openSettings = false}) async {
+Future<bool> getSmsPermission({bool openSettings = false}) async {
   final statusBeforeRequest = await Permission.sms.status;
   final status = await Permission.sms.request();
   if (status.isGranted) return true;
@@ -25,7 +25,7 @@ Future<bool> getSmsPermissions({bool openSettings = false}) async {
   return false;
 }
 
-Future<bool> getPhonePermissions({bool openSettings = false}) async {
+Future<bool> getPhonePermission({bool openSettings = false}) async {
   final statusBeforeRequest = await Permission.phone.status;
   final status = await Permission.phone.request();
   if (status.isGranted) return true;
@@ -36,11 +36,16 @@ Future<bool> getPhonePermissions({bool openSettings = false}) async {
   return false;
 }
 
-Future<void> getNotificationPermission() async {
-  // Required on Android 13+ to show foreground notifications
-  if (await Permission.notification.status != PermissionStatus.granted) {
-    await Permission.notification.request();
+// Required on Android 13+ to show foreground notifications
+Future<bool> getNotificationPermission({bool openSettings = false}) async {
+  final statusBeforeRequest = await Permission.notification.status;
+  final status = await Permission.notification.request();
+  if (status.isGranted) return true;
+
+  if (openSettings && statusBeforeRequest.isPermanentlyDenied) {
+    await openAppSettings();
   }
+  return false;  
 }
 
 Future<CallResult> getUpdates(String? token) async {
@@ -221,6 +226,21 @@ Future<CallResult> deleteSecretNative(String id) async {
   } catch (_) {
     return errorResult();
   }
+}
+
+Future<CallResult> startForegroundServiceNative() async {
+  try {
+    await _mainChannel.invokeMethod<bool?>('startForegroundService');
+    return okResult();
+  } catch (_) {
+    return errorResult();
+  }
+}
+
+void stopForegroundServiceNative() {
+  unawaited(
+    _mainChannel.invokeMethod<void>('stopForegroundService').catchError((_, _) {}),
+  );
 }
 
 void stopWorkersNative() {

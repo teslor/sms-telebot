@@ -61,6 +61,7 @@
   "settings_forwardCalls": "Входящие звонки",
   "settings_notifyLowBattery": "Низкий заряд батареи",
   "settings_notifyChargerState": "Подключение зарядки",
+  "settings_enableForeground": "Постоянная работа в фоне",
   "settings_deviceLabel": "Метка устройства",
   "settings_deviceLabelInfo": "Пользовательская метка (опционально)",
   "help_about": "О приложении",

@@ -478,6 +478,12 @@ abstract class AppLocalizations {
   /// **'Charger connection'**
   String get settings_notifyChargerState;
 
+  /// No description provided for @settings_enableForeground.
+  ///
+  /// In en, this message translates to:
+  /// **'Always run in background'**
+  String get settings_enableForeground;
+
   /// No description provided for @settings_deviceLabel.
   ///
   /// In en, this message translates to:

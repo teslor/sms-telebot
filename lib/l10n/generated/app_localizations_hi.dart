@@ -193,6 +193,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settings_notifyChargerState => 'चार्जर कनेक्शन';
 
   @override
+  String get settings_enableForeground => 'हमेशा बैकग्राउंड में चलाएं';
+
+  @override
   String get settings_deviceLabel => 'डिवाइस लेबल';
 
   @override

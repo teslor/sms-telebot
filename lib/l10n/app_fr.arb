@@ -61,6 +61,7 @@
   "settings_forwardCalls": "Appels entrants",
   "settings_notifyLowBattery": "Batterie faible",
   "settings_notifyChargerState": "État du chargeur",
+  "settings_enableForeground": "Toujours exécuter en arrière-plan",
   "settings_deviceLabel": "Libellé de l'appareil",
   "settings_deviceLabelInfo": "Libellé personnalisé (facultatif)",
   "help_about": "À propos",

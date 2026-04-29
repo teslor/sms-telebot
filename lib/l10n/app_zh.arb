@@ -61,6 +61,7 @@
   "settings_forwardCalls": "来电",
   "settings_notifyLowBattery": "电量低",
   "settings_notifyChargerState": "充电器连接状态",
+  "settings_enableForeground": "始终在后台运行",
   "settings_deviceLabel": "设备标签",
   "settings_deviceLabelInfo": "自定义标签（可选",
   "help_about": "关于",
