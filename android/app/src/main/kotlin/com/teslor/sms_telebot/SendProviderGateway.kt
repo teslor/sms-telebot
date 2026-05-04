@@ -4,6 +4,9 @@
 package com.teslor.sms_telebot
 
 import android.util.Log
+import com.sun.mail.smtp.SMTPAddressFailedException
+import com.sun.mail.smtp.SMTPSendFailedException
+import com.sun.mail.smtp.SMTPSenderFailedException
 import jakarta.mail.Authenticator
 import jakarta.mail.AuthenticationFailedException
 import jakarta.mail.Message
@@ -388,33 +391,97 @@ object SmtpServerProvider : SendProvider {
                 code = code,
                 info = "SMTP send failed",
                 details = details,
-                shouldRetry = isRetryable(code),
+                shouldRetry = isRetryable(e, code),
                 exception = e
             )
         }
     }
 
     private fun mapErrorCode(error: Throwable): String {
-        val rootCause = error.cause ?: error
+        val networkCode = networkErrorCode(error)
         return when {
             error is AuthenticationFailedException -> ResultCode.UNAUTHORIZED
+            networkCode != null -> networkCode
             error is SendFailedException -> ResultCode.SMTP_ADDRESS_REJECTED
-            rootCause is SocketTimeoutException || error is SocketTimeoutException ->
-                ResultCode.NETWORK_TIMEOUT
-            rootCause is UnknownHostException || rootCause is ConnectException ||
-            error is UnknownHostException || error is ConnectException ->
-                ResultCode.NETWORK_ERROR
             error is MessagingException -> ResultCode.SMTP_ERROR
             else -> ResultCode.UNEXPECTED_ERROR
         }
     }
 
-    private fun isRetryable(code: String): Boolean {
+    private fun networkErrorCode(error: Throwable): String? {
+        fun codeOf(error: Throwable): String? {
+            return when (error) {
+                is SocketTimeoutException -> ResultCode.NETWORK_TIMEOUT
+                is UnknownHostException,
+                is ConnectException -> ResultCode.NETWORK_ERROR
+                else -> null
+            }
+        }
+
+        var current: Throwable? = error
+        var depth = 0
+        while (current != null && depth < 8) {
+            codeOf(current)?.let { return it }
+
+            if (current is MessagingException) {
+                var next = current.nextException
+                var nextDepth = 0
+                while (next != null && next !== current && nextDepth < 8) {
+                    codeOf(next)?.let { return it }
+                    next = (next as? MessagingException)?.nextException
+                    nextDepth++
+                }
+            }
+
+            current = current.cause
+            depth++
+        }
+
+        return null
+    }
+
+    private fun isRetryable(error: Throwable, code: String): Boolean {
         return when (code) {
             ResultCode.NETWORK_TIMEOUT,
             ResultCode.NETWORK_ERROR -> true
+            ResultCode.SMTP_ERROR,
+            ResultCode.SMTP_ADDRESS_REJECTED -> hasTransientSmtpStatus(error)
             else -> false
         }
+    }
+
+    private fun hasTransientSmtpStatus(error: Throwable): Boolean {
+        fun returnCodeOf(error: Throwable): Int? {
+            return when (error) {
+                is SMTPAddressFailedException -> error.getReturnCode()
+                is SMTPSendFailedException -> error.getReturnCode()
+                is SMTPSenderFailedException -> error.getReturnCode()
+                else -> null
+            }
+        }
+
+        var current: Throwable? = error
+        var depth = 0
+        while (current != null && depth < 8) {
+            val returnCode = returnCodeOf(current)
+            if (returnCode in 400..499) return true
+
+            if (current is MessagingException) {
+                var next = current.nextException
+                var nextDepth = 0
+                while (next != null && next !== current && nextDepth < 8) {
+                    val nextReturnCode = returnCodeOf(next)
+                    if (nextReturnCode in 400..499) return true
+                    next = (next as? MessagingException)?.nextException
+                    nextDepth++
+                }
+            }
+
+            current = current.cause
+            depth++
+        }
+
+        return false
     }
 
     private fun sanitizeMailHeader(value: String): String {
