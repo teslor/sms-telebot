@@ -205,34 +205,42 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get help_appInfo =>
-      'App para encaminhar automaticamente mensagens SMS recebidas para um bot do Telegram';
+      'App para encaminhar automaticamente SMS recebidos.\nRecursos extras: notificações de chamadas recebidas e status da bateria.';
 
   @override
   String get help_info => 'Introdução';
 
   @override
   String get help_info_01 =>
-      'O aplicativo encaminha SMS para um bot do Telegram ou e-mail. Você precisará de seu próprio bot ou de uma conta com acesso SMTP.';
+      'Com este app, você pode encaminhar mensagens para um bot do Telegram ou para um e-mail com acesso SMTP. Você pode adicionar vários bots ou endereços de e-mail.';
 
   @override
   String get help_info_02 =>
-      'Para cada conexão, é criada uma regra de encaminhamento que define quais SMS enviar e para onde. As regras podem ser duplicadas, ativadas ou desativadas conforme necessário.';
+      'Uma regra de encaminhamento é criada para cada conexão: ela define quais mensagens enviar e para onde. As regras podem ser duplicadas, ativadas ou desativadas quando necessário.';
 
   @override
   String get help_info_03 =>
-      'Quando um SMS chega, o aplicativo verifica as regras ativas e tenta o encaminhamento. Se falhar por motivos técnicos (como falta de internet), o aplicativo tentará novamente mais tarde.';
+      'O app verifica as regras ativas e tenta encaminhar cada nova mensagem. Se falhar por motivos técnicos (por exemplo, sem internet), tentará novamente mais tarde.';
 
   @override
   String get help_info_04 =>
-      'Ao encaminhar SMS de vários telefones, você pode definir uma etiqueta de dispositivo nas configurações — ela é enviada junto com o SMS para identificar o telefone de origem.';
+      'Mantenha a conexão com a internet ativa para que o app funcione corretamente.';
 
   @override
-  String get help_info_05 =>
-      'Recomenda-se desativar a otimização de bateria para o app, pois o sistema pode limitar a atividade dos apps em segundo plano para economizar energia.';
+  String get help_opts_01 =>
+      'Primeiro, selecione os eventos que você quer encaminhar. Enquanto o app estiver em execução, uma mensagem é gerada e enviada para cada evento conforme as regras definidas.';
 
   @override
-  String get help_info_06 =>
-      'Certifique-se de manter a conexão com a internet ativada para que o app funcione.';
+  String get help_opts_02 =>
+      'O modo permanente em segundo plano melhora a confiabilidade do envio (principalmente para notificações do sistema), mas aumenta bastante o consumo de bateria. Nesse modo, aparece uma notificação persistente. Não é recomendado ativar sem necessidade.';
+
+  @override
+  String get help_opts_03 =>
+      'Ao encaminhar mensagens de vários celulares, você pode definir um rótulo do dispositivo. Ele é enviado junto com a mensagem para identificar de qual aparelho ela veio.';
+
+  @override
+  String get help_opts_04 =>
+      'É recomendado desativar a otimização de bateria para este app, pois o sistema pode limitar a atividade em segundo plano para economizar energia.';
 
   @override
   String get help_tbot => 'Conexão do Bot do Telegram';
@@ -251,14 +259,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get help_tbot_04 =>
-      'Pronto! Tudo configurado para encaminhar SMS ao seu bot. Ative a regra e clique em Iniciar para começar.';
+      'Pronto! Agora está tudo configurado para encaminhar mensagens ao seu bot. Ative a regra e toque em Iniciar para começar.';
 
   @override
   String get help_smtp => 'Conexão do Servidor SMTP';
 
   @override
   String get help_smtp_01 =>
-      'Para o encaminhamento de SMS, é melhor criar um e-mail separado (não um alias): ele também será o seu login. Especialmente relevante para o Gmail e serviços semelhantes.';
+      'Para encaminhar mensagens, o ideal é criar um e-mail dedicado (não um alias): ele também será seu login. Isso é especialmente importante no Gmail e em serviços semelhantes.';
 
   @override
   String get help_smtp_02 =>
@@ -273,11 +281,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get help_filters_01 =>
-      'Você pode definir filtros para o remetente ou texto das mensagens SMS recebidas. Um filtro é acionado se o número/nome do remetente ou o texto contiver os caracteres especificados.';
+      'Você pode definir filtros por remetente ou por texto da mensagem. O filtro é acionado quando o número/nome do remetente ou o texto contém os caracteres informados.';
 
   @override
   String get help_filters_02 =>
-      'Existem dois modos: lista branca (o SMS é encaminhado se pelo menos um filtro corresponder) e lista negra (o SMS não é encaminhado se algum filtro corresponder). No modo lista branca, se nenhum filtro estiver definido, nenhum SMS será encaminhado ao bot.';
+      'Há dois modos: lista branca (a mensagem é encaminhada se ao menos um filtro corresponder) e lista negra (a mensagem não é encaminhada se algum filtro corresponder). No modo lista branca, sem filtros definidos, nenhuma mensagem será encaminhada.';
 
   @override
   String get help_filters_03 =>
@@ -285,7 +293,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get help_filters_04 =>
-      'Para verificar se um SMS específico será encaminhado com base nos filtros atuais, insira o remetente e/ou mensagem necessários nos campos de entrada e clique no botão para verificar.';
+      'Para verificar se uma mensagem específica será encaminhada com os filtros atuais, preencha remetente e/ou texto da mensagem nos campos e toque no botão de verificação.';
+
+  @override
+  String get help_filters_05 =>
+      'Os filtros definidos são aplicados a todos os tipos de eventos, não apenas a SMS recebidos.';
 
   @override
   String get error_badRequest =>

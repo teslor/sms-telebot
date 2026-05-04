@@ -205,34 +205,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get help_appInfo =>
-      'App to automatically forward incoming SMS messages to a Telegram bot';
+      'App to automatically forward incoming SMS.\nAdditional features: notifications for incoming calls and battery status.';
 
   @override
   String get help_info => 'Intro';
 
   @override
   String get help_info_01 =>
-      'The app forwards SMS to a Telegram bot or an email address. You will need your own bot or an email account with SMTP access.';
+      'With this app, you can forward messages to a Telegram bot or an email address with SMTP access. You can add multiple bots or email addresses!';
 
   @override
   String get help_info_02 =>
-      'A forwarding rule is created for each connection — it defines which SMS to send and where. Rules can be duplicated, enabled, or disabled as needed.';
+      'A forwarding rule is created for each connection — it defines which messages to send and where. Rules can be duplicated, enabled, or disabled as needed.';
 
   @override
   String get help_info_03 =>
-      'When an SMS arrives, the app checks active rules and attempts to forward it. If it fails due to technical reasons (e.g., no internet), the app will retry later.';
+      'The app checks active rules and attempts to forward a new message. If it fails due to technical reasons (e.g., no internet), the app will retry later.';
 
   @override
   String get help_info_04 =>
-      'When forwarding SMS from multiple phones, you can set a device label in the settings — it is sent along with the SMS to identify the receiving phone.';
-
-  @override
-  String get help_info_05 =>
-      'It is recommended to disable battery optimization for the app, since the system may restrict background activity to save power.';
-
-  @override
-  String get help_info_06 =>
       'Make sure to keep the internet connection enabled for the app to work.';
+
+  @override
+  String get help_opts_01 =>
+      'First, select the events you want to forward. As the app runs, a message is generated and sent for each event according to the specified rules.';
+
+  @override
+  String get help_opts_02 =>
+      'Permanent background mode improves reliability of message delivery (especially for system notifications), but significantly increases battery consumption. In this mode, a persistent notification appears in the notification shade. Not recommended to enable unless necessary.';
+
+  @override
+  String get help_opts_03 =>
+      'When forwarding messages from multiple phones, you can set a device label — it is sent along with the message to identify the receiving phone.';
+
+  @override
+  String get help_opts_04 =>
+      'It is recommended to disable battery optimization for the app, since the system may restrict background activity to save power.';
 
   @override
   String get help_tbot => 'Connecting a Telegram Bot';
@@ -251,14 +259,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get help_tbot_04 =>
-      'Done! Everything is set up to forward SMS to your bot. Enable the rule and press Start to begin.';
+      'Done! Everything is set up to forward messages to your bot. Enable the rule and press Start to begin.';
 
   @override
   String get help_smtp => 'Connecting an SMTP Server';
 
   @override
   String get help_smtp_01 =>
-      'It is best to create a dedicated email for SMS forwarding (not an alias): it will also serve as your login. This is especially relevant for Gmail and similar services.';
+      'It is best to create a dedicated email for message forwarding (not an alias): it will also serve as your login. This is especially relevant for Gmail and similar services.';
 
   @override
   String get help_smtp_02 =>
@@ -273,11 +281,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get help_filters_01 =>
-      'You can set filters for sender or text of incoming SMS messages. A filter is triggered if a sender number/name or text contains the specified characters.';
+      'You can set filters for sender or message text. A filter is triggered if a sender number/name or text contains the specified characters.';
 
   @override
   String get help_filters_02 =>
-      'There are two modes: whitelist (SMS is forwarded if at least one filter matches) and blacklist (SMS is not forwarded if any filter matches). In whitelist mode, if no filters are set, no SMS messages will be forwarded to the bot.';
+      'There are two modes: whitelist (message is forwarded if at least one filter matches) and blacklist (message is not forwarded if any filter matches). In whitelist mode, if no filters are set, no messages will be forwarded.';
 
   @override
   String get help_filters_03 =>
@@ -285,7 +293,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get help_filters_04 =>
-      'To check whether a specific SMS message will be forwarded based on the current filters, enter the required sender and/or message in the input fields and click the button to verify.';
+      'To check whether a specific message will be forwarded based on the current filters, enter the required sender and/or message text in the input fields and click the button to verify.';
+
+  @override
+  String get help_filters_05 =>
+      'The specified filters are applied to all event types, not just incoming SMS.';
 
   @override
   String get error_badRequest =>

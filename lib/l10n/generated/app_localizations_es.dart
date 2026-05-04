@@ -206,34 +206,42 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get help_appInfo =>
-      'App para reenviar automáticamente mensajes SMS entrantes a un bot de Telegram';
+      'Aplicación para reenviar automáticamente los SMS entrantes.\nFunciones adicionales: notificaciones de llamadas entrantes y estado de batería.';
 
   @override
   String get help_info => 'Introducción';
 
   @override
   String get help_info_01 =>
-      'La aplicación reenvía SMS a un bot de Telegram o a un correo electrónico. Necesitará su propio bot o una cuenta con acceso SMTP.';
+      'Con esta app, puedes reenviar mensajes a un bot de Telegram o a una dirección de correo con acceso SMTP. Puedes añadir varios bots o direcciones de correo.';
 
   @override
   String get help_info_02 =>
-      'Para cada conexión se crea una regla de reenvío, que define qué SMS enviar y a dónde. Las reglas se pueden duplicar, activar y desactivar según sea necesario.';
+      'Se crea una regla de reenvío para cada conexión: define qué mensajes se envían y a dónde. Puedes duplicar, activar o desactivar reglas según lo necesites.';
 
   @override
   String get help_info_03 =>
-      'Cuando llega un SMS, la aplicación revisa las reglas activas e intenta reenviarlo. Si falla por motivos técnicos (por ejemplo, falta de internet), la aplicación lo reintentará más tarde.';
+      'La app revisa las reglas activas e intenta reenviar cada mensaje nuevo. Si falla por motivos técnicos (por ejemplo, sin internet), lo volverá a intentar más tarde.';
 
   @override
   String get help_info_04 =>
-      'Al reenviar SMS desde varios teléfonos, puede configurar una etiqueta de dispositivo en los ajustes; esta se envía junto con el SMS para identificar el teléfono emisor.';
+      'Asegúrate de mantener la conexión a internet activa para que la app funcione correctamente.';
 
   @override
-  String get help_info_05 =>
-      'Se recomienda desactivar la optimización de batería para la app, ya que el sistema puede limitar la actividad de las aplicaciones en segundo plano para ahorrar energía.';
+  String get help_opts_01 =>
+      'Primero, selecciona los eventos que quieres reenviar. Mientras la app está activa, se genera y envía un mensaje por cada evento según las reglas configuradas.';
 
   @override
-  String get help_info_06 =>
-      'Asegúrate de mantener la conexión a internet habilitada para que la app funcione.';
+  String get help_opts_02 =>
+      'El modo permanente en segundo plano mejora la fiabilidad del envío (especialmente para notificaciones del sistema), pero aumenta bastante el consumo de batería. En este modo aparece una notificación persistente. No se recomienda activarlo salvo que sea necesario.';
+
+  @override
+  String get help_opts_03 =>
+      'Si reenvías mensajes desde varios teléfonos, puedes establecer una etiqueta de dispositivo. Se enviará junto con el mensaje para identificar de qué teléfono proviene.';
+
+  @override
+  String get help_opts_04 =>
+      'Se recomienda desactivar la optimización de batería para esta app, ya que el sistema puede limitar la actividad en segundo plano para ahorrar energía.';
 
   @override
   String get help_tbot => 'Conexión de Bot de Telegram';
@@ -252,14 +260,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get help_tbot_04 =>
-      '¡Listo! Todo está configurado para reenviar SMS a su bot. Active la regla y pulse Iniciar para comenzar.';
+      '¡Listo! Todo está configurado para reenviar mensajes a tu bot. Activa la regla y pulsa Iniciar para empezar.';
 
   @override
   String get help_smtp => 'Conexión de servidor SMTP';
 
   @override
   String get help_smtp_01 =>
-      'Para el reenvío de SMS, es mejor crear un correo electrónico independiente (no un alias): este servirá como nombre de usuario. Especialmente importante para Gmail y servicios similares.';
+      'Para reenviar mensajes, lo mejor es crear un correo dedicado (no un alias): también te servirá como usuario. Es especialmente importante en Gmail y servicios similares.';
 
   @override
   String get help_smtp_02 =>
@@ -274,11 +282,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get help_filters_01 =>
-      'Puedes establecer filtros para el remitente o texto de los mensajes SMS entrantes. Un filtro se activa si el número/nombre del remitente o el texto contiene los caracteres especificados.';
+      'Puedes configurar filtros por remitente o por texto del mensaje. Un filtro se activa si el número/nombre del remitente o el texto contiene los caracteres indicados.';
 
   @override
   String get help_filters_02 =>
-      'Hay dos modos: lista blanca (el SMS se reenvía si al menos un filtro coincide) y lista negra (el SMS no se reenvía si algún filtro coincide). En modo lista blanca, si no hay filtros configurados, ningún SMS se reenviará al bot.';
+      'Hay dos modos: lista blanca (el mensaje se reenvía si coincide al menos un filtro) y lista negra (el mensaje no se reenvía si coincide cualquier filtro). En lista blanca, si no hay filtros, no se reenviará ningún mensaje.';
 
   @override
   String get help_filters_03 =>
@@ -286,7 +294,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get help_filters_04 =>
-      'Para verificar si un SMS específico se reenviará según los filtros actuales, introduce el remitente y/o mensaje requerido en los campos y haz clic en el botón para verificar.';
+      'Para comprobar si un mensaje concreto se reenviará con los filtros actuales, introduce el remitente y/o el texto en los campos y pulsa el botón de verificación.';
+
+  @override
+  String get help_filters_05 =>
+      'Los filtros configurados se aplican a todos los tipos de eventos, no solo a los SMS entrantes.';
 
   @override
   String get error_badRequest =>

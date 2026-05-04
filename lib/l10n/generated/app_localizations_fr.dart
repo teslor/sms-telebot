@@ -209,34 +209,42 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get help_appInfo =>
-      'App pour transférer automatiquement les SMS entrants vers un bot Telegram';
+      'Application pour transférer automatiquement les SMS entrants.\nFonctions supplémentaires : notifications d\'appels entrants et d\'état de batterie.';
 
   @override
   String get help_info => 'Introduction';
 
   @override
   String get help_info_01 =>
-      'L\'application transfère les SMS vers un bot Telegram ou une adresse e-mail. Vous aurez besoin de votre propre bot ou d\'un compte avec accès SMTP.';
+      'Avec cette application, vous pouvez transférer des messages vers un bot Telegram ou une adresse e-mail avec accès SMTP. Vous pouvez ajouter plusieurs bots ou adresses e-mail.';
 
   @override
   String get help_info_02 =>
-      'Pour chaque connexion, une règle de transfert est créée : elle définit quels SMS envoyer et vers quelle destination. Les règles peuvent être dupliquées, activées ou désactivées selon les besoins.';
+      'Une règle de transfert est créée pour chaque connexion : elle définit quels messages envoyer et vers quelle destination. Les règles peuvent être dupliquées, activées ou désactivées selon vos besoins.';
 
   @override
   String get help_info_03 =>
-      'Lorsqu\'un SMS arrive, l\'application vérifie les règles actives et tente le transfert. En cas d\'échec technique (ex: pas d\'internet), l\'application réessaiera plus tard.';
+      'L\'application vérifie les règles actives et tente de transférer chaque nouveau message. En cas d\'échec technique (par exemple sans internet), elle réessaiera plus tard.';
 
   @override
   String get help_info_04 =>
-      'En cas de transfert depuis plusieurs téléphones, vous pouvez définir une étiquette d\'appareil dans les paramètres : elle est envoyée avec le SMS pour identifier le téléphone d\'origine.';
+      'Assurez-vous de garder la connexion internet active pour que l\'application fonctionne correctement.';
 
   @override
-  String get help_info_05 =>
-      'Il est recommandé de désactiver l’optimisation de la batterie pour l’app, car le système peut limiter l’activité des applications en arrière-plan pour économiser l’énergie.';
+  String get help_opts_01 =>
+      'Commencez par sélectionner les événements à transférer. Pendant l\'exécution de l\'application, un message est généré et envoyé pour chaque événement selon les règles définies.';
 
   @override
-  String get help_info_06 =>
-      'Assurez-vous de garder la connexion internet activée pour que l\'app fonctionne.';
+  String get help_opts_02 =>
+      'Le mode permanent en arrière-plan améliore la fiabilité de l\'envoi (surtout pour les notifications système), mais augmente fortement la consommation de batterie. Dans ce mode, une notification persistante apparaît. Il n\'est pas recommandé de l\'activer sans nécessité.';
+
+  @override
+  String get help_opts_03 =>
+      'Lorsque vous transférez des messages depuis plusieurs téléphones, vous pouvez définir un libellé d\'appareil. Il est envoyé avec le message pour identifier le téléphone source.';
+
+  @override
+  String get help_opts_04 =>
+      'Il est recommandé de désactiver l\'optimisation de batterie pour cette application, car le système peut limiter l\'activité en arrière-plan pour économiser l\'énergie.';
 
   @override
   String get help_tbot => 'Connexion au Bot Telegram';
@@ -255,14 +263,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get help_tbot_04 =>
-      'Terminé ! Tout est prêt pour transférer les SMS vers votre bot. Activez la règle et appuyez sur Démarrer pour commencer.';
+      'Terminé ! Tout est prêt pour transférer les messages vers votre bot. Activez la règle et appuyez sur Démarrer pour commencer.';
 
   @override
   String get help_smtp => 'Connexion au serveur SMTP';
 
   @override
   String get help_smtp_01 =>
-      'Pour le transfert de SMS, il est préférable de créer une adresse e-mail dédiée (pas d\'alias) : elle servira d\'identifiant. Particulièrement pertinent pour Gmail et services similaires.';
+      'Pour le transfert de messages, il est préférable de créer une adresse e-mail dédiée (pas un alias) : elle servira aussi d\'identifiant. C\'est particulièrement important pour Gmail et les services similaires.';
 
   @override
   String get help_smtp_02 =>
@@ -277,11 +285,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get help_filters_01 =>
-      'Vous pouvez définir des filtres pour l\'expéditeur ou le texte des SMS entrants. Un filtre se déclenche si le numéro/nom de l\'expéditeur ou le texte contient les caractères spécifiés.';
+      'Vous pouvez définir des filtres pour l\'expéditeur ou le texte du message. Un filtre se déclenche si le numéro/nom de l\'expéditeur ou le texte contient les caractères indiqués.';
 
   @override
   String get help_filters_02 =>
-      'Il y a deux modes : liste blanche (le SMS est transféré si au moins un filtre correspond) et liste noire (le SMS n\'est pas transféré si un filtre correspond). En mode liste blanche, si aucun filtre n\'est défini, aucun SMS ne sera transféré au bot.';
+      'Il existe deux modes : liste blanche (le message est transféré si au moins un filtre correspond) et liste noire (le message n\'est pas transféré si un filtre correspond). En mode liste blanche, sans filtres définis, aucun message ne sera transféré.';
 
   @override
   String get help_filters_03 =>
@@ -289,7 +297,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get help_filters_04 =>
-      'Pour vérifier si un SMS spécifique sera transféré selon les filtres actuels, entrez l\'expéditeur et/ou le message requis dans les champs et cliquez sur le bouton pour vérifier.';
+      'Pour vérifier si un message précis sera transféré selon les filtres actuels, saisissez l\'expéditeur et/ou le texte dans les champs, puis appuyez sur le bouton de vérification.';
+
+  @override
+  String get help_filters_05 =>
+      'Les filtres définis s\'appliquent à tous les types d\'événements, pas uniquement aux SMS entrants.';
 
   @override
   String get error_badRequest =>

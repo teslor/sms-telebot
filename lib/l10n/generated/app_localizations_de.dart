@@ -209,34 +209,42 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get help_appInfo =>
-      'App zum automatischen Weiterleiten eingehender SMS an einen Telegram-Bot';
+      'App zum automatischen Weiterleiten eingehender SMS.\nZusätzliche Funktionen: Benachrichtigungen über eingehende Anrufe und den Akkustatus.';
 
   @override
   String get help_info => 'Einführung';
 
   @override
   String get help_info_01 =>
-      'Die App leitet SMS an einen Telegram-Bot oder eine E-Mail-Adresse weiter. Sie benötigen einen eigenen Bot oder ein Konto mit SMTP-Zugriff.';
+      'Mit dieser App können Sie Nachrichten an einen Telegram-Bot oder eine E-Mail-Adresse mit SMTP-Zugang weiterleiten. Sie können mehrere Bots oder E-Mail-Adressen hinzufügen.';
 
   @override
   String get help_info_02 =>
-      'Für jede Verbindung wird eine Weiterleitungsregel erstellt – sie legt fest, welche SMS wohin gesendet werden. Regeln können dupliziert sowie nach Bedarf ein- oder ausgeschaltet werden.';
+      'Für jede Verbindung wird eine Weiterleitungsregel erstellt – sie legt fest, welche Nachrichten wohin gesendet werden. Regeln können bei Bedarf dupliziert, aktiviert oder deaktiviert werden.';
 
   @override
   String get help_info_03 =>
-      'Bei einer eingehenden SMS prüft die App die aktiven Regeln und versucht die Weiterleitung. Schlägt dies aus technischen Gründen fehl (z. B. kein Internet), wird die App den Versuch später wiederholen.';
+      'Die App prüft aktive Regeln und versucht, neue Nachrichten weiterzuleiten. Falls dies aus technischen Gründen fehlschlägt (z. B. kein Internet), versucht die App es später erneut.';
 
   @override
   String get help_info_04 =>
-      'Beim Weiterleiten von SMS von mehreren Telefonen können Sie in den Einstellungen eine Gerätebezeichnung festlegen – diese wird mit der SMS gesendet, um das Empfängertelefon zu identifizieren.';
+      'Stellen Sie sicher, dass die Internetverbindung aktiv bleibt, damit die App korrekt funktioniert.';
 
   @override
-  String get help_info_05 =>
-      'Es wird empfohlen, die Akkuoptimierung für diese App zu deaktivieren, da das System zur Energieeinsparung die Arbeit von Apps im Hintergrund einschränken kann.';
+  String get help_opts_01 =>
+      'Wählen Sie zuerst die Ereignisse aus, die Sie weiterleiten möchten. Während die App läuft, wird für jedes Ereignis entsprechend den festgelegten Regeln eine Nachricht erstellt und gesendet.';
 
   @override
-  String get help_info_06 =>
-      'Stellen Sie sicher, dass die Internetverbindung aktiviert ist, damit die App funktioniert.';
+  String get help_opts_02 =>
+      'Der dauerhafte Hintergrundmodus verbessert die Zuverlässigkeit der Zustellung (insbesondere bei Systembenachrichtigungen), erhöht aber den Akkuverbrauch deutlich. In diesem Modus wird eine permanente Benachrichtigung angezeigt. Aktivieren Sie ihn nur bei Bedarf.';
+
+  @override
+  String get help_opts_03 =>
+      'Wenn Sie Nachrichten von mehreren Geräten weiterleiten, können Sie eine Gerätebezeichnung festlegen. Diese wird mitgesendet, damit das sendende Gerät leichter erkennbar ist.';
+
+  @override
+  String get help_opts_04 =>
+      'Es wird empfohlen, die Akkuoptimierung für diese App zu deaktivieren, da das System die Hintergrundaktivität zur Energieeinsparung einschränken kann.';
 
   @override
   String get help_tbot => 'Telegram-Bot verbinden';
@@ -255,14 +263,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get help_tbot_04 =>
-      'Fertig! Jetzt ist alles bereit, um SMS an Ihren Bot weiterzuleiten. Aktivieren Sie die Regel und tippen Sie auf Start.';
+      'Fertig! Jetzt ist alles bereit, um Nachrichten an Ihren Bot weiterzuleiten. Aktivieren Sie die Regel und tippen Sie auf Start.';
 
   @override
   String get help_smtp => 'SMTP-Server verbinden';
 
   @override
   String get help_smtp_01 =>
-      'Für die SMS-Weiterleitung sollten Sie am besten ein separates E-Mail-Konto einrichten (kein Alias): Dieses dient gleichzeitig als Login. Besonders relevant für Gmail und ähnliche Dienste.';
+      'Für die Nachrichtenweiterleitung empfiehlt es sich, eine eigene E-Mail-Adresse einzurichten (kein Alias): Diese dient auch als Login. Das ist besonders bei Gmail und ähnlichen Diensten wichtig.';
 
   @override
   String get help_smtp_02 =>
@@ -277,11 +285,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get help_filters_01 =>
-      'Sie können Filter für Absender oder Text eingehender SMS festlegen. Ein Filter wird ausgelöst, wenn Nummer/Name des Absenders oder Text die angegebenen Zeichen enthalten.';
+      'Sie können Filter für Absender oder Nachrichtentext festlegen. Ein Filter greift, wenn Absendernummer/-name oder Text die angegebenen Zeichen enthalten.';
 
   @override
   String get help_filters_02 =>
-      'Es gibt zwei Modi: Whitelist (SMS wird weitergeleitet, wenn mindestens ein Filter zutrifft) und Blacklist (SMS wird nicht weitergeleitet, wenn ein Filter zutrifft). Im Whitelist-Modus werden ohne Filter keine SMS an den Bot weitergeleitet.';
+      'Es gibt zwei Modi: Whitelist (Nachricht wird weitergeleitet, wenn mindestens ein Filter passt) und Blacklist (Nachricht wird nicht weitergeleitet, wenn ein Filter passt). Im Whitelist-Modus werden ohne Filter keine Nachrichten weitergeleitet.';
 
   @override
   String get help_filters_03 =>
@@ -289,7 +297,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get help_filters_04 =>
-      'Um zu prüfen, ob eine bestimmte SMS basierend auf den aktuellen Filtern weitergeleitet wird, geben Sie den Absender und/oder die Nachricht in die Felder ein und klicken Sie auf die Schaltfläche.';
+      'Um zu prüfen, ob eine bestimmte Nachricht mit den aktuellen Filtern weitergeleitet wird, geben Sie Absender und/oder Nachrichtentext ein und tippen Sie auf die Prüfen-Schaltfläche.';
+
+  @override
+  String get help_filters_05 =>
+      'Die angegebenen Filter gelten für alle Ereignistypen, nicht nur für eingehende SMS.';
 
   @override
   String get error_badRequest =>

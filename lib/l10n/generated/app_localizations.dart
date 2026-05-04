@@ -505,7 +505,7 @@ abstract class AppLocalizations {
   /// No description provided for @help_appInfo.
   ///
   /// In en, this message translates to:
-  /// **'App to automatically forward incoming SMS messages to a Telegram bot'**
+  /// **'App to automatically forward incoming SMS.\nAdditional features: notifications for incoming calls and battery status.'**
   String get help_appInfo;
 
   /// No description provided for @help_info.
@@ -517,38 +517,50 @@ abstract class AppLocalizations {
   /// No description provided for @help_info_01.
   ///
   /// In en, this message translates to:
-  /// **'The app forwards SMS to a Telegram bot or an email address. You will need your own bot or an email account with SMTP access.'**
+  /// **'With this app, you can forward messages to a Telegram bot or an email address with SMTP access. You can add multiple bots or email addresses!'**
   String get help_info_01;
 
   /// No description provided for @help_info_02.
   ///
   /// In en, this message translates to:
-  /// **'A forwarding rule is created for each connection — it defines which SMS to send and where. Rules can be duplicated, enabled, or disabled as needed.'**
+  /// **'A forwarding rule is created for each connection — it defines which messages to send and where. Rules can be duplicated, enabled, or disabled as needed.'**
   String get help_info_02;
 
   /// No description provided for @help_info_03.
   ///
   /// In en, this message translates to:
-  /// **'When an SMS arrives, the app checks active rules and attempts to forward it. If it fails due to technical reasons (e.g., no internet), the app will retry later.'**
+  /// **'The app checks active rules and attempts to forward a new message. If it fails due to technical reasons (e.g., no internet), the app will retry later.'**
   String get help_info_03;
 
   /// No description provided for @help_info_04.
   ///
   /// In en, this message translates to:
-  /// **'When forwarding SMS from multiple phones, you can set a device label in the settings — it is sent along with the SMS to identify the receiving phone.'**
+  /// **'Make sure to keep the internet connection enabled for the app to work.'**
   String get help_info_04;
 
-  /// No description provided for @help_info_05.
+  /// No description provided for @help_opts_01.
+  ///
+  /// In en, this message translates to:
+  /// **'First, select the events you want to forward. As the app runs, a message is generated and sent for each event according to the specified rules.'**
+  String get help_opts_01;
+
+  /// No description provided for @help_opts_02.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanent background mode improves reliability of message delivery (especially for system notifications), but significantly increases battery consumption. In this mode, a persistent notification appears in the notification shade. Not recommended to enable unless necessary.'**
+  String get help_opts_02;
+
+  /// No description provided for @help_opts_03.
+  ///
+  /// In en, this message translates to:
+  /// **'When forwarding messages from multiple phones, you can set a device label — it is sent along with the message to identify the receiving phone.'**
+  String get help_opts_03;
+
+  /// No description provided for @help_opts_04.
   ///
   /// In en, this message translates to:
   /// **'It is recommended to disable battery optimization for the app, since the system may restrict background activity to save power.'**
-  String get help_info_05;
-
-  /// No description provided for @help_info_06.
-  ///
-  /// In en, this message translates to:
-  /// **'Make sure to keep the internet connection enabled for the app to work.'**
-  String get help_info_06;
+  String get help_opts_04;
 
   /// No description provided for @help_tbot.
   ///
@@ -577,7 +589,7 @@ abstract class AppLocalizations {
   /// No description provided for @help_tbot_04.
   ///
   /// In en, this message translates to:
-  /// **'Done! Everything is set up to forward SMS to your bot. Enable the rule and press Start to begin.'**
+  /// **'Done! Everything is set up to forward messages to your bot. Enable the rule and press Start to begin.'**
   String get help_tbot_04;
 
   /// No description provided for @help_smtp.
@@ -589,7 +601,7 @@ abstract class AppLocalizations {
   /// No description provided for @help_smtp_01.
   ///
   /// In en, this message translates to:
-  /// **'It is best to create a dedicated email for SMS forwarding (not an alias): it will also serve as your login. This is especially relevant for Gmail and similar services.'**
+  /// **'It is best to create a dedicated email for message forwarding (not an alias): it will also serve as your login. This is especially relevant for Gmail and similar services.'**
   String get help_smtp_01;
 
   /// No description provided for @help_smtp_02.
@@ -613,13 +625,13 @@ abstract class AppLocalizations {
   /// No description provided for @help_filters_01.
   ///
   /// In en, this message translates to:
-  /// **'You can set filters for sender or text of incoming SMS messages. A filter is triggered if a sender number/name or text contains the specified characters.'**
+  /// **'You can set filters for sender or message text. A filter is triggered if a sender number/name or text contains the specified characters.'**
   String get help_filters_01;
 
   /// No description provided for @help_filters_02.
   ///
   /// In en, this message translates to:
-  /// **'There are two modes: whitelist (SMS is forwarded if at least one filter matches) and blacklist (SMS is not forwarded if any filter matches). In whitelist mode, if no filters are set, no SMS messages will be forwarded to the bot.'**
+  /// **'There are two modes: whitelist (message is forwarded if at least one filter matches) and blacklist (message is not forwarded if any filter matches). In whitelist mode, if no filters are set, no messages will be forwarded.'**
   String get help_filters_02;
 
   /// No description provided for @help_filters_03.
@@ -631,8 +643,14 @@ abstract class AppLocalizations {
   /// No description provided for @help_filters_04.
   ///
   /// In en, this message translates to:
-  /// **'To check whether a specific SMS message will be forwarded based on the current filters, enter the required sender and/or message in the input fields and click the button to verify.'**
+  /// **'To check whether a specific message will be forwarded based on the current filters, enter the required sender and/or message text in the input fields and click the button to verify.'**
   String get help_filters_04;
+
+  /// No description provided for @help_filters_05.
+  ///
+  /// In en, this message translates to:
+  /// **'The specified filters are applied to all event types, not just incoming SMS.'**
+  String get help_filters_05;
 
   /// No description provided for @error_badRequest.
   ///

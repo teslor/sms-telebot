@@ -204,31 +204,36 @@ class AppLocalizationsZh extends AppLocalizations {
   String get help_about => '关于';
 
   @override
-  String get help_appInfo => '自动将接收的短信转发至 Telegram 机器人的应用';
+  String get help_appInfo => '用于自动转发接收短信的应用。\n附加功能：来电通知与电池状态通知。';
 
   @override
   String get help_info => '简介';
 
   @override
   String get help_info_01 =>
-      '此应用可将短信转发至 Telegram 机器人或电子邮件。您需要拥有自己的机器人或具有 SMTP 访问权限的邮箱。';
+      '使用本应用，您可以将消息转发到 Telegram 机器人，或转发到支持 SMTP 的邮箱地址。您还可以添加多个机器人或邮箱地址。';
 
   @override
-  String get help_info_02 =>
-      '为每个连接创建转发规则——它决定转发哪些短信以及转发到哪里。规则可以根据需要进行复制、启用或禁用。';
+  String get help_info_02 => '每个连接都会创建一条转发规则，用于定义发送哪些消息、发送到哪里。规则可按需复制、启用或禁用。';
 
   @override
-  String get help_info_03 =>
-      '收到短信时，应用会检查激活的规则并尝试转发。如果由于技术原因（例如没有网络）失败，应用会在稍后重试。';
+  String get help_info_03 => '应用会检查已启用规则并尝试转发新消息。若因技术原因（例如网络不可用）失败，应用会稍后重试。';
 
   @override
-  String get help_info_04 => '从多部手机转发短信时，您可以在设置中设置设备标签——它会随短信一起发送，以便识别发送短信的手机。';
+  String get help_info_04 => '请确保应用运行期间网络连接保持可用。';
 
   @override
-  String get help_info_05 => '建议为本应用关闭电池优化，因为系统可能会为节省电量而限制应用在后台运行。';
+  String get help_opts_01 => '首先选择需要转发的事件。应用运行时，会按已设置规则为每个事件生成并发送消息。';
 
   @override
-  String get help_info_06 => '确保保持互联网连接以使应用正常工作。';
+  String get help_opts_02 =>
+      '常驻后台模式可提高消息送达稳定性（尤其是系统通知），但会明显增加耗电。启用后，通知栏会显示常驻通知。除非确有需要，不建议开启。';
+
+  @override
+  String get help_opts_03 => '当您从多台手机转发消息时，可设置设备标签。该标签会随消息一起发送，用于识别消息来自哪台设备。';
+
+  @override
+  String get help_opts_04 => '建议为本应用关闭电池优化，因为系统可能会为省电而限制后台活动。';
 
   @override
   String get help_tbot => '连接 Telegram 机器人';
@@ -246,14 +251,14 @@ class AppLocalizationsZh extends AppLocalizations {
       '在应用中创建机器人规则并输入 Token（如果知道 Chat ID 也可以填入）。请务必测试设置后保存。测试成功后，您将收到一条欢迎消息。';
 
   @override
-  String get help_tbot_04 => '完成！现在已准备好向您的机器人转发短信。开启规则并点击“开始”即可。';
+  String get help_tbot_04 => '完成！现在已可将消息转发到您的机器人。启用规则后点击“开始”即可。';
 
   @override
   String get help_smtp => '连接 SMTP 服务器';
 
   @override
   String get help_smtp_01 =>
-      '对于短信转发，最好创建一个独立的电子邮箱（不要使用别名）：它也将作为登录用户名。对于 Gmail 和类似服务尤其如此。';
+      '建议为消息转发创建一个专用邮箱（不要用别名）：它也会作为登录名。对于 Gmail 等类似服务尤其重要。';
 
   @override
   String get help_smtp_02 => '创建规则并填写连接参数。通常需要“应用专用密码”（在邮箱的安全设置中生成）。';
@@ -265,12 +270,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get help_filters => '筛选器';
 
   @override
-  String get help_filters_01 =>
-      '您可以为接收短信的发件人或文本设置筛选器。如果发件人号码/名称或文本包含指定字符，则触发筛选器。';
+  String get help_filters_01 => '您可以按发件人或消息文本设置筛选器。当发件人号码/名称或文本包含指定字符时，筛选器会生效。';
 
   @override
   String get help_filters_02 =>
-      '有两种模式：白名单（如果至少一个筛选器匹配则转发短信）和黑名单（如果任何筛选器匹配则不转发短信）。在白名单模式下，如果未设置筛选器，则不会向机器人转发任何短信。';
+      '有两种模式：白名单（至少一个筛选器匹配时转发消息）和黑名单（任一筛选器匹配时不转发消息）。白名单模式下若未设置筛选器，则不会转发任何消息。';
 
   @override
   String get help_filters_03 =>
@@ -278,7 +282,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get help_filters_04 =>
-      '要检查特定短信是否会根据当前筛选器转发，请在输入字段中输入所需的发件人和/或消息，然后点击按钮进行验证。';
+      '要检查某条消息在当前筛选条件下是否会被转发，请在输入框中填写发件人和/或消息文本，然后点击验证按钮。';
+
+  @override
+  String get help_filters_05 => '已设置的筛选器会应用于所有事件类型，不仅仅是接收短信。';
 
   @override
   String get error_badRequest => '请求被拒绝。请检查输入的连接参数。';
