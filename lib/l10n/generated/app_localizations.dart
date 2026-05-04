@@ -142,6 +142,18 @@ abstract class AppLocalizations {
   /// **'Test'**
   String get action_test;
 
+  /// No description provided for @service_title.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS Telebot is active'**
+  String get service_title;
+
+  /// No description provided for @service_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitoring events'**
+  String get service_text;
+
   /// No description provided for @msg_list.
   ///
   /// In en, this message translates to:

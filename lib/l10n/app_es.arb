@@ -5,6 +5,8 @@
   "action_duplicate": "Duplicar",
   "action_save": "Guardar",
   "action_test": "Probar",
+  "service_title": "SMS Telebot está activo",
+  "service_text": "Monitoreando eventos",
   "msg_list": "Mensajes",
   "msg_welcome": "Toca Iniciar\npara habilitar el monitoreo",
   "msg_empty": "No hay mensajes\nen las últimas 24 horas",

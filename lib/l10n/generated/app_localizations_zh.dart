@@ -24,6 +24,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get action_test => '测试';
 
   @override
+  String get service_title => 'SMS Telebot 已激活';
+
+  @override
+  String get service_text => '正在监控事件';
+
+  @override
   String get msg_list => '消息';
 
   @override

@@ -24,6 +24,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get action_test => 'Проверить';
 
   @override
+  String get service_title => 'SMS Telebot активен';
+
+  @override
+  String get service_text => 'Мониторинг событий';
+
+  @override
   String get msg_list => 'Сообщения';
 
   @override

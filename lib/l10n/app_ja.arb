@@ -5,6 +5,8 @@
   "action_duplicate": "複製",
   "action_save": "保存",
   "action_test": "テスト",
+  "service_title": "SMS Telebot が有効です",
+  "service_text": "イベントを監視中",
   "msg_list": "メッセージ",
   "msg_welcome": "「開始」をタップして\n監視を有効にします",
   "msg_empty": "過去24時間の\nメッセージはありません",

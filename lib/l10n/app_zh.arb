@@ -5,6 +5,8 @@
   "action_duplicate": "复制",
   "action_save": "保存",
   "action_test": "测试",
+  "service_title": "SMS Telebot 已激活",
+  "service_text": "正在监控事件",
   "msg_list": "消息",
   "msg_welcome": "点按“开始”\n即可启用监控",
   "msg_empty": "过去24小时内\n没有消息",

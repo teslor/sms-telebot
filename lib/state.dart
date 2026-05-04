@@ -53,7 +53,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final localizations = AppLocalizations.of(navigatorKey.currentContext!)!;
       final settings = await MainDb.instance.getAllSettings();
-      final l10nSettings = <String, String>{
+      final l10nSettings = {
+        'l10nServiceTitle': localizations.service_title,
+        'l10nServiceText': localizations.service_text,
         'l10nSms': localizations.msg_sms,
         'l10nCall': localizations.msg_call,
         'l10nLowBattery': localizations.msg_lowBattery,
@@ -70,7 +72,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     });
 
     _updateStats();
-    if (isRunning) _startStatsPolling();
+    if (isRunning) {
+      _startStatsPolling();
+      if (enableForeground) await startForegroundServiceNative();
+    }
   }
 
   void _startStatsPolling() {

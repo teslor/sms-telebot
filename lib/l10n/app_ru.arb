@@ -5,6 +5,8 @@
   "action_duplicate": "Дублировать",
   "action_save": "Сохранить",
   "action_test": "Проверить",
+  "service_title": "SMS Telebot активен",
+  "service_text": "Мониторинг событий",
   "msg_list": "Сообщения",
   "msg_welcome": "Нажмите Старт, чтобы\nвключить мониторинг",
   "msg_empty": "Нет сообщений\nза последние 24 часа",

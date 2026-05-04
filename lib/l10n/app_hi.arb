@@ -5,6 +5,8 @@
   "action_duplicate": "डुप्लिकेट",
   "action_save": "सहेजें",
   "action_test": "टेस्ट करें",
+  "service_title": "SMS Telebot सक्रिय है",
+  "service_text": "घटनाओं की निगरानी की जा रही है",
   "msg_list": "संदेश",
   "msg_welcome": "निगरानी सक्षम करने के लिए\nस्टार्ट दबाएँ",
   "msg_empty": "पिछले 24 घंटों में\nकोई संदेश नहीं",

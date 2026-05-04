@@ -5,6 +5,7 @@ package com.teslor.sms_telebot
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.Build
@@ -27,9 +28,23 @@ class ForegroundService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val launchIntent = Intent(this, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        }
+        val contentIntent = PendingIntent.getActivity(
+            this, 0, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val dbManager = DbManager.getInstance(this)
+        val serviceTitle = dbManager.getSetting("l10nServiceTitle") ?: "SMS Telebot is active"
+        val serviceText = dbManager.getSetting("l10nServiceText") ?: "Monitoring events"
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle(serviceTitle)
+            .setContentText(serviceText)
             .setSmallIcon(R.drawable.ic_notification)
             .setPriority(NotificationCompat.PRIORITY_MIN)
+            .setContentIntent(contentIntent)
             .build()
 
         // Repeated starts are safe: Android updates the same foreground notification

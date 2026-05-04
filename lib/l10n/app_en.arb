@@ -5,6 +5,8 @@
   "action_duplicate": "Duplicate",
   "action_save": "Save",
   "action_test": "Test",
+  "service_title": "SMS Telebot is active",
+  "service_text": "Monitoring events",
   "msg_list": "Messages",
   "msg_welcome": "Tap Start\nto enable monitoring",
   "msg_empty": "No messages\nin the last 24 hours",
