@@ -31,6 +31,10 @@ class CallReceiver : BroadcastReceiver() {
         val logPerm = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG)
         if (statePerm != PackageManager.PERMISSION_GRANTED || logPerm != PackageManager.PERMISSION_GRANTED) return
 
+        val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager ?: return
+        @Suppress("DEPRECATION")
+        if (telephonyManager.callState != TelephonyManager.CALL_STATE_RINGING) return
+
         val dbManager = DbManager.getInstance(context)
         if (!dbManager.getBoolSetting("isRunning")) return
         if (!dbManager.getBoolSetting("forwardCalls")) return

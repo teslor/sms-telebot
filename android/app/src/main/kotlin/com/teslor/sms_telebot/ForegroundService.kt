@@ -43,7 +43,8 @@ class ForegroundService : Service() {
             .setContentTitle(serviceTitle)
             .setContentText(serviceText)
             .setSmallIcon(R.drawable.ic_notification)
-            .setPriority(NotificationCompat.PRIORITY_MIN)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .setContentIntent(contentIntent)
             .build()
 
@@ -63,7 +64,7 @@ class ForegroundService : Service() {
         val channel = NotificationChannel(
             CHANNEL_ID,
             "SMS Telebot foreground",
-            NotificationManager.IMPORTANCE_MIN
+            NotificationManager.IMPORTANCE_LOW
         ).apply {
             setShowBadge(false)
         }

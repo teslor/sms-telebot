@@ -453,9 +453,9 @@ object SmtpServerProvider : SendProvider {
     private fun hasTransientSmtpStatus(error: Throwable): Boolean {
         fun returnCodeOf(error: Throwable): Int? {
             return when (error) {
-                is SMTPAddressFailedException -> error.getReturnCode()
-                is SMTPSendFailedException -> error.getReturnCode()
-                is SMTPSenderFailedException -> error.getReturnCode()
+                is SMTPAddressFailedException -> error.returnCode
+                is SMTPSendFailedException -> error.returnCode
+                is SMTPSenderFailedException -> error.returnCode
                 else -> null
             }
         }
