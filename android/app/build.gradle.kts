@@ -71,6 +71,12 @@ android {
             )
         }
     }
+
+    dependenciesInfo {
+        // Disable dependency metadata in APK and App Bundles
+        includeInApk = false
+        includeInBundle = false
+    }
 }
 
 dependencies {

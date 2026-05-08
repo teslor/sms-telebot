@@ -1,0 +1,90 @@
+name: Build Android Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      create_draft:
+        description: 'Create draft release'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: pubspec.yaml
+          cache: true
+
+      - name: Decode Keystore and create key.properties
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/release-keystore.jks
+          
+          cat << EOF > android/key.properties
+          storePassword=$STORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=release-keystore.jks
+          EOF
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Extract version from pubspec.yaml
+        id: extract_version
+        run: |
+          # Find the "version: X.Y.Z+build" line, remove "+build" and spaces
+          VERSION=$(grep '^version: ' pubspec.yaml | sed 's/version: //g' | cut -d '+' -f 1 | tr -d ' ')
+          echo "APP_VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Found version: $VERSION"
+
+      - name: Build split APKs
+        run: flutter build apk --split-per-abi
+
+      - name: Rename APKs
+        run: |
+          cd build/app/outputs/flutter-apk/
+          mv app-armeabi-v7a-release.apk sms-telebot-${{ env.APP_VERSION }}-arm32.apk
+          mv app-arm64-v8a-release.apk sms-telebot-${{ env.APP_VERSION }}-arm64.apk
+
+      - name: Save APK artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: Release APKs
+          path: |
+            build/app/outputs/flutter-apk/sms-telebot-${{ env.APP_VERSION }}-arm32.apk
+            build/app/outputs/flutter-apk/sms-telebot-${{ env.APP_VERSION }}-arm64.apk
+          retention-days: 7
+
+      - name: Create draft release
+        if: inputs.create_draft == true
+        uses: softprops/action-gh-release@v3
+        with:
+          draft: true
+          overwrite_files: false
+          tag_name: "v${{ env.APP_VERSION }}"
+          files: |
+            build/app/outputs/flutter-apk/sms-telebot-${{ env.APP_VERSION }}-arm32.apk
+            build/app/outputs/flutter-apk/sms-telebot-${{ env.APP_VERSION }}-arm64.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
