@@ -33,7 +33,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     for (var key in AppConst.filterKeys) key: [],
   };
 
-  // Messages stats
+  // Message stats
   int receivedCount = 0;
   int sentCount = 0;
   List<Map<String, dynamic>> messagesList = [];
@@ -156,11 +156,11 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     final newReceivedCount = await MainDb.instance.getReceivedMessagesCount();
     final newSentCount = await MainDb.instance.getSentMessagesCount();
     final newList = await MainDb.instance.getRecentMessages(limit: 10);
-    final statusesSum = newList
-      .fold<int>(0, (sum, msg) => sum + ((msg['status'] as num?)?.toInt() ?? 0));
-    final attemptsSum = newList
-      .fold<int>(0, (sum, msg) => sum + ((msg['attempt_count'] as num?)?.toInt() ?? 0));
-    final newHash = '$newReceivedCount$newSentCount$statusesSum$attemptsSum';
+    final newHash = Object.hashAll([
+      newReceivedCount,
+      newSentCount,
+      for (final msg in newList) ...[msg['id'], msg['attempt_count'], msg['status']]
+    ]).toString();
 
     if (newHash != messagesListHash) {
       receivedCount = newReceivedCount;
