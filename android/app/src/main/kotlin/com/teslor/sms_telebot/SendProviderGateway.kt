@@ -123,6 +123,7 @@ object TelegramBotProvider : SendProvider {
             val json = JSONObject(configJson)
             val token = secret
             val chatId = json.optString("chatId", "")
+            val apiUrl = json.optString("apiUrl", "").ifBlank { "https://api.telegram.org" }
             if (token.isBlank() || chatId.isBlank()) {
                 return buildResult(
                     isSuccess = false,
@@ -139,7 +140,7 @@ object TelegramBotProvider : SendProvider {
                 receivedAt = payload.receivedAt,
                 labels = payload.labels,
             )
-            val result = sendRequest(token, chatId, msg.text)
+            val result = sendRequest(token, chatId, apiUrl, msg.text)
             mapApiResult(result)
         } catch (e: Exception) {
             buildResult(
@@ -154,6 +155,7 @@ object TelegramBotProvider : SendProvider {
     private fun sendRequest(
         token: String,
         chatId: String,
+        apiUrl: String,
         msg: String
     ): ApiResult {
         val requestBody = FormBody.Builder()
@@ -163,7 +165,7 @@ object TelegramBotProvider : SendProvider {
             .build()
 
         val request = Request.Builder()
-            .url("https://api.telegram.org/bot$token/sendMessage")
+            .url("$apiUrl/bot$token/sendMessage")
             .post(requestBody)
             .build()
 
@@ -319,10 +321,10 @@ object SmtpServerProvider : SendProvider {
             val login = json.optString("login", "")
             val password = secret
             val fromEmail = json.optString("fromEmail", "").ifBlank { login }
-            val toEmail = json.optString("toEmail", "")
+            val toEmail = json.optString("toEmail", "").ifBlank { login }
             val subject = json.optString("subject", "")
 
-            if (host.isBlank() || login.isBlank() || password.isBlank() || toEmail.isBlank()) {
+            if (host.isBlank() || login.isBlank() || password.isBlank()) {
                 return buildResult(
                     isSuccess = false,
                     code = ResultCode.INVALID_PARAMS,

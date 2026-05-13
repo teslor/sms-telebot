@@ -298,12 +298,6 @@ abstract class AppLocalizations {
   /// **'Bot token'**
   String get tbot_token;
 
-  /// No description provided for @tbot_tokenInfo.
-  ///
-  /// In en, this message translates to:
-  /// **'Bot token you\'ve got from @BotFather'**
-  String get tbot_tokenInfo;
-
   /// No description provided for @tbot_chatId.
   ///
   /// In en, this message translates to:
@@ -313,8 +307,20 @@ abstract class AppLocalizations {
   /// No description provided for @tbot_chatIdInfo.
   ///
   /// In en, this message translates to:
-  /// **'ID of a chat with your bot (optional)'**
+  /// **'Default: auto-detect'**
   String get tbot_chatIdInfo;
+
+  /// No description provided for @tbot_apiUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'API URL'**
+  String get tbot_apiUrl;
+
+  /// No description provided for @tbot_apiUrlInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Default: standard Telegram URL'**
+  String get tbot_apiUrlInfo;
 
   /// No description provided for @smtp.
   ///
@@ -379,7 +385,7 @@ abstract class AppLocalizations {
   /// No description provided for @smtp_fromEmailInfo.
   ///
   /// In en, this message translates to:
-  /// **'Optional – login if empty'**
+  /// **'Default: login'**
   String get smtp_fromEmailInfo;
 
   /// No description provided for @smtp_toEmail.
@@ -391,7 +397,7 @@ abstract class AppLocalizations {
   /// No description provided for @smtp_toEmailInfo.
   ///
   /// In en, this message translates to:
-  /// **'Recipient email address'**
+  /// **'Default: login'**
   String get smtp_toEmailInfo;
 
   /// No description provided for @smtp_subject.
@@ -403,7 +409,7 @@ abstract class AppLocalizations {
   /// No description provided for @smtp_subjectInfo.
   ///
   /// In en, this message translates to:
-  /// **'Email subject (optional)'**
+  /// **'Default: no subject'**
   String get smtp_subjectInfo;
 
   /// No description provided for @filters.
@@ -505,7 +511,7 @@ abstract class AppLocalizations {
   /// No description provided for @settings_deviceLabelInfo.
   ///
   /// In en, this message translates to:
-  /// **'Custom label (optional)'**
+  /// **'Default: no label'**
   String get settings_deviceLabelInfo;
 
   /// No description provided for @help_about.
@@ -603,6 +609,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done! Everything is set up to forward messages to your bot. Enable the rule and press Start to begin.'**
   String get help_tbot_04;
+
+  /// No description provided for @help_tbot_05.
+  ///
+  /// In en, this message translates to:
+  /// **'There is also an option to set a custom API server URL to use it instead of the official Telegram server.'**
+  String get help_tbot_05;
 
   /// No description provided for @help_smtp.
   ///

@@ -102,13 +102,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tbot_token => 'Bot token';
 
   @override
-  String get tbot_tokenInfo => 'Bot token you\'ve got from @BotFather';
-
-  @override
   String get tbot_chatId => 'Chat ID';
 
   @override
-  String get tbot_chatIdInfo => 'ID of a chat with your bot (optional)';
+  String get tbot_chatIdInfo => 'Default: auto-detect';
+
+  @override
+  String get tbot_apiUrl => 'API URL';
+
+  @override
+  String get tbot_apiUrlInfo => 'Default: standard Telegram URL';
 
   @override
   String get smtp => 'SMTP server';
@@ -141,19 +144,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smtp_fromEmail => 'From email';
 
   @override
-  String get smtp_fromEmailInfo => 'Optional – login if empty';
+  String get smtp_fromEmailInfo => 'Default: login';
 
   @override
   String get smtp_toEmail => 'To email';
 
   @override
-  String get smtp_toEmailInfo => 'Recipient email address';
+  String get smtp_toEmailInfo => 'Default: login';
 
   @override
   String get smtp_subject => 'Subject';
 
   @override
-  String get smtp_subjectInfo => 'Email subject (optional)';
+  String get smtp_subjectInfo => 'Default: no subject';
 
   @override
   String get filters => 'Filters';
@@ -204,7 +207,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_deviceLabel => 'Device label';
 
   @override
-  String get settings_deviceLabelInfo => 'Custom label (optional)';
+  String get settings_deviceLabelInfo => 'Default: no label';
 
   @override
   String get help_about => 'About';
@@ -266,6 +269,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get help_tbot_04 =>
       'Done! Everything is set up to forward messages to your bot. Enable the rule and press Start to begin.';
+
+  @override
+  String get help_tbot_05 =>
+      'There is also an option to set a custom API server URL to use it instead of the official Telegram server.';
 
   @override
   String get help_smtp => 'Connecting an SMTP Server';

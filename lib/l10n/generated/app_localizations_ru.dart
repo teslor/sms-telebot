@@ -103,13 +103,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tbot_token => 'Токен';
 
   @override
-  String get tbot_tokenInfo => 'Токен бота, полученный от @BotFather';
-
-  @override
   String get tbot_chatId => 'ID чата';
 
   @override
-  String get tbot_chatIdInfo => 'ID чата с ботом (опционально)';
+  String get tbot_chatIdInfo => 'По умолчанию: получить автоматически';
+
+  @override
+  String get tbot_apiUrl => 'URL API-сервера';
+
+  @override
+  String get tbot_apiUrlInfo => 'По умолчанию: стандартный URL Telegram';
 
   @override
   String get smtp => 'SMTP-сервер';
@@ -142,19 +145,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get smtp_fromEmail => 'Email отправителя';
 
   @override
-  String get smtp_fromEmailInfo => 'Опционально: логин, если пусто';
+  String get smtp_fromEmailInfo => 'По умолчанию: логин';
 
   @override
   String get smtp_toEmail => 'Email получателя';
 
   @override
-  String get smtp_toEmailInfo => 'Email-адрес получателя';
+  String get smtp_toEmailInfo => 'По умолчанию: логин';
 
   @override
   String get smtp_subject => 'Тема';
 
   @override
-  String get smtp_subjectInfo => 'Тема письма (опционально)';
+  String get smtp_subjectInfo => 'По умолчанию: без темы';
 
   @override
   String get filters => 'Фильтры';
@@ -178,7 +181,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get filters_text => 'Сообщение';
 
   @override
-  String get filters_textInfo => 'Добавьте текстовые фильтры';
+  String get filters_textInfo => 'Добавьте фильтры для текста';
 
   @override
   String get settings => 'Настройки';
@@ -205,7 +208,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settings_deviceLabel => 'Метка устройства';
 
   @override
-  String get settings_deviceLabelInfo => 'Пользовательская метка (опционально)';
+  String get settings_deviceLabelInfo => 'По умолчанию: без метки';
 
   @override
   String get help_about => 'О приложении';
@@ -223,7 +226,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get help_info_02 =>
-      'Для каждого подключения создаётся правило пересылки — оно определяет, какие сообщения и куда отправлять. Правила можно дублировать, включать и выключать по мере необходимости.';
+      'Для каждого подключения со здаётся правило пересылки — оно определяет, какие сообщения и куда отправлять. Правила можно дублировать, включать и выключать по мере необходимости.';
 
   @override
   String get help_info_03 =>
@@ -267,6 +270,10 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get help_tbot_04 =>
       'Готово! Теперь всё настроено, чтобы пересылать сообщения вашему боту. Включите правило и нажмите Старт, чтобы начать пересылку.';
+
+  @override
+  String get help_tbot_05 =>
+      'Также есть возможность задать адрес собственного API-сервера, чтобы использовать его вместо официального сервера Telegram.';
 
   @override
   String get help_smtp => 'Подключение SMTP-сервера';

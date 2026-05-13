@@ -48,9 +48,8 @@ Future<bool> getNotificationPermission({bool openSettings = false}) async {
   return false;  
 }
 
-Future<CallResult> getUpdates(String? token) async {
-  if (token == null) return errorResult();
-  final url = 'https://api.telegram.org/bot$token/getUpdates';
+Future<CallResult> getUpdates(String token, String apiUrl) async {
+  final url = '${apiUrl.isEmpty ? "https://api.telegram.org" : apiUrl}/bot$token/getUpdates';
 
   try {
     final response = await http.get(Uri.parse(url));

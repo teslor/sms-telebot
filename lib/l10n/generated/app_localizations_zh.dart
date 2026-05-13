@@ -102,13 +102,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tbot_token => '机器人令牌';
 
   @override
-  String get tbot_tokenInfo => '从 @BotFather 获取的令牌';
-
-  @override
   String get tbot_chatId => '聊天 ID';
 
   @override
-  String get tbot_chatIdInfo => '与您的机器人的聊天 ID（可选）';
+  String get tbot_chatIdInfo => '默认：自动检测';
+
+  @override
+  String get tbot_apiUrl => 'API URL';
+
+  @override
+  String get tbot_apiUrlInfo => '默认：Telegram 标准 URL';
 
   @override
   String get smtp => 'SMTP 服务器';
@@ -141,19 +144,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get smtp_fromEmail => '发件人邮箱';
 
   @override
-  String get smtp_fromEmailInfo => '可选 - 留空时使用登录名';
+  String get smtp_fromEmailInfo => '默认：登录名';
 
   @override
   String get smtp_toEmail => '收件人邮箱';
 
   @override
-  String get smtp_toEmailInfo => '收件人邮箱地址';
+  String get smtp_toEmailInfo => '默认：登录名';
 
   @override
   String get smtp_subject => '主题';
 
   @override
-  String get smtp_subjectInfo => '邮件主题（可选）';
+  String get smtp_subjectInfo => '默认：无主题';
 
   @override
   String get filters => '筛选器';
@@ -204,7 +207,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_deviceLabel => '设备标签';
 
   @override
-  String get settings_deviceLabelInfo => '自定义标签（可选';
+  String get settings_deviceLabelInfo => '默认：无标签';
 
   @override
   String get help_about => '关于';
@@ -258,6 +261,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get help_tbot_04 => '完成！现在已可将消息转发到您的机器人。启用规则后点击“开始”即可。';
+
+  @override
+  String get help_tbot_05 => '你也可以设置自定义 API 服务器 URL，以替代 Telegram 官方服务器。';
 
   @override
   String get help_smtp => '连接 SMTP 服务器';

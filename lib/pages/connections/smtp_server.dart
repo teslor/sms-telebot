@@ -102,23 +102,27 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
     final login = _loginController.text.trim();
     final password = _passwordController.text;
     final fromEmail = _fromEmailController.text.trim();
-    final toEmail = _toEmailController.text;
+    final toEmail = _toEmailController.text.trim();
 
     if (host.isEmpty || port == null || login.isEmpty || password.isEmpty) return false;
     if (fromEmail.isNotEmpty && !_isValidEmail(fromEmail)) return false;
-    if (!_isValidRecipientEmails(toEmail)) return false;
+    if (toEmail.isNotEmpty &&!_isValidRecipientEmails(toEmail)) return false;
     return true;
   }
 
   Map<String, dynamic> _buildConfig() {
+    final fromEmail = _fromEmailController.text.trim();
+    final toEmail = _toEmailController.text.trim();
+    final subject = _subjectController.text.trim();
+
     return {
       'host': _hostController.text.trim(),
       'protocol': _protocol,
       'port': _parsePort(_portController.text.trim()),
       'login': _loginController.text.trim(),
-      'fromEmail': _fromEmailController.text.trim(),
-      'toEmail': _parseRecipientEmails(_toEmailController.text).join(', '),
-      'subject': _subjectController.text.trim(),
+      if (fromEmail.isNotEmpty) 'fromEmail': fromEmail,
+      if (toEmail.isNotEmpty) 'toEmail': _parseRecipientEmails(toEmail).join(', '),
+      if (subject.isNotEmpty) 'subject': subject,
     };
   }
 

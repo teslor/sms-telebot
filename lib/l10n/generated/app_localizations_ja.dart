@@ -102,13 +102,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tbot_token => 'ボットトークン';
 
   @override
-  String get tbot_tokenInfo => '@BotFatherから取得したトークン';
-
-  @override
   String get tbot_chatId => 'チャットID';
 
   @override
-  String get tbot_chatIdInfo => 'ボットとのチャットのID（オプション）';
+  String get tbot_chatIdInfo => 'デフォルト: 自動検出';
+
+  @override
+  String get tbot_apiUrl => 'API URL';
+
+  @override
+  String get tbot_apiUrlInfo => 'デフォルト: 標準のTelegram URL';
 
   @override
   String get smtp => 'SMTPサーバー';
@@ -141,19 +144,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get smtp_fromEmail => '送信元メール';
 
   @override
-  String get smtp_fromEmailInfo => '任意 - 空の場合はログインを使用';
+  String get smtp_fromEmailInfo => 'デフォルト: ログイン';
 
   @override
   String get smtp_toEmail => '送信先メール';
 
   @override
-  String get smtp_toEmailInfo => '受信者のメールアドレス';
+  String get smtp_toEmailInfo => 'デフォルト: ログイン';
 
   @override
   String get smtp_subject => '件名';
 
   @override
-  String get smtp_subjectInfo => 'メール件名（オプション）';
+  String get smtp_subjectInfo => 'デフォルト: 件名なし';
 
   @override
   String get filters => 'フィルター';
@@ -204,7 +207,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_deviceLabel => 'デバイスラベル';
 
   @override
-  String get settings_deviceLabelInfo => 'カスタムラベル（オプション）';
+  String get settings_deviceLabelInfo => 'デフォルト: ラベルなし';
 
   @override
   String get help_about => 'このアプリについて';
@@ -264,6 +267,10 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get help_tbot_04 =>
       '完了です。これでメッセージをボットへ転送する準備が整いました。ルールを有効にして「開始」をタップしてください。';
+
+  @override
+  String get help_tbot_05 =>
+      '公式Telegramサーバーの代わりに使用するカスタムAPIサーバーURLを設定することもできます。';
 
   @override
   String get help_smtp => 'SMTPサーバーの接続';

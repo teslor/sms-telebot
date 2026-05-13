@@ -105,13 +105,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tbot_token => 'Bot-Token';
 
   @override
-  String get tbot_tokenInfo => 'Token vom @BotFather erhalten';
-
-  @override
   String get tbot_chatId => 'Chat-ID';
 
   @override
-  String get tbot_chatIdInfo => 'ID des Chats mit Ihrem Bot (optional)';
+  String get tbot_chatIdInfo => 'Standard: automatische Erkennung';
+
+  @override
+  String get tbot_apiUrl => 'API-URL';
+
+  @override
+  String get tbot_apiUrlInfo => 'Standard: Telegram-Standard-URL';
 
   @override
   String get smtp => 'SMTP-Server';
@@ -144,19 +147,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get smtp_fromEmail => 'Absender-E-Mail';
 
   @override
-  String get smtp_fromEmailInfo => 'Optional - Anmeldung, falls leer';
+  String get smtp_fromEmailInfo => 'Standard: Login';
 
   @override
   String get smtp_toEmail => 'Empfänger-E-Mail';
 
   @override
-  String get smtp_toEmailInfo => 'E-Mail-Adresse des Empfängers';
+  String get smtp_toEmailInfo => 'Standard: Login';
 
   @override
   String get smtp_subject => 'Betreff';
 
   @override
-  String get smtp_subjectInfo => 'E-Mail-Betreff (optional)';
+  String get smtp_subjectInfo => 'Standard: kein Betreff';
 
   @override
   String get filters => 'Filter';
@@ -207,8 +210,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings_deviceLabel => 'Gerätename';
 
   @override
-  String get settings_deviceLabelInfo =>
-      'Benutzerdefinierte Bezeichnung (optional)';
+  String get settings_deviceLabelInfo => 'Standard: keine Bezeichnung';
 
   @override
   String get help_about => 'Über';
@@ -270,6 +272,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get help_tbot_04 =>
       'Fertig! Jetzt ist alles bereit, um Nachrichten an Ihren Bot weiterzuleiten. Aktivieren Sie die Regel und tippen Sie auf Start.';
+
+  @override
+  String get help_tbot_05 =>
+      'Optional können Sie auch eine benutzerdefinierte API-Server-URL festlegen und diese anstelle des offiziellen Telegram-Servers verwenden.';
 
   @override
   String get help_smtp => 'SMTP-Server verbinden';

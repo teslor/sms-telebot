@@ -17,6 +17,7 @@ class TelegramBotConnection extends StatefulWidget {
 class _TelegramBotConnectionState extends State<TelegramBotConnection> {
   late TextEditingController _tokenController;
   late TextEditingController _chatIdController;
+  late TextEditingController _apiUrlController;
 
   bool _isTesting = false;
   bool _isInputChanged = false;
@@ -29,18 +30,26 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     final config = context.read<AppState>().config;
     _tokenController = TextEditingController(text: config['token'] ?? '');
     _chatIdController = TextEditingController(text: config['chatId']?.toString() ?? '');
+    _apiUrlController = TextEditingController(text: config['apiUrl']?.toString() ?? '');
   }
 
   @override
   void dispose() {
     _tokenController.dispose();
     _chatIdController.dispose();
+    _apiUrlController.dispose();
     super.dispose();
   }
 
   static final _tokenRegex = RegExp(r'^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$');
   bool get _isValidToken => _tokenRegex.hasMatch(_tokenController.text);
   bool get _isValidChatId => int.tryParse(_chatIdController.text.trim()) != null;
+  bool get _isValidApiUrl {
+    final apiUrl = _apiUrlController.text.trim();
+    return apiUrl.isEmpty ||
+      (Uri.tryParse(apiUrl) != null &&
+      (apiUrl.startsWith('http://') || apiUrl.startsWith('https://')));
+  }
 
   Future<void> _testConnection(AppLocalizations l10n) async {
     FocusManager.instance.primaryFocus?.unfocus();
@@ -49,7 +58,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
       _isTesting = true;
       _testResult = null;
     });
-    if (!_isValidToken) {
+    if (!_isValidToken || !_isValidApiUrl) {
       setState(() {
         _isTesting = false;
         _testResult = false;
@@ -59,12 +68,14 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     }
 
     final appState = context.read<AppState>();
-    final token = _tokenController.text;
-    String chatId = _chatIdController.text;
+    final token = _tokenController.text.trim();
+    String chatId = _chatIdController.text.trim();
+    String apiUrl = _apiUrlController.text.trim();
+    if (apiUrl.endsWith('/')) apiUrl = apiUrl.substring(0, apiUrl.length - 1);
 
     try {
       if (chatId.isEmpty) {
-        final result = await getUpdates(token);
+        final result = await getUpdates(token, apiUrl);
         if (result.isSuccess) {
           chatId = result.data!;
           _chatIdController.text = chatId;
@@ -79,7 +90,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
 
       final result = await sendToProviderNative(
         provider: 'telegram_bot',
-        config: { 'chatId': chatId },
+        config: {'chatId': chatId, if (apiUrl.isNotEmpty) 'apiUrl': apiUrl},
         secret: token,
         body: l10n.msg_hello,
         deviceLabel: appState.deviceLabel,
@@ -108,7 +119,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
   Future<void> _saveConnection(AppLocalizations l10n) async {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    if (!(_isValidToken && _isValidChatId)) {
+    if (!_isValidToken || !_isValidChatId || !_isValidApiUrl) {
       setState(() {
         _saveResult = false;
         context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
@@ -117,9 +128,15 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     }
 
     final appState = context.read<AppState>();
-    final secret = _tokenController.text;
+    final token = _tokenController.text.trim();
+    String apiUrl = _apiUrlController.text.trim();
+    if (apiUrl.endsWith('/')) apiUrl = apiUrl.substring(0, apiUrl.length - 1);
+    final config = {
+      'chatId': _chatIdController.text.trim(),
+      if (apiUrl.isNotEmpty) 'apiUrl': apiUrl,
+    };
     try {
-      final result = await appState.updateRuleConfig({'chatId': _chatIdController.text.trim()}, secret);
+      final result = await appState.updateRuleConfig(config, token);
       if (!mounted) return;
       if (!result.isSuccess) {
         setState(() { _saveResult = false; });
@@ -152,7 +169,6 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               labelText: l10n.tbot_token,
-              helperText: l10n.tbot_tokenInfo,
               helperMaxLines: 2,
             ),
             onChanged: (String value) {
@@ -170,6 +186,21 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
             ),
             keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: true),
             inputFormatters:[FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*$'))],
+            onChanged: (String value) {
+              setState(() { _saveResult = null; _isInputChanged = true; });
+            },
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: _apiUrlController,
+            keyboardType: TextInputType.url,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: l10n.tbot_apiUrl,
+              helperText: l10n.tbot_apiUrlInfo,
+              helperMaxLines: 2,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+            ),
             onChanged: (String value) {
               setState(() { _saveResult = null; _isInputChanged = true; });
             },

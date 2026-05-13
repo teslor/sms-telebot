@@ -29,6 +29,7 @@ class HelpPage extends StatelessWidget {
       l10n.help_tbot_02,
       l10n.help_tbot_03,
       l10n.help_tbot_04,
+      l10n.help_tbot_05,
     ];
     final List<String> smtpItems = [
       l10n.help_smtp_01,

@@ -103,13 +103,16 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tbot_token => 'बॉट टोकन';
 
   @override
-  String get tbot_tokenInfo => '@BotFather से प्राप्त टोकन';
-
-  @override
   String get tbot_chatId => 'चैट ID';
 
   @override
-  String get tbot_chatIdInfo => 'आपके बॉट के साथ चैट की ID (वैकल्पिक)';
+  String get tbot_chatIdInfo => 'डिफ़ॉल्ट: स्वतः पहचान';
+
+  @override
+  String get tbot_apiUrl => 'API URL';
+
+  @override
+  String get tbot_apiUrlInfo => 'डिफ़ॉल्ट: मानक Telegram URL';
 
   @override
   String get smtp => 'SMTP सर्वर';
@@ -142,19 +145,19 @@ class AppLocalizationsHi extends AppLocalizations {
   String get smtp_fromEmail => 'प्रेषक ईमेल';
 
   @override
-  String get smtp_fromEmailInfo => 'वैकल्पिक - खाली होने पर लॉगिन';
+  String get smtp_fromEmailInfo => 'डिफ़ॉल्ट: लॉगिन';
 
   @override
   String get smtp_toEmail => 'प्राप्तकर्ता ईमेल';
 
   @override
-  String get smtp_toEmailInfo => 'प्राप्तकर्ता का ईमेल पता';
+  String get smtp_toEmailInfo => 'डिफ़ॉल्ट: लॉगिन';
 
   @override
   String get smtp_subject => 'विषय';
 
   @override
-  String get smtp_subjectInfo => 'ईमेल विषय (वैकल्पिक)';
+  String get smtp_subjectInfo => 'डिफ़ॉल्ट: विषय नहीं';
 
   @override
   String get filters => 'फ़िल्टर';
@@ -205,7 +208,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settings_deviceLabel => 'डिवाइस लेबल';
 
   @override
-  String get settings_deviceLabelInfo => 'कस्टम लेबल (वैकल्पिक)';
+  String get settings_deviceLabelInfo => 'डिफ़ॉल्ट: कोई लेबल नहीं';
 
   @override
   String get help_about => 'ऐप के बारे में';
@@ -267,6 +270,10 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get help_tbot_04 =>
       'हो गया! अब संदेश आपके बॉट को फ़ॉरवर्ड करने के लिए सब तैयार है। नियम चालू करें और शुरू करने के लिए \'Start\' दबाएँ।';
+
+  @override
+  String get help_tbot_05 =>
+      'आप चाहें तो आधिकारिक Telegram सर्वर की जगह कस्टम API सर्वर URL भी सेट कर सकते हैं।';
 
   @override
   String get help_smtp => 'SMTP सर्वर कनेक्ट करना';

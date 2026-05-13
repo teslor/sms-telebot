@@ -262,14 +262,14 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     return result;
   }
 
-  Future<CallResult> updateRuleConfig(Map<String, dynamic> newConfig, String? secret) async {
+  Future<CallResult> updateRuleConfig(Map<String, dynamic> newConfig, String secret) async {
     CallResult result = okResult();
     
     if (selectedRule == null) return result;
     final ruleId = selectedRule!['id'];
 
     await MainDb.instance.updateRuleField(ruleId, 'config_json', jsonEncode(newConfig));
-    result = await saveSecretNative(ruleId.toString(), secret ?? '');
+    result = await saveSecretNative(ruleId.toString(), secret);
     await _loadRules();
     return result;
   }
