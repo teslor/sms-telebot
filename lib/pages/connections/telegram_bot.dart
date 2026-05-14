@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../extensions/build_context_x.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../styles.dart';
 import '../../state.dart';
 import '../../service.dart';
 import '../../widgets/action_button.dart';
@@ -161,28 +162,23 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
 
     return Scaffold(
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 15),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
         children:[
-          const SizedBox(height: 5),
           TextField(
             controller: _tokenController,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
+            decoration: CustomStyle.compactInput(
               labelText: l10n.tbot_token,
-              helperMaxLines: 2,
             ),
             onChanged: (String value) {
               setState(() { _saveResult = null; _isInputChanged = true; });
             },
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           TextField(
             controller: _chatIdController,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
+            decoration: CustomStyle.compactInput(
               labelText: l10n.tbot_chatId,
               helperText: l10n.tbot_chatIdInfo,
-              helperMaxLines: 2,
             ),
             keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: true),
             inputFormatters:[FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*$'))],
@@ -190,15 +186,13 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
               setState(() { _saveResult = null; _isInputChanged = true; });
             },
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           TextField(
             controller: _apiUrlController,
             keyboardType: TextInputType.url,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
+            decoration: CustomStyle.compactInput(
               labelText: l10n.tbot_apiUrl,
               helperText: l10n.tbot_apiUrlInfo,
-              helperMaxLines: 2,
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             onChanged: (String value) {

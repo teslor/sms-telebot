@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../extensions/build_context_x.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../styles.dart';
 import '../../state.dart';
 import '../../service.dart';
 import '../../widgets/action_button.dart';
@@ -238,24 +239,21 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
 
     return Scaffold(
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 15),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
         children: [
-          const SizedBox(height: 5),
           TextField(
             controller: _hostController,
             keyboardType: TextInputType.url,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
+            decoration: CustomStyle.compactInput(
               labelText: l10n.smtp_host,
             ),
             onChanged: _onChanged,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             value: _protocol,
             style: dropdownTextStyle,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
+            decoration: CustomStyle.compactInput(
               labelText: l10n.smtp_protocol,
             ),
             items: [
@@ -285,34 +283,31 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
               });
             },
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           TextField(
             controller: _portController,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
+            decoration: CustomStyle.compactInput(
               labelText: l10n.smtp_port,
             ),
             onChanged: _onPortChanged,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           TextField(
             controller: _loginController,
             keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
+            decoration: CustomStyle.compactInput(
               labelText: l10n.smtp_login,
               helperText: l10n.smtp_loginInfo,
             ),
             onChanged: _onChanged,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           TextField(
             controller: _passwordController,
             obscureText: !_isPasswordVisible,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
+            decoration: CustomStyle.compactInput(
               labelText: l10n.smtp_password,
               helperText: l10n.smtp_passwordInfo,
               suffixIcon: IconButton(
@@ -326,33 +321,30 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             ),
             onChanged: _onChanged,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           TextField(
             controller: _fromEmailController,
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
+            decoration: CustomStyle.compactInput(
               labelText: l10n.smtp_fromEmail,
               helperText: l10n.smtp_fromEmailInfo,
             ),
             onChanged: _onChanged,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           TextField(
             controller: _toEmailController,
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
+            decoration: CustomStyle.compactInput(
               labelText: l10n.smtp_toEmail,
               helperText: l10n.smtp_toEmailInfo,
             ),
             onChanged: _onChanged,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           TextField(
             controller: _subjectController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
+            decoration: CustomStyle.compactInput(
               labelText: l10n.smtp_subject,
               helperText: l10n.smtp_subjectInfo,
             ),

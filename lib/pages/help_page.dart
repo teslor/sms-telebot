@@ -52,7 +52,7 @@ class HelpPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
           children: [
             Text(AppConst.appName, style: TextStyle(fontSize: 20, color: appLabelColor)),
             Transform.translate(

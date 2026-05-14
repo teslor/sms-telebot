@@ -102,7 +102,7 @@ class RulesPage extends StatelessWidget {
           ),
         )
         : ListView.builder(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
           itemCount: rules.length,
           itemBuilder: (context, index) {
             final rule = rules[index];
@@ -222,7 +222,7 @@ class RuleCard extends StatelessWidget {
     final isActive = rule['is_active'] == 1;
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 15),
+      margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
         onTap: () async {
           await _runAppStateAction(
@@ -235,7 +235,7 @@ class RuleCard extends StatelessWidget {
           _showActionMenu(context, appState);
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
           child: Row(
             children: [
               Expanded(

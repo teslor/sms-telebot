@@ -75,7 +75,7 @@ class _AppViewState extends State<AppView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final appState = context.watch<AppState>();
-    
+
     // Hide the main AppBar when a specific rule is open
     final bool isRuleSelected = currentPageIndex == 1 && appState.selectedRule != null;
 
@@ -89,9 +89,10 @@ class _AppViewState extends State<AppView> {
             icon: Icon(Icons.help_outline_rounded),
             onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage())); },
           ),
-        ],        
+        ],
       ),
       bottomNavigationBar: NavigationBar(
+        height: 74,
         onDestinationSelected: (int index) {
           // Return to the list of rules if the Rules tab is already selected
           if (currentPageIndex == index && index == 1) {

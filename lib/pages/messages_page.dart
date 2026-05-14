@@ -72,17 +72,17 @@ class _MessagesPageState extends State<MessagesPage> {
           ),
         )
         : ListView(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildInfoCard(context, l10n.msg_received, receivedCount.toString()),
-                const SizedBox(width: 15),
+                const SizedBox(width: 16),
                 _buildInfoCard(context, l10n.msg_sent, sentCount.toString()),
               ],
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 16),
             if (messagesList.isNotEmpty)
               ...messagesList.map((msg) => _buildMessageCard(context, msg)),
           ],
@@ -143,9 +143,9 @@ class _MessagesPageState extends State<MessagesPage> {
     final statusVisual = _statusVisual(theme, status);
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 15),
+      margin: const EdgeInsets.only(bottom: 16),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(13),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../styles.dart';
 import '../state.dart';
 import '../service.dart';
 import '../widgets/action_button.dart';
@@ -13,6 +14,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  static const EdgeInsets _switchTilePadding = EdgeInsets.fromLTRB(13, 0, 10, 0);
+
   late TextEditingController _deviceLabelController;
 
   bool _forwardSms = false;
@@ -78,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     return Scaffold(
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 15),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 2, bottom: 8),
@@ -103,7 +106,7 @@ class _SettingsPageState extends State<SettingsPage> {
               children: [
                 SwitchListTile(
                   title: Text(l10n.settings_forwardSms),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  contentPadding: _switchTilePadding,
                   value: _forwardSms,
                   onChanged: (bool value) async {
                     if (value && !await getSmsPermission(openSettings: true)) return;
@@ -114,7 +117,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 const Divider(height: 1),
                 SwitchListTile(
                   title: Text(l10n.settings_forwardCalls),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  contentPadding: _switchTilePadding,
                   value: _forwardCalls,
                   onChanged: (bool value) async {
                     if (value && !await getPhonePermission(openSettings: true)) return;
@@ -125,7 +128,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 const Divider(height: 1),
                 SwitchListTile(
                   title: Text(l10n.settings_notifyLowBattery),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  contentPadding: _switchTilePadding,
                   value: _notifyLowBattery,
                   onChanged: (bool value) {
                     _notifyLowBattery = value;
@@ -135,7 +138,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 const Divider(height: 1),
                 SwitchListTile(
                   title: Text(l10n.settings_notifyChargerState),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  contentPadding: _switchTilePadding,
                   value: _notifyChargerState,
                   onChanged: (bool value) {
                     _notifyChargerState = value;
@@ -146,7 +149,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
 
           Card(
             margin: EdgeInsets.zero,
@@ -158,7 +161,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             child: SwitchListTile(
               title: Text(l10n.settings_enableForeground),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+              contentPadding: _switchTilePadding,
               value: _enableForeground,
               onChanged: (bool value) async {
                 if (value && !await getNotificationPermission(openSettings: true)) return;
@@ -168,15 +171,13 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
 
           TextField(
             controller: _deviceLabelController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
+            decoration: CustomStyle.compactInput(
               labelText: l10n.settings_deviceLabel,
               helperText: l10n.settings_deviceLabelInfo,
-              helperMaxLines: 2,
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             onChanged: (String value) => _onSettingChanged(),
