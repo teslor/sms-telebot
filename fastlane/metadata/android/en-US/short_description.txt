@@ -1,0 +1,1 @@
+Forward SMS, calls, battery and charger alerts to Telegram bot or email
