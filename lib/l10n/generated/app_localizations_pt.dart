@@ -156,7 +156,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get smtp_subject => 'Assunto';
 
   @override
-  String get smtp_subjectInfo => 'Padrão: sem assunto';
+  String get smtp_subjectInfo => 'Padrão: auto';
 
   @override
   String get filters => 'Filtros';

@@ -9,7 +9,7 @@ import '../widgets/action_button.dart';
 
 class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
-  
+
   @override
   State<MessagesPage> createState() => _MessagesPageState();
 }

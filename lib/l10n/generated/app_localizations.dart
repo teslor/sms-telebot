@@ -409,7 +409,7 @@ abstract class AppLocalizations {
   /// No description provided for @smtp_subjectInfo.
   ///
   /// In en, this message translates to:
-  /// **'Default: no subject'**
+  /// **'Default: auto'**
   String get smtp_subjectInfo;
 
   /// No description provided for @filters.

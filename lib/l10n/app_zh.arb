@@ -49,7 +49,7 @@
   "smtp_toEmail": "收件人邮箱",
   "smtp_toEmailInfo": "默认：登录名",
   "smtp_subject": "主题",
-  "smtp_subjectInfo": "默认：无主题",
+  "smtp_subjectInfo": "默认：自动",
   "filters": "筛选器",
   "filters_off": "关闭",
   "filters_whitelist": "白名单",

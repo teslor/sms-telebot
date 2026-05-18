@@ -49,7 +49,7 @@
   "smtp_toEmail": "送信先メール",
   "smtp_toEmailInfo": "デフォルト: ログイン",
   "smtp_subject": "件名",
-  "smtp_subjectInfo": "デフォルト: 件名なし",
+  "smtp_subjectInfo": "デフォルト: 自動",
   "filters": "フィルター",
   "filters_off": "オフ",
   "filters_whitelist": "ホワイトリスト",

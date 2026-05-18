@@ -31,7 +31,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     final appState = context.read<AppState>();
-    
+
     _deviceLabelController = TextEditingController(text: appState.deviceLabel);
     _forwardSms = appState.forwardSms;
     _forwardCalls = appState.forwardCalls;

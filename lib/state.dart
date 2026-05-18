@@ -264,7 +264,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<CallResult> updateRuleConfig(Map<String, dynamic> newConfig, String secret) async {
     CallResult result = okResult();
-    
+
     if (selectedRule == null) return result;
     final ruleId = selectedRule!['id'];
 

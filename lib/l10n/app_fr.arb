@@ -49,7 +49,7 @@
   "smtp_toEmail": "E-mail du destinataire",
   "smtp_toEmailInfo": "Par défaut : identifiant",
   "smtp_subject": "Objet",
-  "smtp_subjectInfo": "Par défaut : pas d'objet",
+  "smtp_subjectInfo": "Par défaut : auto",
   "filters": "Filtres",
   "filters_off": "Désactivé",
   "filters_whitelist": "Liste blanche",

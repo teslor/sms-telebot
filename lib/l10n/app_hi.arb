@@ -49,7 +49,7 @@
   "smtp_toEmail": "प्राप्तकर्ता ईमेल",
   "smtp_toEmailInfo": "डिफ़ॉल्ट: लॉगिन",
   "smtp_subject": "विषय",
-  "smtp_subjectInfo": "डिफ़ॉल्ट: विषय नहीं",
+  "smtp_subjectInfo": "डिफ़ॉल्ट: ऑटो",
   "filters": "फ़िल्टर",
   "filters_off": "बंद",
   "filters_whitelist": "व्हाइटलिस्ट",

@@ -156,7 +156,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smtp_subject => 'Subject';
 
   @override
-  String get smtp_subjectInfo => 'Default: no subject';
+  String get smtp_subjectInfo => 'Default: auto';
 
   @override
   String get filters => 'Filters';

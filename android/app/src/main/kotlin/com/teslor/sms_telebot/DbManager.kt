@@ -179,12 +179,12 @@ class DbManager private constructor(private val context: Context) {
                 put("source_at", sourceAt); put("received_at", receivedAt); put("sent_at", sentAt); put("status", status)
             }
             val result = db.insertWithOnConflict("messages_history", null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1L
-            
+
             if (result && kotlin.random.Random.nextInt(10) == 0) {
                 val timeLimit = System.currentTimeMillis() - (24 * 60 * 60 * 1000L)
                 db.delete("messages_history", "received_at < ?", arrayOf(timeLimit.toString()))
             }
-            
+
             result
         } ?: false
     }

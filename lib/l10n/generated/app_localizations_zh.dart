@@ -156,7 +156,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get smtp_subject => '主题';
 
   @override
-  String get smtp_subjectInfo => '默认：无主题';
+  String get smtp_subjectInfo => '默认：自动';
 
   @override
   String get filters => '筛选器';

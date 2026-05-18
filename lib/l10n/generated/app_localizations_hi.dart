@@ -157,7 +157,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get smtp_subject => 'विषय';
 
   @override
-  String get smtp_subjectInfo => 'डिफ़ॉल्ट: विषय नहीं';
+  String get smtp_subjectInfo => 'डिफ़ॉल्ट: ऑटो';
 
   @override
   String get filters => 'फ़िल्टर';

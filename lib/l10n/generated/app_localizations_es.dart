@@ -157,7 +157,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get smtp_subject => 'Asunto';
 
   @override
-  String get smtp_subjectInfo => 'Predeterminado: sin asunto';
+  String get smtp_subjectInfo => 'Predeterminado: auto';
 
   @override
   String get filters => 'Filtros';

@@ -66,7 +66,7 @@ interface SendProvider {
         info: String,
         shouldRetry: Boolean = false,
         details: String? = null,
-        exception: Throwable? = null // Pass Exception to Logcat to draw stacktrace
+        exception: Throwable? = null
     ): SendProviderResult {
         val type = if (isSuccess) "send_success" else "send_error"
         val infoStr = LogFormatter.buildInfo(type, info, id, code, details ?: exception?.message)

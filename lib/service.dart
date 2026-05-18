@@ -120,11 +120,11 @@ String getLocalizedError(AppLocalizations l10n, String code, [String? provider])
     },
     'unexpected_error' => l10n.error_unexpectedError,
     'uninitialized' => l10n.error_tbot_uninitialized,
- 
+
     // Secure storage
     'secrets_error' => l10n.error_secretsError,
     'secrets_recovered' => l10n.warn_secretsRecovered,
- 
+
     _ => l10n.error_unexpectedError,
   };
 }

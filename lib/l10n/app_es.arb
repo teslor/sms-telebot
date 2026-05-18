@@ -49,7 +49,7 @@
   "smtp_toEmail": "Correo del destinatario",
   "smtp_toEmailInfo": "Predeterminado: usuario",
   "smtp_subject": "Asunto",
-  "smtp_subjectInfo": "Predeterminado: sin asunto",
+  "smtp_subjectInfo": "Predeterminado: auto",
   "filters": "Filtros",
   "filters_off": "Desactivado",
   "filters_whitelist": "Lista blanca",

@@ -160,7 +160,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get smtp_subject => 'Objet';
 
   @override
-  String get smtp_subjectInfo => 'Par défaut : pas d\'objet';
+  String get smtp_subjectInfo => 'Par défaut : auto';
 
   @override
   String get filters => 'Filtres';

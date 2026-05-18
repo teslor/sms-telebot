@@ -156,7 +156,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get smtp_subject => '件名';
 
   @override
-  String get smtp_subjectInfo => 'デフォルト: 件名なし';
+  String get smtp_subjectInfo => 'デフォルト: 自動';
 
   @override
   String get filters => 'フィルター';

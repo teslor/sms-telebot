@@ -157,7 +157,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get smtp_subject => 'Тема';
 
   @override
-  String get smtp_subjectInfo => 'По умолчанию: без темы';
+  String get smtp_subjectInfo => 'По умолчанию: автоматически';
 
   @override
   String get filters => 'Фильтры';

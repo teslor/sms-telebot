@@ -159,7 +159,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get smtp_subject => 'Betreff';
 
   @override
-  String get smtp_subjectInfo => 'Standard: kein Betreff';
+  String get smtp_subjectInfo => 'Standard: auto';
 
   @override
   String get filters => 'Filter';

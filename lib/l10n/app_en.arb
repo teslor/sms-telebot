@@ -49,7 +49,7 @@
   "smtp_toEmail": "To email",
   "smtp_toEmailInfo": "Default: login",
   "smtp_subject": "Subject",
-  "smtp_subjectInfo": "Default: no subject",
+  "smtp_subjectInfo": "Default: auto",
   "filters": "Filters",
   "filters_off": "Off",
   "filters_whitelist": "Whitelist",

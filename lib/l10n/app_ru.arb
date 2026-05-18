@@ -49,7 +49,7 @@
   "smtp_toEmail": "Email получателя",
   "smtp_toEmailInfo": "По умолчанию: логин",
   "smtp_subject": "Тема",
-  "smtp_subjectInfo": "По умолчанию: без темы",
+  "smtp_subjectInfo": "По умолчанию: автоматически",
   "filters": "Фильтры",
   "filters_off": "Без\nфильтров",
   "filters_whitelist": "Белый\nсписок",

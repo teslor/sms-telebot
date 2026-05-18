@@ -42,7 +42,7 @@ class ActionButton extends StatelessWidget {
       'half-1' => const EdgeInsets.fromLTRB(20, 16, 8, 16),
       'half-2' => const EdgeInsets.fromLTRB(8, 16, 20, 16),
       _ => const EdgeInsets.fromLTRB(20, 16, 20, 16),
- 
+
     };
 
     return Padding(padding: padding, child: button);
