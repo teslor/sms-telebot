@@ -50,7 +50,7 @@ object MessageHelpers {
 
     fun format(
         provider: String, type: String,
-        sender: String, body: String, receivedAt: Long, labels: Map<String, String>
+        sender: String, body: String, simInfo: String?, receivedAt: Long, labels: Map<String, String>
     ): FormattedMessage {
         val dt = Instant.ofEpochMilli(receivedAt)
             .atZone(ZoneId.systemDefault()).toLocalDateTime()
@@ -62,13 +62,20 @@ object MessageHelpers {
         val l10nSms = labels["l10nSms"] ?: ""
         val l10nCall = labels["l10nCall"] ?: ""
 
+        val dl = if (provider == SendProviderId.TELEGRAM_BOT) escapeHtml(deviceLabel) else deviceLabel
+        val si = simInfo?.trim().orEmpty()
+        val lb = when {
+            dl.isNotBlank() && si.isNotBlank() -> " ($dl: $si)"
+            dl.isNotBlank() -> " ($dl)"
+            si.isNotBlank() -> " ($si)"
+            else -> ""
+        }
+
         return when (provider) {
             SendProviderId.TELEGRAM_BOT -> {
                 val s = escapeHtml(sender)
                 val b = escapeHtml(body)
-                val l = escapeHtml(deviceLabel)
-                val lb = if (l.isNotBlank()) " ($l)" else ""
-                val sysSrc = l.ifBlank { s }
+                val sysSrc = dl.ifBlank { s }
 
                 val head = when (type) {
                     "sms" -> "💬 <b>$s</b>$lb 🕒 <i>$time</i>"
@@ -81,8 +88,7 @@ object MessageHelpers {
             }
 
             SendProviderId.SMTP_SERVER -> {
-                val lb = if (deviceLabel.isNotBlank()) " ($deviceLabel)" else ""
-                val sysSrc = deviceLabel.ifBlank { sender }
+                val sysSrc = dl.ifBlank { sender }
 
                 val (subject, head) = when (type) {
                     "sms" -> "$l10nSms: $sender$lb" to "💬 $sender$lb 🕒 $time"

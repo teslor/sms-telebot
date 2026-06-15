@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.util.Log
 
-data class MessageData(val type: String, val sender: String, val body: String, val receivedAt: Long, val attemptCount: Int, val status: Int)
+data class MessageData(val type: String, val sender: String, val body: String, val simInfo: String?, val receivedAt: Long, val attemptCount: Int, val status: Int)
 data class ForwardingRule(val id: Int, val filterMode: Int, val filtersJson: String?)
 data class ForwardingRuleConfig(val id: Int, val provider: String, val configJson: String?)
 
@@ -154,7 +154,7 @@ class DbManager private constructor(private val context: Context) {
         return withDatabase { db ->
             db.query(
                 "messages_history", 
-                arrayOf("type", "sender", "body", "received_at", "attempt_count", "status"),
+                arrayOf("type", "sender", "body", "sim_info", "received_at", "attempt_count", "status"),
                 "id = ?", arrayOf(id), null, null, null
             ).use {
                 if (it.moveToFirst()) {
@@ -162,9 +162,10 @@ class DbManager private constructor(private val context: Context) {
                         type = it.getString(0),
                         sender = it.getString(1),
                         body = it.getString(2),
-                        receivedAt = it.getLong(3),
-                        attemptCount = it.getInt(4),
-                        status = it.getInt(5)
+                        simInfo = it.getString(3),
+                        receivedAt = it.getLong(4),
+                        attemptCount = it.getInt(5),
+                        status = it.getInt(6)
                     )
                 } else { null }
             }
@@ -172,11 +173,11 @@ class DbManager private constructor(private val context: Context) {
     }
 
     // Create a new record and cleanup old messages with 10% probability
-    fun insertMessagesHistory(id: String, type: String, sender: String, body: String, sourceAt: Long, receivedAt: Long, sentAt: Long? = null, status: Int = 0): Boolean {
+    fun insertMessagesHistory(id: String, type: String, sender: String, body: String, simInfo: String?, sourceAt: Long, receivedAt: Long, status: Int = 0): Boolean {
         return withDatabase { db ->
             val values = ContentValues().apply {
                 put("id", id); put("type", type); put("sender", sender); put("body", body)
-                put("source_at", sourceAt); put("received_at", receivedAt); put("sent_at", sentAt); put("status", status)
+                put("sim_info", simInfo); put("source_at", sourceAt); put("received_at", receivedAt); put("status", status)
             }
             val result = db.insertWithOnConflict("messages_history", null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1L
 
@@ -203,6 +204,14 @@ class DbManager private constructor(private val context: Context) {
                 }
             }
             db.update("messages_history", values, "id = ?", arrayOf(id)) > 0
+        } ?: false
+    }
+
+    // Check if a message exists by ID
+    fun messageExists(id: String): Boolean {
+        return withDatabase { db ->
+            db.query("messages_history", arrayOf("1"), "id = ?", arrayOf(id), null, null, null, "1")
+                .use { it.moveToFirst() }
         } ?: false
     }
 }

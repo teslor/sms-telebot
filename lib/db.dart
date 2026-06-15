@@ -30,7 +30,7 @@ class MainDb {
 
     final db = await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onConfigure: _onConfigure,
       onCreate: _onCreate,
       onUpgrade: (db, oldVersion, newVersion) async {
@@ -46,6 +46,9 @@ class MainDb {
           await db.execute('ALTER TABLE event_log RENAME TO app_logs');
           await db.execute('DROP INDEX IF EXISTS idx_sh_received_at');
           await db.execute('CREATE INDEX idx_mh_received_at ON messages_history(received_at)');
+        }
+        if (oldVersion < 3) {
+          await db.execute('ALTER TABLE messages_history ADD COLUMN sim_info TEXT');
         }
       },
     );
@@ -91,6 +94,7 @@ class MainDb {
         type TEXT DEFAULT 'sms',
         sender TEXT,
         body TEXT,
+        sim_info TEXT,
         source_at INTEGER,
         received_at INTEGER,
         last_attempt_at INTEGER,

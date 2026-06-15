@@ -72,6 +72,7 @@ class DeviceStatusReceiver : BroadcastReceiver() {
             type = "sys",
             sender = sender,
             body = body,
+            simInfo = null,
             sourceAt = now,
             receivedAt = now,
         )

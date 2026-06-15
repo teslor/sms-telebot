@@ -35,6 +35,7 @@ object SendProviderId {
 data class SendProviderPayload(
     val sender: String,
     val body: String,
+    val simInfo: String?,
     val receivedAt: Long,
     val labels: Map<String, String>
 )
@@ -137,6 +138,7 @@ object TelegramBotProvider : SendProvider {
                 type = type,
                 sender = payload.sender,
                 body = payload.body,
+                simInfo = payload.simInfo,
                 receivedAt = payload.receivedAt,
                 labels = payload.labels,
             )
@@ -369,6 +371,7 @@ object SmtpServerProvider : SendProvider {
                 type = type,
                 sender = payload.sender,
                 body = payload.body,
+                simInfo = payload.simInfo,
                 receivedAt = payload.receivedAt,
                 labels = payload.labels,
             )

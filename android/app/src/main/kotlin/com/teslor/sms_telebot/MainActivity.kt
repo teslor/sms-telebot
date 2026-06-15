@@ -52,6 +52,7 @@ class MainActivity : FlutterActivity() {
                                     payload = SendProviderPayload(
                                         sender = sender,
                                         body = body,
+                                        simInfo = null,
                                         receivedAt = System.currentTimeMillis(),
                                         labels = mapOf(
                                             "deviceLabel" to deviceLabel,

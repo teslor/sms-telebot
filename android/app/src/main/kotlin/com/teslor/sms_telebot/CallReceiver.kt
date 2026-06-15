@@ -47,14 +47,14 @@ class CallReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                processCall(context, incomingNumber)
+                processCall(context, intent, incomingNumber)
             } finally {
                 pendingResult.finish() // mandatory to finish BroadcastReceiver
             }
         }
     }
 
-    private fun processCall(context: Context, incomingNumber: String) {
+    private fun processCall(context: Context, intent: Intent, incomingNumber: String) {
         val sender = incomingNumber
         val now = System.currentTimeMillis()
 
@@ -69,6 +69,7 @@ class CallReceiver : BroadcastReceiver() {
             type = "call",
             sender = sender,
             body = "",
+            simInfo = SimInfoResolver.getInfo(context, intent),
             sourceAt = now,
             receivedAt = now,
         )

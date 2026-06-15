@@ -61,6 +61,7 @@ class SmsReceiver : BroadcastReceiver() {
             type = "sms",
             sender = sender,
             body = body,
+            simInfo = SimInfoResolver.getInfo(context, intent),
             sourceAt = timestamp,
             receivedAt = System.currentTimeMillis()
         )

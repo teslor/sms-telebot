@@ -20,13 +20,14 @@ object MessageProcessor {
         type: String,
         sender: String,
         body: String,
+        simInfo: String?,
         sourceAt: Long,
         receivedAt: Long
     ) {
         val dbManager = DbManager.getInstance(context)
 
         // Check if the message has already been processed in its time window
-        if (dbManager.getMessageById(id) != null) return
+        if (dbManager.messageExists(id)) return
 
         // Save message data to messages_history
         dbManager.insertMessagesHistory(
@@ -34,6 +35,7 @@ object MessageProcessor {
             type = type,
             sender = sender,
             body = body,
+            simInfo = simInfo,
             sourceAt = sourceAt,
             receivedAt = receivedAt,
             status = SendStatus.RECEIVED
