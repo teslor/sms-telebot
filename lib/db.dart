@@ -125,6 +125,7 @@ class MainDb {
       'notifyLowBattery': '0',
       'notifyChargerState': '0',
       'enableForeground': '0',
+      'attachSimInfo': '0',
       'deviceLabel': '',
     };
 

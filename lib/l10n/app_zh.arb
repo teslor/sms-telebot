@@ -65,6 +65,7 @@
   "settings_notifyLowBattery": "电量低",
   "settings_notifyChargerState": "充电器连接状态",
   "settings_enableForeground": "始终在后台运行",
+  "settings_attachSimInfo": "附加SIM信息",
   "settings_deviceLabel": "设备标签",
   "settings_deviceLabelInfo": "默认：无标签",
   "help_about": "关于",

@@ -205,6 +205,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settings_enableForeground => 'हमेशा बैकग्राउंड में चलाएं';
 
   @override
+  String get settings_attachSimInfo => 'SIM जानकारी';
+
+  @override
   String get settings_deviceLabel => 'डिवाइस लेबल';
 
   @override

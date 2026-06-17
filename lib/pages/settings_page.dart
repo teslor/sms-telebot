@@ -23,6 +23,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _notifyLowBattery = false;
   bool _notifyChargerState = false;
   bool _enableForeground = false;
+  bool _attachSimInfo = false;
 
   bool _isInputChanged = false;
   bool? _saveResult;
@@ -38,6 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _notifyLowBattery = appState.notifyLowBattery;
     _notifyChargerState = appState.notifyChargerState;
     _enableForeground = appState.enableForeground;
+    _attachSimInfo = appState.attachSimInfo;
   }
 
   @override
@@ -63,6 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
       notifyLowBattery: _notifyLowBattery,
       notifyChargerState: _notifyChargerState,
       enableForeground: _enableForeground,
+      attachSimInfo: _attachSimInfo,
       deviceLabel: _deviceLabelController.text,
     );
 
@@ -159,15 +162,30 @@ class _SettingsPageState extends State<SettingsPage> {
               borderRadius: BorderRadius.circular(12),
               side: BorderSide(color: theme.colorScheme.outlineVariant),
             ),
-            child: SwitchListTile(
-              title: Text(l10n.settings_enableForeground),
-              contentPadding: _switchTilePadding,
-              value: _enableForeground,
-              onChanged: (bool value) async {
-                if (value && !await getNotificationPermission(openSettings: true)) return;
-                _enableForeground = value;
-                _onSettingChanged();
-              },
+            child: Column(
+              children: [
+                SwitchListTile(
+                  title: Text(l10n.settings_enableForeground),
+                  contentPadding: _switchTilePadding,
+                  value: _enableForeground,
+                  onChanged: (bool value) async {
+                    if (value && !await getNotificationPermission(openSettings: true)) return;
+                    _enableForeground = value;
+                    _onSettingChanged();
+                  },
+                ),
+                const Divider(height: 1),
+                SwitchListTile(
+                  title: Text(l10n.settings_attachSimInfo),
+                  contentPadding: _switchTilePadding,
+                  value: _attachSimInfo,
+                  onChanged: (bool value) async {
+                    if (value && !await getSimInfoPermission(openSettings: true)) return;
+                    _attachSimInfo = value;
+                    _onSettingChanged();
+                  },
+                ),
+              ],
             ),
           ),
 

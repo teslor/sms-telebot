@@ -502,6 +502,12 @@ abstract class AppLocalizations {
   /// **'Always run in background'**
   String get settings_enableForeground;
 
+  /// No description provided for @settings_attachSimInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach SIM info'**
+  String get settings_attachSimInfo;
+
   /// No description provided for @settings_deviceLabel.
   ///
   /// In en, this message translates to:

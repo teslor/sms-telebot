@@ -65,6 +65,7 @@
   "settings_notifyLowBattery": "Niedriger Akkustand",
   "settings_notifyChargerState": "Ladegerät-Status",
   "settings_enableForeground": "Immer im Hintergrund ausführen",
+  "settings_attachSimInfo": "SIM-Info anhängen",
   "settings_deviceLabel": "Gerätename",
   "settings_deviceLabelInfo": "Standard: keine Bezeichnung",
   "help_about": "Über",

@@ -208,6 +208,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settings_enableForeground => 'Toujours exécuter en arrière-plan';
 
   @override
+  String get settings_attachSimInfo => 'Joindre données SIM';
+
+  @override
   String get settings_deviceLabel => 'Libellé de l\'appareil';
 
   @override

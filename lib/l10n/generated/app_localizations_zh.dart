@@ -204,6 +204,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_enableForeground => '始终在后台运行';
 
   @override
+  String get settings_attachSimInfo => '附加SIM信息';
+
+  @override
   String get settings_deviceLabel => '设备标签';
 
   @override

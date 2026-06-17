@@ -205,6 +205,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settings_enableForeground => 'Ejecutar siempre en segundo plano';
 
   @override
+  String get settings_attachSimInfo => 'Adjuntar datos SIM';
+
+  @override
   String get settings_deviceLabel => 'Etiqueta del dispositivo';
 
   @override

@@ -207,6 +207,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings_enableForeground => 'Immer im Hintergrund ausführen';
 
   @override
+  String get settings_attachSimInfo => 'SIM-Info anhängen';
+
+  @override
   String get settings_deviceLabel => 'Gerätename';
 
   @override

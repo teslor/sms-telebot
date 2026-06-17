@@ -38,6 +38,7 @@ class CallReceiver : BroadcastReceiver() {
         val dbManager = DbManager.getInstance(context)
         if (!dbManager.getBoolSetting("isRunning")) return
         if (!dbManager.getBoolSetting("forwardCalls")) return
+        val attachSimInfo = dbManager.getBoolSetting("attachSimInfo")
 
         @Suppress("DEPRECATION")
         val incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)
@@ -47,14 +48,14 @@ class CallReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                processCall(context, intent, incomingNumber)
+                processCall(context, intent, incomingNumber, attachSimInfo)
             } finally {
                 pendingResult.finish() // mandatory to finish BroadcastReceiver
             }
         }
     }
 
-    private fun processCall(context: Context, intent: Intent, incomingNumber: String) {
+    private fun processCall(context: Context, intent: Intent, incomingNumber: String, attachSimInfo: Boolean) {
         val sender = incomingNumber
         val now = System.currentTimeMillis()
 
@@ -62,6 +63,7 @@ class CallReceiver : BroadcastReceiver() {
         // Within a 30-second window, the ID for the same number will be the same
         val timeWindow = now / 30000L
         val callId = MessageHelpers.generateId("$sender|$timeWindow")
+        val simInfo = if (attachSimInfo) SimInfoResolver.getInfo(context, intent) else null
 
         MessageProcessor.processAndForward(
             context = context,
@@ -69,7 +71,7 @@ class CallReceiver : BroadcastReceiver() {
             type = "call",
             sender = sender,
             body = "",
-            simInfo = SimInfoResolver.getInfo(context, intent),
+            simInfo = simInfo,
             sourceAt = now,
             receivedAt = now,
         )

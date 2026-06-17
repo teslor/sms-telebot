@@ -65,6 +65,7 @@
   "settings_notifyLowBattery": "Low battery",
   "settings_notifyChargerState": "Charger connection",
   "settings_enableForeground": "Always run in background",
+  "settings_attachSimInfo": "Attach SIM info",
   "settings_deviceLabel": "Device label",
   "settings_deviceLabelInfo": "Default: no label",
   "help_about": "About",

@@ -205,6 +205,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settings_enableForeground => 'Постоянная работа в фоне';
 
   @override
+  String get settings_attachSimInfo => 'Добавлять данные SIM';
+
+  @override
   String get settings_deviceLabel => 'Метка устройства';
 
   @override

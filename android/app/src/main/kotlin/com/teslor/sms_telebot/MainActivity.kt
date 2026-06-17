@@ -25,9 +25,13 @@ class MainActivity : FlutterActivity() {
         private const val MAIN_CHANNEL = "sms_telebot/main"
     }
 
+    private lateinit var permissionRequestManager: PermissionRequestManager
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+
         val secureStorage = SecureStorageManager.getInstance(context)
+        permissionRequestManager = PermissionRequestManager(this)
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, MAIN_CHANNEL)
             .setMethodCallHandler { call, result ->
@@ -163,9 +167,24 @@ class MainActivity : FlutterActivity() {
                         result.success(null)
                     }
 
+                    "requestPermission" -> {
+                        permissionRequestManager.request(call.argument("permission"), result)
+                    }
+
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (::permissionRequestManager.isInitialized) {
+            permissionRequestManager.onRequestPermissionsResult(requestCode, grantResults)
+        }
     }
 
     private fun isDebugBuild(): Boolean {

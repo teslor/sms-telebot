@@ -65,6 +65,7 @@
   "settings_notifyLowBattery": "Bateria fraca",
   "settings_notifyChargerState": "Estado do carregador",
   "settings_enableForeground": "Sempre executar em segundo plano",
+  "settings_attachSimInfo": "Anexar dados SIM",
   "settings_deviceLabel": "Rótulo do dispositivo",
   "settings_deviceLabelInfo": "Padrão: sem rótulo",
   "help_about": "Sobre",

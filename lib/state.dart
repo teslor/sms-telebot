@@ -20,6 +20,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   bool notifyLowBattery = false;
   bool notifyChargerState = false;
   bool enableForeground = false;
+  bool attachSimInfo = false;
   String deviceLabel = '';
 
   // Rule list
@@ -132,6 +133,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     notifyLowBattery = settings['notifyLowBattery'] == '1';
     notifyChargerState = settings['notifyChargerState'] == '1';
     enableForeground = settings['enableForeground'] == '1';
+    attachSimInfo = settings['attachSimInfo'] == '1';
     deviceLabel = settings['deviceLabel'] ?? '';
     notifyListeners();
   }
@@ -307,6 +309,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     required bool notifyLowBattery,
     required bool notifyChargerState,
     required bool enableForeground,
+    required bool attachSimInfo,
     required String deviceLabel,
   }) async {
     await MainDb.instance.saveSettings({
@@ -315,6 +318,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       'notifyLowBattery': notifyLowBattery ? '1' : '0',
       'notifyChargerState': notifyChargerState ? '1' : '0',
       'enableForeground': enableForeground ? '1' : '0',
+      'attachSimInfo': attachSimInfo ? '1' : '0',
       'deviceLabel': deviceLabel,
     });
 
@@ -323,6 +327,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     this.notifyLowBattery = notifyLowBattery;
     this.notifyChargerState = notifyChargerState;
     this.enableForeground = enableForeground;
+    this.attachSimInfo = attachSimInfo;
     this.deviceLabel = deviceLabel;
 
     notifyListeners();

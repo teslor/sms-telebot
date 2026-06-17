@@ -65,6 +65,7 @@
   "settings_notifyLowBattery": "Низкий заряд батареи",
   "settings_notifyChargerState": "Подключение зарядки",
   "settings_enableForeground": "Постоянная работа в фоне",
+  "settings_attachSimInfo": "Добавлять данные SIM",
   "settings_deviceLabel": "Метка устройства",
   "settings_deviceLabelInfo": "По умолчанию: без метки",
   "help_about": "О приложении",

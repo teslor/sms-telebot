@@ -28,19 +28,20 @@ class SmsReceiver : BroadcastReceiver() {
         val dbManager = DbManager.getInstance(context)
         if (!dbManager.getBoolSetting("isRunning")) return
         if (!dbManager.getBoolSetting("forwardSms")) return
+        val attachSimInfo = dbManager.getBoolSetting("attachSimInfo")
 
         // Call goAsync() to avoid blocking UI thread when reading/writing DB
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                processSms(context, intent)
+                processSms(context, intent, attachSimInfo)
             } finally {
                 pendingResult.finish() // mandatory to finish BroadcastReceiver
             }
         }
     }
 
-    private fun processSms(context: Context, intent: Intent) {
+    private fun processSms(context: Context, intent: Intent, attachSimInfo: Boolean) {
         // Extract all message parts, concatenate bodies for multipart SMS
         val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
         if (messages.isEmpty()) return
@@ -54,6 +55,7 @@ class SmsReceiver : BroadcastReceiver() {
         // Within a 5-second window, the ID for the same sender/body will be the same
         val timeWindow = timestamp / 5000L
         val smsId = MessageHelpers.generateId("$sender|$body|$timeWindow")
+        val simInfo = if (attachSimInfo) SimInfoResolver.getInfo(context, intent) else null
 
         MessageProcessor.processAndForward(
             context = context,
@@ -61,7 +63,7 @@ class SmsReceiver : BroadcastReceiver() {
             type = "sms",
             sender = sender,
             body = body,
-            simInfo = SimInfoResolver.getInfo(context, intent),
+            simInfo = simInfo,
             sourceAt = timestamp,
             receivedAt = System.currentTimeMillis()
         )

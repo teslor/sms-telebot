@@ -65,6 +65,7 @@
   "settings_notifyLowBattery": "बैटरी कम",
   "settings_notifyChargerState": "चार्जर कनेक्शन",
   "settings_enableForeground": "हमेशा बैकग्राउंड में चलाएं",
+  "settings_attachSimInfo": "SIM जानकारी",
   "settings_deviceLabel": "डिवाइस लेबल",
   "settings_deviceLabelInfo": "डिफ़ॉल्ट: कोई लेबल नहीं",
   "help_about": "ऐप के बारे में",

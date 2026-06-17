@@ -30,10 +30,15 @@ Future<bool> getPhonePermission({bool openSettings = false}) async {
   final status = await Permission.phone.request();
   if (status.isGranted) return true;
 
-  if (openSettings && statusBeforeRequest.isPermanentlyDenied) {
+  final requestBlocked = status.isPermanentlyDenied || statusBeforeRequest == status;
+  if (openSettings && requestBlocked) {
     await openAppSettings();
   }
   return false;
+}
+
+Future<bool> getSimInfoPermission({bool openSettings = false}) async {
+  return requestPermissionNative('android.permission.READ_PHONE_STATE', openSettings: openSettings);
 }
 
 // Required on Android 13+ to show foreground notifications
@@ -246,4 +251,21 @@ void stopWorkersNative() {
   unawaited(
     _mainChannel.invokeMethod<void>('stopWorkers').catchError((_, _) {}),
   );
+}
+
+Future<bool> requestPermissionNative(String permission, {bool openSettings = false}) async {
+  try {
+    final result = await _mainChannel.invokeMethod<Map<dynamic, dynamic>>('requestPermission', {
+      'permission': permission,
+    });
+
+    final granted = result?['granted'] == true;
+    final requestBlocked = result?['requestBlocked'] == true;
+
+    if (!granted && openSettings && requestBlocked) await openAppSettings();
+
+    return granted;
+  } catch (_) {
+    return false;
+  }
 }

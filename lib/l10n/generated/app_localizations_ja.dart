@@ -204,6 +204,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_enableForeground => '常にバックグラウンドで実行';
 
   @override
+  String get settings_attachSimInfo => 'SIM情報添付';
+
+  @override
   String get settings_deviceLabel => 'デバイスラベル';
 
   @override
