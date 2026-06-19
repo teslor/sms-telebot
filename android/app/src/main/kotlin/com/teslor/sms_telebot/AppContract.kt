@@ -76,28 +76,38 @@ object MessageHelpers {
                 val s = escapeHtml(sender)
                 val b = escapeHtml(body)
                 val sysSrc = dl.ifBlank { s }
-
                 val head = when (type) {
                     "sms" -> "💬 <b>$s</b>$lb 🕒 <i>$time</i>"
                     "call" -> "📞 <b>$s</b>$lb 🕒 <i>$time</i>"
                     "sys" -> "⚙️ <b>$sysSrc</b> 🕒 <i>$time</i>"
                     "app" -> "🤖 <b>$s</b>$lb"
-                    else  -> s
+                    else -> s
                 }
                 FormattedMessage(subject = "", text = head + if (b.isNotBlank()) "\n$b" else "")
             }
 
             SendProviderId.SMTP_SERVER -> {
                 val sysSrc = dl.ifBlank { sender }
-
                 val (subject, head) = when (type) {
                     "sms" -> "$l10nSms: $sender$lb" to "💬 $sender$lb 🕒 $time"
                     "call" -> "$l10nCall: $sender$lb" to "📞 $sender$lb 🕒 $time"
                     "sys" -> "$sysSrc: $body" to "⚙️ $sysSrc 🕒 $time"
                     "app" -> "$sender$lb: $body" to "🤖 $sender$lb"
-                    else  -> sender to sender
+                    else -> sender to sender
                 }
                 FormattedMessage(subject = subject, text = head + if (body.isNotBlank()) "\n\n$body" else "")
+            }
+
+            SendProviderId.SMS_GATEWAY -> {
+                val sysSrc = dl.ifBlank { sender }
+                val head = when (type) {
+                    "sms" -> "$l10nSms: $sender$lb $time"
+                    "call" -> "$l10nCall: $sender$lb $time"
+                    "sys" -> "$sysSrc $time"
+                    "app" -> "$sender$lb"
+                    else -> sender
+                }
+                FormattedMessage(subject = "", text = head + if (body.isNotBlank()) "\n$body" else "")
             }
 
             else -> FormattedMessage(subject = sender, text = body)

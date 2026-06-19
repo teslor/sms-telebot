@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteException
 import android.util.Log
 
 data class MessageData(val type: String, val sender: String, val body: String, val simInfo: String?, val receivedAt: Long, val attemptCount: Int, val status: Int)
-data class ForwardingRule(val id: Int, val filterMode: Int, val filtersJson: String?)
+data class ForwardingRule(val id: Int, val provider: String, val filterMode: Int, val filtersJson: String?)
 data class ForwardingRuleConfig(val id: Int, val provider: String, val configJson: String?)
 
 class DbManager private constructor(private val context: Context) {
@@ -98,7 +98,7 @@ class DbManager private constructor(private val context: Context) {
         return withDatabase { db ->
             db.query(
                 "forwarding_rules",
-                arrayOf("id", "filter_mode", "filters_json"),
+                arrayOf("id", "provider", "filter_mode", "filters_json"),
                 "is_active = 1",
                 null, null, null, "name ASC"
             ).use { cursor ->
@@ -107,8 +107,9 @@ class DbManager private constructor(private val context: Context) {
                     list.add(
                         ForwardingRule(
                             id = cursor.getInt(0),
-                            filterMode = cursor.getInt(1),
-                            filtersJson = cursor.getString(2)
+                            provider = cursor.getString(1),
+                            filterMode = cursor.getInt(2),
+                            filtersJson = cursor.getString(3)
                         )
                     )
                 }

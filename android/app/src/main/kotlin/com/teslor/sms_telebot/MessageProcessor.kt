@@ -62,16 +62,22 @@ object MessageProcessor {
         }
         if (matchedRuleIds.isEmpty()) return
 
+        // Check if ALL matched rules require internet connection
+        val matchedRules = activeRules.filter { matchedRuleIds.contains(it.id) }
+        val requiresNetwork = matchedRules.all { SendProviderGateway.requiresNetwork(it.provider) }
+
         // Prepare WorkManager input
         val inputData = Data.Builder()
             .putString("message_id", id)
             .putIntArray("rule_ids", matchedRuleIds.toIntArray())
             .build()
 
-        // Require network for forwarding; if offline, WorkManager retries later
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
+        // Set constraints dynamically based on provider requirements
+        val constraintsBuilder = Constraints.Builder()
+        if (requiresNetwork) {
+            constraintsBuilder.setRequiredNetworkType(NetworkType.CONNECTED)
+        }
+        val constraints = constraintsBuilder.build()
 
         // Expedited work tries to run ASAP; if quota is exceeded, it falls back
         val request = OneTimeWorkRequestBuilder<ForwardWorker>()

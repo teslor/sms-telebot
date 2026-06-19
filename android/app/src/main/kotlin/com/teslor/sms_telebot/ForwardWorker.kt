@@ -62,22 +62,11 @@ class ForwardWorker(
         val messageId = inputData.getString("message_id") ?: return@withContext Result.failure()
         val ruleIds = inputData.getIntArray("rule_ids") ?: return@withContext Result.failure()
 
-        // Ensure device has internet connectivity
-        if (!hasValidatedInternet()) {
-            dbManager.updateMessagesHistory(
-                id = messageId,
-                updates = mapOf("status" to SendStatus.FAILED_RETRY)
-            )
-            return@withContext Result.retry()
-        }
-
         // Check if message exists and was not already sent
         val messageData = dbManager.getMessageById(messageId) ?: return@withContext Result.failure()
         val shouldBeProcessed =
             messageData.status == SendStatus.RECEIVED || messageData.status == SendStatus.FAILED_RETRY
-        if (!shouldBeProcessed) {
-            return@withContext Result.success() // already processed
-        }
+        if (!shouldBeProcessed) return@withContext Result.success() // already processed
 
         // Get rules from DB by their IDs
         val rules = dbManager.getRulesByIds(ruleIds)
@@ -90,13 +79,25 @@ class ForwardWorker(
             "l10nCall" to dbManager.getSetting("l10nCall").orEmpty().ifBlank { "Call" },
         )
 
-        // Start parallel sending
+        val hasInternet = hasValidatedInternet()
         val lastAttemptAt = System.currentTimeMillis()
-        val nextAttemptCount = messageData.attemptCount + 1
+        val newAttemptCount = messageData.attemptCount + 1
+
+        // Start parallel sending
         val results = coroutineScope {
             rules.map { rule ->
                 async {
                     sendSemaphore.withPermit {
+                        // Skip network-dependent rules if there's no internet (retryable)
+                        if (SendProviderGateway.requiresNetwork(rule.provider) && !hasInternet) {
+                            return@withPermit SendProviderResult(
+                                isSuccess = false,
+                                code = ResultCode.NETWORK_ERROR,
+                                info = "No internet connection",
+                                shouldRetry = true
+                            )
+                        }
+
                         val secretResult = secretStorage.readSecret(rule.id.toString())
                         val secret = if (secretResult.isSuccess) secretResult.data ?: "" else ""
                         processRule(rule, secret, messageData.type, messageData.sender, messageData.body, messageData.simInfo, messageData.receivedAt, labels)
@@ -117,7 +118,7 @@ class ForwardWorker(
                     "status" to newStatus,
                     "sent_at" to System.currentTimeMillis(),
                     "last_attempt_at" to lastAttemptAt,
-                    "attempt_count" to nextAttemptCount,
+                    "attempt_count" to newAttemptCount,
                 )
             )
             Result.success()
@@ -127,7 +128,7 @@ class ForwardWorker(
                 updates = mapOf(
                     "status" to SendStatus.FAILED_RETRY,
                     "last_attempt_at" to lastAttemptAt,
-                    "attempt_count" to nextAttemptCount,
+                    "attempt_count" to newAttemptCount,
                 )
             )
             Result.retry() // retry only when at least one failure is temporary
@@ -137,7 +138,7 @@ class ForwardWorker(
                 updates = mapOf(
                     "status" to SendStatus.FAILED_FINAL,
                     "last_attempt_at" to lastAttemptAt,
-                    "attempt_count" to nextAttemptCount,
+                    "attempt_count" to newAttemptCount,
                 )
             )
             Result.failure() // all failures are permanent, no retry needed
@@ -146,16 +147,11 @@ class ForwardWorker(
 
     // Router by providers for forwarding
     private fun processRule(
-        rule: ForwardingRuleConfig,
-        secret: String,
-        type: String,
-        sender: String,
-        body: String,
-        simInfo: String?,
-        receivedAt: Long,
-        labels: Map<String, String>
+        rule: ForwardingRuleConfig, secret: String, type: String, sender: String,
+        body: String, simInfo: String?, receivedAt: Long, labels: Map<String, String>
     ): SendProviderResult {
         return SendProviderGateway.send(
+            context = applicationContext,
             providerId = rule.provider,
             configJson = rule.configJson ?: "",
             secret = secret,

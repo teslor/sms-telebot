@@ -49,6 +49,7 @@ class MainActivity : FlutterActivity() {
                         lifecycleScope.launch(Dispatchers.IO) {
                             try {
                                 val sendResult = SendProviderGateway.send(
+                                    context = applicationContext,
                                     providerId = provider,
                                     configJson = configJson,
                                     secret = secret,
