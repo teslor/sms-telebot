@@ -3,7 +3,12 @@
 
 package com.teslor.sms_telebot
 
+import android.app.Activity
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.telephony.SmsManager
@@ -26,7 +31,9 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.Properties
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -108,7 +115,7 @@ object SendProviderGateway {
         type: String,
         payload: SendProviderPayload
     ): SendProviderResult {
-        val provider = providers[providerId.lowercase()]
+        val provider = providers[providerId]
             ?: return SendProviderResult(
                 isSuccess = false,
                 code = ResultCode.UNEXPECTED_ERROR,
@@ -201,9 +208,6 @@ object TelegramBotProvider : SendProvider {
             val code = when {
                 rootCause is SocketTimeoutException || result.error is SocketTimeoutException -> 
                     ResultCode.NETWORK_TIMEOUT
-                rootCause is UnknownHostException || rootCause is ConnectException || 
-                result.error is UnknownHostException || result.error is ConnectException -> 
-                    ResultCode.NETWORK_ERROR
                 else -> ResultCode.NETWORK_ERROR
             }
             // Transport-level failures are retryable
@@ -327,7 +331,7 @@ object SmtpServerProvider : SendProvider {
             props["mail.smtp.timeout"] = "25000"
             props["mail.smtp.writetimeout"] = "25000"
 
-            when (protocol.lowercase()) {
+            when (protocol) {
                 "ssl" -> {
                     props["mail.smtp.ssl.enable"] = "true"
                     props["mail.smtp.socketFactory.port"] = port.toString()
@@ -500,9 +504,8 @@ object SmsGatewayProvider : SendProvider {
         }
 
         return try {
-            if (!isDeviceReady(context)) {
-                return buildResult(false, ResultCode.NETWORK_ERROR, "SMS cannot be sent", true)
-            }
+            val deviceError = checkDeviceSupport(context)
+            if (deviceError != null) return deviceError
 
             val json = JSONObject(configJson)
             val targetNumber = json.optString("number", "")
@@ -532,16 +535,9 @@ object SmsGatewayProvider : SendProvider {
                 return buildResult(false, ResultCode.UNEXPECTED_ERROR, "SMS manager is unavailable")
             }
 
-            // Split message if it's too long (>160 characters typically)
+            // Split message if it's too long (>160 characters per part)
             val parts = smsManager.divideMessage(msg.text)
-
-            if (parts.size > 1) {
-                smsManager.sendMultipartTextMessage(targetNumber, null, parts, null, null)
-            } else {
-                smsManager.sendTextMessage(targetNumber, null, msg.text, null, null)
-            }
-
-            buildResult(true, ResultCode.OK, "Sent successfully")
+            sendAndAwait(context, smsManager, targetNumber, parts)
         } catch (e: SecurityException) {
             buildResult(false, ResultCode.FORBIDDEN, "Missing SEND_SMS permission", exception = e)
         } catch (e: Exception) {
@@ -549,9 +545,77 @@ object SmsGatewayProvider : SendProvider {
         }
     }
 
-    // Check if the device can send SMS
-    private fun isDeviceReady(context: Context): Boolean {
-        val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager ?: return false
+    private val sendCounter = AtomicInteger(0) // prevent collisions for concurrent sends
+
+    // Send parts and wait for the platform sent-callbacks to classify the result:
+    // explicit error -> retry; OK -> success; timeout -> optimistic success
+    private fun sendAndAwait(
+        context: Context,
+        smsManager: SmsManager,
+        number: String,
+        parts: ArrayList<String>
+    ): SendProviderResult {
+        val expected = parts.size
+        val results = java.util.Collections.synchronizedList(mutableListOf<Int>())
+        val latch = CountDownLatch(expected)
+        val action = "SMS_SENT.${sendCounter.incrementAndGet()}"
+
+        // Register receiver for sent-callbacks
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(ctx: Context, intent: Intent) {
+                results.add(resultCode)
+                latch.countDown()
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(receiver, IntentFilter(action), Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("UnspecifiedRegisterReceiverFlag")
+            context.registerReceiver(receiver, IntentFilter(action))
+        }
+
+        return try {
+            val sentIntents = ArrayList<PendingIntent>(expected)
+            val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            for (i in 0 until expected) {
+                val intent = Intent(action).setPackage(context.packageName)
+                sentIntents.add(PendingIntent.getBroadcast(context, i, intent, flags))
+            }
+
+            if (expected > 1) {
+                smsManager.sendMultipartTextMessage(number, null, parts, sentIntents, null)
+            } else {
+                smsManager.sendTextMessage(number, null, parts[0], sentIntents[0], null)
+            }
+
+            // Treat result as optimistic after 30s to avoid false negatives
+            latch.await(30_000L, TimeUnit.MILLISECONDS)
+            checkSendResults(results.toList(), expected)
+        } finally {
+            try { context.unregisterReceiver(receiver) } catch (_: Exception) {}
+        }
+    }
+
+    private fun checkSendResults(results: List<Int>, expected: Int): SendProviderResult {
+        // Not all confirmations arrived in time: stay optimistic to avoid false negatives
+        if (results.size < expected) {
+            return buildResult(true, ResultCode.OK, "Sent (confirmation timed out)")
+        }
+
+        val firstError = results.firstOrNull { it != Activity.RESULT_OK }
+            ?: return buildResult(true, ResultCode.OK, "Sent successfully")
+
+        // NULL_PDU is a programmatic error (no point retrying)
+        return if (firstError == SmsManager.RESULT_ERROR_NULL_PDU) {
+            buildResult(false, ResultCode.UNEXPECTED_ERROR, "SMS not sent (null PDU)")
+        } else { // everything else is treated as transient and retryable
+            buildResult(false, ResultCode.NETWORK_ERROR, "SMS not sent (error $firstError)", true)
+        }
+    }
+
+    private fun checkDeviceSupport(context: Context): SendProviderResult? {
+        val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+            ?: return buildResult(false, ResultCode.FORBIDDEN, "Telephony service is unavailable")
 
         // Check SMS capability
         val hasSmsFeature = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -559,11 +623,20 @@ object SmsGatewayProvider : SendProvider {
         } else {
             context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)
         }
-        if (!hasSmsFeature) return false
+        if (!hasSmsFeature) {
+            return buildResult(false, ResultCode.FORBIDDEN, "SMS is not supported on this device")
+        }
 
-        // Check if SIM card is present and unlocked
-        if (telephonyManager.simState != TelephonyManager.SIM_STATE_READY) return false
-
-        return true
+        // Check if SIM card is ready
+        return when (telephonyManager.simState) {
+            TelephonyManager.SIM_STATE_READY -> null
+            TelephonyManager.SIM_STATE_NOT_READY,
+            TelephonyManager.SIM_STATE_UNKNOWN -> {
+                buildResult(false, ResultCode.NETWORK_ERROR, "SIM is not ready", true)
+            }
+            else -> {
+                buildResult(false, ResultCode.FORBIDDEN, "SIM is unavailable (state=${telephonyManager.simState})")
+            }
+        }
     }
 }
