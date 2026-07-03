@@ -46,6 +46,7 @@ class RulesPage extends StatelessWidget {
     return switch (provider) {
       'telegram_bot' => l10n.tbot,
       'smtp_server' => l10n.smtp,
+      'sms_gateway' => l10n.msg_sms,
       _ => provider,
     };
   }
@@ -54,6 +55,7 @@ class RulesPage extends StatelessWidget {
     return switch (provider) {
       'telegram_bot' => Icons.telegram,
       'smtp_server' => Icons.mail_outline,
+      'sms_gateway' => Icons.sms_outlined,
       _ => Icons.extension,
     };
   }
@@ -115,7 +117,9 @@ class RulesPage extends StatelessWidget {
         isSuccess: null,
         onPressed: () async {
           final selectedProvider = await _showProviderPicker(context);
-          if (selectedProvider == null || !context.mounted) return;
+          if (selectedProvider == null) return;
+          if (selectedProvider == 'sms_gateway' && !await getSmsSendPermission(openSettings: true)) return;
+          if (!context.mounted) return;
           final l10n = AppLocalizations.of(context)!;
           final name = _providerName(selectedProvider, l10n);
           await _runAppStateAction(

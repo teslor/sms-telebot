@@ -16,11 +16,11 @@ class HelpPage extends StatelessWidget {
       l10n.help_info_01,
       l10n.help_info_02,
       l10n.help_info_03,
-      l10n.help_info_04,
     ];
     final List<String> optsItems = [
       l10n.help_opts_01,
       l10n.help_opts_02,
+      l10n.help_opts_025,
       l10n.help_opts_03,
       l10n.help_opts_04,
     ];    
@@ -35,6 +35,11 @@ class HelpPage extends StatelessWidget {
       l10n.help_smtp_01,
       l10n.help_smtp_02,
       l10n.help_smtp_03,
+    ];
+    final List<String> smsItems = [
+      l10n.help_sms_01,
+      l10n.help_sms_02,
+      l10n.help_sms_03,
     ];
     final List<String> filterItems = [
       l10n.help_filters_01,
@@ -76,16 +81,19 @@ class HelpPage extends StatelessWidget {
             const SizedBox(height: 10),
 
             Text(l10n.help_info, style: sectionTitleStyle),
-            GuideList(items: infoItems, warnIndices: [3]),
+            GuideList(items: infoItems, warnIndices: []),
 
             Text(l10n.settings, style: sectionTitleStyle),
-            GuideList(items: optsItems, warnIndices: [3]),
+            GuideList(items: optsItems, warnIndices: [4]),
 
             Text(l10n.help_tbot, style: sectionTitleStyle),
             GuideList(items: tbotItems, warnIndices: []),
 
             Text(l10n.help_smtp, style: sectionTitleStyle),
             GuideList(items: smtpItems, warnIndices: []),
+
+            Text(l10n.help_sms, style: sectionTitleStyle),
+            GuideList(items: smsItems, warnIndices: []),
 
             Text(l10n.help_filters, style: sectionTitleStyle),
             GuideList(items: filterItems, warnIndices: [4]),

@@ -112,7 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   contentPadding: _switchTilePadding,
                   value: _forwardSms,
                   onChanged: (bool value) async {
-                    if (value && !await getSmsPermission(openSettings: true)) return;
+                    if (value && !await getSmsReceivePermission(openSettings: true)) return;
                     _forwardSms = value;
                     _onSettingChanged();
                   },

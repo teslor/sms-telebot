@@ -25,6 +25,8 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
   bool? _testResult;
   bool? _saveResult;
 
+  static final _tokenRegex = RegExp(r'^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$');
+
   @override
   void initState() {
     super.initState();
@@ -42,9 +44,10 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     super.dispose();
   }
 
-  static final _tokenRegex = RegExp(r'^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$');
   bool get _isValidToken => _tokenRegex.hasMatch(_tokenController.text);
+
   bool get _isValidChatId => int.tryParse(_chatIdController.text.trim()) != null;
+
   bool get _isValidApiUrl {
     final apiUrl = _apiUrlController.text.trim();
     return apiUrl.isEmpty ||
@@ -63,8 +66,8 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
       setState(() {
         _isTesting = false;
         _testResult = false;
-        context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
       });
+      context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
       return;
     }
 
@@ -121,10 +124,8 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (!_isValidToken || !_isValidChatId || !_isValidApiUrl) {
-      setState(() {
-        _saveResult = false;
-        context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
-      });
+      setState(() { _saveResult = false; });
+      context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
       return;
     }
 
@@ -136,24 +137,34 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
       'chatId': _chatIdController.text.trim(),
       if (apiUrl.isNotEmpty) 'apiUrl': apiUrl,
     };
+
     try {
       final result = await appState.updateRuleConfig(config, token);
       if (!mounted) return;
-      if (!result.isSuccess) {
+
+      if (result.isSuccess) {
+        setState(() {
+          _saveResult = true;
+          _isInputChanged = false;
+        });
+      } else {
         setState(() { _saveResult = false; });
         context.showErrorSnack(getLocalizedError(l10n, result.code));
-        return;
       }
-      setState(() {
-        _saveResult = true;
-        _isInputChanged = false;
-      });
     } catch (_) {
       if (mounted) {
         setState(() { _saveResult = false; });
         context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     }
+  }
+
+  void _onChanged([String _ = '']) {
+    setState(() {
+      _testResult = null;
+      _saveResult = null;
+      _isInputChanged = true;
+    });
   }
 
   @override
@@ -169,9 +180,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
             decoration: CustomStyle.compactInput(
               labelText: l10n.tbot_token,
             ),
-            onChanged: (String value) {
-              setState(() { _saveResult = null; _isInputChanged = true; });
-            },
+            onChanged: _onChanged,
           ),
           const SizedBox(height: 16),
           TextField(
@@ -182,9 +191,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
             ),
             keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: true),
             inputFormatters:[FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*$'))],
-            onChanged: (String value) {
-              setState(() { _saveResult = null; _isInputChanged = true; });
-            },
+            onChanged: _onChanged,
           ),
           const SizedBox(height: 16),
           TextField(
@@ -195,9 +202,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
               helperText: l10n.tbot_apiUrlInfo,
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
-            onChanged: (String value) {
-              setState(() { _saveResult = null; _isInputChanged = true; });
-            },
+            onChanged: _onChanged,
           ),
         ],
       ),

@@ -35,7 +35,7 @@ class _MessagesPageState extends State<MessagesPage> {
 
     setState(() => _isStarting = true);
     bool canStart = true;
-    if (appState.forwardSms && !await getSmsPermission()) canStart = false;
+    if (appState.forwardSms && !await getSmsReceivePermission()) canStart = false;
     if (appState.forwardCalls && !await getPhonePermission()) canStart = false;
     if (appState.enableForeground && !await getNotificationPermission()) canStart = false;
 

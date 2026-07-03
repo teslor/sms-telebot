@@ -14,15 +14,16 @@ typedef CallResult = ({bool isSuccess, String code, String? data});
 CallResult okResult([String? data]) => (isSuccess: true, code: 'ok', data: data);
 CallResult errorResult([String code = 'unexpected_error', String? data]) => (isSuccess: false, code: code, data: data);
 
-Future<bool> getSmsPermission({bool openSettings = false}) async {
-  final statusBeforeRequest = await Permission.sms.status;
-  final status = await Permission.sms.request();
-  if (status.isGranted) return true;
+Future<bool> getSmsReceivePermission({bool openSettings = false}) async {
+  return requestPermissionNative('android.permission.RECEIVE_SMS', openSettings: openSettings);
+}
 
-  if (openSettings && statusBeforeRequest.isPermanentlyDenied) {
-    await openAppSettings();
-  }
-  return false;
+Future<bool> getSmsSendPermission({bool openSettings = false}) async {
+  return requestPermissionNative('android.permission.SEND_SMS', openSettings: openSettings);
+}
+
+Future<bool> getSimInfoPermission({bool openSettings = false}) async {
+  return requestPermissionNative('android.permission.READ_PHONE_STATE', openSettings: openSettings);
 }
 
 Future<bool> getPhonePermission({bool openSettings = false}) async {
@@ -35,10 +36,6 @@ Future<bool> getPhonePermission({bool openSettings = false}) async {
     await openAppSettings();
   }
   return false;
-}
-
-Future<bool> getSimInfoPermission({bool openSettings = false}) async {
-  return requestPermissionNative('android.permission.READ_PHONE_STATE', openSettings: openSettings);
 }
 
 // Required on Android 13+ to show foreground notifications
@@ -154,9 +151,9 @@ CallResult _toCallResult(Map<dynamic, dynamic>? source) {
 Future<CallResult> sendToProviderNative({
   required String provider,
   required Map<String, dynamic> config,
-  required String secret,
   required String body,
   String sender = AppConst.appName,
+  String secret = '',
   String deviceLabel = '',
 }) async {
   try {

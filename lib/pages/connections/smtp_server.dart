@@ -47,7 +47,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
     _protocol = _normalizeProtocol(config['protocol']);
     final initialPort = _parsePort(_portController.text.trim());
     _isPortManuallyEdited =
-      initialPort != null && initialPort != _defaultPort(_protocol);
+      initialPort != null && initialPort != _getDefaultPort(_protocol);
   }
 
   @override
@@ -60,41 +60,6 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
     _toEmailController.dispose();
     _subjectController.dispose();
     super.dispose();
-  }
-
-  String _normalizeProtocol(String? rawValue) {
-    return (['starttls', 'ssl', 'none'].contains(rawValue)) ? rawValue! : 'starttls';
-  }
-
-  int _defaultPort(String protocol) {
-    return switch (protocol) {
-      'starttls' => 587, 'ssl' => 465, 'none' => 25, _ => 587
-    };
-  }
-
-  int? _parsePort(String value) {
-    final parsed = int.tryParse(value);
-    if (parsed == null || parsed < 1 || parsed > 65535) return null;
-    return parsed;
-  }
-
-  bool _isValidEmail(String value) {
-    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-    return emailRegex.hasMatch(value);
-  }
-
-  List<String> _parseRecipientEmails(String value) {
-    return value
-      .split(RegExp(r'[;,]'))
-      .map((email) => email.trim())
-      .where((email) => email.isNotEmpty)
-      .toList();
-  }
-
-  bool _isValidRecipientEmails(String value) {
-    final recipients = _parseRecipientEmails(value);
-    if (recipients.isEmpty) return false;
-    return recipients.every(_isValidEmail);
   }
 
   bool get _isValidInputs {
@@ -111,22 +76,6 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
     return true;
   }
 
-  Map<String, dynamic> _buildConfig() {
-    final fromEmail = _fromEmailController.text.trim();
-    final toEmail = _toEmailController.text.trim();
-    final subject = _subjectController.text.trim();
-
-    return {
-      'host': _hostController.text.trim(),
-      'protocol': _protocol,
-      'port': _parsePort(_portController.text.trim()),
-      'login': _loginController.text.trim(),
-      if (fromEmail.isNotEmpty) 'fromEmail': fromEmail,
-      if (toEmail.isNotEmpty) 'toEmail': _parseRecipientEmails(toEmail).join(', '),
-      if (subject.isNotEmpty) 'subject': subject,
-    };
-  }
-
   Future<void> _testConnection(AppLocalizations l10n) async {
     FocusManager.instance.primaryFocus?.unfocus();
 
@@ -138,8 +87,8 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
       setState(() {
         _isTesting = false;
         _testResult = false;
-        context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
       });
+      context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
       return;
     }
 
@@ -179,10 +128,8 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (!_isValidInputs) {
-      setState(() {
-        _saveResult = false;
-        context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
-      });
+      setState(() { _saveResult = false; });
+      context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
       return;
     }
 
@@ -192,15 +139,16 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
     try {
       final result = await appState.updateRuleConfig(config, secret);
       if (!mounted) return;
-      if (!result.isSuccess) {
+
+      if (result.isSuccess) {
+        setState(() {
+          _saveResult = true;
+          _isInputChanged = false;
+        });
+      } else {
         setState(() { _saveResult = false; });
         context.showErrorSnack(getLocalizedError(l10n, result.code));
-        return;
       }
-      setState(() {
-        _saveResult = true;
-        _isInputChanged = false;
-      });
     } catch (_) {
       if (mounted) {
         setState(() { _saveResult = false; });
@@ -226,9 +174,60 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
       if (value.trim().isEmpty) {
         _isPortManuallyEdited = false;
       } else {
-        _isPortManuallyEdited = parsedPort != _defaultPort(_protocol);
+        _isPortManuallyEdited = parsedPort != _getDefaultPort(_protocol);
       }
     });
+  }
+
+  Map<String, dynamic> _buildConfig() {
+    final fromEmail = _fromEmailController.text.trim();
+    final toEmail = _toEmailController.text.trim();
+    final subject = _subjectController.text.trim();
+
+    return {
+      'host': _hostController.text.trim(),
+      'protocol': _protocol,
+      'port': _parsePort(_portController.text.trim()),
+      'login': _loginController.text.trim(),
+      if (fromEmail.isNotEmpty) 'fromEmail': fromEmail,
+      if (toEmail.isNotEmpty) 'toEmail': _parseRecipientEmails(toEmail).join(', '),
+      if (subject.isNotEmpty) 'subject': subject,
+    };
+  }
+
+  String _normalizeProtocol(String? rawValue) {
+    return (['starttls', 'ssl', 'none'].contains(rawValue)) ? rawValue! : 'starttls';
+  }
+
+  int _getDefaultPort(String protocol) {
+    return switch (protocol) {
+      'starttls' => 587, 'ssl' => 465, 'none' => 25, _ => 587
+    };
+  }
+
+  int? _parsePort(String value) {
+    final parsed = int.tryParse(value);
+    if (parsed == null || parsed < 1 || parsed > 65535) return null;
+    return parsed;
+  }
+
+  bool _isValidEmail(String value) {
+    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+    return emailRegex.hasMatch(value);
+  }
+
+  List<String> _parseRecipientEmails(String value) {
+    return value
+      .split(RegExp(r'[;,]'))
+      .map((email) => email.trim())
+      .where((email) => email.isNotEmpty)
+      .toList();
+  }
+
+  bool _isValidRecipientEmails(String value) {
+    final recipients = _parseRecipientEmails(value);
+    if (recipients.isEmpty) return false;
+    return recipients.every(_isValidEmail);
   }
 
   @override
@@ -275,7 +274,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
               setState(() {
                 _protocol = value;
                 if (!_isPortManuallyEdited) {
-                  _portController.text = _defaultPort(value).toString();
+                  _portController.text = _getDefaultPort(value).toString();
                 }
                 _testResult = null;
                 _saveResult = null;

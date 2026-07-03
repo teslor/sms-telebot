@@ -188,14 +188,16 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       };
 
       config = safeDecode(rule['config_json']) ?? {};
-      result = await readSecretNative(rule['id'].toString());
-      if (result.isSuccess) {
-        final secret = result.data;
-        if (secret != null && secret.isNotEmpty) {
-          if (rule['provider'] == 'telegram_bot') {
-            config['token'] = secret;
-          } else {
-            config['password'] = secret;
+      if (rule['provider'] != 'sms_gateway') {
+        result = await readSecretNative(rule['id'].toString());
+        if (result.isSuccess) {
+          final secret = result.data;
+          if (secret != null && secret.isNotEmpty) {
+            if (rule['provider'] == 'telegram_bot') {
+              config['token'] = secret;
+            } else {
+              config['password'] = secret;
+            }
           }
         }
       }
@@ -241,36 +243,39 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       '${ruleToCopy['name']} (${AppLocalizations.of(navigatorKey.currentContext!)!.rule_copySuffix})';
     CallResult result = okResult();
 
-    result = await readSecretNative(ruleToCopy['id'].toString());
-    if (result.isSuccess) {
-      final newRuleId = await MainDb.instance.insertRule(
-        name: newName,
-        provider: ruleToCopy['provider'],
-        filterMode: ruleToCopy['filter_mode'],
-        configJson: ruleToCopy['config_json'],
-        filtersJson: ruleToCopy['filters_json'],
-      );
+    Future<int> insertCopy() => MainDb.instance.insertRule(
+      name: newName,
+      provider: ruleToCopy['provider'],
+      filterMode: ruleToCopy['filter_mode'],
+      configJson: ruleToCopy['config_json'],
+      filtersJson: ruleToCopy['filters_json'],
+    );
 
+    if (ruleToCopy['provider'] != 'sms_gateway') {
+      result = await readSecretNative(ruleToCopy['id'].toString());
+      if (!result.isSuccess) return result;
+
+      final newRuleId = await insertCopy();
       final secret = result.data;
       if (secret != null && secret.isNotEmpty) {
         result = await saveSecretNative(newRuleId.toString(), secret);
       }
     } else {
-      return result;
+      await insertCopy();
     }
 
     await _loadRules();
     return result;
   }
 
-  Future<CallResult> updateRuleConfig(Map<String, dynamic> newConfig, String secret) async {
+  Future<CallResult> updateRuleConfig(Map<String, dynamic> newConfig, String? secret) async {
     CallResult result = okResult();
 
     if (selectedRule == null) return result;
     final ruleId = selectedRule!['id'];
 
     await MainDb.instance.updateRuleField(ruleId, 'config_json', jsonEncode(newConfig));
-    result = await saveSecretNative(ruleId.toString(), secret);
+    if (secret != null) result = await saveSecretNative(ruleId.toString(), secret);
     await _loadRules();
     return result;
   }

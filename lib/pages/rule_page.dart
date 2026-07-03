@@ -115,7 +115,7 @@ class _RulePageState extends State<RulePage> {
             ],
             bottom: TabBar(
               tabs: [
-                Tab(text: AppLocalizations.of(context)!.connection),
+                Tab(text: AppLocalizations.of(context)!.config),
                 Tab(text: AppLocalizations.of(context)!.filters),
               ],
             ),
