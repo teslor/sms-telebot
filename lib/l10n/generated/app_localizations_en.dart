@@ -39,7 +39,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get msg_empty => 'No messages\nin the last 24 hours';
 
   @override
-  String get msg_hello => 'Hello! =^•⩊•^=';
+  String get msg_hello => 'Hello! ^._.^';
 
   @override
   String get msg_received => 'Received';
@@ -93,7 +93,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rules_empty => 'No rules yet.\nAdd your first one!';
 
   @override
-  String get connection => 'Connection';
+  String get config => 'Config';
 
   @override
   String get tbot => 'Telegram bot';
@@ -159,6 +159,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smtp_subjectInfo => 'Default: auto';
 
   @override
+  String get sms_receiver => 'Receiver';
+
+  @override
+  String get sms_number => 'Phone number';
+
+  @override
+  String get sms_numberInfo => 'Example: +12345678900';
+
+  @override
   String get filters => 'Filters';
 
   @override
@@ -217,26 +226,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get help_appInfo =>
-      'App to automatically forward incoming SMS.\nAdditional features: notifications for incoming calls and battery status.';
+      'Smart forwarding of SMS, notifications for incoming calls and battery status.';
 
   @override
   String get help_info => 'Intro';
 
   @override
   String get help_info_01 =>
-      'With this app, you can forward messages to a Telegram bot or an email address with SMTP access. You can add multiple bots or email addresses!';
+      'Forward messages to a Telegram bot, via email (SMTP), or as SMS. You can add multiple bots or email addresses!';
 
   @override
   String get help_info_02 =>
-      'A forwarding rule is created for each connection — it defines which messages to send and where. Rules can be duplicated, enabled, or disabled as needed.';
+      'Use rules to configure what to forward and where. You can easily duplicate or disable them when needed.';
 
   @override
   String get help_info_03 =>
-      'The app checks active rules and attempts to forward a new message. If it fails due to technical reasons (e.g., no internet), the app will retry later.';
-
-  @override
-  String get help_info_04 =>
-      'Make sure to keep the internet connection enabled for the app to work.';
+      'Messages are forwarded according to active rules. If a connection error occurs (for example, no internet), retry attempts are performed automatically.';
 
   @override
   String get help_opts_01 =>
@@ -245,6 +250,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get help_opts_02 =>
       'Permanent background mode improves reliability of message delivery (especially for system notifications), but significantly increases battery consumption. In this mode, a persistent notification appears in the notification shade. Not recommended to enable unless necessary.';
+
+  @override
+  String get help_opts_025 =>
+      'To add SIM card data (slot number and operator) when forwarding SMS and calls, enable the required switch.';
 
   @override
   String get help_opts_03 =>
@@ -282,7 +291,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get help_smtp_01 =>
-      'It is best to create a dedicated email for message forwarding (not an alias): it will also serve as your login. This is especially relevant for Gmail and similar services.';
+      'It is recommended to create a dedicated email account (not an alias) specifically for message forwarding and use it as your login. This is especially relevant for Gmail and similar services.';
 
   @override
   String get help_smtp_02 =>
@@ -293,11 +302,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'Test and save the settings, enable the rule, and press Start.';
 
   @override
+  String get help_sms => 'SMS Sending';
+
+  @override
+  String get help_sms_01 =>
+      'The app supports forwarding messages as outgoing SMS to specified phone numbers.';
+
+  @override
+  String get help_sms_02 =>
+      'Create a rule and enter the recipient\'s phone number. Mobile numbers must start with the + symbol (international format).';
+
+  @override
+  String get help_sms_03 =>
+      'SMS are sent using the default SIM card selected in your phone settings.';
+
+  @override
   String get help_filters => 'Filters';
 
   @override
   String get help_filters_01 =>
-      'You can set filters for sender or message text. A filter is triggered if a sender number/name or text contains the specified characters.';
+      'For any rule, you can set filters for sender or message text. A filter is triggered if a sender number/name or text contains the specified characters.';
 
   @override
   String get help_filters_02 =>
@@ -305,7 +329,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get help_filters_03 =>
-      'Use two forward slashes for regex. For example, filter /^\\d*555\$/ matches all numbers, that end with 555';
+      'Use two forward slashes for regex. For example, filter /^\\d*555\$/ matches all numbers, that end with 555.';
 
   @override
   String get help_filters_04 =>

@@ -39,7 +39,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get msg_empty => 'Нет сообщений\nза последние 24 часа';
 
   @override
-  String get msg_hello => 'Привет! =^•⩊•^=';
+  String get msg_hello => 'Привет! ^._.^';
 
   @override
   String get msg_received => 'Получено';
@@ -94,7 +94,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get rules_empty => 'Правил пока нет.\nДобавьте первое!';
 
   @override
-  String get connection => 'Подключение';
+  String get config => 'Параметры';
 
   @override
   String get tbot => 'Telegram-бот';
@@ -160,6 +160,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get smtp_subjectInfo => 'По умолчанию: автоматически';
 
   @override
+  String get sms_receiver => 'Получатель';
+
+  @override
+  String get sms_number => 'Номер телефона';
+
+  @override
+  String get sms_numberInfo => 'Например, +12345678900';
+
+  @override
   String get filters => 'Фильтры';
 
   @override
@@ -205,7 +214,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settings_enableForeground => 'Постоянная работа в фоне';
 
   @override
-  String get settings_attachSimInfo => 'Добавлять данные SIM';
+  String get settings_attachSimInfo => 'Передавать данные SIM';
 
   @override
   String get settings_deviceLabel => 'Метка устройства';
@@ -218,26 +227,22 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get help_appInfo =>
-      'Приложение для автоматической пересылки входящих СМС.\nДополнительно: уведомления о входящих звонках и статусе батареи.';
+      'Автоматическая пересылка СМС, уведомлений о входящих звонках и статусе батареи.';
 
   @override
   String get help_info => 'Введение';
 
   @override
   String get help_info_01 =>
-      'С помощью приложения можно пересылать сообщения Telegram-боту или на email-ящик с SMTP-доступом. Можно добавить несколько ботов или email-адресов!';
+      'Пересылайте сообщения Telegram-боту, на email (через SMTP) или в виде СМС. Можно настроить несколько ботов или адресов!';
 
   @override
   String get help_info_02 =>
-      'Для каждого подключения со здаётся правило пересылки — оно определяет, какие сообщения и куда отправлять. Правила можно дублировать, включать и выключать по мере необходимости.';
+      'Используйте правила, чтобы настроить, что и куда пересылать. Их легко дублировать или отключать при необходимости.';
 
   @override
   String get help_info_03 =>
-      'Приложение проверяет активные правила и пробует переслать новое сообщение. Если не получилось по технической причине (например, нет интернета) — планируются повторые попытки.';
-
-  @override
-  String get help_info_04 =>
-      'Устройство с работающим приложением должно оставаться подключенным к интернету.';
+      'Сообщения пересылаются согласно активным правилам. При ошибке связи (например, нет интернета) повторные попытки отправки выполняются автоматически.';
 
   @override
   String get help_opts_01 =>
@@ -245,7 +250,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get help_opts_02 =>
-      'Режим постоянной работы в фоне повышает надёжность доставки сообщений (особенно системных уведомлений), но значительно увеличивает расход батареи. При этом режиме отображается постоянное уведомление в шторке. Не рекомендуется включать без необходимости.';
+      'Режим постоянной работы в фоне повышает надёжность доставки сообщений (особенно системных уведомлений), но значительно увеличивает расход батареи. В этом режиме отображается постоянное уведомление в шторке. Не рекомендуется включать без необходимости.';
+
+  @override
+  String get help_opts_025 =>
+      'Чтобы добавлять данные SIM-карты (номер слота и оператор) при пересылке СМС и звонков, включите нужный переключатель.';
 
   @override
   String get help_opts_03 =>
@@ -283,7 +292,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get help_smtp_01 =>
-      'Для пересылки сообщений лучше завести отдельный email (не алиас): он же будет логином. Особенно актуально для Gmail и подобных сервисов.';
+      'Рекомендуется создать отдельный email (не алиас) специально для пересылки сообщений и использовать его как логин. Особенно актуально для Gmail и подобных сервисов.';
 
   @override
   String get help_smtp_02 =>
@@ -294,11 +303,26 @@ class AppLocalizationsRu extends AppLocalizations {
       'Проверьте и сохраните настройки, включите правило и нажмите Старт.';
 
   @override
+  String get help_sms => 'Отправка СМС';
+
+  @override
+  String get help_sms_01 =>
+      'Приложение поддерживает пересылку сообщений в виде исходящих СМС.';
+
+  @override
+  String get help_sms_02 =>
+      'Создайте правило и введите номер телефона получателя. Мобильный номер должен начинаться с символа + (международный формат).';
+
+  @override
+  String get help_sms_03 =>
+      'СМС отправляются с SIM-карты, выбранной по умолчанию в настройках телефона.';
+
+  @override
   String get help_filters => 'Фильтры';
 
   @override
   String get help_filters_01 =>
-      'Для каждого правила можно дополнительно установить фильтры для отправителя или текста сообщения. Фильтр срабатывает, если номер/имя отправителя или текст содержат заданные символы.';
+      'Для любого правила можно установить фильтры для отправителя и текста сообщения. Фильтр срабатывает, если номер/имя отправителя или текст содержат заданные символы.';
 
   @override
   String get help_filters_02 =>
@@ -306,7 +330,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get help_filters_03 =>
-      'Используйте два символа /, чтобы задать регулярное выражение в качестве фильтра. Например, фильтр /^\\d*555\$/ соответствует номерам, которые оканчиваются на 555.';
+      'Используйте два символа / для регулярного выражения в качестве фильтра. Например, фильтр /^\\d*555\$/ соответствует номерам, которые оканчиваются на 555.';
 
   @override
   String get help_filters_04 =>
@@ -314,7 +338,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get help_filters_05 =>
-      'Заданные фильтры применяются для всех типов событий, не только для входящих СМС.';
+      'Фильтры применяются для всех типов событий, не только для входящих СМС.';
 
   @override
   String get error_badRequest =>

@@ -40,7 +40,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get msg_empty => 'Aucun message\nau cours des 24 dernières heures';
 
   @override
-  String get msg_hello => 'Bonjour ! =^•⩊•^=';
+  String get msg_hello => 'Bonjour ! ^._.^';
 
   @override
   String get msg_received => 'Reçu';
@@ -96,7 +96,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Aucune règle pour l\'instant.\nAjoutez la première !';
 
   @override
-  String get connection => 'Connexion';
+  String get config => 'Configuration';
 
   @override
   String get tbot => 'Bot Telegram';
@@ -163,6 +163,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get smtp_subjectInfo => 'Par défaut : auto';
 
   @override
+  String get sms_receiver => 'Destinataire';
+
+  @override
+  String get sms_number => 'Numéro de téléphone';
+
+  @override
+  String get sms_numberInfo => 'Exemple : +12345678900';
+
+  @override
   String get filters => 'Filtres';
 
   @override
@@ -221,26 +230,22 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get help_appInfo =>
-      'Application pour transférer automatiquement les SMS entrants.\nFonctions supplémentaires : notifications d\'appels entrants et d\'état de batterie.';
+      'Transfert intelligent des SMS, notifications d\'appels entrants et état de la batterie.';
 
   @override
   String get help_info => 'Introduction';
 
   @override
   String get help_info_01 =>
-      'Avec cette application, vous pouvez transférer des messages vers un bot Telegram ou une adresse e-mail avec accès SMTP. Vous pouvez ajouter plusieurs bots ou adresses e-mail.';
+      'Transférez des messages vers un bot Telegram, par e-mail (SMTP) ou sous forme de SMS. Vous pouvez ajouter plusieurs bots ou adresses e-mail.';
 
   @override
   String get help_info_02 =>
-      'Une règle de transfert est créée pour chaque connexion : elle définit quels messages envoyer et vers quelle destination. Les règles peuvent être dupliquées, activées ou désactivées selon vos besoins.';
+      'Utilisez les règles pour définir quoi transférer et vers quelle destination. Vous pouvez les dupliquer ou les désactiver selon vos besoins.';
 
   @override
   String get help_info_03 =>
-      'L\'application vérifie les règles actives et tente de transférer chaque nouveau message. En cas d\'échec technique (par exemple sans internet), elle réessaiera plus tard.';
-
-  @override
-  String get help_info_04 =>
-      'Assurez-vous de garder la connexion internet active pour que l\'application fonctionne correctement.';
+      'Les messages sont transférés selon les règles actives. En cas d\'erreur de connexion (par exemple sans internet), les nouvelles tentatives sont effectuées automatiquement.';
 
   @override
   String get help_opts_01 =>
@@ -251,8 +256,12 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le mode permanent en arrière-plan améliore la fiabilité de l\'envoi (surtout pour les notifications système), mais augmente fortement la consommation de batterie. Dans ce mode, une notification persistante apparaît. Il n\'est pas recommandé de l\'activer sans nécessité.';
 
   @override
+  String get help_opts_025 =>
+      'Pour ajouter les données de la carte SIM (numéro d\'emplacement et opérateur) lors du transfert de SMS et d\'appels, activez l\'option correspondante.';
+
+  @override
   String get help_opts_03 =>
-      'Lorsque vous transférez des messages depuis plusieurs téléphones, vous pouvez définir un libellé d\'appareil. Il est envoyé avec le message pour identifier le téléphone source.';
+      'Si vous utilisez l\'application sur plusieurs téléphones, vous pouvez définir un libellé d\'appareil. Il est envoyé avec le message pour identifier le téléphone destinataire.';
 
   @override
   String get help_opts_04 =>
@@ -286,7 +295,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get help_smtp_01 =>
-      'Pour le transfert de messages, il est préférable de créer une adresse e-mail dédiée (pas un alias) : elle servira aussi d\'identifiant. C\'est particulièrement important pour Gmail et les services similaires.';
+      'Il est recommandé de créer une adresse e-mail séparée (pas un alias) spécialement pour le transfert de messages et de l\'utiliser comme identifiant. C\'est particulièrement important pour Gmail et les services similaires.';
 
   @override
   String get help_smtp_02 =>
@@ -297,11 +306,26 @@ class AppLocalizationsFr extends AppLocalizations {
       'Testez et enregistrez les paramètres, activez la règle et appuyez sur Démarrer.';
 
   @override
+  String get help_sms => 'Envoi de SMS';
+
+  @override
+  String get help_sms_01 =>
+      'L\'application prend en charge le transfert des messages sous forme de SMS sortants.';
+
+  @override
+  String get help_sms_02 =>
+      'Créez une règle et saisissez le numéro de téléphone du destinataire. Le numéro mobile doit commencer par le symbole + (format international).';
+
+  @override
+  String get help_sms_03 =>
+      'Les SMS sont envoyés via la carte SIM sélectionnée par défaut dans les paramètres du téléphone.';
+
+  @override
   String get help_filters => 'Filtres';
 
   @override
   String get help_filters_01 =>
-      'Vous pouvez définir des filtres pour l\'expéditeur ou le texte du message. Un filtre se déclenche si le numéro/nom de l\'expéditeur ou le texte contient les caractères indiqués.';
+      'Pour chaque règle, vous pouvez définir des filtres pour l\'expéditeur et le texte du message. Un filtre correspond si le numéro/nom de l\'expéditeur ou le texte contient les caractères indiqués.';
 
   @override
   String get help_filters_02 =>
@@ -309,7 +333,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get help_filters_03 =>
-      'Utilisez deux barres obliques pour regex. Par exemple, le filtre /^\\d*555\$/ correspond à tous les numéros se terminant par 555';
+      'Utilisez deux caractères / pour définir une expression régulière comme filtre. Par exemple, le filtre /^\\d*555\$/ correspond aux numéros se terminant par 555.';
 
   @override
   String get help_filters_04 =>

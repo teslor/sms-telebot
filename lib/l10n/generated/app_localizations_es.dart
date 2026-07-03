@@ -39,7 +39,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get msg_empty => 'No hay mensajes\nen las últimas 24 horas';
 
   @override
-  String get msg_hello => '¡Hola! =^•⩊•^=';
+  String get msg_hello => '¡Hola! ^._.^';
 
   @override
   String get msg_received => 'Recibido';
@@ -93,7 +93,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get rules_empty => 'Aún no hay reglas.\n¡Añade la primera!';
 
   @override
-  String get connection => 'Conexión';
+  String get config => 'Parámetros';
 
   @override
   String get tbot => 'Bot de Telegram';
@@ -160,6 +160,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get smtp_subjectInfo => 'Predeterminado: auto';
 
   @override
+  String get sms_receiver => 'Destinatario';
+
+  @override
+  String get sms_number => 'Número de teléfono';
+
+  @override
+  String get sms_numberInfo => 'Ejemplo: +12345678900';
+
+  @override
   String get filters => 'Filtros';
 
   @override
@@ -218,26 +227,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get help_appInfo =>
-      'Aplicación para reenviar automáticamente los SMS entrantes.\nFunciones adicionales: notificaciones de llamadas entrantes y estado de batería.';
+      'Reenvío inteligente de SMS y notificaciones sobre llamadas entrantes y estado de batería.';
 
   @override
   String get help_info => 'Introducción';
 
   @override
   String get help_info_01 =>
-      'Con esta app, puedes reenviar mensajes a un bot de Telegram o a una dirección de correo con acceso SMTP. Puedes añadir varios bots o direcciones de correo.';
+      'Reenvía mensajes a un bot de Telegram, por correo (SMTP) o como SMS. ¡Puedes añadir varios bots o direcciones de correo!';
 
   @override
   String get help_info_02 =>
-      'Se crea una regla de reenvío para cada conexión: define qué mensajes se envían y a dónde. Puedes duplicar, activar o desactivar reglas según lo necesites.';
+      'Usa reglas para definir qué reenviar y a dónde. Puedes duplicarlas o desactivarlas cuando lo necesites.';
 
   @override
   String get help_info_03 =>
-      'La app revisa las reglas activas e intenta reenviar cada mensaje nuevo. Si falla por motivos técnicos (por ejemplo, sin internet), lo volverá a intentar más tarde.';
-
-  @override
-  String get help_info_04 =>
-      'Asegúrate de mantener la conexión a internet activa para que la app funcione correctamente.';
+      'Los mensajes se reenvían según las reglas activas. Si ocurre un error de conexión (por ejemplo, sin internet), los reintentos se realizan automáticamente.';
 
   @override
   String get help_opts_01 =>
@@ -248,8 +253,12 @@ class AppLocalizationsEs extends AppLocalizations {
       'El modo permanente en segundo plano mejora la fiabilidad del envío (especialmente para notificaciones del sistema), pero aumenta bastante el consumo de batería. En este modo aparece una notificación persistente. No se recomienda activarlo salvo que sea necesario.';
 
   @override
+  String get help_opts_025 =>
+      'Para añadir datos de la SIM (número de ranura y operador) al reenviar SMS y llamadas, activa el interruptor correspondiente.';
+
+  @override
   String get help_opts_03 =>
-      'Si reenvías mensajes desde varios teléfonos, puedes establecer una etiqueta de dispositivo. Se enviará junto con el mensaje para identificar de qué teléfono proviene.';
+      'Si usas la app en varios teléfonos, puedes establecer una etiqueta de dispositivo. Se enviará junto con el mensaje para identificar el teléfono receptor.';
 
   @override
   String get help_opts_04 =>
@@ -283,7 +292,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get help_smtp_01 =>
-      'Para reenviar mensajes, lo mejor es crear un correo dedicado (no un alias): también te servirá como usuario. Es especialmente importante en Gmail y servicios similares.';
+      'Se recomienda crear una cuenta de correo separada (no un alias) específicamente para el reenvío de mensajes y usarla como usuario. Es especialmente importante para Gmail y servicios similares.';
 
   @override
   String get help_smtp_02 =>
@@ -294,11 +303,26 @@ class AppLocalizationsEs extends AppLocalizations {
       'Pruebe y guarde la configuración, active la regla y pulse Iniciar.';
 
   @override
+  String get help_sms => 'Envío de SMS';
+
+  @override
+  String get help_sms_01 =>
+      'La app permite reenviar mensajes como SMS salientes.';
+
+  @override
+  String get help_sms_02 =>
+      'Crea una regla e introduce el número de teléfono del destinatario. El número móvil debe comenzar con el símbolo + (formato internacional).';
+
+  @override
+  String get help_sms_03 =>
+      'Los SMS se envían con la tarjeta SIM seleccionada por defecto en la configuración del teléfono.';
+
+  @override
   String get help_filters => 'Filtros';
 
   @override
   String get help_filters_01 =>
-      'Puedes configurar filtros por remitente o por texto del mensaje. Un filtro se activa si el número/nombre del remitente o el texto contiene los caracteres indicados.';
+      'Para cualquier regla, puedes configurar filtros por remitente y por texto del mensaje. Un filtro coincide si el número/nombre del remitente o el texto contiene los caracteres indicados.';
 
   @override
   String get help_filters_02 =>
@@ -306,7 +330,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get help_filters_03 =>
-      'Usa dos barras para regex. Por ejemplo, el filtro /^\\d*555\$/ coincide con todos los números que terminan en 555';
+      'Usa dos caracteres / para definir una expresión regular como filtro. Por ejemplo, el filtro /^\\d*555\$/ coincide con los números que terminan en 555.';
 
   @override
   String get help_filters_04 =>

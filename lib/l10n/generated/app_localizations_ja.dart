@@ -39,7 +39,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get msg_empty => '過去24時間の\nメッセージはありません';
 
   @override
-  String get msg_hello => 'こんにちは！=^•⩊•^=';
+  String get msg_hello => 'こんにちは！^._.^';
 
   @override
   String get msg_received => '受信';
@@ -93,7 +93,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rules_empty => 'ルールはまだありません。\n最初のルールを追加しましょう！';
 
   @override
-  String get connection => '接続';
+  String get config => 'パラメータ';
 
   @override
   String get tbot => 'Telegramボット';
@@ -159,6 +159,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get smtp_subjectInfo => 'デフォルト: 自動';
 
   @override
+  String get sms_receiver => '受信者';
+
+  @override
+  String get sms_number => '電話番号';
+
+  @override
+  String get sms_numberInfo => '例: +12345678900';
+
+  @override
   String get filters => 'フィルター';
 
   @override
@@ -216,25 +225,21 @@ class AppLocalizationsJa extends AppLocalizations {
   String get help_about => 'このアプリについて';
 
   @override
-  String get help_appInfo => '受信したSMSを自動で転送するアプリです。\n追加機能: 着信通知とバッテリー状態の通知。';
+  String get help_appInfo => 'SMSのスマート転送、着信通知、バッテリー状態通知に対応しています。';
 
   @override
   String get help_info => 'イントロ';
 
   @override
   String get help_info_01 =>
-      'このアプリでは、メッセージをTelegramボットまたはSMTP対応のメールアドレスへ転送できます。複数のボットやメールアドレスを追加できます。';
+      'メッセージをTelegramボット、メール（SMTP）、またはSMSとして転送できます。複数のボットやメールアドレスを追加できます。';
 
   @override
-  String get help_info_02 =>
-      '接続ごとに転送ルールが作成され、どのメッセージをどこへ送るかを定義します。ルールは必要に応じて複製、有効化、無効化できます。';
+  String get help_info_02 => 'ルールを使って、何をどこへ転送するかを設定できます。必要に応じて簡単に複製や無効化が可能です。';
 
   @override
   String get help_info_03 =>
-      'アプリは有効なルールを確認し、新しいメッセージの転送を試みます。技術的な理由（例: インターネット未接続）で失敗した場合は、後で再試行します。';
-
-  @override
-  String get help_info_04 => 'アプリを正常に動作させるため、インターネット接続を有効な状態に保ってください。';
+      'メッセージは有効なルールに従って転送されます。接続エラー（例: インターネット未接続）が発生した場合は、自動的に再試行されます。';
 
   @override
   String get help_opts_01 =>
@@ -245,8 +250,12 @@ class AppLocalizationsJa extends AppLocalizations {
       '常時バックグラウンドモードにすると配信の信頼性（特にシステム通知）が上がりますが、バッテリー消費は大きく増えます。このモードでは通知領域に常駐通知が表示されます。必要な場合のみ有効化してください。';
 
   @override
+  String get help_opts_025 =>
+      'SMSや通話を転送する際にSIM情報（スロット番号と通信事業者）を付与するには、対応するスイッチを有効にしてください。';
+
+  @override
   String get help_opts_03 =>
-      '複数の端末からメッセージを転送する場合は、デバイスラベルを設定できます。ラベルはメッセージと一緒に送信され、送信元端末の識別に使われます。';
+      '複数の端末でアプリを使う場合は、デバイスラベルを設定できます。ラベルはメッセージと一緒に送信され、受信側の端末を識別できます。';
 
   @override
   String get help_opts_04 =>
@@ -280,7 +289,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get help_smtp_01 =>
-      'メッセージ転送用に専用メールアドレス（エイリアスではない）を作成するのがおすすめです。これはログインIDとしても使います。Gmailなどでは特に重要です。';
+      'メッセージ転送専用に別のメールアカウント（エイリアスではない）を作成し、ログインIDとして使うことをおすすめします。Gmailなどのサービスでは特に重要です。';
 
   @override
   String get help_smtp_02 =>
@@ -290,11 +299,24 @@ class AppLocalizationsJa extends AppLocalizations {
   String get help_smtp_03 => '設定をテストして保存し、ルールを有効にして「開始」を押してください。';
 
   @override
+  String get help_sms => 'SMS送信';
+
+  @override
+  String get help_sms_01 => 'このアプリは、メッセージを送信SMSとして転送することに対応しています。';
+
+  @override
+  String get help_sms_02 =>
+      'ルールを作成し、受信者の電話番号を入力してください。携帯番号は + 記号から始める必要があります（国際形式）。';
+
+  @override
+  String get help_sms_03 => 'SMSは、端末設定でデフォルトに選択されているSIMカードから送信されます。';
+
+  @override
   String get help_filters => 'フィルター';
 
   @override
   String get help_filters_01 =>
-      '送信元またはメッセージ本文に対してフィルターを設定できます。送信元番号/名前や本文に指定した文字が含まれるとフィルターが適用されます。';
+      '任意のルールで、送信元とメッセージ本文のフィルターを設定できます。送信元番号/名前または本文に指定した文字が含まれるとフィルターが適用されます。';
 
   @override
   String get help_filters_02 =>
@@ -302,7 +324,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get help_filters_03 =>
-      '正規表現には2つのスラッシュを使用してください。例えば、フィルター /^\\d*555\$/ は555で終わるすべての番号に一致します';
+      'フィルターとして正規表現を使うには / を2つ使用してください。例えば、フィルター /^\\d*555\$/ は 555 で終わる番号に一致します。';
 
   @override
   String get help_filters_04 =>

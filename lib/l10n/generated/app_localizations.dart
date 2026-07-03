@@ -175,7 +175,7 @@ abstract class AppLocalizations {
   /// No description provided for @msg_hello.
   ///
   /// In en, this message translates to:
-  /// **'Hello! =^•⩊•^='**
+  /// **'Hello! ^._.^'**
   String get msg_hello;
 
   /// No description provided for @msg_received.
@@ -280,11 +280,11 @@ abstract class AppLocalizations {
   /// **'No rules yet.\nAdd your first one!'**
   String get rules_empty;
 
-  /// No description provided for @connection.
+  /// No description provided for @config.
   ///
   /// In en, this message translates to:
-  /// **'Connection'**
-  String get connection;
+  /// **'Config'**
+  String get config;
 
   /// No description provided for @tbot.
   ///
@@ -412,6 +412,24 @@ abstract class AppLocalizations {
   /// **'Default: auto'**
   String get smtp_subjectInfo;
 
+  /// No description provided for @sms_receiver.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiver'**
+  String get sms_receiver;
+
+  /// No description provided for @sms_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get sms_number;
+
+  /// No description provided for @sms_numberInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: +12345678900'**
+  String get sms_numberInfo;
+
   /// No description provided for @filters.
   ///
   /// In en, this message translates to:
@@ -529,7 +547,7 @@ abstract class AppLocalizations {
   /// No description provided for @help_appInfo.
   ///
   /// In en, this message translates to:
-  /// **'App to automatically forward incoming SMS.\nAdditional features: notifications for incoming calls and battery status.'**
+  /// **'Smart forwarding of SMS, notifications for incoming calls and battery status.'**
   String get help_appInfo;
 
   /// No description provided for @help_info.
@@ -541,26 +559,20 @@ abstract class AppLocalizations {
   /// No description provided for @help_info_01.
   ///
   /// In en, this message translates to:
-  /// **'With this app, you can forward messages to a Telegram bot or an email address with SMTP access. You can add multiple bots or email addresses!'**
+  /// **'Forward messages to a Telegram bot, via email (SMTP), or as SMS. You can add multiple bots or email addresses!'**
   String get help_info_01;
 
   /// No description provided for @help_info_02.
   ///
   /// In en, this message translates to:
-  /// **'A forwarding rule is created for each connection — it defines which messages to send and where. Rules can be duplicated, enabled, or disabled as needed.'**
+  /// **'Use rules to configure what to forward and where. You can easily duplicate or disable them when needed.'**
   String get help_info_02;
 
   /// No description provided for @help_info_03.
   ///
   /// In en, this message translates to:
-  /// **'The app checks active rules and attempts to forward a new message. If it fails due to technical reasons (e.g., no internet), the app will retry later.'**
+  /// **'Messages are forwarded according to active rules. If a connection error occurs (for example, no internet), retry attempts are performed automatically.'**
   String get help_info_03;
-
-  /// No description provided for @help_info_04.
-  ///
-  /// In en, this message translates to:
-  /// **'Make sure to keep the internet connection enabled for the app to work.'**
-  String get help_info_04;
 
   /// No description provided for @help_opts_01.
   ///
@@ -573,6 +585,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Permanent background mode improves reliability of message delivery (especially for system notifications), but significantly increases battery consumption. In this mode, a persistent notification appears in the notification shade. Not recommended to enable unless necessary.'**
   String get help_opts_02;
+
+  /// No description provided for @help_opts_025.
+  ///
+  /// In en, this message translates to:
+  /// **'To add SIM card data (slot number and operator) when forwarding SMS and calls, enable the required switch.'**
+  String get help_opts_025;
 
   /// No description provided for @help_opts_03.
   ///
@@ -631,7 +649,7 @@ abstract class AppLocalizations {
   /// No description provided for @help_smtp_01.
   ///
   /// In en, this message translates to:
-  /// **'It is best to create a dedicated email for message forwarding (not an alias): it will also serve as your login. This is especially relevant for Gmail and similar services.'**
+  /// **'It is recommended to create a dedicated email account (not an alias) specifically for message forwarding and use it as your login. This is especially relevant for Gmail and similar services.'**
   String get help_smtp_01;
 
   /// No description provided for @help_smtp_02.
@@ -646,6 +664,30 @@ abstract class AppLocalizations {
   /// **'Test and save the settings, enable the rule, and press Start.'**
   String get help_smtp_03;
 
+  /// No description provided for @help_sms.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS Sending'**
+  String get help_sms;
+
+  /// No description provided for @help_sms_01.
+  ///
+  /// In en, this message translates to:
+  /// **'The app supports forwarding messages as outgoing SMS to specified phone numbers.'**
+  String get help_sms_01;
+
+  /// No description provided for @help_sms_02.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a rule and enter the recipient\'s phone number. Mobile numbers must start with the + symbol (international format).'**
+  String get help_sms_02;
+
+  /// No description provided for @help_sms_03.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS are sent using the default SIM card selected in your phone settings.'**
+  String get help_sms_03;
+
   /// No description provided for @help_filters.
   ///
   /// In en, this message translates to:
@@ -655,7 +697,7 @@ abstract class AppLocalizations {
   /// No description provided for @help_filters_01.
   ///
   /// In en, this message translates to:
-  /// **'You can set filters for sender or message text. A filter is triggered if a sender number/name or text contains the specified characters.'**
+  /// **'For any rule, you can set filters for sender or message text. A filter is triggered if a sender number/name or text contains the specified characters.'**
   String get help_filters_01;
 
   /// No description provided for @help_filters_02.
@@ -667,7 +709,7 @@ abstract class AppLocalizations {
   /// No description provided for @help_filters_03.
   ///
   /// In en, this message translates to:
-  /// **'Use two forward slashes for regex. For example, filter /^\\d*555\$/ matches all numbers, that end with 555'**
+  /// **'Use two forward slashes for regex. For example, filter /^\\d*555\$/ matches all numbers, that end with 555.'**
   String get help_filters_03;
 
   /// No description provided for @help_filters_04.

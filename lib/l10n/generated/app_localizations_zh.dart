@@ -39,7 +39,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get msg_empty => '过去24小时内\n没有消息';
 
   @override
-  String get msg_hello => '你好！=^•⩊•^=';
+  String get msg_hello => '你好！^._.^';
 
   @override
   String get msg_received => '已接收';
@@ -93,7 +93,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get rules_empty => '还没有规则。\n添加第一条！';
 
   @override
-  String get connection => '连接';
+  String get config => '参数';
 
   @override
   String get tbot => 'Telegram 机器人';
@@ -159,6 +159,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get smtp_subjectInfo => '默认：自动';
 
   @override
+  String get sms_receiver => '收件人';
+
+  @override
+  String get sms_number => '电话号码';
+
+  @override
+  String get sms_numberInfo => '示例: +12345678900';
+
+  @override
   String get filters => '筛选器';
 
   @override
@@ -216,23 +225,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get help_about => '关于';
 
   @override
-  String get help_appInfo => '用于自动转发接收短信的应用。\n附加功能：来电通知与电池状态通知。';
+  String get help_appInfo => '智能转发短信，并提供来电通知与电池状态提醒。';
 
   @override
   String get help_info => '简介';
 
   @override
   String get help_info_01 =>
-      '使用本应用，您可以将消息转发到 Telegram 机器人，或转发到支持 SMTP 的邮箱地址。您还可以添加多个机器人或邮箱地址。';
+      '可将消息转发到 Telegram 机器人、邮箱（SMTP）或以短信形式发送。您可以添加多个机器人或邮箱地址。';
 
   @override
-  String get help_info_02 => '每个连接都会创建一条转发规则，用于定义发送哪些消息、发送到哪里。规则可按需复制、启用或禁用。';
+  String get help_info_02 => '通过规则可设置“转发什么、转发到哪里”。需要时可轻松复制或禁用规则。';
 
   @override
-  String get help_info_03 => '应用会检查已启用规则并尝试转发新消息。若因技术原因（例如网络不可用）失败，应用会稍后重试。';
-
-  @override
-  String get help_info_04 => '请确保应用运行期间网络连接保持可用。';
+  String get help_info_03 => '消息会按已启用规则转发。若发生连接错误（例如无网络），系统会自动重试。';
 
   @override
   String get help_opts_01 => '首先选择需要转发的事件。应用运行时，会按已设置规则为每个事件生成并发送消息。';
@@ -242,7 +248,10 @@ class AppLocalizationsZh extends AppLocalizations {
       '常驻后台模式可提高消息送达稳定性（尤其是系统通知），但会明显增加耗电。启用后，通知栏会显示常驻通知。除非确有需要，不建议开启。';
 
   @override
-  String get help_opts_03 => '当您从多台手机转发消息时，可设置设备标签。该标签会随消息一起发送，用于识别消息来自哪台设备。';
+  String get help_opts_025 => '如需在转发短信和来电时附加 SIM 信息（卡槽编号和运营商），请开启对应开关。';
+
+  @override
+  String get help_opts_03 => '如果您在多台手机上使用本应用，可设置设备标签。该标签会随消息一起发送，用于识别接收端手机。';
 
   @override
   String get help_opts_04 => '建议为本应用关闭电池优化，因为系统可能会为省电而限制后台活动。';
@@ -273,7 +282,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get help_smtp_01 =>
-      '建议为消息转发创建一个专用邮箱（不要用别名）：它也会作为登录名。对于 Gmail 等类似服务尤其重要。';
+      '建议专门创建一个独立邮箱账号（不要使用别名）用于消息转发，并将其作为登录名。对于 Gmail 及类似服务尤其重要。';
 
   @override
   String get help_smtp_02 => '创建规则并填写连接参数。通常需要“应用专用密码”（在邮箱的安全设置中生成）。';
@@ -282,10 +291,23 @@ class AppLocalizationsZh extends AppLocalizations {
   String get help_smtp_03 => '测试并保存设置，开启规则并点击“开始”。';
 
   @override
+  String get help_sms => '发送短信';
+
+  @override
+  String get help_sms_01 => '本应用支持将消息以外发短信的形式进行转发。';
+
+  @override
+  String get help_sms_02 => '创建规则并填写收件人手机号。手机号必须以 + 开头（国际格式）。';
+
+  @override
+  String get help_sms_03 => '短信将通过手机设置中默认选择的 SIM 卡发送。';
+
+  @override
   String get help_filters => '筛选器';
 
   @override
-  String get help_filters_01 => '您可以按发件人或消息文本设置筛选器。当发件人号码/名称或文本包含指定字符时，筛选器会生效。';
+  String get help_filters_01 =>
+      '在任意规则中，您都可以为发件人和消息文本设置筛选器。当发件人号码/名称或文本包含指定字符时，筛选器会生效。';
 
   @override
   String get help_filters_02 =>
@@ -293,7 +315,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get help_filters_03 =>
-      '使用两个斜杠表示正则表达式。例如，筛选器 /^\\d*555\$/ 匹配所有以 555 结尾的号码';
+      '使用两个 / 字符可将正则表达式作为筛选器。例如，筛选器 /^\\d*555\$/ 可匹配以 555 结尾的号码。';
 
   @override
   String get help_filters_04 =>

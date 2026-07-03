@@ -40,7 +40,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get msg_empty => 'Keine Nachrichten\nin den letzten 24 Stunden';
 
   @override
-  String get msg_hello => 'Hallo! =^•⩊•^=';
+  String get msg_hello => 'Hallo! ^._.^';
 
   @override
   String get msg_received => 'Empfangen';
@@ -96,7 +96,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get rules_empty => 'Noch keine Regeln.\nFügen Sie die erste hinzu!';
 
   @override
-  String get connection => 'Verbindung';
+  String get config => 'Parameter';
 
   @override
   String get tbot => 'Telegram-Bot';
@@ -162,6 +162,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get smtp_subjectInfo => 'Standard: auto';
 
   @override
+  String get sms_receiver => 'Empfänger';
+
+  @override
+  String get sms_number => 'Telefonnummer';
+
+  @override
+  String get sms_numberInfo => 'Beispiel: +12345678900';
+
+  @override
   String get filters => 'Filter';
 
   @override
@@ -220,26 +229,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get help_appInfo =>
-      'App zum automatischen Weiterleiten eingehender SMS.\nZusätzliche Funktionen: Benachrichtigungen über eingehende Anrufe und den Akkustatus.';
+      'Intelligente Weiterleitung von SMS sowie Benachrichtigungen zu eingehenden Anrufen und zum Akkustatus.';
 
   @override
   String get help_info => 'Einführung';
 
   @override
   String get help_info_01 =>
-      'Mit dieser App können Sie Nachrichten an einen Telegram-Bot oder eine E-Mail-Adresse mit SMTP-Zugang weiterleiten. Sie können mehrere Bots oder E-Mail-Adressen hinzufügen.';
+      'Leiten Sie Nachrichten an einen Telegram-Bot, per E-Mail (SMTP) oder als SMS weiter. Sie können mehrere Bots oder E-Mail-Adressen hinzufügen.';
 
   @override
   String get help_info_02 =>
-      'Für jede Verbindung wird eine Weiterleitungsregel erstellt – sie legt fest, welche Nachrichten wohin gesendet werden. Regeln können bei Bedarf dupliziert, aktiviert oder deaktiviert werden.';
+      'Verwenden Sie Regeln, um festzulegen, was wohin weitergeleitet wird. Regeln lassen sich bei Bedarf einfach duplizieren oder deaktivieren.';
 
   @override
   String get help_info_03 =>
-      'Die App prüft aktive Regeln und versucht, neue Nachrichten weiterzuleiten. Falls dies aus technischen Gründen fehlschlägt (z. B. kein Internet), versucht die App es später erneut.';
-
-  @override
-  String get help_info_04 =>
-      'Stellen Sie sicher, dass die Internetverbindung aktiv bleibt, damit die App korrekt funktioniert.';
+      'Nachrichten werden gemäß den aktiven Regeln weitergeleitet. Tritt ein Verbindungsfehler auf (z. B. kein Internet), erfolgen Wiederholungsversuche automatisch.';
 
   @override
   String get help_opts_01 =>
@@ -250,8 +255,12 @@ class AppLocalizationsDe extends AppLocalizations {
       'Der dauerhafte Hintergrundmodus verbessert die Zuverlässigkeit der Zustellung (insbesondere bei Systembenachrichtigungen), erhöht aber den Akkuverbrauch deutlich. In diesem Modus wird eine permanente Benachrichtigung angezeigt. Aktivieren Sie ihn nur bei Bedarf.';
 
   @override
+  String get help_opts_025 =>
+      'Um beim Weiterleiten von SMS und Anrufen SIM-Daten (Slot-Nummer und Anbieter) anzuhängen, aktivieren Sie den entsprechenden Schalter.';
+
+  @override
   String get help_opts_03 =>
-      'Wenn Sie Nachrichten von mehreren Geräten weiterleiten, können Sie eine Gerätebezeichnung festlegen. Diese wird mitgesendet, damit das sendende Gerät leichter erkennbar ist.';
+      'Wenn Sie die App auf mehreren Telefonen verwenden, können Sie eine Gerätebezeichnung festlegen. Diese wird zusammen mit der Nachricht gesendet, um das empfangende Telefon zu identifizieren.';
 
   @override
   String get help_opts_04 =>
@@ -285,7 +294,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get help_smtp_01 =>
-      'Für die Nachrichtenweiterleitung empfiehlt es sich, eine eigene E-Mail-Adresse einzurichten (kein Alias): Diese dient auch als Login. Das ist besonders bei Gmail und ähnlichen Diensten wichtig.';
+      'Es wird empfohlen, eine separate E-Mail-Adresse (kein Alias) speziell für die Nachrichtenweiterleitung zu erstellen und als Login zu verwenden. Das ist besonders bei Gmail und ähnlichen Diensten wichtig.';
 
   @override
   String get help_smtp_02 =>
@@ -296,11 +305,26 @@ class AppLocalizationsDe extends AppLocalizations {
       'Einstellungen testen und speichern, Regel aktivieren und auf Start drücken.';
 
   @override
+  String get help_sms => 'SMS-Versand';
+
+  @override
+  String get help_sms_01 =>
+      'Die App unterstützt das Weiterleiten von Nachrichten als ausgehende SMS.';
+
+  @override
+  String get help_sms_02 =>
+      'Erstellen Sie eine Regel und geben Sie die Telefonnummer des Empfängers ein. Die Mobilnummer muss mit dem Symbol + beginnen (internationales Format).';
+
+  @override
+  String get help_sms_03 =>
+      'SMS werden über die in den Telefoneinstellungen standardmäßig ausgewählte SIM-Karte gesendet.';
+
+  @override
   String get help_filters => 'Filter';
 
   @override
   String get help_filters_01 =>
-      'Sie können Filter für Absender oder Nachrichtentext festlegen. Ein Filter greift, wenn Absendernummer/-name oder Text die angegebenen Zeichen enthalten.';
+      'Für jede Regel können Sie Filter für Absender und Nachrichtentext festlegen. Ein Filter greift, wenn Absendernummer/-name oder der Text die angegebenen Zeichen enthält.';
 
   @override
   String get help_filters_02 =>
@@ -308,7 +332,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get help_filters_03 =>
-      'Verwenden Sie zwei Schrägstriche für Regex. Zum Beispiel trifft Filter /^\\d*555\$/ auf alle Nummern zu, die mit 555 enden';
+      'Verwenden Sie zwei /-Zeichen, um einen regulären Ausdruck als Filter festzulegen. Zum Beispiel passt der Filter /^\\d*555\$/ auf Nummern, die mit 555 enden.';
 
   @override
   String get help_filters_04 =>

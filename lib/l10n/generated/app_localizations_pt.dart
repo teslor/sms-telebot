@@ -39,7 +39,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get msg_empty => 'Nenhuma mensagem\nnas últimas 24 horas';
 
   @override
-  String get msg_hello => 'Olá! =^•⩊•^=';
+  String get msg_hello => 'Olá! ^._.^';
 
   @override
   String get msg_received => 'Recebido';
@@ -93,7 +93,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get rules_empty => 'Ainda não há regras.\nAdicione a primeira!';
 
   @override
-  String get connection => 'Conexão';
+  String get config => 'Parâmetros';
 
   @override
   String get tbot => 'Bot do Telegram';
@@ -159,6 +159,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get smtp_subjectInfo => 'Padrão: auto';
 
   @override
+  String get sms_receiver => 'Destinatário';
+
+  @override
+  String get sms_number => 'Número de telefone';
+
+  @override
+  String get sms_numberInfo => 'Exemplo: +12345678900';
+
+  @override
   String get filters => 'Filtros';
 
   @override
@@ -217,26 +226,22 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get help_appInfo =>
-      'App para encaminhar automaticamente SMS recebidos.\nRecursos extras: notificações de chamadas recebidas e status da bateria.';
+      'Encaminhamento inteligente de SMS, notificações de chamadas recebidas e status da bateria.';
 
   @override
   String get help_info => 'Introdução';
 
   @override
   String get help_info_01 =>
-      'Com este app, você pode encaminhar mensagens para um bot do Telegram ou para um e-mail com acesso SMTP. Você pode adicionar vários bots ou endereços de e-mail.';
+      'Encaminhe mensagens para um bot do Telegram, por e-mail (SMTP) ou como SMS. Você pode adicionar vários bots ou endereços de e-mail.';
 
   @override
   String get help_info_02 =>
-      'Uma regra de encaminhamento é criada para cada conexão: ela define quais mensagens enviar e para onde. As regras podem ser duplicadas, ativadas ou desativadas quando necessário.';
+      'Use regras para definir o que encaminhar e para onde. Você pode duplicá-las ou desativá-las quando necessário.';
 
   @override
   String get help_info_03 =>
-      'O app verifica as regras ativas e tenta encaminhar cada nova mensagem. Se falhar por motivos técnicos (por exemplo, sem internet), tentará novamente mais tarde.';
-
-  @override
-  String get help_info_04 =>
-      'Mantenha a conexão com a internet ativa para que o app funcione corretamente.';
+      'As mensagens são encaminhadas conforme as regras ativas. Se ocorrer um erro de conexão (por exemplo, sem internet), novas tentativas são feitas automaticamente.';
 
   @override
   String get help_opts_01 =>
@@ -247,8 +252,12 @@ class AppLocalizationsPt extends AppLocalizations {
       'O modo permanente em segundo plano melhora a confiabilidade do envio (principalmente para notificações do sistema), mas aumenta bastante o consumo de bateria. Nesse modo, aparece uma notificação persistente. Não é recomendado ativar sem necessidade.';
 
   @override
+  String get help_opts_025 =>
+      'Para incluir dados do SIM (número do slot e operadora) ao encaminhar SMS e chamadas, ative o interruptor correspondente.';
+
+  @override
   String get help_opts_03 =>
-      'Ao encaminhar mensagens de vários celulares, você pode definir um rótulo do dispositivo. Ele é enviado junto com a mensagem para identificar de qual aparelho ela veio.';
+      'Se você usa o app em vários telefones, pode definir um rótulo do dispositivo. Ele é enviado junto com a mensagem para identificar o telefone de destino.';
 
   @override
   String get help_opts_04 =>
@@ -282,7 +291,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get help_smtp_01 =>
-      'Para encaminhar mensagens, o ideal é criar um e-mail dedicado (não um alias): ele também será seu login. Isso é especialmente importante no Gmail e em serviços semelhantes.';
+      'Recomenda-se criar uma conta de e-mail separada (não um alias) especificamente para encaminhamento de mensagens e usá-la como login. Isso é especialmente importante no Gmail e em serviços semelhantes.';
 
   @override
   String get help_smtp_02 =>
@@ -293,11 +302,26 @@ class AppLocalizationsPt extends AppLocalizations {
       'Teste e salve as configurações, ative a regra e clique em Iniciar.';
 
   @override
+  String get help_sms => 'Envio de SMS';
+
+  @override
+  String get help_sms_01 =>
+      'O app oferece suporte ao encaminhamento de mensagens como SMS de saída.';
+
+  @override
+  String get help_sms_02 =>
+      'Crie uma regra e informe o número de telefone do destinatário. O número móvel deve começar com o símbolo + (formato internacional).';
+
+  @override
+  String get help_sms_03 =>
+      'Os SMS são enviados usando o SIM definido como padrão nas configurações do telefone.';
+
+  @override
   String get help_filters => 'Filtros';
 
   @override
   String get help_filters_01 =>
-      'Você pode definir filtros por remetente ou por texto da mensagem. O filtro é acionado quando o número/nome do remetente ou o texto contém os caracteres informados.';
+      'Para qualquer regra, você pode definir filtros de remetente e de texto da mensagem. O filtro é acionado quando o número/nome do remetente ou o texto contém os caracteres informados.';
 
   @override
   String get help_filters_02 =>
@@ -305,7 +329,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get help_filters_03 =>
-      'Use duas barras para regex. Por exemplo, o filtro /^\\d*555\$/ corresponde a todos os números que terminam com 555';
+      'Use dois caracteres / para definir uma expressão regular como filtro. Por exemplo, o filtro /^\\d*555\$/ corresponde aos números que terminam com 555.';
 
   @override
   String get help_filters_04 =>

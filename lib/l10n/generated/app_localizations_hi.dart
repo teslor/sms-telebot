@@ -39,7 +39,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get msg_empty => 'पिछले 24 घंटों में\nकोई संदेश नहीं';
 
   @override
-  String get msg_hello => 'नमस्ते! =^•⩊•^=';
+  String get msg_hello => 'नमस्ते! ^._.^';
 
   @override
   String get msg_received => 'प्राप्त';
@@ -94,7 +94,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get rules_empty => 'अभी तक कोई नियम नहीं है।\nपहला जोड़ें!';
 
   @override
-  String get connection => 'कनेक्शन';
+  String get config => 'पैरामीटर';
 
   @override
   String get tbot => 'Telegram बॉट';
@@ -160,6 +160,15 @@ class AppLocalizationsHi extends AppLocalizations {
   String get smtp_subjectInfo => 'डिफ़ॉल्ट: ऑटो';
 
   @override
+  String get sms_receiver => 'प्राप्तकर्ता';
+
+  @override
+  String get sms_number => 'फ़ोन नंबर';
+
+  @override
+  String get sms_numberInfo => 'उदाहरण: +12345678900';
+
+  @override
   String get filters => 'फ़िल्टर';
 
   @override
@@ -218,26 +227,22 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get help_appInfo =>
-      'आने वाले SMS को अपने-आप फ़ॉरवर्ड करने के लिए ऐप।\nअतिरिक्त फीचर: इनकमिंग कॉल और बैटरी स्टेटस की सूचनाएं।';
+      'SMS की स्मार्ट फ़ॉरवर्डिंग, इनकमिंग कॉल नोटिफिकेशन और बैटरी स्टेटस अपडेट।';
 
   @override
   String get help_info => 'त्वरित अवलोकन';
 
   @override
   String get help_info_01 =>
-      'इस ऐप से आप संदेशों को Telegram बॉट या SMTP एक्सेस वाले ईमेल पते पर फ़ॉरवर्ड कर सकते हैं। आप एक से अधिक बॉट या ईमेल पते जोड़ सकते हैं।';
+      'संदेशों को Telegram बॉट, ईमेल (SMTP) या SMS के रूप में फ़ॉरवर्ड करें। आप कई बॉट या ईमेल पते जोड़ सकते हैं।';
 
   @override
   String get help_info_02 =>
-      'हर कनेक्शन के लिए एक फ़ॉरवर्डिंग नियम बनता है — वही तय करता है कि कौन से संदेश कहाँ भेजने हैं। जरूरत पड़ने पर नियमों को डुप्लिकेट, ऑन या ऑफ किया जा सकता है।';
+      'नियमों की मदद से तय करें कि क्या फ़ॉरवर्ड होगा और कहाँ जाएगा। जरूरत पड़ने पर इन्हें आसानी से डुप्लिकेट या बंद किया जा सकता है।';
 
   @override
   String get help_info_03 =>
-      'ऐप सक्रिय नियमों को देखकर नए संदेश को फ़ॉरवर्ड करने की कोशिश करता है। अगर तकनीकी कारण (जैसे इंटरनेट न होना) से असफल हो जाए, तो बाद में फिर प्रयास करेगा।';
-
-  @override
-  String get help_info_04 =>
-      'ऐप के सही काम करने के लिए इंटरनेट कनेक्शन चालू रखें।';
+      'संदेश सक्रिय नियमों के अनुसार फ़ॉरवर्ड होते हैं। अगर कनेक्शन त्रुटि हो (जैसे इंटरनेट न हो), तो ऐप अपने-आप दोबारा कोशिश करता है।';
 
   @override
   String get help_opts_01 =>
@@ -248,8 +253,12 @@ class AppLocalizationsHi extends AppLocalizations {
       'परमानेंट बैकग्राउंड मोड संदेश डिलीवरी की विश्वसनीयता बढ़ाता है (खासकर सिस्टम नोटिफिकेशन के लिए), लेकिन बैटरी खपत काफी बढ़ाता है। इस मोड में नोटिफिकेशन पैनल में स्थायी सूचना दिखती है। जरूरत न हो तो इसे ऑन न करें।';
 
   @override
+  String get help_opts_025 =>
+      'SMS और कॉल फ़ॉरवर्ड करते समय SIM डेटा (स्लॉट नंबर और ऑपरेटर) जोड़ने के लिए संबंधित स्विच चालू करें।';
+
+  @override
   String get help_opts_03 =>
-      'अगर आप कई फोनों से संदेश फ़ॉरवर्ड कर रहे हैं, तो डिवाइस लेबल सेट कर सकते हैं। यह संदेश के साथ भेजा जाता है ताकि स्रोत फोन की पहचान हो सके।';
+      'अगर आप ऐप को कई फोनों पर इस्तेमाल करते हैं, तो डिवाइस लेबल सेट कर सकते हैं। यह संदेश के साथ भेजा जाता है ताकि प्राप्त करने वाले फोन की पहचान हो सके।';
 
   @override
   String get help_opts_04 =>
@@ -283,7 +292,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get help_smtp_01 =>
-      'संदेश फ़ॉरवर्डिंग के लिए अलग ईमेल (alias नहीं) बनाना बेहतर है — यही आपका लॉगिन भी होगा। खासकर Gmail जैसी सेवाओं में यह ज़्यादा जरूरी है।';
+      'संदेश फ़ॉरवर्डिंग के लिए अलग ईमेल अकाउंट (alias नहीं) बनाना और उसे लॉगिन के रूप में इस्तेमाल करना बेहतर है। खासकर Gmail जैसी सेवाओं में यह ज़्यादा जरूरी है।';
 
   @override
   String get help_smtp_02 =>
@@ -294,11 +303,26 @@ class AppLocalizationsHi extends AppLocalizations {
       'सेटिंग्स टेस्ट करें और सेव करें, नियम चालू करें और \'Start\' दबाएँ।';
 
   @override
+  String get help_sms => 'SMS भेजना';
+
+  @override
+  String get help_sms_01 =>
+      'ऐप संदेशों को आउटगोइंग SMS के रूप में फ़ॉरवर्ड करना सपोर्ट करता है।';
+
+  @override
+  String get help_sms_02 =>
+      'एक नियम बनाएं और प्राप्तकर्ता का फ़ोन नंबर दर्ज करें। मोबाइल नंबर + चिन्ह से शुरू होना चाहिए (अंतरराष्ट्रीय प्रारूप)।';
+
+  @override
+  String get help_sms_03 =>
+      'SMS उसी SIM से भेजे जाते हैं जो फोन सेटिंग्स में डिफ़ॉल्ट चुनी गई हो।';
+
+  @override
   String get help_filters => 'फ़िल्टर';
 
   @override
   String get help_filters_01 =>
-      'आप प्रेषक या संदेश टेक्स्ट के लिए फ़िल्टर सेट कर सकते हैं। जब प्रेषक नंबर/नाम या टेक्स्ट में दिए गए अक्षर मिलते हैं, फ़िल्टर लागू होता है।';
+      'किसी भी नियम के लिए आप प्रेषक और संदेश टेक्स्ट के फ़िल्टर सेट कर सकते हैं। जब प्रेषक नंबर/नाम या टेक्स्ट में दिए गए अक्षर मिलते हैं, फ़िल्टर लागू होता है।';
 
   @override
   String get help_filters_02 =>
@@ -306,7 +330,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get help_filters_03 =>
-      'regex के लिए दो स्लैश का उपयोग करें। उदाहरण के लिए, फ़िल्टर /^\\d*555\$/ सभी नंबरों से मेल खाता है जो 555 पर समाप्त होते हैं';
+      'फ़िल्टर के रूप में रेगुलर एक्सप्रेशन सेट करने के लिए दो / चिन्ह का उपयोग करें। उदाहरण के लिए, फ़िल्टर /^\\d*555\$/ उन नंबरों से मेल खाता है जो 555 पर समाप्त होते हैं।';
 
   @override
   String get help_filters_04 =>
