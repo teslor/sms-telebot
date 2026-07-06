@@ -205,7 +205,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
       bottomNavigationBar: ActionButton(
         label: l10n.action_save,
-        onPressed: !_isInputChanged ? null : _saveSettings,
+        onPressed: _isInputChanged ? _saveSettings : null,
         isSuccess: _saveResult,
       ),
     );

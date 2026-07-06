@@ -96,6 +96,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get config => 'Config';
 
   @override
+  String get connection => 'Connection';
+
+  @override
   String get tbot => 'Telegram bot';
 
   @override
@@ -190,6 +193,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filters_textInfo => 'Add text filters';
+
+  @override
+  String get options => 'Options';
+
+  @override
+  String get options_priority => 'Rule priority';
+
+  @override
+  String get options_priorityInfo =>
+      'Rule is ignored if a higher-priority rule triggers';
+
+  @override
+  String get options_priority_01 => 'Highest';
+
+  @override
+  String get options_priority_02 => 'High';
+
+  @override
+  String get options_priority_03 => 'Medium';
+
+  @override
+  String get options_priority_04 => 'Low';
+
+  @override
+  String get options_priority_05 => 'Lowest';
 
   @override
   String get settings => 'Settings';

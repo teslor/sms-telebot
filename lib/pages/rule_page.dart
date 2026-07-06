@@ -4,6 +4,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../state.dart';
 import 'rule_connection_page.dart';
 import 'rule_filters_page.dart';
+import 'rule_options_page.dart';
 
 class RulePage extends StatefulWidget {
   const RulePage({super.key});
@@ -57,6 +58,9 @@ class _RulePageState extends State<RulePage> {
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
+    final l10n = AppLocalizations.of(context)!;
+    final provider = appState.selectedRule?['provider'];
+    final connectionTabTitle = provider == 'sms_gateway' ? l10n.sms_receiver : l10n.connection;
 
     return PopScope(
       canPop: false,
@@ -67,7 +71,7 @@ class _RulePageState extends State<RulePage> {
         }
       },
       child: DefaultTabController(
-        length: 2,
+        length: 3,
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -115,8 +119,9 @@ class _RulePageState extends State<RulePage> {
             ],
             bottom: TabBar(
               tabs: [
-                Tab(text: AppLocalizations.of(context)!.config),
-                Tab(text: AppLocalizations.of(context)!.filters),
+                Tab(text: connectionTabTitle),
+                Tab(text: l10n.filters),
+                Tab(text: l10n.options),
               ],
             ),
           ),
@@ -124,6 +129,7 @@ class _RulePageState extends State<RulePage> {
             children:[
               RuleConnectionPage(),
               RuleFiltersPage(),
+              RuleOptionsPage(),
             ],
           ),
         ),

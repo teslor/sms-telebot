@@ -4,6 +4,7 @@ import '../extensions/build_context_x.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../service.dart';
 import '../state.dart';
+import '../styles.dart';
 import '../widgets/action_button.dart';
 import 'connections/registry.dart';
 import 'rule_page.dart';
@@ -224,9 +225,14 @@ class RuleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = context.read<AppState>();
     final isActive = rule['is_active'] == 1;
+    final priorityColor = CustomColor.priorityColor(rule['priority'] ?? 3);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: InkWell(
         onTap: () async {
           await _runAppStateAction(
@@ -238,34 +244,44 @@ class RuleCard extends StatelessWidget {
         onLongPress: () {
           _showActionMenu(context, appState);
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  rule['name'] ?? AppLocalizations.of(context)!.rule,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              left: BorderSide(
+                color: priorityColor,
+                width: 5,
+              ),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    rule['name'] ?? AppLocalizations.of(context)!.rule,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              Switch(
-                value: isActive,
-                activeColor: Colors.green,
-                onChanged: (value) async {
-                  if (value && rule['config_json'] == null) {
-                    context.showErrorSnack(AppLocalizations.of(context)!.rule_noParams);
-                    return;
-                  }
-                  await _runAppStateAction(
-                    context,
-                    () => appState.toggleRuleActive(rule['id'], value),
-                    provider: rule['provider'],
-                  );
-                },
-              ),
-            ],
+                Switch(
+                  value: isActive,
+                  activeColor: Colors.green,
+                  onChanged: (value) async {
+                    if (value && rule['config_json'] == null) {
+                      context.showErrorSnack(AppLocalizations.of(context)!.rule_noParams);
+                      return;
+                    }
+                    await _runAppStateAction(
+                      context,
+                      () => appState.toggleRuleActive(rule['id'], value),
+                      provider: rule['provider'],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

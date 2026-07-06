@@ -233,8 +233,6 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final dropdownTextStyle = Theme.of(context)
-      .textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400);
 
     return Scaffold(
       body: ListView(
@@ -249,28 +247,30 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             onChanged: _onChanged,
           ),
           const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            value: _protocol,
-            style: dropdownTextStyle,
-            decoration: CustomStyle.compactInput(
-              labelText: l10n.smtp_protocol,
-            ),
-            items: [
-              DropdownMenuItem(
+          DropdownMenu<String>(
+            initialSelection: _protocol,
+            expandedInsets: EdgeInsets.zero,
+            label: Text(l10n.smtp_protocol),
+            inputDecorationTheme: CustomStyle.compactDropdown,
+            dropdownMenuEntries: [
+              DropdownMenuEntry<String>(
                 value: 'starttls',
-                child: Text('STARTTLS', style: dropdownTextStyle),
+                label: 'STARTTLS',
+                style: CustomStyle.compactDropdownItem,
               ),
-              DropdownMenuItem(
+              DropdownMenuEntry<String>(
                 value: 'ssl',
-                child: Text('SSL/TLS', style: dropdownTextStyle),
+                label: 'SSL/TLS',
+                style: CustomStyle.compactDropdownItem,
               ),
-              DropdownMenuItem(
+              DropdownMenuEntry<String>(
                 value: 'none',
-                child: Text(l10n.smtp_protocolEmpty, style: dropdownTextStyle),
+                label: l10n.smtp_protocolEmpty,
+                style: CustomStyle.compactDropdownItem,
               ),
             ],
-            onChanged: (value) {
-              if (value == null) return;
+            onSelected: (value) {
+              if (value == null || value == _protocol) return;
               setState(() {
                 _protocol = value;
                 if (!_isPortManuallyEdited) {

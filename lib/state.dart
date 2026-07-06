@@ -28,6 +28,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Map<String, dynamic>? selectedRule;
 
   // Selected rule data
+  int priority = 3;
   int filterMode = 0;
   Map<String, dynamic> config = {};
   Map<String, List<String>> filterLists = {
@@ -181,6 +182,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     CallResult result = okResult();
 
     if (rule != null) {
+      priority = rule['priority'] ?? 3;
       filterMode = rule['filter_mode'] ?? 0;
       final filters = safeDecode(rule['filters_json']) ?? {};
       filterLists = {
@@ -202,6 +204,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         }
       }
     } else {
+      priority = 3;
       filterMode = 0;
       config = {};
       filterLists = {for (var key in AppConst.filterKeys) key: []};
@@ -246,6 +249,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     Future<int> insertCopy() => MainDb.instance.insertRule(
       name: newName,
       provider: ruleToCopy['provider'],
+      priority: ruleToCopy['priority'],
       filterMode: ruleToCopy['filter_mode'],
       configJson: ruleToCopy['config_json'],
       filtersJson: ruleToCopy['filters_json'],
@@ -278,6 +282,14 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     if (secret != null) result = await saveSecretNative(ruleId.toString(), secret);
     await _loadRules();
     return result;
+  }
+
+  Future<CallResult> updateRuleOptions(int newPriority) async {
+    if (selectedRule == null) return okResult();
+    final ruleId = selectedRule!['id'];
+    await MainDb.instance.updateRuleField(ruleId, 'priority', newPriority);
+    await _loadRules();
+    return okResult();
   }
 
   // ================================================================================

@@ -97,6 +97,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get config => 'Параметры';
 
   @override
+  String get connection => 'Подключение';
+
+  @override
   String get tbot => 'Telegram-бот';
 
   @override
@@ -191,6 +194,31 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get filters_textInfo => 'Добавьте фильтры для текста';
+
+  @override
+  String get options => 'Параметры';
+
+  @override
+  String get options_priority => 'Приоритет правила';
+
+  @override
+  String get options_priorityInfo =>
+      'Правило игнорируется при срабатывании правила с более высоким приоритетом';
+
+  @override
+  String get options_priority_01 => 'Максимальный';
+
+  @override
+  String get options_priority_02 => 'Высокий';
+
+  @override
+  String get options_priority_03 => 'Средний';
+
+  @override
+  String get options_priority_04 => 'Низкий';
+
+  @override
+  String get options_priority_05 => 'Минимальный';
 
   @override
   String get settings => 'Настройки';

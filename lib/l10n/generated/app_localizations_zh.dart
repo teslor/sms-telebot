@@ -96,6 +96,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get config => '参数';
 
   @override
+  String get connection => '连接';
+
+  @override
   String get tbot => 'Telegram 机器人';
 
   @override
@@ -190,6 +193,30 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get filters_textInfo => '添加文本筛选器';
+
+  @override
+  String get options => '参数';
+
+  @override
+  String get options_priority => '规则优先级';
+
+  @override
+  String get options_priorityInfo => '如果触发了优先级更高的规则，则忽略规则';
+
+  @override
+  String get options_priority_01 => '最高';
+
+  @override
+  String get options_priority_02 => '高';
+
+  @override
+  String get options_priority_03 => '中';
+
+  @override
+  String get options_priority_04 => '低';
+
+  @override
+  String get options_priority_05 => '最低';
 
   @override
   String get settings => '设置';

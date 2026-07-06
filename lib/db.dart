@@ -49,6 +49,8 @@ class MainDb {
         }
         if (oldVersion < 3) {
           await db.execute('ALTER TABLE messages_history ADD COLUMN sim_info TEXT');
+          await db.execute('ALTER TABLE forwarding_rules ADD COLUMN priority INTEGER DEFAULT 3');
+          await db.execute('CREATE INDEX IF NOT EXISTS idx_fr_priority ON forwarding_rules(priority)');
         }
       },
     );
@@ -81,12 +83,14 @@ class MainDb {
         name TEXT,
         provider TEXT,
         is_active INTEGER DEFAULT 0,
+        priority INTEGER DEFAULT 3,
         filter_mode INTEGER DEFAULT 0,
         config_json TEXT DEFAULT NULL,
         filters_json TEXT DEFAULT NULL,
         created_at INTEGER
       )
     ''');
+    await db.execute('CREATE INDEX idx_fr_priority ON forwarding_rules(priority)');
 
     await db.execute('''
       CREATE TABLE messages_history (
@@ -211,7 +215,7 @@ class MainDb {
   /// Get ALL rules from forwarding_rules
   Future<List<Map<String, dynamic>>> getAllRules() async {
     final db = await instance.database;
-    return await db.query('forwarding_rules', orderBy: 'name ASC');
+    return await db.query('forwarding_rules', orderBy: 'priority ASC, name ASC');
   }
 
   /// Create a new rule in forwarding_rules
@@ -219,6 +223,7 @@ class MainDb {
     String name = 'Telegram Bot',
     String provider = 'telegram_bot',
     int isActive = 0,
+    int priority = 3,
     int filterMode = 0,
     String? configJson,
     String? filtersJson,
@@ -229,6 +234,7 @@ class MainDb {
       'name': name,
       'provider': provider,
       'is_active': isActive,
+      'priority': priority,
       'filter_mode': filterMode,
       'config_json': configJson,
       'filters_json': filtersJson,

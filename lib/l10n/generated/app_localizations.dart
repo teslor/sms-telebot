@@ -286,6 +286,12 @@ abstract class AppLocalizations {
   /// **'Config'**
   String get config;
 
+  /// No description provided for @connection.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection'**
+  String get connection;
+
   /// No description provided for @tbot.
   ///
   /// In en, this message translates to:
@@ -477,6 +483,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add text filters'**
   String get filters_textInfo;
+
+  /// No description provided for @options.
+  ///
+  /// In en, this message translates to:
+  /// **'Options'**
+  String get options;
+
+  /// No description provided for @options_priority.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule priority'**
+  String get options_priority;
+
+  /// No description provided for @options_priorityInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule is ignored if a higher-priority rule triggers'**
+  String get options_priorityInfo;
+
+  /// No description provided for @options_priority_01.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest'**
+  String get options_priority_01;
+
+  /// No description provided for @options_priority_02.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get options_priority_02;
+
+  /// No description provided for @options_priority_03.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get options_priority_03;
+
+  /// No description provided for @options_priority_04.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get options_priority_04;
+
+  /// No description provided for @options_priority_05.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowest'**
+  String get options_priority_05;
 
   /// No description provided for @settings.
   ///

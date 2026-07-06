@@ -1,5 +1,17 @@
 import 'package:flutter/material.dart';
 
+class CustomColor {
+  static Color priorityColor(int priority) {
+    return switch (priority) {
+      1 => Colors.deepOrangeAccent.withValues(alpha: 0.4),
+      2 => Colors.amber.withValues(alpha: 0.4),
+      4 => Colors.lightGreen.withValues(alpha: 0.4),
+      5 => Colors.lightBlue.withValues(alpha: 0.4),
+      _ => Colors.transparent,
+    };
+  }
+}
+
 class CustomStyle {
   static ButtonStyle elevatedButtonStyle = ElevatedButton.styleFrom(
     textStyle: const TextStyle(
@@ -33,4 +45,17 @@ class CustomStyle {
       contentPadding: const EdgeInsets.symmetric(horizontal: 13, vertical: 13),
     );
   }
+
+  static const InputDecorationTheme compactDropdown = InputDecorationTheme(
+    border: OutlineInputBorder(),
+    constraints: BoxConstraints(minHeight: 50, maxHeight: 50),
+    contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 13),
+  );
+
+  static final ButtonStyle compactDropdownItem = MenuItemButton.styleFrom(
+    textStyle: TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w400,
+    )
+  );
 }
