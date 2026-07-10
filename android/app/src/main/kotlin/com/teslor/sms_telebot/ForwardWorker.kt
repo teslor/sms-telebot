@@ -68,11 +68,11 @@ class ForwardWorker(
             messageData.status == SendStatus.RECEIVED || messageData.status == SendStatus.FAILED_RETRY
         if (!shouldBeProcessed) return@withContext Result.success() // already processed
 
-        // Get rules from DB by their IDs
+        // Get rules from DB
         val rules = dbManager.getRulesByIds(ruleIds)
         if (rules.isEmpty()) return@withContext Result.success()
 
-        // Read labels, required for formatting
+        // Get labels, required for formatting
         val labels = mapOf(
             "deviceLabel" to dbManager.getSetting("deviceLabel").orEmpty(),
             "l10nSms" to dbManager.getSetting("l10nSms").orEmpty().ifBlank { "SMS" },
@@ -82,35 +82,52 @@ class ForwardWorker(
         val hasInternet = hasValidatedInternet()
         val lastAttemptAt = System.currentTimeMillis()
         val newAttemptCount = messageData.attemptCount + 1
+        val sendResults = mutableListOf<SendProviderResult>()
+        var hasSuccessfulSends = false
 
-        // Start parallel sending
-        val results = coroutineScope {
-            rules.map { rule ->
-                async {
-                    sendSemaphore.withPermit {
-                        // Skip network-dependent rules if there's no internet (retryable)
-                        if (SendProviderGateway.requiresNetwork(rule.provider) && !hasInternet) {
-                            return@withPermit SendProviderResult(
-                                isSuccess = false,
-                                code = ResultCode.NETWORK_ERROR,
-                                info = "No internet connection",
-                                shouldRetry = true
-                            )
+        // Start parallel sending within each priority group
+        // Lower priority rules are processed only if all higher priority rules failed
+        for ((_, priorityRules) in rules.groupBy { it.priority }) {
+            val groupResults = coroutineScope {
+                priorityRules.map { rule ->
+                    async {
+                        sendSemaphore.withPermit {
+                            // Skip network-dependent rules if there's no internet (retryable)
+                            if (SendProviderGateway.requiresNetwork(rule.provider) && !hasInternet) {
+                                return@withPermit SendProviderResult(
+                                    isSuccess = false,
+                                    code = ResultCode.NETWORK_ERROR,
+                                    info = "No internet connection",
+                                    shouldRetry = true
+                                )
+                            }
+
+                            val secret = if (rule.provider == SendProviderId.SMS_GATEWAY) {
+                                ""
+                            } else {
+                                val secretResult = secretStorage.readSecret(rule.id.toString())
+                                if (secretResult.isSuccess) secretResult.data ?: "" else ""
+                            }
+                            processRule(rule, secret, messageData.type, messageData.sender, messageData.body, messageData.simInfo, messageData.receivedAt, labels)
                         }
-
-                        val secretResult = secretStorage.readSecret(rule.id.toString())
-                        val secret = if (secretResult.isSuccess) secretResult.data ?: "" else ""
-                        processRule(rule, secret, messageData.type, messageData.sender, messageData.body, messageData.simInfo, messageData.receivedAt, labels)
                     }
-                }
-            }.awaitAll()
+                }.awaitAll()
+            }
+
+            sendResults.addAll(groupResults)
+            if (groupResults.any { it.isSuccess }) {
+                hasSuccessfulSends = true
+                break
+            }
         }
 
-        val successCount = results.count { it.isSuccess }
-        val shouldRetry = results.any { !it.isSuccess && it.shouldRetry }
-
-        return@withContext if (successCount > 0) {
-            val newStatus = if (successCount == rules.size) SendStatus.SENT_ALL else SendStatus.SENT_PARTIAL
+        return@withContext if (hasSuccessfulSends) {
+            val successCount = sendResults.count { it.isSuccess }
+            val newStatus = if (successCount == sendResults.size) {
+                SendStatus.SENT_ALL
+            } else {
+                SendStatus.SENT_PARTIAL
+            }
 
             dbManager.updateMessagesHistory(
                 id = messageId,
@@ -122,7 +139,7 @@ class ForwardWorker(
                 )
             )
             Result.success()
-        } else if (shouldRetry) {
+        } else if (sendResults.any { !it.isSuccess && it.shouldRetry }) {
             dbManager.updateMessagesHistory(
                 id = messageId,
                 updates = mapOf(

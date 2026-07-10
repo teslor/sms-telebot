@@ -11,7 +11,7 @@ import android.util.Log
 
 data class MessageData(val type: String, val sender: String, val body: String, val simInfo: String?, val receivedAt: Long, val attemptCount: Int, val status: Int)
 data class ForwardingRule(val id: Int, val provider: String, val filterMode: Int, val filtersJson: String?)
-data class ForwardingRuleConfig(val id: Int, val provider: String, val configJson: String?)
+data class ForwardingRuleConfig(val id: Int, val provider: String, val priority: Int, val configJson: String?)
 
 class DbManager private constructor(private val context: Context) {
 
@@ -100,7 +100,7 @@ class DbManager private constructor(private val context: Context) {
                 "forwarding_rules",
                 arrayOf("id", "provider", "filter_mode", "filters_json"),
                 "is_active = 1",
-                null, null, null, "name ASC"
+                null, null, null, "priority ASC, name ASC"
             ).use { cursor ->
                 val list = mutableListOf<ForwardingRule>()
                 while (cursor.moveToNext()) {
@@ -127,9 +127,9 @@ class DbManager private constructor(private val context: Context) {
         return withDatabase { db ->
             db.query(
                 "forwarding_rules",
-                arrayOf("id", "provider", "config_json"),
+                arrayOf("id", "provider", "priority", "config_json"),
                 "id IN ($placeholders) AND is_active = 1",
-                stringArgs, null, null, "name ASC"
+                stringArgs, null, null, "priority ASC, name ASC"
             ).use { cursor ->
                 val list = mutableListOf<ForwardingRuleConfig>()
                 while (cursor.moveToNext()) {
@@ -137,7 +137,8 @@ class DbManager private constructor(private val context: Context) {
                         ForwardingRuleConfig(
                             id = cursor.getInt(0),
                             provider = cursor.getString(1),
-                            configJson = cursor.getString(2)
+                            priority = cursor.getInt(2),
+                            configJson = cursor.getString(3),
                         )
                     )
                 }
