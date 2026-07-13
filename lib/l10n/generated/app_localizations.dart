@@ -358,6 +358,18 @@ abstract class AppLocalizations {
   /// **'Port'**
   String get smtp_port;
 
+  /// No description provided for @smtp_insecureTls.
+  ///
+  /// In en, this message translates to:
+  /// **'Relaxed certificate validation'**
+  String get smtp_insecureTls;
+
+  /// No description provided for @smtp_insecureTlsInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable only if you have connection errors (especially on older devices). This reduces connection security.'**
+  String get smtp_insecureTlsInfo;
+
   /// No description provided for @smtp_login.
   ///
   /// In en, this message translates to:

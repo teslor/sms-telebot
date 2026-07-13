@@ -41,6 +41,8 @@
   "smtp_protocol": "Protokoll",
   "smtp_protocolEmpty": "Keins",
   "smtp_port": "Port",
+  "smtp_insecureTls": "Vereinfachte Zertifikatsprüfung",
+  "smtp_insecureTlsInfo": "Nur bei Verbindungsfehlern aktivieren (besonders bei älteren Geräten). Dies verringert die Verbindungssicherheit.",
   "smtp_login": "Anmeldung",
   "smtp_loginInfo": "Normalerweise die vollständige E-Mail-Adresse",
   "smtp_password": "Passwort",

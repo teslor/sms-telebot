@@ -41,6 +41,8 @@
   "smtp_protocol": "Протокол",
   "smtp_protocolEmpty": "Нет",
   "smtp_port": "Порт",
+  "smtp_insecureTls": "Упрощённая проверка сертификата",
+  "smtp_insecureTlsInfo": "Используйте только при ошибках подключения (особенно на старых устройствах). Снижает безопасность соединения.",
   "smtp_login": "Логин",
   "smtp_loginInfo": "Обычно полный email-адрес",
   "smtp_password": "Пароль",

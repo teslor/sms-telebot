@@ -132,6 +132,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get smtp_port => 'ポート';
 
   @override
+  String get smtp_insecureTls => '証明書検証の緩和';
+
+  @override
+  String get smtp_insecureTlsInfo =>
+      '接続エラーが発生した場合のみ有効にしてください（特に古いデバイス）。これにより接続のセキュリティが低下します。';
+
+  @override
   String get smtp_login => 'ログイン';
 
   @override

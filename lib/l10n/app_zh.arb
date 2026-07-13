@@ -41,6 +41,8 @@
   "smtp_protocol": "协议",
   "smtp_protocolEmpty": "无",
   "smtp_port": "端口",
+  "smtp_insecureTls": "简化证书验证",
+  "smtp_insecureTlsInfo": "仅在出现连接错误时启用（尤其是旧设备）。这将降低连接安全性。",
   "smtp_login": "登录名",
   "smtp_loginInfo": "通常为完整电子邮箱地址",
   "smtp_password": "密码",

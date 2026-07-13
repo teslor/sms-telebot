@@ -132,6 +132,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get smtp_port => '端口';
 
   @override
+  String get smtp_insecureTls => '简化证书验证';
+
+  @override
+  String get smtp_insecureTlsInfo => '仅在出现连接错误时启用（尤其是旧设备）。这将降低连接安全性。';
+
+  @override
   String get smtp_login => '登录名';
 
   @override

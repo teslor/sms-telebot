@@ -132,6 +132,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get smtp_port => 'Puerto';
 
   @override
+  String get smtp_insecureTls => 'Validación de certificado relajada';
+
+  @override
+  String get smtp_insecureTlsInfo =>
+      'Actívelo solo si tiene errores de conexión (especialmente en dispositivos antiguos). Esto reduce la seguridad de la conexión.';
+
+  @override
   String get smtp_login => 'Usuario';
 
   @override

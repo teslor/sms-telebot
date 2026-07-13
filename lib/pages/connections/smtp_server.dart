@@ -31,6 +31,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
   bool _isPasswordVisible = false;
   bool _isPortManuallyEdited = false;
   String _protocol = 'starttls';
+  bool _insecureTls = false;
 
   @override
   void initState() {
@@ -45,9 +46,9 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
     _subjectController = TextEditingController(text: config['subject']?.toString() ?? '');
 
     _protocol = _normalizeProtocol(config['protocol']);
+    _insecureTls = config['insecureTls'] == true;
     final initialPort = _parsePort(_portController.text.trim());
-    _isPortManuallyEdited =
-      initialPort != null && initialPort != _getDefaultPort(_protocol);
+    _isPortManuallyEdited = initialPort != null && initialPort != _getDefaultPort(_protocol);
   }
 
   @override
@@ -188,6 +189,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
       'host': _hostController.text.trim(),
       'protocol': _protocol,
       'port': _parsePort(_portController.text.trim()),
+      'insecureTls': _insecureTls,
       'login': _loginController.text.trim(),
       if (fromEmail.isNotEmpty) 'fromEmail': fromEmail,
       if (toEmail.isNotEmpty) 'toEmail': _parseRecipientEmails(toEmail).join(', '),
@@ -292,6 +294,28 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             ),
             onChanged: _onPortChanged,
           ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                l10n.smtp_insecureTls,
+                maxLines: 1,
+                softWrap: false,
+                overflow: TextOverflow.visible,
+              ),
+            ),
+            value: _insecureTls,
+            onChanged: _protocol == 'none'
+                ? null
+                : (value) {
+                  setState(() { _insecureTls = value; });
+                  _onChanged();
+                  if (value) context.showErrorSnack(l10n.smtp_insecureTlsInfo);
+                },
+          ),
+          const Divider(height: 1),
           const SizedBox(height: 16),
           TextField(
             controller: _loginController,

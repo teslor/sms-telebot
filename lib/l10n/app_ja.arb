@@ -41,6 +41,8 @@
   "smtp_protocol": "プロトコル",
   "smtp_protocolEmpty": "なし",
   "smtp_port": "ポート",
+  "smtp_insecureTls": "証明書検証の緩和",
+  "smtp_insecureTlsInfo": "接続エラーが発生した場合のみ有効にしてください（特に古いデバイス）。これにより接続のセキュリティが低下します。",
   "smtp_login": "ログイン",
   "smtp_loginInfo": "通常はメールアドレス全体",
   "smtp_password": "パスワード",

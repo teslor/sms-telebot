@@ -318,6 +318,8 @@ object SmtpServerProvider : SendProvider {
             val fromEmail = json.optString("fromEmail", "").ifBlank { login }
             val toEmail = json.optString("toEmail", "").ifBlank { login }
             val subject = json.optString("subject", "")
+            // Workaround for old Android trust stores
+            val insecureTls = json.optBoolean("insecureTls", false)
 
             if (host.isBlank() || login.isBlank() || password.isBlank()) {
                 return buildResult(false, ResultCode.INVALID_PARAMS, "Host, login, and password are required")
@@ -332,13 +334,16 @@ object SmtpServerProvider : SendProvider {
             props["mail.smtp.writetimeout"] = "25000"
 
             when (protocol) {
-                "ssl" -> {
-                    props["mail.smtp.ssl.enable"] = "true"
-                    props["mail.smtp.socketFactory.port"] = port.toString()
-                    props["mail.smtp.socketFactory.class"] = "javax.net.ssl.SSLSocketFactory"
-                }
                 "starttls" -> {
                     props["mail.smtp.starttls.enable"] = "true"
+                    props["mail.smtp.starttls.required"] = "true"
+                    props["mail.smtp.ssl.checkserveridentity"] = "true"
+                    if (insecureTls) props["mail.smtp.ssl.trust"] = host
+                }
+                "ssl" -> {
+                    props["mail.smtp.ssl.enable"] = "true"
+                    props["mail.smtp.ssl.checkserveridentity"] = "true"
+                    if (insecureTls) props["mail.smtp.ssl.trust"] = host
                 }
                 else -> {
                     // Plain SMTP

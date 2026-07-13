@@ -133,6 +133,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get smtp_port => 'पोर्ट';
 
   @override
+  String get smtp_insecureTls => 'सरलीकृत प्रमाणपत्र सत्यापन';
+
+  @override
+  String get smtp_insecureTlsInfo =>
+      'केवल कनेक्शन त्रुटि होने पर सक्षम करें (खासकर पुराने डिवाइस पर)। इससे कनेक्शन की सुरक्षा कम हो जाती है।';
+
+  @override
   String get smtp_login => 'लॉगिन';
 
   @override

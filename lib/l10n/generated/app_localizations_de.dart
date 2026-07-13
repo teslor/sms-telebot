@@ -135,6 +135,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get smtp_port => 'Port';
 
   @override
+  String get smtp_insecureTls => 'Vereinfachte Zertifikatsprüfung';
+
+  @override
+  String get smtp_insecureTlsInfo =>
+      'Nur bei Verbindungsfehlern aktivieren (besonders bei älteren Geräten). Dies verringert die Verbindungssicherheit.';
+
+  @override
   String get smtp_login => 'Anmeldung';
 
   @override

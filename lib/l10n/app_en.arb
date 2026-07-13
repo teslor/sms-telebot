@@ -41,6 +41,8 @@
   "smtp_protocol": "Protocol",
   "smtp_protocolEmpty": "None",
   "smtp_port": "Port",
+  "smtp_insecureTls": "Relaxed certificate validation",
+  "smtp_insecureTlsInfo": "Enable only if you have connection errors (especially on older devices). This reduces connection security.",
   "smtp_login": "Login",
   "smtp_loginInfo": "Usually full email address",
   "smtp_password": "Password",

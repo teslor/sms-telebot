@@ -41,6 +41,8 @@
   "smtp_protocol": "प्रोटोकॉल",
   "smtp_protocolEmpty": "कोई नहीं",
   "smtp_port": "पोर्ट",
+  "smtp_insecureTls": "सरलीकृत प्रमाणपत्र सत्यापन",
+  "smtp_insecureTlsInfo": "केवल कनेक्शन त्रुटि होने पर सक्षम करें (खासकर पुराने डिवाइस पर)। इससे कनेक्शन की सुरक्षा कम हो जाती है।",
   "smtp_login": "लॉगिन",
   "smtp_loginInfo": "आमतौर पर पूरा ईमेल पता",
   "smtp_password": "पासवर्ड",

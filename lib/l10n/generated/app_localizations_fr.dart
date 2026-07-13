@@ -135,6 +135,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get smtp_port => 'Port';
 
   @override
+  String get smtp_insecureTls => 'Validation de certificat assouplie';
+
+  @override
+  String get smtp_insecureTlsInfo =>
+      'À n\'activer qu\'en cas d\'erreurs de connexion (particulièrement sur les anciens appareils). Cela réduit la sécurité de la connexion.';
+
+  @override
   String get smtp_login => 'Identifiant';
 
   @override

@@ -133,6 +133,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get smtp_port => 'Порт';
 
   @override
+  String get smtp_insecureTls => 'Упрощённая проверка сертификата';
+
+  @override
+  String get smtp_insecureTlsInfo =>
+      'Используйте только при ошибках подключения (особенно на старых устройствах). Снижает безопасность соединения.';
+
+  @override
   String get smtp_login => 'Логин';
 
   @override
