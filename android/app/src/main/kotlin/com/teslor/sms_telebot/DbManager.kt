@@ -8,12 +8,13 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.util.Log
+import java.io.File
 
 data class MessageData(val type: String, val sender: String, val body: String, val simInfo: String?, val receivedAt: Long, val attemptCount: Int, val status: Int)
 data class ForwardingRule(val id: Int, val provider: String, val filterMode: Int, val filtersJson: String?)
-data class ForwardingRuleConfig(val id: Int, val provider: String, val priority: Int, val configJson: String?)
+data class ForwardingRuleConfig(val id: Int, val name: String, val provider: String, val priority: Int, val configJson: String?)
 
-class DbManager private constructor(private val context: Context) {
+class DbManager private constructor(private val mainDbPath: String) {
 
     private val dbLock = Any()
     @Volatile
@@ -21,6 +22,7 @@ class DbManager private constructor(private val context: Context) {
 
     companion object {
         private const val TAG = "Database"
+        private const val APP_LOGS_LIMIT = 500
 
         @Suppress("StaticFieldLeak")
         @Volatile
@@ -28,7 +30,8 @@ class DbManager private constructor(private val context: Context) {
 
         // Singleton pattern to keep a single DB instance for the whole app
         fun getInstance(context: Context): DbManager = instance ?: synchronized(this) {
-            instance ?: DbManager(context.applicationContext).also { instance = it }
+            val dbPath = context.applicationContext.getDatabasePath("main.db").absolutePath
+            instance ?: DbManager(dbPath).also { instance = it }
         }
     }
 
@@ -36,7 +39,7 @@ class DbManager private constructor(private val context: Context) {
     private fun getOrOpenDatabase(): SQLiteDatabase? {
         database?.let { if (it.isOpen) return it }
 
-        val mainDb = context.getDatabasePath("main.db")
+        val mainDb = File(mainDbPath)
         if (!mainDb.exists()) return null
 
         // Slow path: ensure only one thread opens/stores the connection
@@ -53,7 +56,7 @@ class DbManager private constructor(private val context: Context) {
                     opened -> database = opened
                 }
             } catch (e: SQLiteException) {
-                Log.e(TAG, "Error opening database. Maybe it doesn't exist yet", e)
+                Log.e(TAG, "Failed to open database: maybe it doesn't exist yet", e)
                 null
             }
         }
@@ -64,7 +67,7 @@ class DbManager private constructor(private val context: Context) {
         return try {
             block(db)
         } catch (e: SQLiteException) {
-            Log.e(TAG, "Database operation failed", e)
+            AppLog.e(TAG, "Database operation failed", e)
             null
         }
     }
@@ -127,7 +130,7 @@ class DbManager private constructor(private val context: Context) {
         return withDatabase { db ->
             db.query(
                 "forwarding_rules",
-                arrayOf("id", "provider", "priority", "config_json"),
+                arrayOf("id", "name", "provider", "priority", "config_json"),
                 "id IN ($placeholders) AND is_active = 1",
                 stringArgs, null, null, "priority ASC, name ASC"
             ).use { cursor ->
@@ -136,9 +139,10 @@ class DbManager private constructor(private val context: Context) {
                     list.add(
                         ForwardingRuleConfig(
                             id = cursor.getInt(0),
-                            provider = cursor.getString(1),
-                            priority = cursor.getInt(2),
-                            configJson = cursor.getString(3),
+                            name = cursor.getString(1),
+                            provider = cursor.getString(2),
+                            priority = cursor.getInt(3),
+                            configJson = cursor.getString(4),
                         )
                     )
                 }
@@ -181,14 +185,14 @@ class DbManager private constructor(private val context: Context) {
                 put("id", id); put("type", type); put("sender", sender); put("body", body)
                 put("sim_info", simInfo); put("source_at", sourceAt); put("received_at", receivedAt); put("status", status)
             }
-            val result = db.insertWithOnConflict("messages_history", null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1L
+            val inserted = db.insertWithOnConflict("messages_history", null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1L
 
-            if (result && kotlin.random.Random.nextInt(10) == 0) {
+            if (inserted && kotlin.random.Random.nextInt(10) == 0) {
                 val timeLimit = System.currentTimeMillis() - (24 * 60 * 60 * 1000L)
                 db.delete("messages_history", "received_at < ?", arrayOf(timeLimit.toString()))
             }
 
-            result
+            inserted
         } ?: false
     }
 
@@ -215,5 +219,31 @@ class DbManager private constructor(private val context: Context) {
             db.query("messages_history", arrayOf("1"), "id = ?", arrayOf(id), null, null, null, "1")
                 .use { it.moveToFirst() }
         } ?: false
+    }
+
+    // ================================================================================
+    // APP_LOGS
+    // ================================================================================
+
+    fun insertAppLogs(level: Int, message: String): Boolean {
+        val db = getOrOpenDatabase() ?: return false
+
+        return try {
+            val values = ContentValues().apply {
+                put("timestamp", System.currentTimeMillis())
+                put("level", level)
+                put("message", if (message.length > 1000) message.take(1000) else message)
+            }
+            val inserted = db.insert("app_logs", null, values) != -1L
+
+            if (inserted && kotlin.random.Random.nextInt(50) == 0) {
+                db.execSQL("DELETE FROM app_logs WHERE id <= (SELECT id FROM app_logs ORDER BY id DESC LIMIT 1 OFFSET $APP_LOGS_LIMIT)")
+            }
+
+            inserted
+        } catch (e: SQLiteException) {
+            Log.e(TAG, "Failed to insert app log entry", e)
+            false
+        }
     }
 }

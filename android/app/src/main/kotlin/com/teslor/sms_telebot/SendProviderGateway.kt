@@ -13,7 +13,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.telephony.SmsManager
 import android.telephony.TelephonyManager
-import android.util.Log
 import com.sun.mail.smtp.SMTPAddressFailedException
 import com.sun.mail.smtp.SMTPSendFailedException
 import com.sun.mail.smtp.SMTPSenderFailedException
@@ -38,6 +37,8 @@ import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
+
+private const val TAG = "SendProvider"
 
 object SendProviderId {
     const val TELEGRAM_BOT = "telegram_bot"
@@ -75,23 +76,29 @@ interface SendProvider {
 
     fun send(context: Context, configJson: String, secret: String, type: String, payload: SendProviderPayload): SendProviderResult
 
-    // Universal factory for creating SendProviderResult and logging
     fun buildResult(
-        isSuccess: Boolean,
         code: String,
-        info: String,
+        info: String? = null,
         shouldRetry: Boolean = false,
         details: String? = null,
         exception: Throwable? = null
     ): SendProviderResult {
-        val type = if (isSuccess) "send_success" else "send_error"
-        val infoStr = LogFormatter.buildInfo(type, info, id, code, details ?: exception?.message)
+        val isSuccess = code == ResultCode.OK
+        val infoStr = info?.trim().orEmpty()
+        val infoSuffix = infoStr.takeIf { it.isNotEmpty() }?.let { ": $it" }.orEmpty()
+        val detailsSuffix = details
+            ?.takeIf { it.isNotBlank() }
+            ?.let { ", details=\"${AppLog.sanitizeString(it)}\"" }
+            .orEmpty()
+        val meta = "(provider=$id, code=$code$detailsSuffix)"
+        val isUnexpectedError = code == ResultCode.UNEXPECTED_ERROR || details != null || exception != null
 
-        // Log
-        if (isSuccess) Log.i("SendProvider", infoStr)
-        else Log.e("SendProvider", infoStr, exception)
+        when {
+            isSuccess -> AppLog.i(TAG, "Sent successfully$infoSuffix $meta")
+            isUnexpectedError -> AppLog.e(TAG, "Send failed$infoSuffix $meta", exception)
+            else -> AppLog.w(TAG, "Send failed$infoSuffix $meta")
+        }
 
-        // Return object for worker and UI
         return SendProviderResult(isSuccess, code, infoStr, shouldRetry)
     }
 }
@@ -116,11 +123,7 @@ object SendProviderGateway {
         payload: SendProviderPayload
     ): SendProviderResult {
         val provider = providers[providerId]
-            ?: return SendProviderResult(
-                isSuccess = false,
-                code = ResultCode.UNEXPECTED_ERROR,
-                info = "Unknown provider: $providerId"
-            )
+            ?: return SendProviderResult(false, ResultCode.UNEXPECTED_ERROR, "Unknown provider")
         return provider.send(context, configJson, secret, type, payload)
     }
 }
@@ -135,7 +138,7 @@ object TelegramBotProvider : SendProvider {
 
     override fun send(context: Context, configJson: String, secret: String, type: String, payload: SendProviderPayload): SendProviderResult {
         if (configJson.isBlank()) {
-            return buildResult(false, ResultCode.INVALID_PARAMS, "Empty configuration")
+            return buildResult(ResultCode.INVALID_PARAMS, "empty configuration")
         }
 
         return try {
@@ -144,7 +147,7 @@ object TelegramBotProvider : SendProvider {
             val chatId = json.optString("chatId", "")
             val apiUrl = json.optString("apiUrl", "").ifBlank { "https://api.telegram.org" }
             if (token.isBlank() || chatId.isBlank()) {
-                return buildResult(false, ResultCode.INVALID_PARAMS, "Token and chat ID are required")
+                return buildResult(ResultCode.INVALID_PARAMS, "token and chat ID are required")
             }
 
             val msg = MessageHelpers.format(
@@ -159,7 +162,7 @@ object TelegramBotProvider : SendProvider {
             val result = sendRequest(token, chatId, apiUrl, msg.text)
             mapApiResult(result)
         } catch (e: Exception) {
-            buildResult(false, ResultCode.UNEXPECTED_ERROR, e.message ?: "Unexpected error", exception = e)
+            buildResult(ResultCode.UNEXPECTED_ERROR, e.message ?: "unexpected error", exception = e)
         }
     }
 
@@ -200,7 +203,7 @@ object TelegramBotProvider : SendProvider {
     private fun mapApiResult(result: ApiResult): SendProviderResult {
         // Prefer Telegram "ok=true", but keep HTTP 200 fallback for malformed/missing body
         if (result.ok == true || (result.statusCode == 200 && result.errorCode == null)) {
-            return buildResult(true, ResultCode.OK, "Sent successfully")
+            return buildResult(ResultCode.OK)
         }
 
         if (result.error != null) {
@@ -211,26 +214,26 @@ object TelegramBotProvider : SendProvider {
                 else -> ResultCode.NETWORK_ERROR
             }
             // Transport-level failures are retryable
-            return buildResult(false, code, result.error.message ?: "Network error", true)
+            return buildResult(code, result.error.message ?: "network error", true)
         }
 
         // Get specific Telegram API description for the error code
         if (result.errorCode != null) {
             val info = result.description ?: "Bot API error ${result.errorCode}"
             val mappedCode = mapErrorCode(result.errorCode)
-            return buildResult(false, mappedCode, info, isRetryable(mappedCode))
+            return buildResult(mappedCode, info, isRetryable(mappedCode))
         }
 
         // Final fallback when body has no Telegram error_code (proxy/html/partial body cases)
         return when (result.statusCode) {
-            400 -> buildResult(false, ResultCode.BAD_REQUEST, "Bad request")
-            401 -> buildResult(false, ResultCode.UNAUTHORIZED, "Invalid bot token")
-            403 -> buildResult(false, ResultCode.FORBIDDEN, "Bot has no access to chat")
-            429 -> buildResult(false, ResultCode.RATE_LIMITED, "Too many requests", true)
-            in 500..599 -> buildResult(false, ResultCode.SERVER_ERROR, "Server error", true)
+            400 -> buildResult(ResultCode.BAD_REQUEST, "bad request")
+            401 -> buildResult(ResultCode.UNAUTHORIZED, "invalid bot token")
+            403 -> buildResult(ResultCode.FORBIDDEN, "bot has no access to chat")
+            429 -> buildResult(ResultCode.RATE_LIMITED, "too many requests", true)
+            in 500..599 -> buildResult(ResultCode.SERVER_ERROR, "server error", true)
             else -> buildResult(
-                false, ResultCode.UNEXPECTED_ERROR,
-                "Bot API returned status ${result.statusCode ?: "Unknown"}",
+                ResultCode.UNEXPECTED_ERROR,
+                "Bot API returned status ${result.statusCode ?: "unknown"}",
             )
         }
     }
@@ -305,7 +308,7 @@ object SmtpServerProvider : SendProvider {
 
     override fun send(context: Context, configJson: String, secret: String, type: String, payload: SendProviderPayload): SendProviderResult {
         if (configJson.isBlank()) {
-            return buildResult(false, ResultCode.INVALID_PARAMS, "Empty configuration")
+            return buildResult(ResultCode.INVALID_PARAMS, "empty configuration")
         }
 
         return try {
@@ -322,7 +325,7 @@ object SmtpServerProvider : SendProvider {
             val insecureTls = json.optBoolean("insecureTls", false)
 
             if (host.isBlank() || login.isBlank() || password.isBlank()) {
-                return buildResult(false, ResultCode.INVALID_PARAMS, "Host, login, and password are required")
+                return buildResult(ResultCode.INVALID_PARAMS, "host, login, and password are required")
             }
 
             val props = Properties()
@@ -377,11 +380,11 @@ object SmtpServerProvider : SendProvider {
             message.setText(msg.text, "UTF-8")
 
             Transport.send(message)
-            buildResult(true, ResultCode.OK, "Sent successfully")
+            buildResult(ResultCode.OK)
         } catch (e: Exception) {
             val details = buildErrorDetails(e)
             val code = mapErrorCode(e)
-            buildResult(false, code, "Failed to send via SMTP", isRetryable(e, code), details, e)
+            buildResult(code, "", isRetryable(e, code), details)
         }
     }
 
@@ -505,7 +508,7 @@ object SmsGatewayProvider : SendProvider {
 
     override fun send(context: Context, configJson: String, secret: String, type: String, payload: SendProviderPayload): SendProviderResult {
         if (configJson.isBlank()) {
-            return buildResult(false, ResultCode.INVALID_PARAMS, "Empty configuration")
+            return buildResult(ResultCode.INVALID_PARAMS, "empty configuration")
         }
 
         return try {
@@ -516,7 +519,7 @@ object SmsGatewayProvider : SendProvider {
             val targetNumber = json.optString("number", "")
 
             if (targetNumber.isBlank()) {
-                return buildResult(false, ResultCode.INVALID_PARAMS, "Target phone number is required")
+                return buildResult(ResultCode.INVALID_PARAMS, "target phone number is required")
             }
 
             val msg = MessageHelpers.format(
@@ -537,16 +540,16 @@ object SmsGatewayProvider : SendProvider {
             }
 
             if (smsManager == null) {
-                return buildResult(false, ResultCode.UNEXPECTED_ERROR, "SMS manager is unavailable")
+                return buildResult(ResultCode.UNEXPECTED_ERROR, "SMS manager is unavailable")
             }
 
             // Split message if it's too long (>160 characters per part)
             val parts = smsManager.divideMessage(msg.text)
             sendAndAwait(context, smsManager, targetNumber, parts)
         } catch (e: SecurityException) {
-            buildResult(false, ResultCode.FORBIDDEN, "Missing SEND_SMS permission", exception = e)
+            buildResult(ResultCode.FORBIDDEN, "missing SEND_SMS permission", exception = e)
         } catch (e: Exception) {
-            buildResult(false, ResultCode.UNEXPECTED_ERROR, "Failed to send SMS", exception = e)
+            buildResult(ResultCode.UNEXPECTED_ERROR, exception = e)
         }
     }
 
@@ -604,23 +607,23 @@ object SmsGatewayProvider : SendProvider {
     private fun checkSendResults(results: List<Int>, expected: Int): SendProviderResult {
         // Not all confirmations arrived in time: stay optimistic to avoid false negatives
         if (results.size < expected) {
-            return buildResult(true, ResultCode.OK, "Sent (confirmation timed out)")
+            return buildResult(ResultCode.OK, "confirmation timed out")
         }
 
         val firstError = results.firstOrNull { it != Activity.RESULT_OK }
-            ?: return buildResult(true, ResultCode.OK, "Sent successfully")
+            ?: return buildResult(ResultCode.OK)
 
         // NULL_PDU is a programmatic error (no point retrying)
         return if (firstError == SmsManager.RESULT_ERROR_NULL_PDU) {
-            buildResult(false, ResultCode.UNEXPECTED_ERROR, "SMS not sent (null PDU)")
+            buildResult(ResultCode.UNEXPECTED_ERROR, "null PDU error")
         } else { // everything else is treated as transient and retryable
-            buildResult(false, ResultCode.NETWORK_ERROR, "SMS not sent (error $firstError)", true)
+            buildResult(ResultCode.NETWORK_ERROR, "error $firstError", true)
         }
     }
 
     private fun checkDeviceSupport(context: Context): SendProviderResult? {
         val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
-            ?: return buildResult(false, ResultCode.FORBIDDEN, "Telephony service is unavailable")
+            ?: return buildResult(ResultCode.FORBIDDEN, "Telephony service is unavailable")
 
         // Check SMS capability
         val hasSmsFeature = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -629,7 +632,7 @@ object SmsGatewayProvider : SendProvider {
             context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)
         }
         if (!hasSmsFeature) {
-            return buildResult(false, ResultCode.FORBIDDEN, "SMS is not supported on this device")
+            return buildResult(ResultCode.FORBIDDEN, "SMS is not supported on this device")
         }
 
         // Check if SIM card is ready
@@ -637,10 +640,10 @@ object SmsGatewayProvider : SendProvider {
             TelephonyManager.SIM_STATE_READY -> null
             TelephonyManager.SIM_STATE_NOT_READY,
             TelephonyManager.SIM_STATE_UNKNOWN -> {
-                buildResult(false, ResultCode.NETWORK_ERROR, "SIM is not ready", true)
+                buildResult(ResultCode.NETWORK_ERROR, "SIM is not ready", true)
             }
             else -> {
-                buildResult(false, ResultCode.FORBIDDEN, "SIM is unavailable (state=${telephonyManager.simState})")
+                buildResult(ResultCode.FORBIDDEN, "SIM is unavailable, state=${telephonyManager.simState}")
             }
         }
     }

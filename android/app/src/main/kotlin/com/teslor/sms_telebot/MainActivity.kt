@@ -4,8 +4,6 @@
 package com.teslor.sms_telebot
 
 import android.content.Intent
-import android.content.pm.ApplicationInfo
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.work.WorkManager
@@ -22,6 +20,7 @@ import kotlinx.coroutines.withContext
 class MainActivity : FlutterActivity() {
 
     companion object {
+        const val TAG = "MainActivity"
         private const val MAIN_CHANNEL = "sms_telebot/main"
     }
 
@@ -35,7 +34,7 @@ class MainActivity : FlutterActivity() {
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, MAIN_CHANNEL)
             .setMethodCallHandler { call, result ->
-                if (isDebugBuild()) Log.d("MainChannel", "${call.method} called")
+                AppLog.d(TAG) { "Method call: ${call.method}" }
 
                 when (call.method) {
                     "sendToProvider" -> {
@@ -149,13 +148,13 @@ class MainActivity : FlutterActivity() {
                             )
                             result.success(null)
                         } catch (e: SecurityException) {
-                            Log.e("MainChannel", "SecurityException while starting ForegroundService", e)
+                            AppLog.e(TAG, "Failed to start foreground service: security exception", e)
                             result.error("security_exception", e.message, null)
                         } catch (e: IllegalStateException) {
-                            Log.e("MainChannel", "ForegroundService start is not allowed in the current app state", e)
+                            AppLog.e(TAG, "Failed to start foreground service: not allowed in current app state", e)
                             result.error("service_start_not_allowed", e.message, null)
                         } catch (e: Exception) {
-                            Log.e("MainChannel", "Unexpected error while starting ForegroundService", e)
+                            AppLog.e(TAG, "Failed to start foreground service: unexpected error", e)
                             result.error("unexpected_error", e.message, null)
                         }
                     }
@@ -188,7 +187,4 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun isDebugBuild(): Boolean {
-        return (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-    }
 }

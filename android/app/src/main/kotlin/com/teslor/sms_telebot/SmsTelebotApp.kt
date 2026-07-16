@@ -6,6 +6,7 @@ package com.teslor.sms_telebot
 import android.app.Application
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ApplicationInfo
 import androidx.core.content.ContextCompat
 
 /**
@@ -17,7 +18,12 @@ class SmsTelebotApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        AppLog.configure(this, isDebugBuild())
         registerDeviceStatusReceiver()
+    }
+
+    private fun isDebugBuild(): Boolean {
+        return (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
     }
 
     private fun registerDeviceStatusReceiver() {

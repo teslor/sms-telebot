@@ -5,7 +5,6 @@ package com.teslor.sms_telebot
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
@@ -75,17 +74,17 @@ class SecureStorageManager private constructor(context: Context) {
     }
 
     private fun resetSecurePrefs(cause: Throwable): SharedPreferences? {
-        Log.e(TAG, "Secure storage initialization failed. Recreating...", cause)
+        AppLog.e(TAG, "Failed to initialize secure storage; recreating", cause)
 
         // Step 1: remove corrupted encrypted prefs file and retry
         clearCorruptedPrefsFile()
         try {
             val prefs = createSecurePrefs()
             recoveredWithDataLoss = true
-            Log.w(TAG, "Secure storage recovered after prefs cleanup, encrypted data was lost")
+            AppLog.w(TAG, "Recovered after prefs cleanup; encrypted data is no longer available")
             return prefs
         } catch (e: Exception) {
-            Log.e(TAG, "Recovery after prefs cleanup failed. Trying Keystore reset", e)
+            AppLog.e(TAG, "Failed to recover after prefs cleanup; started keystore reset", e)
         }
 
         // Step 2: reset master key alias and recreate storage from scratch
@@ -94,10 +93,10 @@ class SecureStorageManager private constructor(context: Context) {
         return try {
             val prefs = createSecurePrefs()
             recoveredWithDataLoss = true
-            Log.w(TAG, "Secure storage recovered after Keystore reset, encrypted data was lost")
+            AppLog.w(TAG, "Recovered after Keystore reset; encrypted data is no longer available")
             prefs
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to recreate secure storage after Keystore reset", e)
+            AppLog.e(TAG, "Failed to recreate secure storage after Keystore reset", e)
             null
         }
     }
@@ -106,7 +105,7 @@ class SecureStorageManager private constructor(context: Context) {
         try {
             val parentPath = appContext.filesDir.parent
             if (parentPath == null) {
-                Log.w(TAG, "Cannot clear corrupted prefs: parent dir is null")
+                AppLog.w(TAG, "Cannot clear corrupted prefs: parent dir is null")
                 return
             }
 
@@ -116,13 +115,13 @@ class SecureStorageManager private constructor(context: Context) {
             if (file.exists()) {
                 val deleted = file.delete()
                 if (deleted) {
-                    Log.i(TAG, "Corrupted storage file deleted")
+                    AppLog.i(TAG, "Corrupted storage file deleted")
                 } else {
-                    Log.w(TAG, "Failed to delete corrupted storage file")
+                    AppLog.w(TAG, "Failed to delete corrupted storage file")
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Error while deleting corrupted storage file", e)
+            AppLog.e(TAG, "Failed to delete corrupted storage file", e)
         }
     }
 
@@ -132,10 +131,10 @@ class SecureStorageManager private constructor(context: Context) {
             val alias = MasterKey.DEFAULT_MASTER_KEY_ALIAS
             if (keyStore.containsAlias(alias)) {
                 keyStore.deleteEntry(alias)
-                Log.i(TAG, "Master key alias deleted: $alias")
+                AppLog.i(TAG, "Master key alias deleted: $alias")
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Error while deleting master key alias", e)
+            AppLog.e(TAG, "Failed to delete master key alias", e)
         }
     }
 
@@ -146,7 +145,7 @@ class SecureStorageManager private constructor(context: Context) {
             prefs.edit { putString(id, secret) }
             SecretResult(isSuccess = true, code = ResultCode.OK)
         } catch (e: Exception) {
-            Log.e(TAG, "Error while writing key $id", e)
+            AppLog.e(TAG, "Failed to write secret (id=$id)", e)
             SecretResult(isSuccess = false, code = ResultCode.SECRETS_ERROR)
         }
     }
@@ -162,7 +161,7 @@ class SecureStorageManager private constructor(context: Context) {
                 SecretResult(isSuccess = true, code = ResultCode.OK, data = value)
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Error while reading key $id", e)
+            AppLog.e(TAG, "Failed to read secret (id=$id)", e)
             SecretResult(isSuccess = false, code = ResultCode.SECRETS_ERROR)
         }
     }
@@ -174,7 +173,7 @@ class SecureStorageManager private constructor(context: Context) {
             prefs.edit { remove(id) }
             SecretResult(isSuccess = true, code = ResultCode.OK)
         } catch (e: Exception) {
-            Log.e(TAG, "Error while deleting key $id", e)
+            AppLog.e(TAG, "Failed to delete secret (id=$id)", e)
             SecretResult(isSuccess = false, code = ResultCode.SECRETS_ERROR)
         }
     }

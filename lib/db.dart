@@ -50,7 +50,8 @@ class MainDb {
         if (oldVersion < 3) {
           await db.execute('ALTER TABLE messages_history ADD COLUMN sim_info TEXT');
           await db.execute('ALTER TABLE forwarding_rules ADD COLUMN priority INTEGER DEFAULT 3');
-          await db.execute('CREATE INDEX IF NOT EXISTS idx_fr_priority ON forwarding_rules(priority)');
+          await db.execute('CREATE INDEX idx_fr_priority ON forwarding_rules(priority)');
+          await db.execute('CREATE INDEX idx_al_timestamp ON app_logs(timestamp)');
         }
       },
     );
@@ -111,12 +112,13 @@ class MainDb {
 
     await db.execute('''
       CREATE TABLE app_logs (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id INTEGER PRIMARY KEY,
         timestamp INTEGER,
         level INTEGER,
         message TEXT
       )
     ''');
+    await db.execute('CREATE INDEX idx_al_timestamp ON app_logs(timestamp)');
   }
 
   Future<void> _seedDefaults(Database db) async {

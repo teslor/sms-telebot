@@ -8,12 +8,11 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.ServiceInfo
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -79,7 +78,6 @@ class ForwardWorker(
             "l10nCall" to dbManager.getSetting("l10nCall").orEmpty().ifBlank { "Call" },
         )
 
-        val hasInternet = hasValidatedInternet()
         val lastAttemptAt = System.currentTimeMillis()
         val newAttemptCount = messageData.attemptCount + 1
         val sendResults = mutableListOf<SendProviderResult>()
@@ -87,35 +85,41 @@ class ForwardWorker(
 
         // Start parallel sending within each priority group
         // Lower priority rules are processed only if all higher priority rules failed
-        for ((_, priorityRules) in rules.groupBy { it.priority }) {
+        val ruleNames = rules.joinToString(", ") { it.name }
+        val senderMask = messageData.sender.let { if (it.length > 4) "${it.take(2)}***${it.takeLast(2)}" else "***" }
+        AppLog.i(TAG, "Start processing message (type=${messageData.type}, sender=$senderMask, len=${messageData.body.length}, rules=\"$ruleNames\")")
+        for ((priority, priorityRules) in rules.groupBy { it.priority }.toSortedMap()) { // keep priority order explicit
             val groupResults = coroutineScope {
                 priorityRules.map { rule ->
                     async {
                         sendSemaphore.withPermit {
-                            // Skip network-dependent rules if there's no internet (retryable)
-                            if (SendProviderGateway.requiresNetwork(rule.provider) && !hasInternet) {
-                                return@withPermit SendProviderResult(
-                                    isSuccess = false,
-                                    code = ResultCode.NETWORK_ERROR,
-                                    info = "No internet connection",
-                                    shouldRetry = true
+                            try {
+                                val secret = if (rule.provider == SendProviderId.SMS_GATEWAY) {
+                                    ""
+                                } else {
+                                    val secretResult = secretStorage.readSecret(rule.id.toString())
+                                    if (secretResult.isSuccess) secretResult.data ?: "" else ""
+                                }
+                                processRule(
+                                    rule, secret,
+                                    messageData.type, messageData.sender, messageData.body,
+                                    messageData.simInfo, messageData.receivedAt, labels
                                 )
+                            } catch (e: CancellationException) {
+                                throw e
+                            } catch (e: Exception) {
+                                AppLog.e(TAG, "Rule failed with exception (name=${rule.name})", e)
+                                SendProviderResult(isSuccess = false, code = "", info = "")
                             }
-
-                            val secret = if (rule.provider == SendProviderId.SMS_GATEWAY) {
-                                ""
-                            } else {
-                                val secretResult = secretStorage.readSecret(rule.id.toString())
-                                if (secretResult.isSuccess) secretResult.data ?: "" else ""
-                            }
-                            processRule(rule, secret, messageData.type, messageData.sender, messageData.body, messageData.simInfo, messageData.receivedAt, labels)
                         }
                     }
                 }.awaitAll()
             }
 
             sendResults.addAll(groupResults)
-            if (groupResults.any { it.isSuccess }) {
+            val groupHasSuccess = groupResults.any { it.isSuccess }
+            AppLog.d(TAG) { "Priority group processed (priority=$priority, success=$groupHasSuccess, messageId=$messageId)" }
+            if (groupHasSuccess) {
                 hasSuccessfulSends = true
                 break
             }
@@ -205,14 +209,5 @@ class ForwardWorker(
             .setSmallIcon(R.mipmap.ic_launcher)
             .setOngoing(true)
             .build()
-    }
-
-    private fun hasValidatedInternet(): Boolean {
-        val connectivityManager =
-            applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetwork ?: return false
-        val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
 }

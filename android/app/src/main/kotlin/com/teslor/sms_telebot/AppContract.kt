@@ -3,6 +3,8 @@
 
 package com.teslor.sms_telebot
 
+import android.content.Context
+import android.util.Log
 import java.security.MessageDigest
 import java.time.Instant
 import java.time.LocalDate
@@ -195,29 +197,67 @@ object MessageFilters {
     }
 }
 
-object LogFormatter {
-    fun buildInfo(
-        type: String, // source or event type
-        msg: String, // short description of what happened (human-readable)
-        provider: String? = null, // provider ID
-        code: String? = null, // internal error code
-        details: String? = null // technical details
-    ): String {
-        val sb = StringBuilder()
+object AppLog {
+    const val LEVEL_INFO = 0
+    const val LEVEL_WARN = 1
+    const val LEVEL_ERROR = 2
 
-        // Basic fields
-        sb.append("type=").append(type)
-        sb.append(" msg=\"").append(msg).append("\"")
+    @Volatile
+    @PublishedApi
+    internal var isDebugEnabled = false
 
-        // Specific fields for send_error type
-        if (!provider.isNullOrBlank()) sb.append(" provider=").append(provider)
-        if (!code.isNullOrBlank()) sb.append(" code=").append(code)
+    @Volatile
+    private var dbManager: DbManager? = null
 
-        if (!details.isNullOrBlank()) {
-            // Replace double quotes with single quotes inside details to avoid parsing issues
-            sb.append(" details=\"").append(details.replace("\"", "'")).append("\"") 
+    // Prevents recursive DB logging (safeguard if DB will use AppLog)
+    private val isPersistingDbLog = ThreadLocal.withInitial { false }
+
+    fun configure(context: Context, enabled: Boolean) {
+        isDebugEnabled = enabled
+        dbManager = DbManager.getInstance(context.applicationContext)
+    }
+
+    inline fun d(tag: String, e: Throwable? = null, message: () -> String) {
+        if (!isDebugEnabled) return
+        val text = message()
+        if (e == null) Log.d(tag, text) else Log.d(tag, text, e)
+    }
+
+    fun i(tag: String, message: String, e: Throwable? = null) {
+        if (e == null) Log.i(tag, message) else Log.i(tag, message, e)
+        persistToDb(LEVEL_INFO, tag, message, e)
+    }
+
+    fun w(tag: String, message: String, e: Throwable? = null) {
+        if (e == null) Log.w(tag, message) else Log.w(tag, message, e)
+        persistToDb(LEVEL_WARN, tag, message, e)
+    }
+
+    fun e(tag: String, message: String, e: Throwable? = null) {
+        if (e == null) Log.e(tag, message) else Log.e(tag, message, e)
+        persistToDb(LEVEL_ERROR, tag, message, e)
+    }
+
+    private fun persistToDb(level: Int, tag: String, message: String, e: Throwable?) {
+        val manager = dbManager ?: return
+        if (isPersistingDbLog.get() == true) return
+
+        val text = if (e == null) {
+            "[$tag] $message"
+        } else {
+            val eInfo = "${e::class.java.simpleName}: ${e.message ?: "unknown"}"
+            "[$tag] $message | $eInfo"
         }
 
-        return sb.toString()
+        try {
+            isPersistingDbLog.set(true)
+            manager.insertAppLogs(level = level, message = text)
+        } finally {
+            isPersistingDbLog.set(false)
+        }
     }
+
+    fun sanitizeString(value: String): String =
+        value.replace("\"", "'") // replace double quotes to avoid parsing issues
+            .replace("\r\n", "\\n").replace("\n", "\\n").replace("\r", "\\n")
 }
