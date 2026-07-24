@@ -55,7 +55,7 @@ class SmsReceiver : BroadcastReceiver() {
         // Within a 5-second window, the ID for the same sender/body will be the same
         val timeWindow = timestamp / 5000L
         val smsId = MessageHelpers.generateId("$sender|$body|$timeWindow")
-        val simInfo = if (attachSimInfo) SimInfoResolver.getInfo(context, intent) else null
+        val simInfo = if (attachSimInfo) SimInfoResolver.getInfo(context, intent, messages) else null
 
         MessageProcessor.processAndForward(
             context = context,

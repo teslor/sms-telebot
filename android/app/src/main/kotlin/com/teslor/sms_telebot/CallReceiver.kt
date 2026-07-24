@@ -31,10 +31,6 @@ class CallReceiver : BroadcastReceiver() {
         val logPerm = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG)
         if (statePerm != PackageManager.PERMISSION_GRANTED || logPerm != PackageManager.PERMISSION_GRANTED) return
 
-        val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager ?: return
-        @Suppress("DEPRECATION")
-        if (telephonyManager.callState != TelephonyManager.CALL_STATE_RINGING) return
-
         val dbManager = DbManager.getInstance(context)
         if (!dbManager.getBoolSetting("isRunning")) return
         if (!dbManager.getBoolSetting("forwardCalls")) return
@@ -56,20 +52,19 @@ class CallReceiver : BroadcastReceiver() {
     }
 
     private fun processCall(context: Context, intent: Intent, incomingNumber: String, attachSimInfo: Boolean) {
-        val sender = incomingNumber
         val now = System.currentTimeMillis()
 
         // System may send multiple RINGING broadcasts
         // Within a 30-second window, the ID for the same number will be the same
         val timeWindow = now / 30000L
-        val callId = MessageHelpers.generateId("$sender|$timeWindow")
+        val callId = MessageHelpers.generateId("$incomingNumber|$timeWindow")
         val simInfo = if (attachSimInfo) SimInfoResolver.getInfo(context, intent) else null
 
         MessageProcessor.processAndForward(
             context = context,
             id = callId,
             type = "call",
-            sender = sender,
+            sender = incomingNumber,
             body = "",
             simInfo = simInfo,
             sourceAt = now,

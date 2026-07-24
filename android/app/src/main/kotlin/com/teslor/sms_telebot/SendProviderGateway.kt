@@ -209,7 +209,7 @@ object TelegramBotProvider : SendProvider {
         if (result.error != null) {
             val rootCause = result.error.cause ?: result.error
             val code = when {
-                rootCause is SocketTimeoutException || result.error is SocketTimeoutException -> 
+                rootCause is SocketTimeoutException || result.error is SocketTimeoutException ->
                     ResultCode.NETWORK_TIMEOUT
                 else -> ResultCode.NETWORK_ERROR
             }

@@ -159,7 +159,7 @@ class DbManager private constructor(private val mainDbPath: String) {
     fun getMessageById(id: String): MessageData? {
         return withDatabase { db ->
             db.query(
-                "messages_history", 
+                "messages_history",
                 arrayOf("type", "sender", "body", "sim_info", "received_at", "attempt_count", "status"),
                 "id = ?", arrayOf(id), null, null, null
             ).use {
