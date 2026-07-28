@@ -12,10 +12,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get action_cancel => 'キャンセル';
 
   @override
+  String get action_continue => '続行';
+
+  @override
   String get action_delete => '削除';
 
   @override
   String get action_duplicate => '複製';
+
+  @override
+  String get action_exit => '終了';
 
   @override
   String get action_save => '保存';
@@ -285,7 +291,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get help_opts_025 =>
-      'SMSや通話を転送する際にSIM情報（スロット番号と通信事業者）を付与するには、対応するスイッチを有効にしてください。';
+      '受信SMSや通話の転送時にSIM情報（スロットと通信事業者）を追加するには、スイッチを有効にしてください。一部のシステムではSIM情報を利用できません（特に通話の場合）。';
 
   @override
   String get help_opts_03 =>
@@ -366,6 +372,30 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get help_filters_05 => '設定したフィルターは、受信SMSだけでなくすべてのイベント種別に適用されます。';
+
+  @override
+  String get consent_welcome => 'ようこそ！\n続行すると、この情報を確認したことに同意したものとみなされます：';
+
+  @override
+  String get consent_item_01 =>
+      '有効にした機能に応じて、アプリは受信SMSや着信のデータを取得し、指定した番号にSMSを送信することがあります。';
+
+  @override
+  String get consent_item_02 =>
+      'データは、ご自身で設定したサービスにのみ送信されます。隠れたサーバーや分析機能はありません。';
+
+  @override
+  String get consent_item_03 => '機密性の高い権限は、対応する機能を有効にした場合のみ要求されます。';
+
+  @override
+  String get consent_item_04 =>
+      '使用する権限により、Google Play Protectやウイルス対策ソフトが誤った警告を表示することがあります。';
+
+  @override
+  String get consent_details => '詳しく見る：';
+
+  @override
+  String get consent_privacyPolicy => 'プライバシーポリシー';
 
   @override
   String get error_badRequest => 'リクエストは拒否されました。入力した接続パラメータを確認してください。';

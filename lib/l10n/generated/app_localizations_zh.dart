@@ -12,10 +12,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get action_cancel => '取消';
 
   @override
+  String get action_continue => '继续';
+
+  @override
   String get action_delete => '删除';
 
   @override
   String get action_duplicate => '复制';
+
+  @override
+  String get action_exit => '退出';
 
   @override
   String get action_save => '保存';
@@ -281,7 +287,8 @@ class AppLocalizationsZh extends AppLocalizations {
       '常驻后台模式可提高消息送达稳定性（尤其是系统通知），但会明显增加耗电。启用后，通知栏会显示常驻通知。除非确有需要，不建议开启。';
 
   @override
-  String get help_opts_025 => '如需在转发短信和来电时附加 SIM 信息（卡槽编号和运营商），请开启对应开关。';
+  String get help_opts_025 =>
+      '转发收到的短信和来电时，如需添加 SIM 卡信息（卡槽和运营商），请开启此开关。部分系统无法提供 SIM 信息，尤其是通话信息。';
 
   @override
   String get help_opts_03 => '如果您在多台手机上使用本应用，可设置设备标签。该标签会随消息一起发送，用于识别接收端手机。';
@@ -356,6 +363,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get help_filters_05 => '已设置的筛选器会应用于所有事件类型，不仅仅是接收短信。';
+
+  @override
+  String get consent_welcome => '欢迎！\n继续操作即表示您确认已阅读以下信息：';
+
+  @override
+  String get consent_item_01 => '根据您启用的功能，应用可能会接收来电和短信数据，并向您指定的号码发送短信。';
+
+  @override
+  String get consent_item_02 => '数据只会发送到您自行配置的服务。应用没有隐藏的服务器，也不包含分析功能。';
+
+  @override
+  String get consent_item_03 => '只有在启用相应功能时，应用才会请求敏感权限。';
+
+  @override
+  String get consent_item_04 => '由于使用了这些权限，Google Play Protect 和杀毒软件可能会显示误报。';
+
+  @override
+  String get consent_details => '了解更多：';
+
+  @override
+  String get consent_privacyPolicy => '隐私政策';
 
   @override
   String get error_badRequest => '请求被拒绝。请检查输入的连接参数。';

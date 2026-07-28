@@ -125,6 +125,7 @@ class MainDb {
     final batch = db.batch();
 
     final defaults = {
+      'consentAccepted': '0',
       'isRunning': '0',
       'forwardSms': '0',
       'forwardCalls': '0',

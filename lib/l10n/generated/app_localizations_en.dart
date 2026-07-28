@@ -12,10 +12,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get action_cancel => 'Cancel';
 
   @override
+  String get action_continue => 'Continue';
+
+  @override
   String get action_delete => 'Delete';
 
   @override
   String get action_duplicate => 'Duplicate';
+
+  @override
+  String get action_exit => 'Exit';
 
   @override
   String get action_save => 'Save';
@@ -268,111 +274,137 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get help_info_01 =>
-      'Forward messages to a Telegram bot, via email (SMTP), or as SMS. You can add multiple bots or email addresses!';
+      'Forward messages to Telegram bots, email (SMTP), or via SMS. Configure multiple destinations easily!';
 
   @override
   String get help_info_02 =>
-      'Use rules to configure what to forward and where. You can easily duplicate or disable them when needed.';
+      'Define what to forward and where using rules. Duplicate or toggle them on/off when needed.';
 
   @override
   String get help_info_03 =>
-      'Messages are forwarded according to active rules. If a connection error occurs (for example, no internet), retry attempts are performed automatically.';
+      'Messages are forwarded according to active rules. The app automatically retries if a connection fails (e.g., no internet).';
 
   @override
   String get help_opts_01 =>
-      'First, select the events you want to forward. As the app runs, a message is generated and sent for each event according to the specified rules.';
+      'First, select the events you want to track. The app generates and forwards messages for each event based on your rules.';
 
   @override
   String get help_opts_02 =>
-      'Permanent background mode improves reliability of message delivery (especially for system notifications), but significantly increases battery consumption. In this mode, a persistent notification appears in the notification shade. Not recommended to enable unless necessary.';
+      'Permanent background mode improves delivery reliability (especially for system notifications) but uses more battery. A persistent notification will appear in the notification shade. Enable only when necessary.';
 
   @override
   String get help_opts_025 =>
-      'To add SIM card data (slot number and operator) when forwarding SMS and calls, enable the required switch.';
+      'Enable the switch to add SIM card data (slot and operator) when forwarding incoming SMS and calls. SIM data is not available on some systems (especially for calls).';
 
   @override
   String get help_opts_03 =>
-      'When forwarding messages from multiple phones, you can set a device label — it is sent along with the message to identify the receiving phone.';
+      'Assign a device label when forwarding from multiple phones. The label is attached to each message for easy identification.';
 
   @override
   String get help_opts_04 =>
-      'It is recommended to disable battery optimization for the app, since the system may restrict background activity to save power.';
+      'Disable battery optimization for this app to prevent the system from restricting background activity.';
 
   @override
-  String get help_tbot => 'Connecting a Telegram Bot';
+  String get help_tbot => 'Setting Up a Telegram Bot';
 
   @override
   String get help_tbot_01 =>
-      'If you don\'t have a Telegram bot yet, use @BotFather bot to create one and get its token. It\'s simple and free.';
+      'Don\'t have a bot? Use Telegram\'s @BotFather to create one and get an API token. It\'s free and easy.';
 
   @override
   String get help_tbot_02 =>
-      'Open a chat with your bot in Telegram, start a conversation, or send any message. This is needed to automatically retrieve the chat id for the next step.';
+      'Open a chat with your bot in Telegram and send any message. This allows the app to automatically detect your Chat ID.';
 
   @override
   String get help_tbot_03 =>
-      'In the app, create a Telegram bot rule and enter the token (you can also set a Chat ID if you know it). Test the settings, then save. A welcome message will arrive upon a successful test.';
+      'In the app, add a Telegram bot rule and paste your token (optional: manually set Chat ID). Test the connection, then save. You\'ll receive a hello message if it works.';
 
   @override
   String get help_tbot_04 =>
-      'Done! Everything is set up to forward messages to your bot. Enable the rule and press Start to begin.';
+      'Done! Enable the rule and tap Start to begin forwarding messages.';
 
   @override
   String get help_tbot_05 =>
-      'There is also an option to set a custom API server URL to use it instead of the official Telegram server.';
+      'Optionally, specify a custom API server URL to use it instead of the official Telegram server.';
 
   @override
-  String get help_smtp => 'Connecting an SMTP Server';
+  String get help_smtp => 'Setting Up a SMTP Server';
 
   @override
   String get help_smtp_01 =>
-      'It is recommended to create a dedicated email account (not an alias) specifically for message forwarding and use it as your login. This is especially relevant for Gmail and similar services.';
+      'It is recommended to create a dedicated email account (not an alias) for forwarding. This is especially relevant for Gmail and similar providers.';
 
   @override
   String get help_smtp_02 =>
-      'Create a rule and fill in the connection details. Usually, an \'App Password\' is required (generated in your email provider\'s security settings).';
+      'Add a rule and enter your SMTP details. Most providers require an \'App Password\' (generate one in your account security settings).';
 
   @override
   String get help_smtp_03 =>
-      'Test and save the settings, enable the rule, and press Start.';
+      'Test and save your settings, enable the rule, then tap Start.';
 
   @override
-  String get help_sms => 'SMS Sending';
+  String get help_sms => 'Sending SMS';
 
   @override
   String get help_sms_01 =>
-      'The app supports forwarding messages as outgoing SMS to specified phone numbers.';
+      'The app can forward events as outgoing SMS to specific phone numbers.';
 
   @override
   String get help_sms_02 =>
-      'Create a rule and enter the recipient\'s phone number. Mobile numbers must start with the + symbol (international format).';
+      'Add a rule and specify the recipient\'s number. Use international format for mobile numbers (start with +).';
 
   @override
   String get help_sms_03 =>
-      'SMS are sent using the default SIM card selected in your phone settings.';
+      'Outgoing SMS uses the default SIM card set in your phone settings.';
 
   @override
   String get help_filters => 'Filters';
 
   @override
   String get help_filters_01 =>
-      'For any rule, you can set filters for sender or message text. A filter is triggered if a sender number/name or text contains the specified characters.';
+      'For any rule, you can set filters for sender or message text. A filter is triggered if a sender number/name or text contains the specified keywords.';
 
   @override
   String get help_filters_02 =>
-      'There are two modes: whitelist (message is forwarded if at least one filter matches) and blacklist (message is not forwarded if any filter matches). In whitelist mode, if no filters are set, no messages will be forwarded.';
+      'Choose between Whitelist (forward if at least one filter matches) or Blacklist (block if any filter matches). Note: Whitelist with no filters blocks all messages.';
 
   @override
   String get help_filters_03 =>
-      'Use two forward slashes for regex. For example, filter /^\\d*555\$/ matches all numbers, that end with 555.';
+      'Wrap patterns in // for regex syntax. Example: /^\\d*555\$/ matches all numbers ending in 555.';
 
   @override
   String get help_filters_04 =>
-      'To check whether a specific message will be forwarded based on the current filters, enter the required sender and/or message text in the input fields and click the button to verify.';
+      'Check your filters by entering a sample sender or message text and tapping the test button to see if it matches.';
 
   @override
   String get help_filters_05 =>
-      'The specified filters are applied to all event types, not just incoming SMS.';
+      'The specified filters apply to all event types, not just incoming SMS.';
+
+  @override
+  String get consent_welcome =>
+      'Welcome!\nBy continuing, you confirm that you have read this information:';
+
+  @override
+  String get consent_item_01 =>
+      'Depending on the features you enable, the app may receive data about incoming SMS and calls and send SMS to the numbers you specify.';
+
+  @override
+  String get consent_item_02 =>
+      'Data is sent only to the services you configure yourself. No hidden servers or analytics.';
+
+  @override
+  String get consent_item_03 =>
+      'Sensitive permissions are requested only when you enable the corresponding features.';
+
+  @override
+  String get consent_item_04 =>
+      'Because of the permissions used, Google Play Protect and antivirus software may show false warnings.';
+
+  @override
+  String get consent_details => 'Learn more: ';
+
+  @override
+  String get consent_privacyPolicy => 'privacy policy';
 
   @override
   String get error_badRequest =>

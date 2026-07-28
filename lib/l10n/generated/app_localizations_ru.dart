@@ -12,10 +12,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get action_cancel => 'Отмена';
 
   @override
+  String get action_continue => 'Продолжить';
+
+  @override
   String get action_delete => 'Удалить';
 
   @override
   String get action_duplicate => 'Дублировать';
+
+  @override
+  String get action_exit => 'Выйти';
 
   @override
   String get action_save => 'Сохранить';
@@ -289,7 +295,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get help_opts_025 =>
-      'Чтобы добавлять данные SIM-карты (номер слота и оператор) при пересылке СМС и звонков, включите нужный переключатель.';
+      'Включите переключатель, чтобы при пересылке входящих СМС и звонков добавить данные SIM-карты (слот и оператор). На некоторых системах SIM-данные недоступны (особенно для звонков).';
 
   @override
   String get help_opts_03 =>
@@ -374,6 +380,32 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get help_filters_05 =>
       'Фильтры применяются для всех типов событий, не только для входящих СМС.';
+
+  @override
+  String get consent_welcome =>
+      'Добро пожаловать!\nПродолжая, вы подтверждаете, что ознакомились с этой информацией:';
+
+  @override
+  String get consent_item_01 =>
+      'В зависимости от выбранных параметров приложение может получать данные входящих СМС и звонков, а также отправлять СМС на указанные вами номера.';
+
+  @override
+  String get consent_item_02 =>
+      'Данные передаются только в те сервисы, которые вы настроили сами. Скрытых серверов и аналитики нет.';
+
+  @override
+  String get consent_item_03 =>
+      'Важные разрешения запрашиваются только при включении соответствующих функций.';
+
+  @override
+  String get consent_item_04 =>
+      'Из-за используемых разрешений Google Play Protect и антивирусы могут показывать ложные предупреждения.';
+
+  @override
+  String get consent_details => 'Подробнее: ';
+
+  @override
+  String get consent_privacyPolicy => 'политика конфиденциальности';
 
   @override
   String get error_badRequest =>

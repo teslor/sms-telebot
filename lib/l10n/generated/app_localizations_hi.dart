@@ -12,10 +12,16 @@ class AppLocalizationsHi extends AppLocalizations {
   String get action_cancel => 'रद्द करें';
 
   @override
+  String get action_continue => 'जारी रखें';
+
+  @override
   String get action_delete => 'हटाएं';
 
   @override
   String get action_duplicate => 'डुप्लिकेट';
+
+  @override
+  String get action_exit => 'बाहर निकलें';
 
   @override
   String get action_save => 'सहेजें';
@@ -289,7 +295,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get help_opts_025 =>
-      'SMS और कॉल फ़ॉरवर्ड करते समय SIM डेटा (स्लॉट नंबर और ऑपरेटर) जोड़ने के लिए संबंधित स्विच चालू करें।';
+      'इनकमिंग SMS और कॉल फ़ॉरवर्ड करते समय SIM डेटा (स्लॉट और ऑपरेटर) जोड़ने के लिए स्विच चालू करें। कुछ सिस्टम में SIM डेटा उपलब्ध नहीं होता, खासकर कॉल के लिए।';
 
   @override
   String get help_opts_03 =>
@@ -374,6 +380,32 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get help_filters_05 =>
       'सेट किए गए फ़िल्टर सभी इवेंट प्रकारों पर लागू होते हैं, सिर्फ इनकमिंग SMS पर नहीं।';
+
+  @override
+  String get consent_welcome =>
+      'स्वागत है!\nजारी रखकर, आप पुष्टि करते हैं कि आपने यह जानकारी पढ़ ली है:';
+
+  @override
+  String get consent_item_01 =>
+      'आपके द्वारा सक्षम सुविधाओं के आधार पर, ऐप आने वाले SMS और कॉल का डेटा प्राप्त कर सकता है और आपके बताए नंबरों पर SMS भेज सकता है।';
+
+  @override
+  String get consent_item_02 =>
+      'डेटा केवल उन्हीं सेवाओं को भेजा जाता है जिन्हें आपने स्वयं कॉन्फ़िगर किया है। कोई छिपा हुआ सर्वर या एनालिटिक्स नहीं है।';
+
+  @override
+  String get consent_item_03 =>
+      'संवेदनशील अनुमतियां केवल संबंधित सुविधाएं सक्षम करने पर मांगी जाती हैं।';
+
+  @override
+  String get consent_item_04 =>
+      'उपयोग की गई अनुमतियों के कारण Google Play Protect और एंटीवायरस गलत चेतावनियां दिखा सकते हैं।';
+
+  @override
+  String get consent_details => 'अधिक जानकारी: ';
+
+  @override
+  String get consent_privacyPolicy => 'गोपनीयता नीति';
 
   @override
   String get error_badRequest =>

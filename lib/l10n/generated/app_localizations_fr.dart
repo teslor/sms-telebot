@@ -12,10 +12,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get action_cancel => 'Annuler';
 
   @override
+  String get action_continue => 'Continuer';
+
+  @override
   String get action_delete => 'Supprimer';
 
   @override
   String get action_duplicate => 'Dupliquer';
+
+  @override
+  String get action_exit => 'Quitter';
 
   @override
   String get action_save => 'Enregistrer';
@@ -292,7 +298,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get help_opts_025 =>
-      'Pour ajouter les données de la carte SIM (numéro d\'emplacement et opérateur) lors du transfert de SMS et d\'appels, activez l\'option correspondante.';
+      'Activez l\'option pour ajouter les données de la carte SIM (emplacement et opérateur) lors du transfert des SMS et appels entrants. Les données SIM ne sont pas disponibles sur certains systèmes, notamment pour les appels.';
 
   @override
   String get help_opts_03 =>
@@ -377,6 +383,32 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get help_filters_05 =>
       'Les filtres définis s\'appliquent à tous les types d\'événements, pas uniquement aux SMS entrants.';
+
+  @override
+  String get consent_welcome =>
+      'Bienvenue !\nEn continuant, vous confirmez avoir pris connaissance de ces informations :';
+
+  @override
+  String get consent_item_01 =>
+      'Selon les fonctions activées, l\'application peut recevoir des données sur les SMS et appels entrants, et envoyer des SMS aux numéros que vous indiquez.';
+
+  @override
+  String get consent_item_02 =>
+      'Les données sont transmises uniquement aux services que vous avez vous-même configurés. Il n\'y a ni serveurs cachés ni analyse.';
+
+  @override
+  String get consent_item_03 =>
+      'Les autorisations sensibles ne sont demandées que lorsque vous activez les fonctions correspondantes.';
+
+  @override
+  String get consent_item_04 =>
+      'En raison des autorisations utilisées, Google Play Protect et les antivirus peuvent afficher de fausses alertes.';
+
+  @override
+  String get consent_details => 'En savoir plus : ';
+
+  @override
+  String get consent_privacyPolicy => 'politique de confidentialité';
 
   @override
   String get error_badRequest =>

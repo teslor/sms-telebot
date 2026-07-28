@@ -12,10 +12,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get action_cancel => 'Cancelar';
 
   @override
+  String get action_continue => 'Continuar';
+
+  @override
   String get action_delete => 'Eliminar';
 
   @override
   String get action_duplicate => 'Duplicar';
+
+  @override
+  String get action_exit => 'Salir';
 
   @override
   String get action_save => 'Guardar';
@@ -289,7 +295,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get help_opts_025 =>
-      'Para añadir datos de la SIM (número de ranura y operador) al reenviar SMS y llamadas, activa el interruptor correspondiente.';
+      'Activa el interruptor para añadir los datos de la SIM (ranura y operador) al reenviar SMS y llamadas entrantes. Los datos de la SIM no están disponibles en algunos sistemas, especialmente para las llamadas.';
 
   @override
   String get help_opts_03 =>
@@ -374,6 +380,32 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get help_filters_05 =>
       'Los filtros configurados se aplican a todos los tipos de eventos, no solo a los SMS entrantes.';
+
+  @override
+  String get consent_welcome =>
+      '¡Bienvenido!\nAl continuar, confirmas que has leído esta información:';
+
+  @override
+  String get consent_item_01 =>
+      'Según las funciones que actives, la aplicación puede recibir datos sobre SMS y llamadas entrantes, y enviar SMS a los números que indiques.';
+
+  @override
+  String get consent_item_02 =>
+      'Los datos solo se envían a los servicios que tú mismo configures. No hay servidores ocultos ni analítica.';
+
+  @override
+  String get consent_item_03 =>
+      'Los permisos sensibles solo se solicitan al activar las funciones correspondientes.';
+
+  @override
+  String get consent_item_04 =>
+      'Debido a los permisos utilizados, Google Play Protect y los antivirus pueden mostrar advertencias falsas.';
+
+  @override
+  String get consent_details => 'Más información: ';
+
+  @override
+  String get consent_privacyPolicy => 'política de privacidad';
 
   @override
   String get error_badRequest =>

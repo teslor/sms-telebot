@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'constants.dart';
+import 'consent.dart';
 import 'state.dart';
 import 'styles.dart';
 import 'pages/messages_page.dart';
@@ -70,6 +71,19 @@ class AppView extends StatefulWidget {
 
 class _AppViewState extends State<AppView> {
   int currentPageIndex = 0;
+  bool _isConsentChecked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkConsent());
+  }
+
+  Future<void> _checkConsent() async {
+    if (!mounted || _isConsentChecked) return;
+    _isConsentChecked = true;
+    await ensureConsentAccepted(context, context.read<AppState>());
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -12,10 +12,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get action_cancel => 'Cancelar';
 
   @override
+  String get action_continue => 'Continuar';
+
+  @override
   String get action_delete => 'Excluir';
 
   @override
   String get action_duplicate => 'Duplicar';
+
+  @override
+  String get action_exit => 'Sair';
 
   @override
   String get action_save => 'Salvar';
@@ -288,7 +294,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get help_opts_025 =>
-      'Para incluir dados do SIM (número do slot e operadora) ao encaminhar SMS e chamadas, ative o interruptor correspondente.';
+      'Ative o interruptor para incluir dados do SIM (slot e operadora) ao encaminhar SMS e chamadas recebidos. Os dados do SIM não estão disponíveis em alguns sistemas, especialmente para chamadas.';
 
   @override
   String get help_opts_03 =>
@@ -373,6 +379,32 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get help_filters_05 =>
       'Os filtros definidos são aplicados a todos os tipos de eventos, não apenas a SMS recebidos.';
+
+  @override
+  String get consent_welcome =>
+      'Bem-vindo!\nAo continuar, você confirma que leu estas informações:';
+
+  @override
+  String get consent_item_01 =>
+      'Dependendo dos recursos ativados, o app pode receber dados sobre SMS e chamadas recebidos e enviar SMS para os números indicados por você.';
+
+  @override
+  String get consent_item_02 =>
+      'Os dados são enviados apenas para os serviços que você configurou. Não há servidores ocultos nem análises.';
+
+  @override
+  String get consent_item_03 =>
+      'Permissões sensíveis só são solicitadas quando os recursos correspondentes são ativados.';
+
+  @override
+  String get consent_item_04 =>
+      'Devido às permissões utilizadas, o Google Play Protect e antivírus podem exibir avisos falsos.';
+
+  @override
+  String get consent_details => 'Saiba mais: ';
+
+  @override
+  String get consent_privacyPolicy => 'política de privacidade';
 
   @override
   String get error_badRequest =>

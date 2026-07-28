@@ -12,10 +12,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get action_cancel => 'Abbrechen';
 
   @override
+  String get action_continue => 'Fortfahren';
+
+  @override
   String get action_delete => 'Löschen';
 
   @override
   String get action_duplicate => 'Duplizieren';
+
+  @override
+  String get action_exit => 'Verlassen';
 
   @override
   String get action_save => 'Speichern';
@@ -291,7 +297,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get help_opts_025 =>
-      'Um beim Weiterleiten von SMS und Anrufen SIM-Daten (Slot-Nummer und Anbieter) anzuhängen, aktivieren Sie den entsprechenden Schalter.';
+      'Aktivieren Sie den Schalter, um beim Weiterleiten eingehender SMS und Anrufe SIM-Daten (Slot und Anbieter) hinzuzufügen. Auf manchen Systemen sind SIM-Daten nicht verfügbar (insbesondere bei Anrufen).';
 
   @override
   String get help_opts_03 =>
@@ -376,6 +382,32 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get help_filters_05 =>
       'Die angegebenen Filter gelten für alle Ereignistypen, nicht nur für eingehende SMS.';
+
+  @override
+  String get consent_welcome =>
+      'Willkommen!\nWenn Sie fortfahren, bestätigen Sie, dass Sie diese Informationen gelesen haben:';
+
+  @override
+  String get consent_item_01 =>
+      'Je nach aktivierten Funktionen kann die App Daten über eingehende SMS und Anrufe empfangen sowie SMS an die von Ihnen angegebenen Nummern senden.';
+
+  @override
+  String get consent_item_02 =>
+      'Daten werden nur an die von Ihnen selbst eingerichteten Dienste übertragen. Es gibt keine versteckten Server und keine Analyse.';
+
+  @override
+  String get consent_item_03 =>
+      'Sensible Berechtigungen werden nur aktiviert, wenn Sie die entsprechenden Funktionen einschalten.';
+
+  @override
+  String get consent_item_04 =>
+      'Aufgrund der verwendeten Berechtigungen können Google Play Protect und Antivirenprogramme falsche Warnungen anzeigen.';
+
+  @override
+  String get consent_details => 'Mehr erfahren: ';
+
+  @override
+  String get consent_privacyPolicy => 'Datenschutzerklärung';
 
   @override
   String get error_badRequest =>

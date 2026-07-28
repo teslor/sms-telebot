@@ -23,7 +23,7 @@ class HelpPage extends StatelessWidget {
       l10n.help_opts_025,
       l10n.help_opts_03,
       l10n.help_opts_04,
-    ];    
+    ];
     final List<String> tbotItems = [
       l10n.help_tbot_01,
       l10n.help_tbot_02,
@@ -66,7 +66,7 @@ class HelpPage extends StatelessWidget {
                 children: [
                   Text('${AppConst.appVersion}, ', style: TextStyle(color: appLabelColor)),
                   InkWell(
-                    onTap: () { launchURL('https://github.com/teslor/sms-telebot'); },
+                    onTap: () { launchURL(AppConst.appLink); },
                     child: Row(
                       children: [
                         Text('GitHub', style: TextStyle(color: appLabelColor, decoration: TextDecoration.underline )),

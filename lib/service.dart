@@ -47,7 +47,7 @@ Future<bool> getNotificationPermission({bool openSettings = false}) async {
   if (openSettings && statusBeforeRequest.isPermanentlyDenied) {
     await openAppSettings();
   }
-  return false;  
+  return false;
 }
 
 Future<CallResult> getUpdates(String token, String apiUrl) async {
