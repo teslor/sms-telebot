@@ -1,17 +1,17 @@
-SMS Telebot forwards important phone events from your device to Telegram bot or email via SMTP
+SMS Telebot forwards important phone events from your device to Telegram bots, email addresses (via SMTP), or phone numbers (via SMS)
 
 Use it to stay informed when your phone receives:
 
-- SMS messages
+- Incoming SMS
 - Incoming calls
 - Low battery alerts
-- Charger connection updates
+- Charger connection status changes
 
 Why choose SMS Telebot:
 
-- Flexible forwarding rules: create multiple rules and route events to different Telegram bots or SMTP recipients
+- Flexible forwarding rules: create multiple rules and route events to different destinations
 - Powerful filtering: filter by sender or message text with support for regular expressions
-- Whitelist and blacklist modes: include only matching events or exclude matched ones
+- Whitelist and blacklist modes: include only matching events or exclude matching ones
 - Always-on background mode: improved reliability on devices with aggressive battery/background restrictions
 - Automatic retries: failed forwarding attempts are retried when temporary issues (for example, no internet) are resolved
 - Secure credential storage: bot tokens and SMTP passwords are stored in encrypted form
