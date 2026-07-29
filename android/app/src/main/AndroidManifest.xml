@@ -20,9 +20,7 @@
         android:label="SMS Telebot"
         android:name=".SmsTelebotApp"
         android:enableOnBackInvokedCallback="true"
-        android:allowBackup="true"
-        android:fullBackupContent="@xml/backup_rules"
-        android:dataExtractionRules="@xml/backup_rules"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round">
         <receiver
