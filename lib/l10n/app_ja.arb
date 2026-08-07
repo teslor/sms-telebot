@@ -19,6 +19,7 @@
   "msg_stop": "停止",
   "msg_sms": "メッセージ",
   "msg_call": "通話",
+  "msg_battery": "バッテリー",
   "msg_lowBattery": "バッテリー残量低下",
   "msg_chargerConnected": "充電器接続",
   "msg_chargerDisconnected": "充電器切断",

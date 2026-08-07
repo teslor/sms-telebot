@@ -67,6 +67,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get msg_call => 'Anruf';
 
   @override
+  String get msg_battery => 'Akku';
+
+  @override
   String get msg_lowBattery => 'Niedriger Akkustand';
 
   @override

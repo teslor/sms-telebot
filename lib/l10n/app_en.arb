@@ -19,6 +19,7 @@
   "msg_stop": "Stop",
   "msg_sms": "SMS",
   "msg_call": "Call",
+  "msg_battery": "Battery",
   "msg_lowBattery": "Low battery",
   "msg_chargerConnected": "Charger connected",
   "msg_chargerDisconnected": "Charger disconnected",

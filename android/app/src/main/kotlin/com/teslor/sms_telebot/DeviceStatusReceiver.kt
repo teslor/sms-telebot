@@ -17,8 +17,6 @@ import kotlinx.coroutines.launch
  */
 class DeviceStatusReceiver : BroadcastReceiver() {
 
-    private val sender = "System"
-
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action ?: return
 
@@ -45,18 +43,19 @@ class DeviceStatusReceiver : BroadcastReceiver() {
             }
             else -> return
         }
+        val sender = dbManager.getSetting("l10nBattery").orEmpty().ifBlank { "Battery" }
 
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                processSystemAlert(context, action, body)
+                processSystemAlert(context, action, sender, body)
             } finally {
                 pendingResult.finish()
             }
         }
     }
 
-    private fun processSystemAlert(context: Context, action: String, body: String) {
+    private fun processSystemAlert(context: Context, action: String, sender: String, body: String) {
         // Within time window, the ID will be the same
         val windowMs = when (action) {
             Intent.ACTION_BATTERY_LOW -> 2 * 60 * 60 * 1000L // 2 hours

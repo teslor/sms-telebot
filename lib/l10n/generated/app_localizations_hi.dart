@@ -66,6 +66,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get msg_call => 'कॉल';
 
   @override
+  String get msg_battery => 'बैटरी';
+
+  @override
   String get msg_lowBattery => 'बैटरी कम';
 
   @override

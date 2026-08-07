@@ -128,7 +128,7 @@ class _MessagesPageState extends State<MessagesPage> {
     final isSms = type == 'sms';
     final titleIcon = isSms
         ? Icons.messenger
-        : (type == 'call' ? Icons.call : Icons.phonelink_setup_rounded);
+        : (type == 'call' ? Icons.call : Icons.battery_4_bar);
     final titleIconColor = isSms
         ? Colors.amber
         : (type == 'call' ? Colors.green : theme.colorScheme.primary);

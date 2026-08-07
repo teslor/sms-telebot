@@ -19,6 +19,7 @@
   "msg_stop": "Стоп",
   "msg_sms": "СМС",
   "msg_call": "Звонок",
+  "msg_battery": "Батарея",
   "msg_lowBattery": "Низкий уровень заряда",
   "msg_chargerConnected": "Зарядка подключена",
   "msg_chargerDisconnected": "Зарядка отключена",

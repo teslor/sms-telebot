@@ -19,6 +19,7 @@
   "msg_stop": "停止",
   "msg_sms": "短信",
   "msg_call": "通话",
+  "msg_battery": "电池",
   "msg_lowBattery": "电量低",
   "msg_chargerConnected": "充电器已连接",
   "msg_chargerDisconnected": "充电器已断开",

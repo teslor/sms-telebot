@@ -19,6 +19,7 @@
   "msg_stop": "स्टॉप",
   "msg_sms": "SMS",
   "msg_call": "कॉल",
+  "msg_battery": "बैटरी",
   "msg_lowBattery": "बैटरी कम",
   "msg_chargerConnected": "चार्जर कनेक्टेड",
   "msg_chargerDisconnected": "चार्जर डिस्कनेक्टेड",

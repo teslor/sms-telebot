@@ -94,7 +94,7 @@ class ForwardWorker(
                     async {
                         sendSemaphore.withPermit {
                             try {
-                                val secret = if (rule.provider == SendProviderId.SMS_GATEWAY) {
+                                val secret = if (rule.provider == SendProviderId.SMS) {
                                     ""
                                 } else {
                                     val secretResult = secretStorage.readSecret(rule.id.toString())

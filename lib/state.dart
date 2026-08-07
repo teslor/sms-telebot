@@ -59,6 +59,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         'l10nServiceText': localizations.service_text,
         'l10nSms': localizations.msg_sms,
         'l10nCall': localizations.msg_call,
+        'l10nBattery': localizations.msg_battery,
         'l10nLowBattery': localizations.msg_lowBattery,
         'l10nChargerConnected': localizations.msg_chargerConnected,
         'l10nChargerDisconnected': localizations.msg_chargerDisconnected,

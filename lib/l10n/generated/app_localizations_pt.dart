@@ -66,6 +66,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get msg_call => 'Chamada';
 
   @override
+  String get msg_battery => 'Bateria';
+
+  @override
   String get msg_lowBattery => 'Bateria fraca';
 
   @override

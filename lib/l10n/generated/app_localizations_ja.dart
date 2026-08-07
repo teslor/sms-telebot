@@ -66,6 +66,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get msg_call => '通話';
 
   @override
+  String get msg_battery => 'バッテリー';
+
+  @override
   String get msg_lowBattery => 'バッテリー残量低下';
 
   @override

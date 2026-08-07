@@ -226,6 +226,12 @@ abstract class AppLocalizations {
   /// **'Call'**
   String get msg_call;
 
+  /// No description provided for @msg_battery.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery'**
+  String get msg_battery;
+
   /// No description provided for @msg_lowBattery.
   ///
   /// In en, this message translates to:

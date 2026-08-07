@@ -26,6 +26,7 @@ import jakarta.mail.Session
 import jakarta.mail.Transport
 import jakarta.mail.internet.InternetAddress
 import jakarta.mail.internet.MimeMessage
+import java.io.InterruptedIOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -34,16 +35,81 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import okhttp3.FormBody
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
 private const val TAG = "SendProvider"
 
+internal object HttpUtils {
+    val client: OkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .build()
+    }
+
+    fun getErrorCode(statusCode: Int): String {
+        return when (statusCode) {
+            400 -> ResultCode.BAD_REQUEST
+            401 -> ResultCode.UNAUTHORIZED
+            403 -> ResultCode.FORBIDDEN
+            429 -> ResultCode.RATE_LIMITED
+            in 500..599 -> ResultCode.SERVER_ERROR
+            else -> ResultCode.UNEXPECTED_ERROR
+        }
+    }
+
+    fun getErrorMessage(statusCode: Int): String {
+        return when (statusCode) {
+            400 -> "bad request / invalid format"
+            401 -> "unauthorized / invalid token"
+            403 -> "forbidden / access denied"
+            404 -> "resource not found"
+            429 -> "rate limited / too many requests"
+            in 500..599 -> "internal server error"
+            else -> "unexpected HTTP error"
+        }
+    }
+
+    fun isRetryable(resultCode: String): Boolean {
+        return when (resultCode) {
+            ResultCode.RATE_LIMITED,
+            ResultCode.SERVER_ERROR,
+            ResultCode.NETWORK_ERROR,
+            ResultCode.NETWORK_TIMEOUT -> true
+            else -> false
+        }
+    }
+
+    fun isTimeoutError(error: Throwable): Boolean {
+        var current: Throwable? = error
+        var depth = 0
+        while (current != null && depth < 8) {
+            when (current) {
+                is SocketTimeoutException -> return true
+                is InterruptedIOException -> {
+                    val message = current.message?.lowercase().orEmpty()
+                    val isCancellation = "canceled" in message || "cancelled" in message
+                    val isInterruption = "interrupted" in message
+                    if (!isCancellation && !isInterruption) return true
+                }
+            }
+            current = current.cause
+            depth++
+        }
+        return false
+    }
+}
+
 object SendProviderId {
-    const val TELEGRAM_BOT = "telegram_bot"
-    const val SMTP_SERVER = "smtp_server"
-    const val SMS_GATEWAY = "sms_gateway"
+    const val TELEGRAM = "telegram_bot"
+    const val NTFY = "ntfy_server"
+    const val SMTP = "smtp_server"
+    const val SMS = "sms_gateway"
 }
 
 data class SendProviderPayload(
@@ -105,9 +171,10 @@ interface SendProvider {
 
 object SendProviderGateway {
     private val providers: Map<String, SendProvider> = listOf(
-        TelegramBotProvider,
-        SmtpServerProvider,
-        SmsGatewayProvider,
+        TelegramProvider,
+        NtfyProvider,
+        SmtpProvider,
+        SmsProvider,
     ).associateBy { it.id }
 
     fun requiresNetwork(providerId: String): Boolean {
@@ -129,11 +196,11 @@ object SendProviderGateway {
 }
 
 // ================================================================================
-// TELEGRAM BOT PROVIDER
+// TELEGRAM PROVIDER
 // ================================================================================
 
-object TelegramBotProvider : SendProvider {
-    override val id: String = SendProviderId.TELEGRAM_BOT
+object TelegramProvider : SendProvider {
+    override val id: String = SendProviderId.TELEGRAM
     override val requiresNetwork: Boolean = true
 
     override fun send(context: Context, configJson: String, secret: String, type: String, payload: SendProviderPayload): SendProviderResult {
@@ -145,12 +212,12 @@ object TelegramBotProvider : SendProvider {
             val json = JSONObject(configJson)
             val token = secret
             val chatId = json.optString("chatId", "")
-            val apiUrl = json.optString("apiUrl", "").ifBlank { "https://api.telegram.org" }
+            val apiUrl = json.optString("apiUrl", "").ifBlank { "https://api.telegram.org" }.trimEnd('/')
             if (token.isBlank() || chatId.isBlank()) {
                 return buildResult(ResultCode.INVALID_PARAMS, "token and chat ID are required")
             }
 
-            val msg = MessageHelpers.format(
+            val fMessage = MessageHelpers.format(
                 provider = id,
                 type = type,
                 sender = payload.sender,
@@ -159,7 +226,7 @@ object TelegramBotProvider : SendProvider {
                 receivedAt = payload.receivedAt,
                 labels = payload.labels,
             )
-            val result = sendRequest(token, chatId, apiUrl, msg.text)
+            val result = sendRequest(token, chatId, apiUrl, "${fMessage.title}  ${fMessage.text}")
             mapApiResult(result)
         } catch (e: Exception) {
             buildResult(ResultCode.UNEXPECTED_ERROR, e.message ?: "unexpected error", exception = e)
@@ -170,11 +237,11 @@ object TelegramBotProvider : SendProvider {
         token: String,
         chatId: String,
         apiUrl: String,
-        msg: String
+        message: String
     ): ApiResult {
         val requestBody = FormBody.Builder()
             .add("chat_id", chatId)
-            .add("text", msg)
+            .add("text", message)
             .add("parse_mode", "HTML")
             .build()
 
@@ -184,8 +251,7 @@ object TelegramBotProvider : SendProvider {
             .build()
 
         return try {
-            httpClient.newCall(request).execute().use { response ->
-                // Read and parse Telegram JSON body to get description text
+            HttpUtils.client.newCall(request).execute().use { response ->
                 val bodyText = response.body?.string()
                 val payload = parseResponseBody(bodyText)
                 ApiResult(
@@ -207,57 +273,21 @@ object TelegramBotProvider : SendProvider {
         }
 
         if (result.error != null) {
-            val rootCause = result.error.cause ?: result.error
-            val code = when {
-                rootCause is SocketTimeoutException || result.error is SocketTimeoutException ->
-                    ResultCode.NETWORK_TIMEOUT
-                else -> ResultCode.NETWORK_ERROR
+            val code = if (HttpUtils.isTimeoutError(result.error)) {
+                ResultCode.NETWORK_TIMEOUT
+            } else {
+                ResultCode.NETWORK_ERROR
             }
             // Transport-level failures are retryable
             return buildResult(code, result.error.message ?: "network error", true)
         }
 
         // Get specific Telegram API description for the error code
-        if (result.errorCode != null) {
-            val info = result.description ?: "Bot API error ${result.errorCode}"
-            val mappedCode = mapErrorCode(result.errorCode)
-            return buildResult(mappedCode, info, isRetryable(mappedCode))
-        }
+        val codeToMap = result.errorCode ?: result.statusCode ?: -1
+        val mappedCode = HttpUtils.getErrorCode(codeToMap)
+        val info = result.description ?: HttpUtils.getErrorMessage(codeToMap)
 
-        // Final fallback when body has no Telegram error_code (proxy/html/partial body cases)
-        return when (result.statusCode) {
-            400 -> buildResult(ResultCode.BAD_REQUEST, "bad request")
-            401 -> buildResult(ResultCode.UNAUTHORIZED, "invalid bot token")
-            403 -> buildResult(ResultCode.FORBIDDEN, "bot has no access to chat")
-            429 -> buildResult(ResultCode.RATE_LIMITED, "too many requests", true)
-            in 500..599 -> buildResult(ResultCode.SERVER_ERROR, "server error", true)
-            else -> buildResult(
-                ResultCode.UNEXPECTED_ERROR,
-                "Bot API returned status ${result.statusCode ?: "unknown"}",
-            )
-        }
-    }
-
-    private fun isRetryable(code: String): Boolean {
-        // Retry only codes that are expected to recover without user action
-        return when (code) {
-            ResultCode.RATE_LIMITED,
-            ResultCode.SERVER_ERROR,
-            ResultCode.NETWORK_ERROR,
-            ResultCode.NETWORK_TIMEOUT -> true
-            else -> false
-        }
-    }
-
-    private fun mapErrorCode(errorCode: Int): String {
-        return when (errorCode) {
-            400 -> ResultCode.BAD_REQUEST
-            401 -> ResultCode.UNAUTHORIZED
-            403 -> ResultCode.FORBIDDEN
-            429 -> ResultCode.RATE_LIMITED
-            in 500..599 -> ResultCode.SERVER_ERROR
-            else -> ResultCode.UNEXPECTED_ERROR
-        }
+        return buildResult(mappedCode, info, HttpUtils.isRetryable(mappedCode))
     }
 
     private fun parseResponseBody(body: String?): ApiResponse {
@@ -288,22 +318,107 @@ object TelegramBotProvider : SendProvider {
         val errorCode: Int? = null,
         val description: String? = null
     )
+}
 
-    private val httpClient: OkHttpClient by lazy {
-        OkHttpClient.Builder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
+// ================================================================================
+// NTFY PROVIDER
+// ================================================================================
+
+object NtfyProvider : SendProvider {
+    override val id: String = SendProviderId.NTFY
+    override val requiresNetwork: Boolean = true
+
+    override fun send(context: Context, configJson: String, secret: String, type: String, payload: SendProviderPayload): SendProviderResult {
+        if (configJson.isBlank()) {
+            return buildResult(ResultCode.INVALID_PARAMS, "empty configuration")
+        }
+
+        return try {
+            val json = JSONObject(configJson)
+            val serverUrl = json.optString("serverUrl", "").ifBlank { "https://ntfy.sh" }.trimEnd('/')
+            val priority = json.optInt("priority", 3)
+            val noFirebase = json.optBoolean("noFirebase", false)
+            val secretJson = JSONObject(secret)
+            val topic = secretJson.optString("topic", "")
+            val token = secretJson.optString("token", "")
+
+            if (topic.isBlank()) {
+                return buildResult(ResultCode.INVALID_PARAMS, "topic is required")
+            }
+
+            val fMessage = MessageHelpers.format(
+                provider = id,
+                type = type,
+                sender = payload.sender,
+                body = payload.body,
+                simInfo = payload.simInfo,
+                receivedAt = payload.receivedAt,
+                labels = payload.labels,
+            )
+
+            val payloadJson = JSONObject().apply {
+                put("topic", topic)
+                if (fMessage.title.isNotBlank()) put("title", fMessage.title)
+                if (fMessage.text.isNotBlank()) put("message", fMessage.text)
+                if (priority != 3) put("priority", priority)
+            }
+
+            sendRequest(serverUrl, token, noFirebase, payloadJson)
+        } catch (e: Exception) {
+            buildResult(ResultCode.UNEXPECTED_ERROR, e.message ?: "unexpected error", exception = e)
+        }
+    }
+
+    private fun sendRequest(serverUrl: String, token: String, noFirebase: Boolean, payloadJson: JSONObject): SendProviderResult {
+        val mediaType = "application/json; charset=utf-8".toMediaType()
+        val requestBody = payloadJson.toString().toRequestBody(mediaType)
+        val requestBuilder = Request.Builder().url(serverUrl).post(requestBody)
+        if (token.isNotBlank()) requestBuilder.addHeader("Authorization", "Bearer $token")
+        if (noFirebase) requestBuilder.addHeader("Firebase", "no")
+
+        return try {
+            HttpUtils.client.newCall(requestBuilder.build()).execute().use { response ->
+                mapHttpStatus(response.code, response.body?.string())
+            }
+        } catch (e: Exception) {
+            val code = if (HttpUtils.isTimeoutError(e)) {
+                ResultCode.NETWORK_TIMEOUT
+            } else {
+                ResultCode.NETWORK_ERROR
+            }
+            buildResult(code, e.message ?: "network error", shouldRetry = true)
+        }
+    }
+
+    private fun mapHttpStatus(code: Int, responseBody: String?): SendProviderResult {
+        if (code in 200..299) return buildResult(ResultCode.OK)
+        val mappedCode = HttpUtils.getErrorCode(code)
+        val errorMessage = parseErrorMessage(responseBody)
+        return buildResult(
+            mappedCode,
+            errorMessage ?: HttpUtils.getErrorMessage(code),
+            HttpUtils.isRetryable(mappedCode)
+        )
+    }
+
+    private fun parseErrorMessage(responseBody: String?): String? {
+        if (responseBody.isNullOrBlank()) return null
+        return try {
+            val json = JSONObject(responseBody)
+            val message = json.optString("error", "")
+            message.ifBlank { null }
+        } catch (_: Exception) {
+            responseBody.trim().ifBlank { null }
+        }
     }
 }
 
 // ================================================================================
-// SMTP SERVER PROVIDER
+// SMTP PROVIDER
 // ================================================================================
 
-object SmtpServerProvider : SendProvider {
-    override val id: String = SendProviderId.SMTP_SERVER
+object SmtpProvider : SendProvider {
+    override val id: String = SendProviderId.SMTP
     override val requiresNetwork: Boolean = true
 
     override fun send(context: Context, configJson: String, secret: String, type: String, payload: SendProviderPayload): SendProviderResult {
@@ -321,8 +436,7 @@ object SmtpServerProvider : SendProvider {
             val fromEmail = json.optString("fromEmail", "").ifBlank { login }
             val toEmail = json.optString("toEmail", "").ifBlank { login }
             val subject = json.optString("subject", "")
-            // Workaround for old Android trust stores
-            val insecureTls = json.optBoolean("insecureTls", false)
+            val insecureTls = json.optBoolean("insecureTls", false) // for old Android trust stores
 
             if (host.isBlank() || login.isBlank() || password.isBlank()) {
                 return buildResult(ResultCode.INVALID_PARAMS, "host, login, and password are required")
@@ -363,7 +477,7 @@ object SmtpServerProvider : SendProvider {
                 addresses -> addresses.forEach { it.validate() }
             }
 
-            val msg = MessageHelpers.format(
+            val fMessage = MessageHelpers.format(
                 provider = id,
                 type = type,
                 sender = payload.sender,
@@ -376,8 +490,8 @@ object SmtpServerProvider : SendProvider {
             val message = MimeMessage(session)
             message.setFrom(fromAddress)
             message.setRecipients(Message.RecipientType.TO, toAddresses)
-            message.setSubject(sanitizeMailHeader(subject.ifBlank { msg.subject }), "UTF-8")
-            message.setText(msg.text, "UTF-8")
+            message.setSubject(sanitizeMailHeader(subject.ifBlank { fMessage.title }), "UTF-8")
+            message.setText(fMessage.text, "UTF-8")
 
             Transport.send(message)
             buildResult(ResultCode.OK)
@@ -389,7 +503,7 @@ object SmtpServerProvider : SendProvider {
     }
 
     private fun mapErrorCode(error: Throwable): String {
-        val networkCode = networkErrorCode(error)
+        val networkCode = getNetworkErrorCode(error)
         return when {
             error is AuthenticationFailedException -> ResultCode.UNAUTHORIZED
             networkCode != null -> networkCode
@@ -399,10 +513,12 @@ object SmtpServerProvider : SendProvider {
         }
     }
 
-    private fun networkErrorCode(error: Throwable): String? {
+    private fun getNetworkErrorCode(error: Throwable): String? {
         fun codeOf(error: Throwable): String? {
             return when (error) {
                 is SocketTimeoutException -> ResultCode.NETWORK_TIMEOUT
+                is InterruptedIOException ->
+                    if (HttpUtils.isTimeoutError(error)) ResultCode.NETWORK_TIMEOUT else null
                 is UnknownHostException,
                 is ConnectException -> ResultCode.NETWORK_ERROR
                 else -> null
@@ -499,11 +615,11 @@ object SmtpServerProvider : SendProvider {
 }
 
 // ================================================================================
-// SMS GATEWAY PROVIDER
+// SMS PROVIDER
 // ================================================================================
 
-object SmsGatewayProvider : SendProvider {
-    override val id: String = SendProviderId.SMS_GATEWAY
+object SmsProvider : SendProvider {
+    override val id: String = SendProviderId.SMS
     override val requiresNetwork: Boolean = false
 
     override fun send(context: Context, configJson: String, secret: String, type: String, payload: SendProviderPayload): SendProviderResult {
@@ -522,7 +638,7 @@ object SmsGatewayProvider : SendProvider {
                 return buildResult(ResultCode.INVALID_PARAMS, "target phone number is required")
             }
 
-            val msg = MessageHelpers.format(
+            val fMessage = MessageHelpers.format(
                 provider = id,
                 type = type,
                 sender = payload.sender,
@@ -544,7 +660,7 @@ object SmsGatewayProvider : SendProvider {
             }
 
             // Split message if it's too long (>160 characters per part)
-            val parts = smsManager.divideMessage(msg.text)
+            val parts = smsManager.divideMessage("${fMessage.title}\n${fMessage.text}")
             sendAndAwait(context, smsManager, targetNumber, parts)
         } catch (e: SecurityException) {
             buildResult(ResultCode.FORBIDDEN, "missing SEND_SMS permission", exception = e)

@@ -19,6 +19,7 @@
   "msg_stop": "Parar",
   "msg_sms": "SMS",
   "msg_call": "Chamada",
+  "msg_battery": "Bateria",
   "msg_lowBattery": "Bateria fraca",
   "msg_chargerConnected": "Carregador conectado",
   "msg_chargerDisconnected": "Carregador desconectado",

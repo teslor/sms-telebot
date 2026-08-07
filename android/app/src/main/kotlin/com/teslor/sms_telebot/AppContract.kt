@@ -12,8 +12,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import org.json.JSONObject
 
-data class FormattedMessage(val subject: String, val text: String)
-
 object ResultCode {
     // General/Network
     const val OK = "ok"
@@ -43,6 +41,8 @@ object SendStatus {
 }
 
 object MessageHelpers {
+    data class FormattedMessage(val title: String, val text: String)
+
     fun generateId(rawId: String): String {
         return MessageDigest.getInstance("SHA-256")
             .digest(rawId.toByteArray())
@@ -64,55 +64,52 @@ object MessageHelpers {
         val l10nSms = labels["l10nSms"] ?: ""
         val l10nCall = labels["l10nCall"] ?: ""
 
-        val dl = if (provider == SendProviderId.TELEGRAM_BOT) escapeHtml(deviceLabel) else deviceLabel
+        val dl = if (provider == SendProviderId.TELEGRAM) escapeHtml(deviceLabel) else deviceLabel
         val si = simInfo?.trim().orEmpty()
         val lb = when {
-            dl.isNotBlank() && si.isNotBlank() -> " ($dl: $si)"
-            dl.isNotBlank() -> " ($dl)"
-            si.isNotBlank() -> " ($si)"
+            dl.isNotBlank() && si.isNotBlank() -> " - $dl ($si)"
+            dl.isNotBlank() -> " - $dl"
+            si.isNotBlank() -> " - $si"
             else -> ""
+        }
+        val emoji = when (type) {
+            "sms" -> "💬" "call" -> "📞" "sys" -> "🔋" else -> "🤖"
         }
 
         return when (provider) {
-            SendProviderId.TELEGRAM_BOT -> {
+            SendProviderId.TELEGRAM -> {
                 val s = escapeHtml(sender)
                 val b = escapeHtml(body)
-                val sysSrc = dl.ifBlank { s }
-                val head = when (type) {
-                    "sms" -> "💬 <b>$s</b>$lb 🕒 <i>$time</i>"
-                    "call" -> "📞 <b>$s</b>$lb 🕒 <i>$time</i>"
-                    "sys" -> "⚙️ <b>$sysSrc</b> 🕒 <i>$time</i>"
-                    "app" -> "🤖 <b>$s</b>$lb"
-                    else -> s
-                }
-                FormattedMessage(subject = "", text = head + if (b.isNotBlank()) "\n$b" else "")
+                val text = "🕒 $time<i>$lb</i>" + if (b.isNotBlank()) "\n$b" else ""
+                FormattedMessage("$emoji <b>$s</b>", text)
+            }
+ 
+            SendProviderId.NTFY -> {
+                val text = "🕒 $time$lb" + if (body.isNotBlank()) "\n$body" else ""
+                FormattedMessage("$emoji $sender", text)
             }
 
-            SendProviderId.SMTP_SERVER -> {
-                val sysSrc = dl.ifBlank { sender }
-                val (subject, head) = when (type) {
-                    "sms" -> "$l10nSms: $sender$lb" to "💬 $sender$lb 🕒 $time"
-                    "call" -> "$l10nCall: $sender$lb" to "📞 $sender$lb 🕒 $time"
-                    "sys" -> "$sysSrc: $body" to "⚙️ $sysSrc 🕒 $time"
-                    "app" -> "$sender$lb: $body" to "🤖 $sender$lb"
-                    else -> sender to sender
+            SendProviderId.SMTP -> {
+                val (title, ending) = when (type) {
+                    "sms" -> "[$l10nSms] $sender" to "🕒 $time$lb\n$emoji $sender"
+                    "call" -> "[$l10nCall] $sender" to "🕒 $time$lb\n$emoji $sender"
+                    else -> "$sender" to "🕒 $time$lb"
                 }
-                FormattedMessage(subject = subject, text = head + if (body.isNotBlank()) "\n\n$body" else "")
+                val text = (if (body.isNotBlank()) "$body\n\n" else "") + ending
+                FormattedMessage(title, text)
             }
 
-            SendProviderId.SMS_GATEWAY -> {
-                val sysSrc = dl.ifBlank { sender }
-                val head = when (type) {
-                    "sms" -> "$l10nSms: $sender$lb $time"
-                    "call" -> "$l10nCall: $sender$lb $time"
-                    "sys" -> "$sysSrc $time"
-                    "app" -> "$sender$lb"
-                    else -> sender
+            SendProviderId.SMS -> {
+                val title = when (type) {
+                    "sms" -> "$l10nSms: $sender"
+                    "call" -> "$l10nCall: $sender"
+                    else -> "$sender"
                 }
-                FormattedMessage(subject = "", text = head + if (body.isNotBlank()) "\n$body" else "")
+                val text = "$time$lb" + if (body.isNotBlank()) "\n$body" else ""
+                FormattedMessage(title, text)
             }
 
-            else -> FormattedMessage(subject = sender, text = body)
+            else -> FormattedMessage(sender, body)
         }
     }
 

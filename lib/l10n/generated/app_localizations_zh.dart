@@ -66,6 +66,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get msg_call => '通话';
 
   @override
+  String get msg_battery => '电池';
+
+  @override
   String get msg_lowBattery => '电量低';
 
   @override

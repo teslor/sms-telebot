@@ -66,6 +66,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get msg_call => 'Звонок';
 
   @override
+  String get msg_battery => 'Батарея';
+
+  @override
   String get msg_lowBattery => 'Низкий уровень заряда';
 
   @override

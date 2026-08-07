@@ -19,6 +19,7 @@
   "msg_stop": "Stopp",
   "msg_sms": "SMS",
   "msg_call": "Anruf",
+  "msg_battery": "Akku",
   "msg_lowBattery": "Niedriger Akkustand",
   "msg_chargerConnected": "Ladegerät angeschlossen",
   "msg_chargerDisconnected": "Ladegerät getrennt",
