@@ -26,11 +26,7 @@ class _RulePageState extends State<RulePage> {
 
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {
-        if (mounted) {
-          setState(() {
-            _isEditing = false;
-          });
-        }
+        if (mounted) setState(() => _isEditing = false);
         _saveName();
       }
     });

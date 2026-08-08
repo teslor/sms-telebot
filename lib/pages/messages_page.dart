@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../extensions/build_context_x.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../styles.dart';
 import '../state.dart';
 import '../service.dart';
 import '../widgets/action_button.dart';
@@ -126,12 +127,8 @@ class _MessagesPageState extends State<MessagesPage> {
 
     final type = (msg['type'] ?? 'sms').toString();
     final isSms = type == 'sms';
-    final titleIcon = isSms
-        ? Icons.messenger
-        : (type == 'call' ? Icons.call : Icons.battery_4_bar);
-    final titleIconColor = isSms
-        ? Colors.amber
-        : (type == 'call' ? Colors.green : theme.colorScheme.primary);
+    final titleIcon = isSms ? Icons.messenger : (type == 'call' ? Icons.call : Icons.battery_4_bar);
+    final titleIconColor = CustomColor.messageType(type);
     final sender = msg['sender']?.toString() ?? '';
     final bodyText = msg['body']?.toString() ?? '';
     final receivedDate = DateFormat('dd.MM HH:mm').format(DateTime.fromMillisecondsSinceEpoch(msg['received_at']));

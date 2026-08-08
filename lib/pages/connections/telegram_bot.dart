@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../extensions/build_context_x.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../constants.dart';
 import '../../styles.dart';
 import '../../state.dart';
 import '../../service.dart';
@@ -85,7 +86,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
           _chatIdController.text = chatId;
         } else {
           if (mounted) {
-            setState(() { _testResult = false; });
+            setState(() => _testResult = false);
             context.showErrorSnack(getLocalizedError(l10n, result.code, 'telegram_bot'));
             return;
           }
@@ -100,19 +101,16 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
         deviceLabel: appState.deviceLabel,
       );
 
+      if (!mounted) return;
       if (result.isSuccess) {
-        if (mounted) {
-          setState(() { _testResult = true; });
-        }
+        setState(() => _testResult = true);
       } else {
-        if (mounted) {
-          setState(() { _testResult = false; });
-          context.showErrorSnack(getLocalizedError(l10n, result.code, 'telegram_bot'));
-        }
+        setState(() => _testResult = false);
+        context.showErrorSnack(getLocalizedError(l10n, result.code, 'telegram_bot'));
       }
     } catch (e) {
       if (mounted) {
-        setState(() { _testResult = false; });
+        setState(() => _testResult = false);
         context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     } finally {
@@ -198,8 +196,8 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
             controller: _apiUrlController,
             keyboardType: TextInputType.url,
             decoration: CustomStyle.compactInput(
-              labelText: l10n.tbot_apiUrl,
-              helperText: l10n.tbot_apiUrlInfo,
+              labelText: l10n.tbot_server,
+              helperText: l10n.tbot_serverInfo(AppConst.telegramUrl),
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             onChanged: _onChanged,

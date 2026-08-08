@@ -108,9 +108,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get connection => 'Conexão';
 
   @override
-  String get tbot => 'Bot do Telegram';
-
-  @override
   String get tbot_token => 'Token do bot';
 
   @override
@@ -120,13 +117,50 @@ class AppLocalizationsPt extends AppLocalizations {
   String get tbot_chatIdInfo => 'Padrão: detecção automática';
 
   @override
-  String get tbot_apiUrl => 'URL da API';
+  String get tbot_server => 'URL do servidor';
 
   @override
-  String get tbot_apiUrlInfo => 'Padrão: URL padrão do Telegram';
+  String tbot_serverInfo(Object url) {
+    return 'Padrão: $url';
+  }
 
   @override
-  String get smtp => 'Servidor SMTP';
+  String get ntfy_topic => 'Tópico';
+
+  @override
+  String get ntfy_priority => 'Prioridade';
+
+  @override
+  String get ntfy_priority_01 => 'Mínimo';
+
+  @override
+  String get ntfy_priority_02 => 'Baixa';
+
+  @override
+  String get ntfy_priority_03 => 'Padrão';
+
+  @override
+  String get ntfy_priority_04 => 'Alta';
+
+  @override
+  String get ntfy_priority_05 => 'Máximo';
+
+  @override
+  String get ntfy_token => 'Token de acesso';
+
+  @override
+  String get ntfy_tokenInfo => 'Token Bearer; padrão: sem token';
+
+  @override
+  String get ntfy_server => 'URL do servidor';
+
+  @override
+  String ntfy_serverInfo(Object url) {
+    return 'Padrão: $url';
+  }
+
+  @override
+  String get ntfy_noFirebase => 'Desativar Firebase';
 
   @override
   String get smtp_host => 'Host SMTP';

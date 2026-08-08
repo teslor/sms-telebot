@@ -105,19 +105,16 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
         deviceLabel: appState.deviceLabel,
       );
 
+      if (!mounted) return;
       if (result.isSuccess) {
-        if (mounted) {
-          setState(() { _testResult = true; });
-        }
+        setState(() => _testResult = true);
       } else {
-        if (mounted) {
-          setState(() { _testResult = false; });
-          context.showErrorSnack(getLocalizedError(l10n, result.code, 'smtp_server'));
-        }
+        setState(() => _testResult = false);
+        context.showErrorSnack(getLocalizedError(l10n, result.code, 'smtp_server'));
       }
     } catch (_) {
       if (mounted) {
-        setState(() { _testResult = false; });
+        setState(() => _testResult = false);
         context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     } finally {
@@ -351,6 +348,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             decoration: CustomStyle.compactInput(
               labelText: l10n.smtp_fromEmail,
               helperText: l10n.smtp_fromEmailInfo,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             onChanged: _onChanged,
           ),
@@ -361,6 +359,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             decoration: CustomStyle.compactInput(
               labelText: l10n.smtp_toEmail,
               helperText: l10n.smtp_toEmailInfo,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             onChanged: _onChanged,
           ),
@@ -370,6 +369,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             decoration: CustomStyle.compactInput(
               labelText: l10n.smtp_subject,
               helperText: l10n.smtp_subjectInfo,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             onChanged: _onChanged,
           ),

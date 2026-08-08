@@ -24,7 +24,7 @@ class _RuleOptionsPageState extends State<RuleOptionsPage> {
         width: 10,
         height: 10,
         decoration: BoxDecoration(
-          color: CustomColor.priorityColor(priority),
+          color: CustomColor.rulePriority(priority),
           shape: BoxShape.circle,
         ),
       ),
@@ -68,13 +68,13 @@ class _RuleOptionsPageState extends State<RuleOptionsPage> {
             label: Text(l10n.options_priority),
             inputDecorationTheme: CustomStyle.compactDropdown,
             dropdownMenuEntries: priorityOptions
-                .map((option) => DropdownMenuEntry<int>(
-                    value: option.$1,
-                    label: option.$2,
-                    leadingIcon: _priorityDot(option.$1),
-                    style: CustomStyle.compactDropdownItem,
-                  ))
-                .toList(growable: false),
+              .map((option) => DropdownMenuEntry<int>(
+                value: option.$1,
+                label: option.$2,
+                leadingIcon: _priorityDot(option.$1),
+                style: CustomStyle.compactDropdownItem,
+              ))
+              .toList(growable: false),
             onSelected: (value) {
               if (value == null || value == _priority) return;
               setState(() {

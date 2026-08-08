@@ -93,7 +93,7 @@ object MessageHelpers {
                 val (title, ending) = when (type) {
                     "sms" -> "[$l10nSms] $sender" to "🕒 $time$lb\n$emoji $sender"
                     "call" -> "[$l10nCall] $sender" to "🕒 $time$lb\n$emoji $sender"
-                    else -> "$sender" to "🕒 $time$lb"
+                    else -> sender to "🕒 $time$lb"
                 }
                 val text = (if (body.isNotBlank()) "$body\n\n" else "") + ending
                 FormattedMessage(title, text)
@@ -103,7 +103,7 @@ object MessageHelpers {
                 val title = when (type) {
                     "sms" -> "$l10nSms: $sender"
                     "call" -> "$l10nCall: $sender"
-                    else -> "$sender"
+                    else -> sender
                 }
                 val text = "$time$lb" + if (body.isNotBlank()) "\n$body" else ""
                 FormattedMessage(title, text)

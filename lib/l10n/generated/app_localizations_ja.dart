@@ -108,9 +108,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get connection => '接続';
 
   @override
-  String get tbot => 'Telegramボット';
-
-  @override
   String get tbot_token => 'ボットトークン';
 
   @override
@@ -120,13 +117,50 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tbot_chatIdInfo => 'デフォルト: 自動検出';
 
   @override
-  String get tbot_apiUrl => 'API URL';
+  String get tbot_server => 'サーバーURL';
 
   @override
-  String get tbot_apiUrlInfo => 'デフォルト: 標準のTelegram URL';
+  String tbot_serverInfo(Object url) {
+    return 'デフォルト: $url';
+  }
 
   @override
-  String get smtp => 'SMTPサーバー';
+  String get ntfy_topic => 'トピック';
+
+  @override
+  String get ntfy_priority => '優先度';
+
+  @override
+  String get ntfy_priority_01 => '最低';
+
+  @override
+  String get ntfy_priority_02 => '低';
+
+  @override
+  String get ntfy_priority_03 => 'デフォルト';
+
+  @override
+  String get ntfy_priority_04 => '高';
+
+  @override
+  String get ntfy_priority_05 => '最大';
+
+  @override
+  String get ntfy_token => 'アクセストークン';
+
+  @override
+  String get ntfy_tokenInfo => 'Bearerトークン; デフォルト: なし';
+
+  @override
+  String get ntfy_server => 'サーバーURL';
+
+  @override
+  String ntfy_serverInfo(Object url) {
+    return 'デフォルト: $url';
+  }
+
+  @override
+  String get ntfy_noFirebase => 'Firebaseを無効にする';
 
   @override
   String get smtp_host => 'SMTPホスト';

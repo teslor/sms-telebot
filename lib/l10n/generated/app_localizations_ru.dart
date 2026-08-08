@@ -109,9 +109,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get connection => 'Подключение';
 
   @override
-  String get tbot => 'Telegram-бот';
-
-  @override
   String get tbot_token => 'Токен';
 
   @override
@@ -121,13 +118,50 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tbot_chatIdInfo => 'По умолчанию: получить автоматически';
 
   @override
-  String get tbot_apiUrl => 'URL API-сервера';
+  String get tbot_server => 'URL сервера';
 
   @override
-  String get tbot_apiUrlInfo => 'По умолчанию: стандартный URL Telegram';
+  String tbot_serverInfo(Object url) {
+    return 'По умолчанию: $url';
+  }
 
   @override
-  String get smtp => 'SMTP-сервер';
+  String get ntfy_topic => 'Тема';
+
+  @override
+  String get ntfy_priority => 'Приоритет';
+
+  @override
+  String get ntfy_priority_01 => 'Минимальный';
+
+  @override
+  String get ntfy_priority_02 => 'Низкий';
+
+  @override
+  String get ntfy_priority_03 => 'По умолчанию';
+
+  @override
+  String get ntfy_priority_04 => 'Высокий';
+
+  @override
+  String get ntfy_priority_05 => 'Максимальный';
+
+  @override
+  String get ntfy_token => 'Токен доступа';
+
+  @override
+  String get ntfy_tokenInfo => 'Bearer-токен; по умолчанию: без токена';
+
+  @override
+  String get ntfy_server => 'URL сервера';
+
+  @override
+  String ntfy_serverInfo(Object url) {
+    return 'По умолчанию: $url';
+  }
+
+  @override
+  String get ntfy_noFirebase => 'Отключить Firebase';
 
   @override
   String get smtp_host => 'SMTP-хост';

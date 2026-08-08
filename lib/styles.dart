@@ -1,7 +1,26 @@
 import 'package:flutter/material.dart';
 
 class CustomColor {
-  static Color priorityColor(int priority) {
+  static Color provider(String provider) {
+    return switch (provider) {
+      'telegram_bot' => const Color(0xFF229ED9),
+      'ntfy_server' => const Color(0xFF317F6F),
+      'smtp_server' => const Color(0xFFEF6C00),
+      'sms_gateway' => const Color(0xFF1A73E8),
+      _ => Colors.blueGrey,
+    };
+  }
+
+  static Color messageType(String type) {
+    return switch (type) {
+      'sms' => const Color(0xFF1A73E8),
+      'call' => const Color(0xFF34A853),
+      'sys' => const Color(0xFFFF8F00),
+      _ => Colors.blueGrey,
+    };
+  }
+
+  static Color rulePriority(int priority) {
     return switch (priority) {
       1 => Colors.deepOrangeAccent.withValues(alpha: 0.4),
       2 => Colors.amber.withValues(alpha: 0.4),

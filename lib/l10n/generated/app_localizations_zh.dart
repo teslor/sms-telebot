@@ -108,9 +108,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get connection => '连接';
 
   @override
-  String get tbot => 'Telegram 机器人';
-
-  @override
   String get tbot_token => '机器人令牌';
 
   @override
@@ -120,13 +117,50 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tbot_chatIdInfo => '默认：自动检测';
 
   @override
-  String get tbot_apiUrl => 'API URL';
+  String get tbot_server => '服务器 URL';
 
   @override
-  String get tbot_apiUrlInfo => '默认：Telegram 标准 URL';
+  String tbot_serverInfo(Object url) {
+    return '默认：$url';
+  }
 
   @override
-  String get smtp => 'SMTP 服务器';
+  String get ntfy_topic => '主题';
+
+  @override
+  String get ntfy_priority => '优先级';
+
+  @override
+  String get ntfy_priority_01 => '最低';
+
+  @override
+  String get ntfy_priority_02 => '低';
+
+  @override
+  String get ntfy_priority_03 => '默认';
+
+  @override
+  String get ntfy_priority_04 => '高';
+
+  @override
+  String get ntfy_priority_05 => '最大';
+
+  @override
+  String get ntfy_token => '访问令牌';
+
+  @override
+  String get ntfy_tokenInfo => 'Bearer 令牌; 默认：无令牌';
+
+  @override
+  String get ntfy_server => '服务器 URL';
+
+  @override
+  String ntfy_serverInfo(Object url) {
+    return '默认：$url';
+  }
+
+  @override
+  String get ntfy_noFirebase => '禁用 Firebase';
 
   @override
   String get smtp_host => 'SMTP 主机';

@@ -198,6 +198,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
           if (secret != null && secret.isNotEmpty) {
             if (rule['provider'] == 'telegram_bot') {
               config['token'] = secret;
+            } else if (rule['provider'] == 'ntfy_server') {
+              final secrets = safeDecode(secret) ?? {};
+              config['topic'] = secrets['topic'] ?? '';
+              config['token'] = secrets['token'] ?? '';
             } else {
               config['password'] = secret;
             }

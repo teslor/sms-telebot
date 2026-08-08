@@ -310,12 +310,6 @@ abstract class AppLocalizations {
   /// **'Connection'**
   String get connection;
 
-  /// No description provided for @tbot.
-  ///
-  /// In en, this message translates to:
-  /// **'Telegram bot'**
-  String get tbot;
-
   /// No description provided for @tbot_token.
   ///
   /// In en, this message translates to:
@@ -334,23 +328,89 @@ abstract class AppLocalizations {
   /// **'Default: auto-detect'**
   String get tbot_chatIdInfo;
 
-  /// No description provided for @tbot_apiUrl.
+  /// No description provided for @tbot_server.
   ///
   /// In en, this message translates to:
-  /// **'API URL'**
-  String get tbot_apiUrl;
+  /// **'Server URL'**
+  String get tbot_server;
 
-  /// No description provided for @tbot_apiUrlInfo.
+  /// No description provided for @tbot_serverInfo.
   ///
   /// In en, this message translates to:
-  /// **'Default: standard Telegram URL'**
-  String get tbot_apiUrlInfo;
+  /// **'Default: {url}'**
+  String tbot_serverInfo(Object url);
 
-  /// No description provided for @smtp.
+  /// No description provided for @ntfy_topic.
   ///
   /// In en, this message translates to:
-  /// **'SMTP server'**
-  String get smtp;
+  /// **'Topic'**
+  String get ntfy_topic;
+
+  /// No description provided for @ntfy_priority.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority'**
+  String get ntfy_priority;
+
+  /// No description provided for @ntfy_priority_01.
+  ///
+  /// In en, this message translates to:
+  /// **'Min'**
+  String get ntfy_priority_01;
+
+  /// No description provided for @ntfy_priority_02.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get ntfy_priority_02;
+
+  /// No description provided for @ntfy_priority_03.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get ntfy_priority_03;
+
+  /// No description provided for @ntfy_priority_04.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get ntfy_priority_04;
+
+  /// No description provided for @ntfy_priority_05.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get ntfy_priority_05;
+
+  /// No description provided for @ntfy_token.
+  ///
+  /// In en, this message translates to:
+  /// **'Access token'**
+  String get ntfy_token;
+
+  /// No description provided for @ntfy_tokenInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Bearer token; default: no token'**
+  String get ntfy_tokenInfo;
+
+  /// No description provided for @ntfy_server.
+  ///
+  /// In en, this message translates to:
+  /// **'Server URL'**
+  String get ntfy_server;
+
+  /// No description provided for @ntfy_serverInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Default: {url}'**
+  String ntfy_serverInfo(Object url);
+
+  /// No description provided for @ntfy_noFirebase.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Firebase'**
+  String get ntfy_noFirebase;
 
   /// No description provided for @smtp_host.
   ///

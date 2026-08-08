@@ -45,17 +45,19 @@ class RulesPage extends StatelessWidget {
 
   String _providerName(String provider, AppLocalizations l10n) {
     return switch (provider) {
-      'telegram_bot' => l10n.tbot,
-      'smtp_server' => l10n.smtp,
-      'sms_gateway' => l10n.msg_sms,
+      'telegram_bot' => 'Telegram',
+      'ntfy_server' => 'NTFY',
+      'smtp_server' => 'SMTP',
+      'sms_gateway' => 'SMS',
       _ => provider,
     };
   }
 
   IconData _providerIcon(String provider) {
     return switch (provider) {
-      'telegram_bot' => Icons.telegram,
-      'smtp_server' => Icons.mail_outline,
+      'telegram_bot' => Icons.telegram_outlined,
+      'ntfy_server' => Icons.terminal_outlined,
+      'smtp_server' => Icons.email_outlined,
       'sms_gateway' => Icons.sms_outlined,
       _ => Icons.extension,
     };
@@ -80,8 +82,12 @@ class RulesPage extends StatelessWidget {
             final l10n = AppLocalizations.of(itemContext)!;
             final name = _providerName(provider, l10n);
             return ListTile(
-              leading: Icon(_providerIcon(provider)),
-              title: Text(name),
+              contentPadding: const EdgeInsetsDirectional.only(start: 20),
+              leading: Icon(
+                _providerIcon(provider),
+                color: CustomColor.provider(provider),
+              ),
+              title: Text(name, style: const TextStyle(fontSize: 17)),
               onTap: () => Navigator.pop(sheetContext, provider),
             );
           },
@@ -153,8 +159,12 @@ class RuleCard extends StatelessWidget {
           itemBuilder: (itemContext, index) {
             if (index == 0) {
               return ListTile(
+                contentPadding: const EdgeInsetsDirectional.only(start: 20),
                 leading: const Icon(Icons.control_point_duplicate),
-                title: Text(AppLocalizations.of(context)!.action_duplicate),
+                title: Text(
+                  AppLocalizations.of(context)!.action_duplicate,
+                  style: const TextStyle(fontSize: 17),
+                ),
                 onTap: () async {
                   Navigator.pop(bottomSheetContext);
                   await _runAppStateAction(
@@ -167,10 +177,11 @@ class RuleCard extends StatelessWidget {
             }
 
             return ListTile(
+              contentPadding: const EdgeInsetsDirectional.only(start: 20),
               leading: const Icon(Icons.delete_outline, color: Colors.red),
               title: Text(
                 AppLocalizations.of(context)!.action_delete,
-                style: const TextStyle(color: Colors.red),
+                style: const TextStyle(fontSize: 17, color: Colors.red),
               ),
               onTap: () {
                 Navigator.pop(bottomSheetContext);
@@ -225,7 +236,7 @@ class RuleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = context.read<AppState>();
     final isActive = rule['is_active'] == 1;
-    final priorityColor = CustomColor.priorityColor(rule['priority'] ?? 3);
+    final priorityColor = CustomColor.rulePriority(rule['priority'] ?? 3);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),

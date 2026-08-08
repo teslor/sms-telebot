@@ -109,9 +109,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get connection => 'कनेक्शन';
 
   @override
-  String get tbot => 'Telegram बॉट';
-
-  @override
   String get tbot_token => 'बॉट टोकन';
 
   @override
@@ -121,13 +118,50 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tbot_chatIdInfo => 'डिफ़ॉल्ट: स्वतः पहचान';
 
   @override
-  String get tbot_apiUrl => 'API URL';
+  String get tbot_server => 'सर्वर URL';
 
   @override
-  String get tbot_apiUrlInfo => 'डिफ़ॉल्ट: मानक Telegram URL';
+  String tbot_serverInfo(Object url) {
+    return 'डिफ़ॉल्ट: $url';
+  }
 
   @override
-  String get smtp => 'SMTP सर्वर';
+  String get ntfy_topic => 'विषय';
+
+  @override
+  String get ntfy_priority => 'प्राथमिकता';
+
+  @override
+  String get ntfy_priority_01 => 'न्यूनतम';
+
+  @override
+  String get ntfy_priority_02 => 'निम्न';
+
+  @override
+  String get ntfy_priority_03 => 'डिफ़ॉल्ट';
+
+  @override
+  String get ntfy_priority_04 => 'उच्च';
+
+  @override
+  String get ntfy_priority_05 => 'अधिकतम';
+
+  @override
+  String get ntfy_token => 'एक्सेस टोकन';
+
+  @override
+  String get ntfy_tokenInfo => 'Bearer टोकन; डिफ़ॉल्ट: कोई टोकन नहीं';
+
+  @override
+  String get ntfy_server => 'सर्वर URL';
+
+  @override
+  String ntfy_serverInfo(Object url) {
+    return 'डिफ़ॉल्ट: $url';
+  }
+
+  @override
+  String get ntfy_noFirebase => 'Firebase अक्षम करें';
 
   @override
   String get smtp_host => 'SMTP होस्ट';

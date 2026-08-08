@@ -67,19 +67,16 @@ class _SmsGatewayConnectionState extends State<SmsGatewayConnection> {
         deviceLabel: appState.deviceLabel,
       );
 
+      if (!mounted) return;
       if (result.isSuccess) {
-        if (mounted) {
-          setState(() { _testResult = true; });
-        }
+        setState(() => _testResult = true);
       } else {
-        if (mounted) {
-          setState(() { _testResult = false; });
-          context.showErrorSnack(getLocalizedError(l10n, result.code));
-        }
+        setState(() => _testResult = false);
+        context.showErrorSnack(getLocalizedError(l10n, result.code));
       }
     } catch (_) {
       if (mounted) {
-        setState(() { _testResult = false; });
+        setState(() => _testResult = false);
         context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     } finally {
@@ -147,7 +144,6 @@ class _SmsGatewayConnectionState extends State<SmsGatewayConnection> {
             decoration: CustomStyle.compactInput(
               labelText: l10n.sms_number,
               helperText: l10n.sms_numberInfo,
-              floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             onChanged: _onChanged,
           ),
