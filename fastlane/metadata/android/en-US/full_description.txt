@@ -1,24 +1,22 @@
-SMS Telebot forwards important phone events from your device to Telegram bots, email addresses (via SMTP), or phone numbers (via SMS)
+SMS Telebot forwards phone events to Telegram bots, email addresses (via SMTP), or phone numbers (via SMS)
 
-Use it to stay informed when your phone receives:
+Stay informed when your phone receives:
 
 - Incoming SMS
 - Incoming calls
 - Low battery alerts
 - Charger connection status changes
 
-Why choose SMS Telebot:
+Key Features:
 
-- Flexible forwarding rules: create multiple rules and route events to different destinations
-- Powerful filtering: filter by sender or message text with support for regular expressions
-- Whitelist and blacklist modes: include only matching events or exclude matching ones
-- Always-on background mode: improved reliability on devices with aggressive battery/background restrictions
-- Automatic retries: failed forwarding attempts are retried when temporary issues (for example, no internet) are resolved
-- Secure credential storage: bot tokens and SMTP passwords are stored in encrypted form
+- Flexible Routing: Create multiple rules to forward events to different destinations.
+- Advanced Filtering: Powerful filtering by sender or message content with Regex support, whitelist and blacklist modes.
+- Always-on background mode: Improved reliability on devices with aggressive battery/background restrictions.
+- Automatic retries: Failed forwarding attempts are retried when temporary connectivity issues are resolved.
+- Secure storage: Sensitive credentials (such as tokens, passwords etc.) are stored in encrypted form.
+- Privacy-focused: No hidden servers, no trackers, no ads; data goes only to destinations you configure.
 
-Important:
+Important Notes:
 
-- For stable delivery, exclude the app from battery optimization on your device
-- Some Android vendors apply stricter background limits, so behavior may vary by firmware
-- Make sure required permissions (SMS/phone/notifications) are granted
-- The app's core functionality may trigger generic heuristic detections in some malware scanners, causing false positives
+- Battery Optimization: To ensure reliable performance, please exclude the app from battery optimization on your device.
+- Manufacturer Restrictions: Some Android vendors apply strict background limits; behavior may vary depending on your device's firmware.

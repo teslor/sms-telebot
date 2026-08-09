@@ -1,7 +1,7 @@
 # Security Policy & Information
 
 **SMS Telebot** is an open-source, user-configured automation tool. Its core functionality involves listening for device events (SMS, Calls, Battery) and forwarding them to a destination (Telegram API, SMTP server, or another phone number via outgoing SMS) defined exclusively by the user.  
-Due to this behavioral pattern, automated heuristic scanners may flag the application with generic labels such as *Android/Spy.SmsSpy*, *TR/Android.Evo* etc.
+Due to this behavioral pattern, some generic heuristic scanners may occasionally flag the application as riskware.
 
 Please note the following regarding **SMS Telebot** architecture:
 
@@ -14,4 +14,4 @@ Please note the following regarding **SMS Telebot** architecture:
 
 ## To Antivirus Labs and Security Researchers
 
-If your engine detects **com.teslor.sms_telebot**, please consider this a **False Positive**. The developer kindly requests you review the source code, observe the required manual user configuration, and whitelist the package.
+If your engine flags **com.teslor.sms_telebot**, please consider this a **False Positive**. The developer kindly requests you review the source code, observe the required manual user configuration, and whitelist the package.

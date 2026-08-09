@@ -29,10 +29,10 @@ The application requests sensitive permissions purely on-demand, only when a spe
 * **INTERNET:** Required to forward the triggered events to your Telegram bot or SMTP server.
 * **RECEIVE_BOOT_COMPLETED:** Required to automatically re-initialize your active background forwarding rules after the device restarts.
 
-## 4. Note on Security Alerts (Antivirus Warnings)
+## 4. Security Notice
 
-Because **SMS Telebot** interacts with your SMS messages and network connections to automate forwarding, some security applications or antivirus scanners might mistakenly flag it as a risk (a "false positive").
-Please be assured that this is a normal reaction to automation tools. The application does not contain malicious code, does not have hidden functions, and strictly follows the rules you configure.
+Because **SMS Telebot** handles sensitive automation workflows (such as reading SMS and forwarding data over the network), certain aggressive heuristic scanners may occasionally raise false-positive alerts on such behavioral patterns.
+Please note that the application is fully open-source, contains no malicious code or hidden tracking, and transmits data solely according to the forwarding rules you explicitly configure.
 
 ## 5. Changes to This Policy
 

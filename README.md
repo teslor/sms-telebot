@@ -41,21 +41,32 @@ You can establish filters to control which messages are forwarded based on the s
 
 To verify if a specific message will be forwarded, simply enter the sender and/or message in the provided fields and check the results.
 
-## :warning: Important Notes
+## :rocket: What's Next?
 
-* **OS Variations**: Android vendors may apply background limits and security policies differently, so behavior can vary between devices and OS versions.
+* Forwarding to NTFY server *(soon)*
+* Push notifications forwarding
+* Custom message templates
+* Proxy settings
+
+## :memo: Important Notes
+
+* **OS Variations**: Android vendors apply background limits and security policies differently, so behavior may vary across devices and OS versions.
 
 * **Battery Optimization**: The app runs in the background, which may cause the system to restrict its functionality to conserve battery. To avoid this, consider disabling battery optimization for the app in your device settings.
 
+* **System Events**: If you rely on low battery or charger connection alerts, always-on background mode is highly recommended because these notifications depend on system events.
+
+* **Permissions**: All permissions are requested on-demand, strictly when you enable a specific feature that requires them (e.g., enabling SMS forwarding will prompt for SMS access).
+
+* **Security & Transparency**: Because the app automates SMS and event forwarding, some security scanners or Play Protect might trigger a false positive, incorrectly identifying the app as a potential threat. The app is entirely open-source, contains zero trackers or hidden servers, and routes data strictly to user-configured destinations. For full details, see the [Privacy Policy](PRIVACY_POLICY.md) and [Security Policy](SECURITY.md).
+
 * **Chinese Firmwares**: On firmwares with aggressive background management (often found on some Chinese-brand devices), enabling always-on background mode is recommended for reliable delivery. It keeps the app running as a foreground service with a persistent notification, making it much less likely that the system silently pauses monitoring.
-
-* **System Events**: If you rely on low battery or charger connection alerts, always-on background mode is also highly recommended because these notifications depend on system events.
-
-* **Permissions**: The app does not request all permissions at startup. They are requested on-demand, strictly when you enable a specific feature that requires them (e.g., enabling SMS forwarding will prompt for SMS access).
 
 * **Verification Codes**: On Huawei EMUI or Xiaomi MIUI, you may need to turn off Verification Code Protection to forward SMS with verification codes, but be aware that doing so can pose a security risk.
 
-* **Antivirus / Play Protect**: Because the app monitors SMS/call events and forwards them over the network, heuristic scanners (Play Protect, Windows Defender, VirusTotal engines, etc.) may flag the APK as riskware or malware. These are typically false positives for this class of automation tools. The app does not send data to developer-controlled or hidden servers; traffic goes only to destinations you configure (Telegram / SMTP / SMS). Prefer installs from official [GitHub Releases](https://github.com/teslor/sms-telebot/releases), and see the [Privacy Policy](PRIVACY_POLICY.md) / [Security](SECURITY.md). If Play Protect blocks install, use *More details* → *Install anyway* (wording varies by Android version).
+## Support
+
+If you find SMS Telebot useful, any [support](DONATE.md) is much appreciated. Your contributions help maintain the app and develop new features.
 
 ## License
 
