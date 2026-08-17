@@ -26,7 +26,6 @@ class _NtfyServerConnectionState extends State<NtfyServerConnection> {
   bool? _testResult;
   bool? _saveResult;
   int _priority = 3;
-  bool _noFirebase = false;
 
   static final _topicRegex = RegExp(r'^[-_A-Za-z0-9]{1,64}$');
 
@@ -38,7 +37,6 @@ class _NtfyServerConnectionState extends State<NtfyServerConnection> {
     _tokenController = TextEditingController(text: config['token']?.toString() ?? '');
     _serverUrlController = TextEditingController(text: config['serverUrl']?.toString() ?? '');
     _priority = config['priority'] ?? 3;
-    _noFirebase = config['noFirebase'] == true;
   }
 
   @override
@@ -65,7 +63,6 @@ class _NtfyServerConnectionState extends State<NtfyServerConnection> {
     return {
       if (_priority != 3) 'priority': _priority,
       if (serverUrl.isNotEmpty) 'serverUrl': serverUrl,
-      'noFirebase': _noFirebase,
     };
   }
 
@@ -98,7 +95,7 @@ class _NtfyServerConnectionState extends State<NtfyServerConnection> {
 
     try {
       final result = await sendToProviderNative(
-        provider: 'ntfy_server',
+        provider: ProviderId.ntfy,
         config: _buildConfig(),
         secret: _buildSecret(),
         body: l10n.msg_hello,
@@ -197,7 +194,7 @@ class _NtfyServerConnectionState extends State<NtfyServerConnection> {
               .toList(growable: false),
             onSelected: (value) {
               if (value == null || value == _priority) return;
-              setState(() { _priority = value; });
+              setState(() => _priority = value);
               _onChanged();
             },
           ),
@@ -217,30 +214,10 @@ class _NtfyServerConnectionState extends State<NtfyServerConnection> {
             keyboardType: TextInputType.url,
             decoration: CustomStyle.compactInput(
               labelText: l10n.ntfy_server,
-              helperText: l10n.ntfy_serverInfo(AppConst.ntfyUrl),
+              helperText: l10n.ntfy_serverInfo(ntfyUrl),
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             onChanged: _onChanged,
-          ),
-          const SizedBox(height: 16),
-          const Divider(height: 1),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                l10n.ntfy_noFirebase,
-                maxLines: 1,
-                softWrap: false,
-                overflow: TextOverflow.visible,
-              ),
-            ),
-            value: _noFirebase,
-            onChanged: (value) {
-              setState(() => _noFirebase = value);
-              _onChanged();
-            },
           ),
         ],
       ),

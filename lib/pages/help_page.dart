@@ -3,14 +3,30 @@ import '../l10n/generated/app_localizations.dart';
 import '../constants.dart';
 import '../service.dart';
 
-class HelpPage extends StatelessWidget {
+enum Channel { telegram, ntfy, smtp, sms }
+
+class HelpPage extends StatefulWidget {
   const HelpPage({super.key});
+
+  @override
+  State<HelpPage> createState() => _HelpPageState();
+}
+
+class _HelpPageState extends State<HelpPage> {
+  Channel _selectedChannel = Channel.telegram;
+  final List<(Channel, String)> _channelTabs = const [
+    (Channel.telegram, 'Telegram'),
+    (Channel.ntfy, 'ntfy'),
+    (Channel.smtp, 'SMTP'),
+    (Channel.sms, 'SMS'),
+  ];
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final appLabelColor = Theme.of(context).colorScheme.secondary;
     final sectionTitleStyle = TextStyle(fontSize: 18, height: 2);
+    final sectionSubtitleStyle = TextStyle(fontSize: 16, height: 2);
 
     final List<String> infoItems = [
       l10n.help_info_01,
@@ -29,12 +45,16 @@ class HelpPage extends StatelessWidget {
       l10n.help_tbot_02,
       l10n.help_tbot_03,
       l10n.help_tbot_04,
-      l10n.help_tbot_05,
+    ];
+    final List<String> ntfyItems = [
+      l10n.help_ntfy_01('$ntfyUrl/app'),
+      l10n.help_ntfy_02,
+      l10n.help_ntfy_03,
+      l10n.help_ntfy_04,
     ];
     final List<String> smtpItems = [
       l10n.help_smtp_01,
       l10n.help_smtp_02,
-      l10n.help_smtp_03,
     ];
     final List<String> smsItems = [
       l10n.help_sms_01,
@@ -49,6 +69,17 @@ class HelpPage extends StatelessWidget {
       l10n.help_filters_05,
     ];
 
+    final Color selectedChannelColor = Theme.of(context).colorScheme.primary;
+    final List<String> selectedItems = [
+      ...switch (_selectedChannel) {
+        Channel.telegram => tbotItems,
+        Channel.ntfy => ntfyItems,
+        Channel.smtp => smtpItems,
+        Channel.sms => smsItems,
+      },
+      l10n.help_rule_01,
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.help_about),
@@ -59,14 +90,14 @@ class HelpPage extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
           children: [
-            Text(AppConst.appName, style: TextStyle(fontSize: 20, color: appLabelColor)),
+            Text(appName, style: TextStyle(fontSize: 20, color: appLabelColor)),
             Transform.translate(
               offset: const Offset(0, -5),
               child: Row(
                 children: [
-                  Text('${AppConst.appVersion}, ', style: TextStyle(color: appLabelColor)),
+                  Text('$appVersion, ', style: TextStyle(color: appLabelColor)),
                   InkWell(
-                    onTap: () { launchURL(AppConst.appLink); },
+                    onTap: () { launchURL(appLink); },
                     child: Row(
                       children: [
                         Text('GitHub', style: TextStyle(color: appLabelColor, decoration: TextDecoration.underline )),
@@ -86,16 +117,43 @@ class HelpPage extends StatelessWidget {
             Text(l10n.settings, style: sectionTitleStyle),
             GuideList(items: optsItems, warnIndices: [4]),
 
-            Text(l10n.help_tbot, style: sectionTitleStyle),
-            GuideList(items: tbotItems, warnIndices: []),
+            Text(l10n.rules_setup, style: sectionTitleStyle),
+            SizedBox(
+              width: double.infinity,
+              child: Row(
+                children: _channelTabs.map((tab) {
+                  final (channel, label) = tab;
+                  final isSelected = channel == _selectedChannel;
+                  final textColor = isSelected ? selectedChannelColor : Theme.of(context).textTheme.bodyMedium?.color;
 
-            Text(l10n.help_smtp, style: sectionTitleStyle),
-            GuideList(items: smtpItems, warnIndices: []),
+                  return Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(6),
+                        onTap: () {
+                          if (!isSelected) setState(() => _selectedChannel = channel);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: isSelected ? Theme.of(context).colorScheme.surfaceContainerHighest : Colors.transparent,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Text(
+                            label, textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16, color: textColor),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+            GuideList(items: selectedItems, warnIndices: []),
 
-            Text(l10n.help_sms, style: sectionTitleStyle),
-            GuideList(items: smsItems, warnIndices: []),
-
-            Text(l10n.help_filters, style: sectionTitleStyle),
+            Text(l10n.help_filters, style: sectionSubtitleStyle),
             GuideList(items: filterItems, warnIndices: [4]),
             const SizedBox(height: 2),
           ],

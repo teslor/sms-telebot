@@ -32,7 +32,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   int filterMode = 0;
   Map<String, dynamic> config = {};
   Map<String, List<String>> filterLists = {
-    for (var key in AppConst.filterKeys) key: [],
+    for (var key in filterKeys) key: [],
   };
 
   // Message stats
@@ -187,18 +187,18 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       filterMode = rule['filter_mode'] ?? 0;
       final filters = safeDecode(rule['filters_json']) ?? {};
       filterLists = {
-        for (var key in AppConst.filterKeys) key: List<String>.from(filters[key] ?? [])
+        for (var key in filterKeys) key: List<String>.from(filters[key] ?? [])
       };
 
       config = safeDecode(rule['config_json']) ?? {};
-      if (rule['provider'] != 'sms_gateway') {
+      if (rule['provider'] != ProviderId.sms) {
         result = await readSecretNative(rule['id'].toString());
         if (result.isSuccess) {
           final secret = result.data;
           if (secret != null && secret.isNotEmpty) {
-            if (rule['provider'] == 'telegram_bot') {
+            if (rule['provider'] == ProviderId.telegram) {
               config['token'] = secret;
-            } else if (rule['provider'] == 'ntfy_server') {
+            } else if (rule['provider'] == ProviderId.ntfy) {
               final secrets = safeDecode(secret) ?? {};
               config['topic'] = secrets['topic'] ?? '';
               config['token'] = secrets['token'] ?? '';
@@ -212,7 +212,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       priority = 3;
       filterMode = 0;
       config = {};
-      filterLists = {for (var key in AppConst.filterKeys) key: []};
+      filterLists = {for (var key in filterKeys) key: []};
     }
     notifyListeners();
     return result;
@@ -260,7 +260,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       filtersJson: ruleToCopy['filters_json'],
     );
 
-    if (ruleToCopy['provider'] != 'sms_gateway') {
+    if (ruleToCopy['provider'] != ProviderId.sms) {
       result = await readSecretNative(ruleToCopy['id'].toString());
       if (!result.isSuccess) return result;
 
@@ -306,7 +306,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     final ruleId = selectedRule!['id'];
 
     final Map<String, dynamic> filtersMap = {};
-    for (var key in AppConst.filterKeys) {
+    for (var key in filterKeys) {
       filtersMap[key] = filterLists[key] ?? [];
     }
     final String filtersJson = jsonEncode(filtersMap);
@@ -318,7 +318,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
     this.filterMode = filterMode;
     this.filterLists = {
-      for (var key in AppConst.filterKeys) key: List<String>.from(filterLists[key] ?? []),
+      for (var key in filterKeys) key: List<String>.from(filterLists[key] ?? []),
     };
 
     await _loadRules();

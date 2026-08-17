@@ -103,6 +103,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get rules_empty => 'Правил пока нет.\nДобавьте первое!';
 
   @override
+  String get rules_setup => 'Настройка правил';
+
+  @override
   String get config => 'Параметры';
 
   @override
@@ -159,9 +162,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String ntfy_serverInfo(Object url) {
     return 'По умолчанию: $url';
   }
-
-  @override
-  String get ntfy_noFirebase => 'Отключить Firebase';
 
   @override
   String get smtp_host => 'SMTP-хост';
@@ -312,7 +312,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get help_info_01 =>
-      'Пересылайте сообщения Telegram-боту, на email (через SMTP) или в виде СМС. Можно настроить несколько ботов или адресов!';
+      'Пересылайте сообщения в Telegram, ntfy, на email или в виде СМС. Можно комбинировать сразу несколько способов отправки!';
 
   @override
   String get help_info_02 =>
@@ -328,7 +328,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get help_opts_02 =>
-      'Режим постоянной работы в фоне повышает надёжность доставки сообщений (особенно системных уведомлений), но значительно увеличивает расход батареи. В этом режиме отображается постоянное уведомление в шторке. Не рекомендуется включать без необходимости.';
+      'Режим постоянной работы в фоне повышает надёжность доставки сообщений (особенно системных уведомлений), но увеличивает расход батареи. В этом режиме отображается постоянное уведомление в шторке. Включайте только при необходимости.';
 
   @override
   String get help_opts_025 =>
@@ -343,30 +343,41 @@ class AppLocalizationsRu extends AppLocalizations {
       'Важно отключить для приложения оптимизацию батареи, поскольку система может ограничивать работу в фоне для экономии заряда.';
 
   @override
-  String get help_tbot => 'Подключение Telegram-бота';
+  String get help_rule_01 =>
+      'Проверьте и сохраните настройки (при успешной проверке придёт приветственное сообщение). Затем включите правило в списке и нажмите Старт, чтобы начать пересылку!';
 
   @override
   String get help_tbot_01 =>
-      'Если у вас пока нет своего бота, создайте его с помощью бота @BotFather и получите токен. Это просто и бесплатно.';
+      'Если у вас пока нет своего бота, создайте его с помощью бота @BotFather и получите токен.';
 
   @override
   String get help_tbot_02 =>
-      'Откройте чат с вашим ботом в Telegram, нажмите /start или отправьте любое сообщение. Это нужно для автоматического получения ID чата на следующем шаге.';
+      'Откройте чат с вашим ботом в приложении Telegram и отправьте любое сообщение. Это нужно для автоматического получения ID чата.';
 
   @override
   String get help_tbot_03 =>
-      'Перейдите в приложение, создайте правило для Telegram-бота и введите токен в параметрах подключения (также можно задать ID чата, если знаете его). Обязательно проверьте настройки, затем сохраните. В случае успешной проверки придёт приветственное сообщение.';
+      'Создайте правило для Telegram и введите токен в параметрах подключения. ID чата можно задать вручную, если он известен.';
 
   @override
   String get help_tbot_04 =>
-      'Готово! Теперь всё настроено, чтобы пересылать сообщения вашему боту. Включите правило и нажмите Старт, чтобы начать пересылку.';
+      'Также можно задать адрес собственного API-сервера, чтобы использовать его вместо официального сервера Telegram.';
 
   @override
-  String get help_tbot_05 =>
-      'Также есть возможность задать адрес собственного API-сервера, чтобы использовать его вместо официального сервера Telegram.';
+  String help_ntfy_01(Object url) {
+    return 'В приложении ntfy или веб-версии ($url) подпишитесь на новую тему, выбрав имя, которое сложно угадать.';
+  }
 
   @override
-  String get help_smtp => 'Подключение SMTP-сервера';
+  String get help_ntfy_02 =>
+      'Создайте правило, укажите имя темы и при необходимости задайте приоритет уведомления.';
+
+  @override
+  String get help_ntfy_03 =>
+      'Темы без аутентификации доступны всем, кто знает их имя. Для дополнительной защиты данных используйте аутентификацию и токен доступа.';
+
+  @override
+  String get help_ntfy_04 =>
+      'По умолчанию используется официальный сервер ntfy.sh, но можно задать свой.';
 
   @override
   String get help_smtp_01 =>
@@ -375,13 +386,6 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get help_smtp_02 =>
       'Создайте правило и заполните параметры подключения. Пароль чаще всего нужен для внешних приложений (генерируется в настройках безопасности почты).';
-
-  @override
-  String get help_smtp_03 =>
-      'Проверьте и сохраните настройки, включите правило и нажмите Старт.';
-
-  @override
-  String get help_sms => 'Отправка СМС';
 
   @override
   String get help_sms_01 =>
@@ -446,27 +450,28 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get error_badRequest =>
-      'Запрос отклонён. Проверьте введённые параметры подключения.';
+      'Сервер отклонил запрос. Проверьте параметры подключения.';
 
   @override
-  String get error_invalidParams =>
-      'Некорректные параметры подключения. Исправьте и попробуйте снова.';
+  String get error_forbidden => 'Ошибка авторизации. Проверьте права доступа.';
+
+  @override
+  String get error_invalidParams => 'Некорректные параметры подключения.';
 
   @override
   String get error_networkError =>
-      'Проверьте подключение к интернету и попробуйте снова.';
+      'Ошибка соединения. Проверьте интернет или настройки сети.';
 
   @override
   String get error_networkTimeout =>
-      'Превышено время ожидания. Проверьте интернет и убедитесь, что введены корректные параметры подключения.';
+      'Время ожидания истекло. Проверьте сеть или параметры подключения';
 
   @override
-  String get error_rateLimited =>
-      'Слишком много запросов. Пожалуйста, подождите немного и повторите попытку.';
+  String get error_rateLimited => 'Превышен лимит запросов. Попробуйте позже.';
 
   @override
   String get error_serverError =>
-      'Сервер временно недоступен. Пожалуйста, попробуйте позже.';
+      'Ошибка на стороне сервера. Попробуйте позже.';
 
   @override
   String get error_smtpAddressRejected =>
@@ -474,15 +479,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get error_smtpError =>
-      'Сервер вернул ошибку. Проверьте введённые параметры подключения.';
-
-  @override
-  String get error_smtp_forbidden =>
-      'Действие отклонено сервером. Проверьте права доступа.';
+      'Сервер вернул ошибку. Проверьте параметры подключения.';
 
   @override
   String get error_smtp_unauthorized =>
-      'Ошибка авторизации. Проверьте логин и пароль.';
+      'Ошибка доступа. Проверьте логин и пароль.';
 
   @override
   String get error_tbot_conflict =>
@@ -490,19 +491,20 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get error_tbot_forbidden =>
-      'Telegram отклонил действие. Убедитесь, что у бота есть доступ к чату.';
+      'Ошибка авторизации. Убедитесь, что у бота есть доступ к чату.';
 
   @override
-  String get error_tbot_unauthorized =>
-      'Ошибка авторизации. Введите корректный токен и попробуйте снова.';
+  String get error_tbot_unauthorized => 'Ошибка доступа. Проверьте токен.';
 
   @override
   String get error_tbot_uninitialized =>
       'Не удалось получить ID чата. Начните диалог с ботом в Telegram и попробуйте снова.';
 
   @override
-  String get error_unexpectedError =>
-      'Произошла непредвиденная ошибка. Пожалуйста, попробуйте позже.';
+  String get error_unauthorized => 'Ошибка доступа. Проверьте учётные данные.';
+
+  @override
+  String get error_unexpectedError => 'Не удалось выполнить действие.';
 
   @override
   String get error_secretsError =>
@@ -514,5 +516,5 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get warn_permissionsRequired =>
-      'Чтобы начать мониторинг, пожалуйста, предоставьте необходимые разрешения.';
+      'Чтобы начать мониторинг, предоставьте необходимые разрешения.';
 }

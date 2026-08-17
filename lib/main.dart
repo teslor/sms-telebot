@@ -30,7 +30,7 @@ class App extends StatelessWidget {
       create: (context) => AppState(),
       child: MaterialApp(
         navigatorKey: navigatorKey,
-        title: AppConst.appName,
+        title: appName,
 
         theme: ThemeData(
           useMaterial3: true,
@@ -95,7 +95,7 @@ class _AppViewState extends State<AppView> {
 
     return Scaffold(
       appBar: isRuleSelected ? null : AppBar(
-        title: const Text(AppConst.appName),
+        title: const Text(appName),
         centerTitle: true,
         elevation: 2,
         actions:[
@@ -112,7 +112,7 @@ class _AppViewState extends State<AppView> {
           if (currentPageIndex == index && index == 1) {
             context.read<AppState>().selectRule(null);
           }
-          setState(() { currentPageIndex = index; });
+          setState(() => currentPageIndex = index);
         },
         indicatorColor: theme.colorScheme.inversePrimary,
         selectedIndex: currentPageIndex,

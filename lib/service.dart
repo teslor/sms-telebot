@@ -7,7 +7,7 @@ import 'dart:convert';
 import '../../l10n/generated/app_localizations.dart';
 import 'constants.dart';
 
-const MethodChannel _mainChannel = MethodChannel(AppConst.mainChannel);
+const MethodChannel _mainChannel = MethodChannel(mainChannel);
 
 // Universal call result type
 typedef CallResult = ({bool isSuccess, String code, String? data});
@@ -51,7 +51,7 @@ Future<bool> getNotificationPermission({bool openSettings = false}) async {
 }
 
 Future<CallResult> getUpdates(String token, String apiUrl) async {
-  final url = '${apiUrl.isEmpty ? AppConst.telegramUrl : apiUrl}/bot$token/getUpdates';
+  final url = '${apiUrl.isEmpty ? telegramUrl : apiUrl}/bot$token/getUpdates';
 
   try {
     final response = await http.get(Uri.parse(url));
@@ -104,9 +104,8 @@ String getLocalizedError(AppLocalizations l10n, String code, [String? provider])
     'bad_request' => l10n.error_badRequest,
     'conflict' => l10n.error_tbot_conflict,
     'forbidden' => switch (provider) {
-      'smtp_server' => l10n.error_smtp_forbidden,
-      'telegram_bot' => l10n.error_tbot_forbidden,
-      _ => l10n.error_unexpectedError,
+      ProviderId.telegram => l10n.error_tbot_forbidden,
+      _ => l10n.error_forbidden,
     },
     'invalid_params' => l10n.error_invalidParams,
     'network_error' => l10n.error_networkError,
@@ -116,9 +115,9 @@ String getLocalizedError(AppLocalizations l10n, String code, [String? provider])
     'smtp_address_rejected' => l10n.error_smtpAddressRejected,
     'smtp_error' => l10n.error_smtpError,
     'unauthorized' => switch (provider) {
-      'smtp_server' => l10n.error_smtp_unauthorized,
-      'telegram_bot' => l10n.error_tbot_unauthorized,
-      _ => l10n.error_unexpectedError,
+      ProviderId.telegram || ProviderId.ntfy => l10n.error_tbot_unauthorized,
+      ProviderId.smtp => l10n.error_smtp_unauthorized,
+      _ => l10n.error_unauthorized,
     },
     'unexpected_error' => l10n.error_unexpectedError,
     'uninitialized' => l10n.error_tbot_uninitialized,
@@ -152,7 +151,7 @@ Future<CallResult> sendToProviderNative({
   required String provider,
   required Map<String, dynamic> config,
   required String body,
-  String sender = AppConst.appName,
+  String sender = appName,
   String secret = '',
   String deviceLabel = '',
 }) async {
@@ -177,10 +176,10 @@ Future<bool> checkFiltersNative(String sender, String body, int mode, Map<String
       'sender': sender,
       'body': body,
       'mode': mode,
-      'whitelistSenders': filterLists[AppConst.filterKeys[0]] ?? <String>[],
-      'whitelistBody': filterLists[AppConst.filterKeys[1]] ?? <String>[],
-      'blacklistSenders': filterLists[AppConst.filterKeys[2]] ?? <String>[],
-      'blacklistBody': filterLists[AppConst.filterKeys[3]] ?? <String>[],
+      'whitelistSenders': filterLists[filterKeys[0]] ?? <String>[],
+      'whitelistBody': filterLists[filterKeys[1]] ?? <String>[],
+      'blacklistSenders': filterLists[filterKeys[2]] ?? <String>[],
+      'blacklistBody': filterLists[filterKeys[3]] ?? <String>[],
     });
     return result ?? false;
   } catch (_) {

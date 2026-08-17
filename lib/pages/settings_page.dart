@@ -70,9 +70,9 @@ class _SettingsPageState extends State<SettingsPage> {
     );
 
     if (mounted) {
-      setState(() { 
-        _saveResult = true; 
-        _isInputChanged = false; 
+      setState(() {
+        _saveResult = true;
+        _isInputChanged = false;
       });
     }
   }

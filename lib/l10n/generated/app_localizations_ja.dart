@@ -102,6 +102,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rules_empty => 'ルールはまだありません。\n最初のルールを追加しましょう！';
 
   @override
+  String get rules_setup => 'ルール設定';
+
+  @override
   String get config => 'パラメータ';
 
   @override
@@ -158,9 +161,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String ntfy_serverInfo(Object url) {
     return 'デフォルト: $url';
   }
-
-  @override
-  String get ntfy_noFirebase => 'Firebaseを無効にする';
 
   @override
   String get smtp_host => 'SMTPホスト';
@@ -309,7 +309,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get help_info_01 =>
-      'メッセージをTelegramボット、メール（SMTP）、またはSMSとして転送できます。複数のボットやメールアドレスを追加できます。';
+      'メッセージをTelegram、ntfy、メール、またはSMSで転送できます。複数の送信先も簡単に設定できます！';
 
   @override
   String get help_info_02 => 'ルールを使って、何をどこへ転送するかを設定できます。必要に応じて簡単に複製や無効化が可能です。';
@@ -339,30 +339,40 @@ class AppLocalizationsJa extends AppLocalizations {
       'システムが省電力のためにバックグラウンド動作を制限する可能性があるため、このアプリではバッテリー最適化を無効にすることをおすすめします。';
 
   @override
-  String get help_tbot => 'Telegramボットの接続';
+  String get help_rule_01 =>
+      '設定をテストして保存してください（テスト成功時にウェルカムメッセージが送信されます）。次にリストでルールを有効にし、「開始」をタップして転送を始めましょう！';
 
   @override
   String get help_tbot_01 =>
-      'Telegramボットをまだお持ちでない場合は、@BotFatherを使用して作成し、トークンを取得してください。簡単で無料です。';
+      'ボットをお持ちでない場合は、Telegramの@BotFatherで作成し、APIトークンを取得してください。';
 
   @override
   String get help_tbot_02 =>
-      'Telegramでボットとのチャットを開き、会話を開始するか、メッセージを送信してください。これは次のステップでチャットIDを自動的に取得するために必要です。';
+      'Telegramアプリでボットとのチャットを開き、任意のメッセージを送信してください。これによりチャットIDを自動検出できます。';
 
   @override
   String get help_tbot_03 =>
-      'アプリ内でボット用のルールを作成し、トークンを入力してください（チャットIDがわかる場合は入力も可能です）。設定をテストしてから保存してください。成功するとウェルカムメッセージが届きます。';
+      'Telegramルールを追加し、トークンを貼り付けてください。必要に応じてチャットIDを手動で設定することもできます。';
 
   @override
   String get help_tbot_04 =>
-      '完了です。これでメッセージをボットへ転送する準備が整いました。ルールを有効にして「開始」をタップしてください。';
+      '公式Telegramサーバーの代わりに使用するカスタムAPIサーバーURLを指定することもできます。';
 
   @override
-  String get help_tbot_05 =>
-      '公式Telegramサーバーの代わりに使用するカスタムAPIサーバーURLを設定することもできます。';
+  String help_ntfy_01(Object url) {
+    return 'ntfyアプリまたはWeb版（$url）で、推測されにくい名前の新しいトピックを購読してください。';
+  }
 
   @override
-  String get help_smtp => 'SMTPサーバーの接続';
+  String get help_ntfy_02 => 'ルールを作成し、トピック名を入力します。必要に応じて通知の優先度も設定できます。';
+
+  @override
+  String get help_ntfy_03 =>
+      '公開トピックは、名前を知っている人なら誰でもアクセスできます。セキュリティを高めるには、認証とアクセストークンを使用してください。';
+
+  @override
+  String get help_ntfy_04 =>
+      'デフォルトでは公式のntfy.shサーバーが使われますが、カスタムサーバーを指定することもできます。';
 
   @override
   String get help_smtp_01 =>
@@ -371,12 +381,6 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get help_smtp_02 =>
       'ルールを作成し、接続パラメータを入力します。通常は「アプリパスワード」（メールサービスのセキュリティ設定で生成）が必要です。';
-
-  @override
-  String get help_smtp_03 => '設定をテストして保存し、ルールを有効にして「開始」を押してください。';
-
-  @override
-  String get help_sms => 'SMS送信';
 
   @override
   String get help_sms_01 => 'このアプリは、メッセージを送信SMSとして転送することに対応しています。';
@@ -435,54 +439,55 @@ class AppLocalizationsJa extends AppLocalizations {
   String get consent_privacyPolicy => 'プライバシーポリシー';
 
   @override
-  String get error_badRequest => 'リクエストは拒否されました。入力した接続パラメータを確認してください。';
+  String get error_badRequest => 'サーバーがリクエストを拒否しました。接続パラメータを確認してください。';
 
   @override
-  String get error_invalidParams => '接続パラメータが無効です。修正して再試行してください。';
+  String get error_forbidden => '認可エラーです。アクセス権を確認してください。';
 
   @override
-  String get error_networkError => 'インターネット接続を確認して、もう一度お試しください。';
+  String get error_invalidParams => '接続パラメータが無効です。';
 
   @override
-  String get error_networkTimeout =>
-      'タイムアウトしました。インターネット接続を確認し、入力した接続パラメータが正しいことを確認してください。';
+  String get error_networkError => '接続エラーです。インターネット接続またはネットワーク設定を確認してください。';
 
   @override
-  String get error_rateLimited => 'リクエストの送信が速すぎます。しばらく待ってから再試行してください。';
+  String get error_networkTimeout => 'タイムアウトしました。ネットワークまたは接続パラメータを確認してください。';
 
   @override
-  String get error_serverError => 'サーバーは現在利用できません。後でもう一度お試しください。';
+  String get error_rateLimited => 'リクエスト上限を超えました。後でもう一度お試しください。';
+
+  @override
+  String get error_serverError => 'サーバーエラーです。後でもう一度お試しください。';
 
   @override
   String get error_smtpAddressRejected =>
       'サーバーが送信者または受信者のメールアドレスを拒否しました。アドレスを確認してください。';
 
   @override
-  String get error_smtpError => 'サーバーがエラーを返しました。入力した接続パラメータを確認してください。';
+  String get error_smtpError => 'サーバーがエラーを返しました。接続パラメータを確認してください。';
 
   @override
-  String get error_smtp_forbidden => 'アクションはサーバーに拒否されました。アクセス権を確認してください。';
-
-  @override
-  String get error_smtp_unauthorized => '認証エラーです。ログインIDとパスワードを確認してください。';
+  String get error_smtp_unauthorized => 'アクセスエラーです。ログインIDとパスワードを確認してください。';
 
   @override
   String get error_tbot_conflict =>
       'チャットIDを取得できませんでした。アクティブなWebhookを削除するか、IDを手動で入力してください。';
 
   @override
-  String get error_tbot_forbidden =>
-      'Telegramがアクションを拒否しました。ボットのチャットアクセス権限を確認してください。';
+  String get error_tbot_forbidden => '認可エラーです。ボットがチャットにアクセスできることを確認してください。';
 
   @override
-  String get error_tbot_unauthorized => '認証エラーです。有効なトークンを入力して再試行してください。';
+  String get error_tbot_unauthorized => 'アクセスエラーです。トークンを確認してください。';
 
   @override
   String get error_tbot_uninitialized =>
       'チャットIDを取得できませんでした。Telegramでボットとの会話を開始してから再試行してください。';
 
   @override
-  String get error_unexpectedError => '予期しないエラーが発生しました。後でもう一度お試しください。';
+  String get error_unauthorized => 'アクセスエラーです。認証情報を確認してください。';
+
+  @override
+  String get error_unexpectedError => '操作を完了できませんでした。';
 
   @override
   String get error_secretsError =>

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../extensions/build_context_x.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../constants.dart';
 import '../../styles.dart';
 import '../../state.dart';
 import '../../service.dart';
@@ -61,7 +62,7 @@ class _SmsGatewayConnectionState extends State<SmsGatewayConnection> {
 
     try {
       final result = await sendToProviderNative(
-        provider: 'sms_gateway',
+        provider: ProviderId.sms,
         config: {'number': _numberController.text.trim()},
         body: l10n.msg_hello,
         deviceLabel: appState.deviceLabel,
@@ -80,7 +81,7 @@ class _SmsGatewayConnectionState extends State<SmsGatewayConnection> {
         context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     } finally {
-      if (mounted) setState(() { _isTesting = false; });
+      if (mounted) setState(() => _isTesting = false);
     }
   }
 
@@ -88,7 +89,7 @@ class _SmsGatewayConnectionState extends State<SmsGatewayConnection> {
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (!_isValidPhone) {
-      setState(() { _saveResult = false; });
+      setState(() => _saveResult = false);
       context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
       return;
     }
@@ -106,12 +107,12 @@ class _SmsGatewayConnectionState extends State<SmsGatewayConnection> {
           _isInputChanged = false;
         });
       } else {
-        setState(() { _saveResult = false; });
+        setState(() => _saveResult = false);
         context.showErrorSnack(getLocalizedError(l10n, result.code));
       }
     } catch (_) {
       if (mounted) {
-        setState(() { _saveResult = false; });
+        setState(() => _saveResult = false);
         context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     }

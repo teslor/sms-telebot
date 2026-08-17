@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import '../../constants.dart';
 import 'telegram_bot.dart';
 import 'ntfy_server.dart';
 import 'smtp_server.dart';
 import 'sms_gateway.dart';
 
 final Map<String, Widget Function()> connectionProviders = {
-  'telegram_bot': () => const TelegramBotConnection(),
-  'ntfy_server': () => const NtfyServerConnection(),
-  'smtp_server': () => const SmtpServerConnection(),
-  'sms_gateway': () => const SmsGatewayConnection(),
+  ProviderId.telegram: () => const TelegramBotConnection(),
+  ProviderId.ntfy: () => const NtfyServerConnection(),
+  ProviderId.smtp: () => const SmtpServerConnection(),
+  ProviderId.sms: () => const SmsGatewayConnection(),
 };

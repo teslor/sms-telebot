@@ -32,7 +32,7 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
 
     _filterMode = appState.filterMode;
     _filterLists = {
-      for (final key in AppConst.filterKeys) key: List<String>.from(appState.filterLists[key] ?? const <String>[]),
+      for (final key in filterKeys) key: List<String>.from(appState.filterLists[key] ?? const <String>[]),
     };
   }
 
@@ -44,8 +44,8 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
   }
 
   List<String> _getListNames() {
-    return _filterMode == 1 ? AppConst.filterKeys.sublist(0, 2) :
-           _filterMode == 2 ? AppConst.filterKeys.sublist(2, 4) : ['', ''];
+    return _filterMode == 1 ? filterKeys.sublist(0, 2) :
+           _filterMode == 2 ? filterKeys.sublist(2, 4) : ['', ''];
   }
 
   void _testFilters() async {
@@ -68,7 +68,7 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
         _isInputChanged = false;
       });
     }
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {

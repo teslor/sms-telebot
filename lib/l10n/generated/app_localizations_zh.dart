@@ -102,6 +102,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get rules_empty => '还没有规则。\n添加第一条！';
 
   @override
+  String get rules_setup => '规则设置';
+
+  @override
   String get config => '参数';
 
   @override
@@ -158,9 +161,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String ntfy_serverInfo(Object url) {
     return '默认：$url';
   }
-
-  @override
-  String get ntfy_noFirebase => '禁用 Firebase';
 
   @override
   String get smtp_host => 'SMTP 主机';
@@ -307,8 +307,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get help_info => '简介';
 
   @override
-  String get help_info_01 =>
-      '可将消息转发到 Telegram 机器人、邮箱（SMTP）或以短信形式发送。您可以添加多个机器人或邮箱地址。';
+  String get help_info_01 => '将消息转发到 Telegram、ntfy、邮箱或以短信发送。可轻松配置多个转发目标！';
 
   @override
   String get help_info_02 => '通过规则可设置“转发什么、转发到哪里”。需要时可轻松复制或禁用规则。';
@@ -334,28 +333,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get help_opts_04 => '建议为本应用关闭电池优化，因为系统可能会为省电而限制后台活动。';
 
   @override
-  String get help_tbot => '连接 Telegram 机器人';
+  String get help_rule_01 => '请测试并保存设置（测试成功后会发送欢迎消息）。然后在列表中启用该规则，并点按「开始」以开始转发！';
 
   @override
-  String get help_tbot_01 =>
-      '如果您还没有 Telegram 机器人，请使用 @BotFather 创建一个并获取其令牌。这很简单且免费。';
+  String get help_tbot_01 => '还没有机器人？使用 Telegram 的 @BotFather 创建一个并获取 API 令牌。';
 
   @override
-  String get help_tbot_02 =>
-      '在 Telegram 中打开与您的机器人的聊天，开始对话或发送任何消息。这是自动获取聊天 ID 所必需的。';
+  String get help_tbot_02 => '在 Telegram 应用中打开与机器人的聊天，并发送任意消息。这样即可自动检测聊天 ID。';
 
   @override
-  String get help_tbot_03 =>
-      '在应用中创建机器人规则并输入 Token（如果知道 Chat ID 也可以填入）。请务必测试设置后保存。测试成功后，您将收到一条欢迎消息。';
+  String get help_tbot_03 => '添加一条 Telegram 规则并粘贴令牌。也可以手动设置聊天 ID。';
 
   @override
-  String get help_tbot_04 => '完成！现在已可将消息转发到您的机器人。启用规则后点击“开始”即可。';
+  String get help_tbot_04 => '也可以指定自定义 API 服务器 URL，以替代 Telegram 官方服务器。';
 
   @override
-  String get help_tbot_05 => '你也可以设置自定义 API 服务器 URL，以替代 Telegram 官方服务器。';
+  String help_ntfy_01(Object url) {
+    return '在 ntfy 应用或网页版（$url）中订阅一个新主题，并使用难以猜测的名称。';
+  }
 
   @override
-  String get help_smtp => '连接 SMTP 服务器';
+  String get help_ntfy_02 => '创建规则，输入主题名称，并可选择设置通知优先级。';
+
+  @override
+  String get help_ntfy_03 => '公开主题对任何知道其名称的人开放。为提高安全性，请使用身份验证和访问令牌。';
+
+  @override
+  String get help_ntfy_04 => '默认使用官方 ntfy.sh 服务器，但也可以指定自定义服务器。';
 
   @override
   String get help_smtp_01 =>
@@ -363,12 +367,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get help_smtp_02 => '创建规则并填写连接参数。通常需要“应用专用密码”（在邮箱的安全设置中生成）。';
-
-  @override
-  String get help_smtp_03 => '测试并保存设置，开启规则并点击“开始”。';
-
-  @override
-  String get help_sms => '发送短信';
 
   @override
   String get help_sms_01 => '本应用支持将消息以外发短信的形式进行转发。';
@@ -423,50 +421,53 @@ class AppLocalizationsZh extends AppLocalizations {
   String get consent_privacyPolicy => '隐私政策';
 
   @override
-  String get error_badRequest => '请求被拒绝。请检查输入的连接参数。';
+  String get error_badRequest => '服务器拒绝了请求。请检查连接参数。';
 
   @override
-  String get error_invalidParams => '连接参数无效。请修正后重试。';
+  String get error_forbidden => '授权错误。请检查访问权限。';
 
   @override
-  String get error_networkError => '请检查网络连接并重试。';
+  String get error_invalidParams => '连接参数无效。';
 
   @override
-  String get error_networkTimeout => '请求超时。请检查网络，并确认输入的连接参数正确。';
+  String get error_networkError => '连接错误。请检查网络连接或网络设置。';
 
   @override
-  String get error_rateLimited => '请求过于频繁。请稍候再试。';
+  String get error_networkTimeout => '请求超时。请检查网络或连接参数。';
 
   @override
-  String get error_serverError => '服务器当前不可用。请稍后再试。';
+  String get error_rateLimited => '已超出请求限制。请稍后再试。';
+
+  @override
+  String get error_serverError => '服务器错误。请稍后再试。';
 
   @override
   String get error_smtpAddressRejected => '服务器拒绝了发件人或收件人的邮箱。请检查邮箱地址。';
 
   @override
-  String get error_smtpError => '服务器返回了错误。请检查输入的连接参数。';
+  String get error_smtpError => '服务器返回了错误。请检查连接参数。';
 
   @override
-  String get error_smtp_forbidden => '该操作被服务器拒绝。请检查访问权限。';
-
-  @override
-  String get error_smtp_unauthorized => '授权错误。请检查登录名和密码。';
+  String get error_smtp_unauthorized => '访问错误。请检查登录名和密码。';
 
   @override
   String get error_tbot_conflict => '无法获取聊天 ID。请删除已激活的 Webhook，或手动输入 ID。';
 
   @override
-  String get error_tbot_forbidden => 'Telegram 拒绝此操作。请确保机器人有权访问该聊天。';
+  String get error_tbot_forbidden => '授权错误。请确保机器人有权访问该聊天。';
 
   @override
-  String get error_tbot_unauthorized => '授权错误。请输入有效令牌后重试。';
+  String get error_tbot_unauthorized => '访问错误。请检查令牌。';
 
   @override
   String get error_tbot_uninitialized =>
       '无法获取聊天 ID。请先在 Telegram 中与机器人开始对话，然后重试。';
 
   @override
-  String get error_unexpectedError => '发生了意外错误。请稍后再试。';
+  String get error_unauthorized => '访问错误。请检查凭据。';
+
+  @override
+  String get error_unexpectedError => '无法完成该操作。';
 
   @override
   String get error_secretsError =>

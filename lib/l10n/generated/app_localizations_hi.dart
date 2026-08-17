@@ -103,6 +103,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get rules_empty => 'अभी तक कोई नियम नहीं है।\nपहला जोड़ें!';
 
   @override
+  String get rules_setup => 'नियम सेटअप';
+
+  @override
   String get config => 'पैरामीटर';
 
   @override
@@ -159,9 +162,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String ntfy_serverInfo(Object url) {
     return 'डिफ़ॉल्ट: $url';
   }
-
-  @override
-  String get ntfy_noFirebase => 'Firebase अक्षम करें';
 
   @override
   String get smtp_host => 'SMTP होस्ट';
@@ -312,7 +312,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get help_info_01 =>
-      'संदेशों को Telegram बॉट, ईमेल (SMTP) या SMS के रूप में फ़ॉरवर्ड करें। आप कई बॉट या ईमेल पते जोड़ सकते हैं।';
+      'संदेशों को Telegram, ntfy, ईमेल या SMS के ज़रिए फ़ॉरवर्ड करें। कई गंतव्य आसानी से कॉन्फ़िगर करें!';
 
   @override
   String get help_info_02 =>
@@ -343,30 +343,41 @@ class AppLocalizationsHi extends AppLocalizations {
       'इस ऐप के लिए बैटरी ऑप्टिमाइज़ेशन बंद करना बेहतर है, क्योंकि सिस्टम पावर बचाने के लिए बैकग्राउंड गतिविधि सीमित कर सकता है।';
 
   @override
-  String get help_tbot => 'Telegram बॉट कनेक्ट करना';
+  String get help_rule_01 =>
+      'सेटिंग्स का परीक्षण करें और सेव करें (सफल परीक्षण पर स्वागत संदेश भेजा जाएगा)। फिर सूची में नियम चालू करें और फ़ॉरवर्डिंग शुरू करने के लिए स्टार्ट दबाएँ!';
 
   @override
   String get help_tbot_01 =>
-      'यदि आपके पास अभी तक Telegram बॉट नहीं है, तो @BotFather का उपयोग करके एक बनाएं और इसका टोकन प्राप्त करें। यह आसान और मुफ़्त है।';
+      'बॉट नहीं है? Telegram के @BotFather से एक बनाएँ और API टोकन प्राप्त करें।';
 
   @override
   String get help_tbot_02 =>
-      'Telegram में अपने बॉट के साथ चैट खोलें, बातचीत शुरू करें या कोई संदेश भेजें। यह अगले चरण के लिए चैट ID स्वचालित रूप से प्राप्त करने के लिए आवश्यक है।';
+      'Telegram ऐप में अपने बॉट के साथ चैट खोलें और कोई भी संदेश भेजें। इससे आपकी चैट ID स्वतः पहचानी जा सकेगी।';
 
   @override
   String get help_tbot_03 =>
-      'ऐप में Telegram बॉट के लिए एक नियम बनाएँ और टोकन दर्ज करें (यदि पता हो तो चैट आईडी भी सेट कर सकते हैं)। सेटिंग्स का परीक्षण करें और फिर सेव करें। सफल होने पर एक स्वागत संदेश आएगा।';
+      'Telegram नियम जोड़ें और अपना टोकन पेस्ट करें। चाहें तो चैट ID मैन्युअल भी सेट कर सकते हैं।';
 
   @override
   String get help_tbot_04 =>
-      'हो गया! अब संदेश आपके बॉट को फ़ॉरवर्ड करने के लिए सब तैयार है। नियम चालू करें और शुरू करने के लिए \'Start\' दबाएँ।';
+      'आधिकारिक Telegram सर्वर की जगह इस्तेमाल करने के लिए कस्टम API सर्वर URL भी सेट कर सकते हैं।';
 
   @override
-  String get help_tbot_05 =>
-      'आप चाहें तो आधिकारिक Telegram सर्वर की जगह कस्टम API सर्वर URL भी सेट कर सकते हैं।';
+  String help_ntfy_01(Object url) {
+    return 'ntfy ऐप या वेब वर्शन ($url) में ऐसे नाम से नए विषय की सदस्यता लें जिसे अनुमान लगाना मुश्किल हो।';
+  }
 
   @override
-  String get help_smtp => 'SMTP सर्वर कनेक्ट करना';
+  String get help_ntfy_02 =>
+      'नियम बनाएँ, विषय का नाम दर्ज करें, और चाहें तो नोटिफिकेशन प्राथमिकता सेट करें।';
+
+  @override
+  String get help_ntfy_03 =>
+      'सार्वजनिक विषय उन सभी के लिए उपलब्ध हैं जो उनका नाम जानते हैं। बेहतर सुरक्षा के लिए प्रमाणीकरण और एक्सेस टोकन का उपयोग करें।';
+
+  @override
+  String get help_ntfy_04 =>
+      'डिफ़ॉल्ट रूप से आधिकारिक ntfy.sh सर्वर इस्तेमाल होता है, लेकिन आप अपना सर्वर भी सेट कर सकते हैं।';
 
   @override
   String get help_smtp_01 =>
@@ -375,13 +386,6 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get help_smtp_02 =>
       'एक नियम बनाएँ और कनेक्शन विवरण भरें। आमतौर पर \'ऐप पासवर्ड\' की आवश्यकता होती है (जो ईमेल सुरक्षा सेटिंग्स में जनरेट होता है)।';
-
-  @override
-  String get help_smtp_03 =>
-      'सेटिंग्स टेस्ट करें और सेव करें, नियम चालू करें और \'Start\' दबाएँ।';
-
-  @override
-  String get help_sms => 'SMS भेजना';
 
   @override
   String get help_sms_01 =>
@@ -446,27 +450,28 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get error_badRequest =>
-      'अनुरोध अस्वीकार कर दिया गया। दर्ज किए गए कनेक्शन पैरामीटर जांचें।';
+      'सर्वर ने अनुरोध अस्वीकार कर दिया। कनेक्शन पैरामीटर जांचें।';
 
   @override
-  String get error_invalidParams =>
-      'कनेक्शन पैरामीटर अमान्य हैं। उन्हें ठीक करें और फिर से प्रयास करें।';
+  String get error_forbidden => 'प्रमाणीकरण त्रुटि। एक्सेस अधिकार जांचें।';
+
+  @override
+  String get error_invalidParams => 'कनेक्शन पैरामीटर अमान्य हैं।';
 
   @override
   String get error_networkError =>
-      'अपना इंटरनेट कनेक्शन जांचें और फिर से प्रयास करें।';
+      'कनेक्शन त्रुटि। इंटरनेट कनेक्शन या नेटवर्क सेटिंग्स जांचें।';
 
   @override
   String get error_networkTimeout =>
-      'समय सीमा समाप्त हो गई। इंटरनेट जांचें और सुनिश्चित करें कि दर्ज किए गए कनेक्शन पैरामीटर सही हैं।';
+      'समय सीमा समाप्त हो गई। नेटवर्क या कनेक्शन पैरामीटर जांचें।';
 
   @override
   String get error_rateLimited =>
-      'आप बहुत तेज़ी से अनुरोध भेज रहे हैं। कृपया कुछ देर प्रतीक्षा करें।';
+      'अनुरोध सीमा पार हो गई। बाद में फिर प्रयास करें।';
 
   @override
-  String get error_serverError =>
-      'सर्वर वर्तमान में उपलब्ध नहीं है। कृपया बाद में प्रयास करें।';
+  String get error_serverError => 'सर्वर त्रुटि। बाद में फिर प्रयास करें।';
 
   @override
   String get error_smtpAddressRejected =>
@@ -474,15 +479,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get error_smtpError =>
-      'सर्वर ने त्रुटि लौटाई। दर्ज किए गए कनेक्शन पैरामीटर जांचें।';
-
-  @override
-  String get error_smtp_forbidden =>
-      'कार्रवाई सर्वर द्वारा अस्वीकार कर दी गई। एक्सेस अधिकार जांचें।';
+      'सर्वर ने त्रुटि लौटाई। कनेक्शन पैरामीटर जांचें।';
 
   @override
   String get error_smtp_unauthorized =>
-      'प्राधिकरण त्रुटि। लॉगिन और पासवर्ड जांचें।';
+      'एक्सेस त्रुटि। लॉगिन और पासवर्ड जांचें।';
 
   @override
   String get error_tbot_conflict =>
@@ -490,19 +491,20 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get error_tbot_forbidden =>
-      'Telegram ने इस कार्रवाई को रोक दिया। सुनिश्चित करें कि बॉट के पास चैट का एक्सेस है।';
+      'प्रमाणीकरण त्रुटि। सुनिश्चित करें कि बॉट के पास चैट का एक्सेस है।';
 
   @override
-  String get error_tbot_unauthorized =>
-      'प्राधिकरण त्रुटि। सही टोकन दर्ज करें और फिर से प्रयास करें।';
+  String get error_tbot_unauthorized => 'एक्सेस त्रुटि। टोकन जांचें।';
 
   @override
   String get error_tbot_uninitialized =>
       'चैट आईडी प्राप्त नहीं हो सकी। Telegram में अपने बॉट के साथ संवाद शुरू करें और फिर से प्रयास करें।';
 
   @override
-  String get error_unexpectedError =>
-      'एक अप्रत्याशित त्रुटि हुई। कृपया बाद में प्रयास करें।';
+  String get error_unauthorized => 'एक्सेस त्रुटि। क्रेडेंशियल्स जांचें।';
+
+  @override
+  String get error_unexpectedError => 'कार्रवाई पूरी नहीं हो सकी।';
 
   @override
   String get error_secretsError =>
@@ -514,5 +516,5 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get warn_permissionsRequired =>
-      'निगरानी शुरू करने के लिए, कृपया आवश्यक अनुमति दें।';
+      'निगरानी शुरू करने के लिए आवश्यक अनुमतियां दें।';
 }

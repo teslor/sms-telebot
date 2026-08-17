@@ -337,7 +337,6 @@ object NtfyProvider : SendProvider {
             val json = JSONObject(configJson)
             val serverUrl = json.optString("serverUrl", "").ifBlank { "https://ntfy.sh" }.trimEnd('/')
             val priority = json.optInt("priority", 3)
-            val noFirebase = json.optBoolean("noFirebase", false)
             val secretJson = JSONObject(secret)
             val topic = secretJson.optString("topic", "")
             val token = secretJson.optString("token", "")
@@ -363,18 +362,17 @@ object NtfyProvider : SendProvider {
                 if (priority != 3) put("priority", priority)
             }
 
-            sendRequest(serverUrl, token, noFirebase, payloadJson)
+            sendRequest(serverUrl, token, payloadJson)
         } catch (e: Exception) {
             buildResult(ResultCode.UNEXPECTED_ERROR, e.message ?: "unexpected error", exception = e)
         }
     }
 
-    private fun sendRequest(serverUrl: String, token: String, noFirebase: Boolean, payloadJson: JSONObject): SendProviderResult {
+    private fun sendRequest(serverUrl: String, token: String, payloadJson: JSONObject): SendProviderResult {
         val mediaType = "application/json; charset=utf-8".toMediaType()
         val requestBody = payloadJson.toString().toRequestBody(mediaType)
         val requestBuilder = Request.Builder().url(serverUrl).post(requestBody)
         if (token.isNotBlank()) requestBuilder.addHeader("Authorization", "Bearer $token")
-        if (noFirebase) requestBuilder.addHeader("Firebase", "no")
 
         return try {
             HttpUtils.client.newCall(requestBuilder.build()).execute().use { response ->

@@ -102,6 +102,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get rules_empty => 'Ainda não há regras.\nAdicione a primeira!';
 
   @override
+  String get rules_setup => 'Configuração da regra';
+
+  @override
   String get config => 'Parâmetros';
 
   @override
@@ -158,9 +161,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String ntfy_serverInfo(Object url) {
     return 'Padrão: $url';
   }
-
-  @override
-  String get ntfy_noFirebase => 'Desativar Firebase';
 
   @override
   String get smtp_host => 'Host SMTP';
@@ -311,7 +311,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get help_info_01 =>
-      'Encaminhe mensagens para um bot do Telegram, por e-mail (SMTP) ou como SMS. Você pode adicionar vários bots ou endereços de e-mail.';
+      'Encaminhe mensagens para o Telegram, ntfy, e-mail ou por SMS. Configure vários destinos com facilidade!';
 
   @override
   String get help_info_02 =>
@@ -342,30 +342,41 @@ class AppLocalizationsPt extends AppLocalizations {
       'É recomendado desativar a otimização de bateria para este app, pois o sistema pode limitar a atividade em segundo plano para economizar energia.';
 
   @override
-  String get help_tbot => 'Conexão do Bot do Telegram';
+  String get help_rule_01 =>
+      'Teste e salve as configurações (uma mensagem de boas-vindas será enviada se o teste for bem-sucedido). Em seguida, ative a regra na lista e toque em Iniciar para começar o encaminhamento!';
 
   @override
   String get help_tbot_01 =>
-      'Se você ainda não tem um bot do Telegram, use o @BotFather para criar um e obter seu token. É simples e gratuito.';
+      'Ainda não tem um bot? Use o @BotFather do Telegram para criar um e obter um token de API.';
 
   @override
   String get help_tbot_02 =>
-      'Abra um chat com seu bot no Telegram, inicie uma conversa ou envie qualquer mensagem. Isso é necessário para obter automaticamente o ID do chat na próxima etapa.';
+      'Abra um chat com seu bot no app Telegram e envie qualquer mensagem. Isso permitirá detectar automaticamente o ID do chat.';
 
   @override
   String get help_tbot_03 =>
-      'No app, crie uma regra para o bot e insira o token (e o ID do chat, se souber). Teste as configurações e salve. Se funcionar, você receberá uma mensagem de boas-vindas.';
+      'Adicione uma regra do Telegram e cole o token. Se quiser, você também pode definir o ID do chat manualmente.';
 
   @override
   String get help_tbot_04 =>
-      'Pronto! Agora está tudo configurado para encaminhar mensagens ao seu bot. Ative a regra e toque em Iniciar para começar.';
+      'Você também pode informar a URL de um servidor de API personalizado para usá-lo no lugar do servidor oficial do Telegram.';
 
   @override
-  String get help_tbot_05 =>
-      'Você também pode definir uma URL de servidor de API personalizada para usá-la no lugar do servidor oficial do Telegram.';
+  String help_ntfy_01(Object url) {
+    return 'No app ntfy ou na versão web ($url), inscreva-se em um novo tópico com um nome difícil de adivinhar.';
+  }
 
   @override
-  String get help_smtp => 'Conexão do Servidor SMTP';
+  String get help_ntfy_02 =>
+      'Crie uma regra, informe o nome do tópico e, se quiser, defina a prioridade da notificação.';
+
+  @override
+  String get help_ntfy_03 =>
+      'Tópicos públicos podem ser acessados por qualquer pessoa que saiba o nome. Para mais segurança, use autenticação e um token de acesso.';
+
+  @override
+  String get help_ntfy_04 =>
+      'Por padrão, o servidor oficial ntfy.sh é usado, mas você pode indicar um servidor personalizado.';
 
   @override
   String get help_smtp_01 =>
@@ -374,13 +385,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get help_smtp_02 =>
       'Crie uma regra e preencha os dados de conexão. Geralmente é necessária uma \'senha de app\' (gerada nas configurações de segurança do seu e-mail).';
-
-  @override
-  String get help_smtp_03 =>
-      'Teste e salve as configurações, ative a regra e clique em Iniciar.';
-
-  @override
-  String get help_sms => 'Envio de SMS';
 
   @override
   String get help_sms_01 =>
@@ -445,27 +449,30 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get error_badRequest =>
-      'A solicitação foi rejeitada. Verifique os parâmetros de conexão informados.';
+      'O servidor rejeitou a solicitação. Verifique os parâmetros de conexão.';
 
   @override
-  String get error_invalidParams =>
-      'Parâmetros de conexão inválidos. Corrija-os e tente novamente.';
+  String get error_forbidden =>
+      'Erro de autorização. Verifique as permissões de acesso.';
+
+  @override
+  String get error_invalidParams => 'Parâmetros de conexão inválidos.';
 
   @override
   String get error_networkError =>
-      'Verifique sua conexão com a internet e tente novamente.';
+      'Erro de conexão. Verifique a conexão com a internet ou as configurações de rede.';
 
   @override
   String get error_networkTimeout =>
-      'O tempo de espera foi excedido. Verifique sua internet e confirme que os parâmetros de conexão informados estão corretos.';
+      'O tempo de espera foi excedido. Verifique a rede ou os parâmetros de conexão.';
 
   @override
   String get error_rateLimited =>
-      'Você está enviando solicitações rápido demais. Aguarde um momento e tente novamente.';
+      'O limite de solicitações foi excedido. Tente novamente mais tarde.';
 
   @override
   String get error_serverError =>
-      'O servidor está indisponível no momento. Tente novamente mais tarde.';
+      'Erro no servidor. Tente novamente mais tarde.';
 
   @override
   String get error_smtpAddressRejected =>
@@ -473,15 +480,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get error_smtpError =>
-      'O servidor retornou um erro. Verifique os parâmetros de conexão informados.';
-
-  @override
-  String get error_smtp_forbidden =>
-      'A ação foi rejeitada pelo servidor. Verifique as permissões de acesso.';
+      'O servidor retornou um erro. Verifique os parâmetros de conexão.';
 
   @override
   String get error_smtp_unauthorized =>
-      'Erro de autorização. Verifique o login e a senha.';
+      'Erro de acesso. Verifique o login e a senha.';
 
   @override
   String get error_tbot_conflict =>
@@ -489,19 +492,20 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get error_tbot_forbidden =>
-      'O Telegram negou esta ação. Certifique-se de que o bot tem acesso ao chat.';
+      'Erro de autorização. Certifique-se de que o bot tem acesso ao chat.';
 
   @override
-  String get error_tbot_unauthorized =>
-      'Erro de autorização. Informe um token válido e tente novamente.';
+  String get error_tbot_unauthorized => 'Erro de acesso. Verifique o token.';
 
   @override
   String get error_tbot_uninitialized =>
       'Não foi possível obter o ID do chat. Inicie uma conversa com seu bot no Telegram e tente novamente.';
 
   @override
-  String get error_unexpectedError =>
-      'Ocorreu um erro inesperado. Tente novamente mais tarde.';
+  String get error_unauthorized => 'Erro de acesso. Verifique as credenciais.';
+
+  @override
+  String get error_unexpectedError => 'Não foi possível concluir a ação.';
 
   @override
   String get error_secretsError =>

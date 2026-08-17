@@ -77,7 +77,7 @@ class _ConsentContent extends StatelessWidget {
             children: [
               Text(l10n.consent_details, style: textTheme.bodyMedium?.copyWith(fontSize: 13, fontWeight: FontWeight.w600)),
               InkWell(
-                onTap: () => launchURL('${AppConst.appLink}/blob/main/PRIVACY_POLICY.md'),
+                onTap: () => launchURL('$appLink/blob/main/PRIVACY_POLICY.md'),
                 child: Text(
                   l10n.consent_privacyPolicy,
                   style: textTheme.bodyMedium?.copyWith(

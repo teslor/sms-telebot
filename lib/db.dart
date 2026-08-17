@@ -223,8 +223,8 @@ class MainDb {
 
   /// Create a new rule in forwarding_rules
   Future<int> insertRule({
-    String name = 'Telegram Bot',
-    String provider = 'telegram_bot',
+    required String name,
+    required String provider,
     int isActive = 0,
     int priority = 3,
     int filterMode = 0,

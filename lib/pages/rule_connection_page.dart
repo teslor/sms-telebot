@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../constants.dart';
 import '../state.dart';
 import 'connections/registry.dart';
 
@@ -10,7 +11,7 @@ class RuleConnectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.select<AppState, String?>(
       (state) => state.selectedRule?['provider'] as String?,
-    ) ?? 'telegram_bot';
+    ) ?? ProviderId.telegram;
 
     final builder = connectionProviders[provider];
     if (builder == null) {

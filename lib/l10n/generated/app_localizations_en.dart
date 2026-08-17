@@ -102,6 +102,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rules_empty => 'No rules yet.\nAdd your first one!';
 
   @override
+  String get rules_setup => 'Rule setup';
+
+  @override
   String get config => 'Config';
 
   @override
@@ -158,9 +161,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String ntfy_serverInfo(Object url) {
     return 'Default: $url';
   }
-
-  @override
-  String get ntfy_noFirebase => 'Disable Firebase';
 
   @override
   String get smtp_host => 'SMTP host';
@@ -311,7 +311,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get help_info_01 =>
-      'Forward messages to Telegram bots, email (SMTP), or via SMS. Configure multiple destinations easily!';
+      'Forward messages to Telegram, ntfy, email, or via SMS. Configure multiple destinations easily!';
 
   @override
   String get help_info_02 =>
@@ -342,30 +342,41 @@ class AppLocalizationsEn extends AppLocalizations {
       'Disable battery optimization for this app to prevent the system from restricting background activity.';
 
   @override
-  String get help_tbot => 'Setting Up a Telegram Bot';
+  String get help_rule_01 =>
+      'Test and save the settings (a welcome message will be sent upon successful test). Then enable the rule in the list and tap Start to begin forwarding!';
 
   @override
   String get help_tbot_01 =>
-      'Don\'t have a bot? Use Telegram\'s @BotFather to create one and get an API token. It\'s free and easy.';
+      'Don\'t have a bot? Use Telegram\'s @BotFather to create one and get an API token.';
 
   @override
   String get help_tbot_02 =>
-      'Open a chat with your bot in Telegram and send any message. This allows the app to automatically detect your Chat ID.';
+      'Open a chat with your bot in the Telegram app and send any message. This will allow for automatic detection of your Chat ID.';
 
   @override
   String get help_tbot_03 =>
-      'In the app, add a Telegram bot rule and paste your token (optional: manually set Chat ID). Test the connection, then save. You\'ll receive a hello message if it works.';
+      'Add a Telegram rule and paste your token. Optionally, you can set the Chat ID manually.';
 
   @override
   String get help_tbot_04 =>
-      'Done! Enable the rule and tap Start to begin forwarding messages.';
+      'You can also specify a custom API server URL to use it instead of the official Telegram server.';
 
   @override
-  String get help_tbot_05 =>
-      'Optionally, specify a custom API server URL to use it instead of the official Telegram server.';
+  String help_ntfy_01(Object url) {
+    return 'In the ntfy app or web version ($url), subscribe to a new topic using a name that\'s hard to guess.';
+  }
 
   @override
-  String get help_smtp => 'Setting Up a SMTP Server';
+  String get help_ntfy_02 =>
+      'Create a rule, enter the topic name, and optionally set a notification priority.';
+
+  @override
+  String get help_ntfy_03 =>
+      'Public topics are accessible to anyone who knows their name. For better security, use authentication and access token.';
+
+  @override
+  String get help_ntfy_04 =>
+      'The official ntfy.sh server is used by default, but you can specify a custom server.';
 
   @override
   String get help_smtp_01 =>
@@ -374,13 +385,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get help_smtp_02 =>
       'Add a rule and enter your SMTP details. Most providers require an \'App Password\' (generate one in your account security settings).';
-
-  @override
-  String get help_smtp_03 =>
-      'Test and save your settings, enable the rule, then tap Start.';
-
-  @override
-  String get help_sms => 'Sending SMS';
 
   @override
   String get help_sms_01 =>
@@ -445,27 +449,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_badRequest =>
-      'Request was rejected. Check the entered connection parameters.';
+      'The server rejected the request. Check the connection parameters.';
 
   @override
-  String get error_invalidParams =>
-      'Invalid connection parameters. Correct them and try again.';
+  String get error_forbidden =>
+      'Authorization error. Check access permissions.';
+
+  @override
+  String get error_invalidParams => 'Invalid connection parameters.';
 
   @override
   String get error_networkError =>
-      'Check your internet connection and try again.';
+      'Connection error. Check your internet connection or network settings.';
 
   @override
   String get error_networkTimeout =>
-      'Request timed out. Check your internet and make sure connection parameters are correct.';
+      'Request timed out. Check the network or connection parameters.';
 
   @override
-  String get error_rateLimited =>
-      'You are sending requests too fast. Please wait a moment and try again.';
+  String get error_rateLimited => 'Request limit exceeded. Try again later.';
 
   @override
-  String get error_serverError =>
-      'The server is currently unavailable. Please try again later.';
+  String get error_serverError => 'Server error. Try again later.';
 
   @override
   String get error_smtpAddressRejected =>
@@ -473,15 +478,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_smtpError =>
-      'The server returned an error. Check the entered connection parameters.';
-
-  @override
-  String get error_smtp_forbidden =>
-      'Action was rejected by the server. Check access permissions.';
+      'The server returned an error. Check the connection parameters.';
 
   @override
   String get error_smtp_unauthorized =>
-      'Authorization error. Check your login and password.';
+      'Access error. Check your login and password.';
 
   @override
   String get error_tbot_conflict =>
@@ -489,19 +490,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_tbot_forbidden =>
-      'Telegram denied this action. Make sure the bot has access to the chat.';
+      'Authorization error. Make sure the bot has access to the chat.';
 
   @override
-  String get error_tbot_unauthorized =>
-      'Authorization error. Enter a valid token and try again.';
+  String get error_tbot_unauthorized => 'Access error. Check the token.';
 
   @override
   String get error_tbot_uninitialized =>
       'Unable to get chat ID. Start a conversation with your bot in Telegram and try again.';
 
   @override
-  String get error_unexpectedError =>
-      'An unexpected error occurred. Please try again later.';
+  String get error_unauthorized => 'Access error. Check your credentials.';
+
+  @override
+  String get error_unexpectedError => 'Couldn\'t complete the action.';
 
   @override
   String get error_secretsError =>
@@ -513,5 +515,5 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get warn_permissionsRequired =>
-      'To start monitoring, please grant the required permissions.';
+      'To start monitoring, grant the required permissions.';
 }

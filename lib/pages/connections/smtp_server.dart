@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../extensions/build_context_x.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../constants.dart';
 import '../../styles.dart';
 import '../../state.dart';
 import '../../service.dart';
@@ -98,7 +99,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
 
     try {
       final result = await sendToProviderNative(
-        provider: 'smtp_server',
+        provider: ProviderId.smtp,
         config: config,
         secret: _passwordController.text,
         body: l10n.msg_hello,
@@ -110,7 +111,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
         setState(() => _testResult = true);
       } else {
         setState(() => _testResult = false);
-        context.showErrorSnack(getLocalizedError(l10n, result.code, 'smtp_server'));
+        context.showErrorSnack(getLocalizedError(l10n, result.code, ProviderId.smtp));
       }
     } catch (_) {
       if (mounted) {
@@ -118,7 +119,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
         context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     } finally {
-      if (mounted) setState(() { _isTesting = false; });
+      if (mounted) setState(() => _isTesting = false);
     }
   }
 
@@ -126,7 +127,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (!_isValidInputs) {
-      setState(() { _saveResult = false; });
+      setState(() => _saveResult = false);
       context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
       return;
     }
@@ -144,12 +145,12 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
           _isInputChanged = false;
         });
       } else {
-        setState(() { _saveResult = false; });
+        setState(() => _saveResult = false);
         context.showErrorSnack(getLocalizedError(l10n, result.code));
       }
     } catch (_) {
       if (mounted) {
-        setState(() { _saveResult = false; });
+        setState(() => _saveResult = false);
         context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     }
@@ -307,7 +308,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
             onChanged: _protocol == 'none'
                 ? null
                 : (value) {
-                  setState(() { _insecureTls = value; });
+                  setState(() => _insecureTls = value);
                   _onChanged();
                   if (value) context.showErrorSnack(l10n.smtp_insecureTlsInfo);
                 },
@@ -335,7 +336,7 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
                   _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
                 ),
                 onPressed: () {
-                  setState(() { _isPasswordVisible = !_isPasswordVisible; });
+                  setState(() => _isPasswordVisible = !_isPasswordVisible);
                 },
               ),
             ),

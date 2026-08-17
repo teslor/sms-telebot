@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../extensions/build_context_x.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../constants.dart';
 import '../service.dart';
 import '../state.dart';
 import '../styles.dart';
@@ -43,22 +44,22 @@ class RulesMainPage extends StatelessWidget {
 class RulesPage extends StatelessWidget {
   const RulesPage({super.key});
 
-  String _providerName(String provider, AppLocalizations l10n) {
+  String _providerName(String provider) {
     return switch (provider) {
-      'telegram_bot' => 'Telegram',
-      'ntfy_server' => 'NTFY',
-      'smtp_server' => 'SMTP',
-      'sms_gateway' => 'SMS',
+      ProviderId.telegram => 'Telegram',
+      ProviderId.ntfy => 'ntfy',
+      ProviderId.smtp => 'SMTP',
+      ProviderId.sms => 'SMS',
       _ => provider,
     };
   }
 
   IconData _providerIcon(String provider) {
     return switch (provider) {
-      'telegram_bot' => Icons.telegram_outlined,
-      'ntfy_server' => Icons.terminal_outlined,
-      'smtp_server' => Icons.email_outlined,
-      'sms_gateway' => Icons.sms_outlined,
+      ProviderId.telegram => Icons.telegram_outlined,
+      ProviderId.ntfy => Icons.terminal_outlined,
+      ProviderId.smtp => Icons.email_outlined,
+      ProviderId.sms => Icons.sms_outlined,
       _ => Icons.extension,
     };
   }
@@ -79,8 +80,7 @@ class RulesPage extends StatelessWidget {
           separatorBuilder: (_, _) => const Divider(height: 1),
           itemBuilder: (itemContext, index) {
             final provider = providers[index];
-            final l10n = AppLocalizations.of(itemContext)!;
-            final name = _providerName(provider, l10n);
+            final name = _providerName(provider);
             return ListTile(
               contentPadding: const EdgeInsetsDirectional.only(start: 20),
               leading: Icon(
@@ -125,10 +125,9 @@ class RulesPage extends StatelessWidget {
         onPressed: () async {
           final selectedProvider = await _showProviderPicker(context);
           if (selectedProvider == null) return;
-          if (selectedProvider == 'sms_gateway' && !await getSmsSendPermission(openSettings: true)) return;
+          if (selectedProvider == ProviderId.sms && !await getSmsSendPermission(openSettings: true)) return;
           if (!context.mounted) return;
-          final l10n = AppLocalizations.of(context)!;
-          final name = _providerName(selectedProvider, l10n);
+          final name = _providerName(selectedProvider);
           await _runAppStateAction(
             context,
             () => appState.addRule(name: name, provider: selectedProvider, autoSelect: true),

@@ -298,6 +298,12 @@ abstract class AppLocalizations {
   /// **'No rules yet.\nAdd your first one!'**
   String get rules_empty;
 
+  /// No description provided for @rules_setup.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule setup'**
+  String get rules_setup;
+
   /// No description provided for @config.
   ///
   /// In en, this message translates to:
@@ -405,12 +411,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Default: {url}'**
   String ntfy_serverInfo(Object url);
-
-  /// No description provided for @ntfy_noFirebase.
-  ///
-  /// In en, this message translates to:
-  /// **'Disable Firebase'**
-  String get ntfy_noFirebase;
 
   /// No description provided for @smtp_host.
   ///
@@ -703,7 +703,7 @@ abstract class AppLocalizations {
   /// No description provided for @help_info_01.
   ///
   /// In en, this message translates to:
-  /// **'Forward messages to Telegram bots, email (SMTP), or via SMS. Configure multiple destinations easily!'**
+  /// **'Forward messages to Telegram, ntfy, email, or via SMS. Configure multiple destinations easily!'**
   String get help_info_01;
 
   /// No description provided for @help_info_02.
@@ -748,47 +748,59 @@ abstract class AppLocalizations {
   /// **'Disable battery optimization for this app to prevent the system from restricting background activity.'**
   String get help_opts_04;
 
-  /// No description provided for @help_tbot.
+  /// No description provided for @help_rule_01.
   ///
   /// In en, this message translates to:
-  /// **'Setting Up a Telegram Bot'**
-  String get help_tbot;
+  /// **'Test and save the settings (a welcome message will be sent upon successful test). Then enable the rule in the list and tap Start to begin forwarding!'**
+  String get help_rule_01;
 
   /// No description provided for @help_tbot_01.
   ///
   /// In en, this message translates to:
-  /// **'Don\'t have a bot? Use Telegram\'s @BotFather to create one and get an API token. It\'s free and easy.'**
+  /// **'Don\'t have a bot? Use Telegram\'s @BotFather to create one and get an API token.'**
   String get help_tbot_01;
 
   /// No description provided for @help_tbot_02.
   ///
   /// In en, this message translates to:
-  /// **'Open a chat with your bot in Telegram and send any message. This allows the app to automatically detect your Chat ID.'**
+  /// **'Open a chat with your bot in the Telegram app and send any message. This will allow for automatic detection of your Chat ID.'**
   String get help_tbot_02;
 
   /// No description provided for @help_tbot_03.
   ///
   /// In en, this message translates to:
-  /// **'In the app, add a Telegram bot rule and paste your token (optional: manually set Chat ID). Test the connection, then save. You\'ll receive a hello message if it works.'**
+  /// **'Add a Telegram rule and paste your token. Optionally, you can set the Chat ID manually.'**
   String get help_tbot_03;
 
   /// No description provided for @help_tbot_04.
   ///
   /// In en, this message translates to:
-  /// **'Done! Enable the rule and tap Start to begin forwarding messages.'**
+  /// **'You can also specify a custom API server URL to use it instead of the official Telegram server.'**
   String get help_tbot_04;
 
-  /// No description provided for @help_tbot_05.
+  /// No description provided for @help_ntfy_01.
   ///
   /// In en, this message translates to:
-  /// **'Optionally, specify a custom API server URL to use it instead of the official Telegram server.'**
-  String get help_tbot_05;
+  /// **'In the ntfy app or web version ({url}), subscribe to a new topic using a name that\'s hard to guess.'**
+  String help_ntfy_01(Object url);
 
-  /// No description provided for @help_smtp.
+  /// No description provided for @help_ntfy_02.
   ///
   /// In en, this message translates to:
-  /// **'Setting Up a SMTP Server'**
-  String get help_smtp;
+  /// **'Create a rule, enter the topic name, and optionally set a notification priority.'**
+  String get help_ntfy_02;
+
+  /// No description provided for @help_ntfy_03.
+  ///
+  /// In en, this message translates to:
+  /// **'Public topics are accessible to anyone who knows their name. For better security, use authentication and access token.'**
+  String get help_ntfy_03;
+
+  /// No description provided for @help_ntfy_04.
+  ///
+  /// In en, this message translates to:
+  /// **'The official ntfy.sh server is used by default, but you can specify a custom server.'**
+  String get help_ntfy_04;
 
   /// No description provided for @help_smtp_01.
   ///
@@ -801,18 +813,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add a rule and enter your SMTP details. Most providers require an \'App Password\' (generate one in your account security settings).'**
   String get help_smtp_02;
-
-  /// No description provided for @help_smtp_03.
-  ///
-  /// In en, this message translates to:
-  /// **'Test and save your settings, enable the rule, then tap Start.'**
-  String get help_smtp_03;
-
-  /// No description provided for @help_sms.
-  ///
-  /// In en, this message translates to:
-  /// **'Sending SMS'**
-  String get help_sms;
 
   /// No description provided for @help_sms_01.
   ///
@@ -913,37 +913,43 @@ abstract class AppLocalizations {
   /// No description provided for @error_badRequest.
   ///
   /// In en, this message translates to:
-  /// **'Request was rejected. Check the entered connection parameters.'**
+  /// **'The server rejected the request. Check the connection parameters.'**
   String get error_badRequest;
+
+  /// No description provided for @error_forbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Authorization error. Check access permissions.'**
+  String get error_forbidden;
 
   /// No description provided for @error_invalidParams.
   ///
   /// In en, this message translates to:
-  /// **'Invalid connection parameters. Correct them and try again.'**
+  /// **'Invalid connection parameters.'**
   String get error_invalidParams;
 
   /// No description provided for @error_networkError.
   ///
   /// In en, this message translates to:
-  /// **'Check your internet connection and try again.'**
+  /// **'Connection error. Check your internet connection or network settings.'**
   String get error_networkError;
 
   /// No description provided for @error_networkTimeout.
   ///
   /// In en, this message translates to:
-  /// **'Request timed out. Check your internet and make sure connection parameters are correct.'**
+  /// **'Request timed out. Check the network or connection parameters.'**
   String get error_networkTimeout;
 
   /// No description provided for @error_rateLimited.
   ///
   /// In en, this message translates to:
-  /// **'You are sending requests too fast. Please wait a moment and try again.'**
+  /// **'Request limit exceeded. Try again later.'**
   String get error_rateLimited;
 
   /// No description provided for @error_serverError.
   ///
   /// In en, this message translates to:
-  /// **'The server is currently unavailable. Please try again later.'**
+  /// **'Server error. Try again later.'**
   String get error_serverError;
 
   /// No description provided for @error_smtpAddressRejected.
@@ -955,19 +961,13 @@ abstract class AppLocalizations {
   /// No description provided for @error_smtpError.
   ///
   /// In en, this message translates to:
-  /// **'The server returned an error. Check the entered connection parameters.'**
+  /// **'The server returned an error. Check the connection parameters.'**
   String get error_smtpError;
-
-  /// No description provided for @error_smtp_forbidden.
-  ///
-  /// In en, this message translates to:
-  /// **'Action was rejected by the server. Check access permissions.'**
-  String get error_smtp_forbidden;
 
   /// No description provided for @error_smtp_unauthorized.
   ///
   /// In en, this message translates to:
-  /// **'Authorization error. Check your login and password.'**
+  /// **'Access error. Check your login and password.'**
   String get error_smtp_unauthorized;
 
   /// No description provided for @error_tbot_conflict.
@@ -979,13 +979,13 @@ abstract class AppLocalizations {
   /// No description provided for @error_tbot_forbidden.
   ///
   /// In en, this message translates to:
-  /// **'Telegram denied this action. Make sure the bot has access to the chat.'**
+  /// **'Authorization error. Make sure the bot has access to the chat.'**
   String get error_tbot_forbidden;
 
   /// No description provided for @error_tbot_unauthorized.
   ///
   /// In en, this message translates to:
-  /// **'Authorization error. Enter a valid token and try again.'**
+  /// **'Access error. Check the token.'**
   String get error_tbot_unauthorized;
 
   /// No description provided for @error_tbot_uninitialized.
@@ -994,10 +994,16 @@ abstract class AppLocalizations {
   /// **'Unable to get chat ID. Start a conversation with your bot in Telegram and try again.'**
   String get error_tbot_uninitialized;
 
+  /// No description provided for @error_unauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Access error. Check your credentials.'**
+  String get error_unauthorized;
+
   /// No description provided for @error_unexpectedError.
   ///
   /// In en, this message translates to:
-  /// **'An unexpected error occurred. Please try again later.'**
+  /// **'Couldn\'t complete the action.'**
   String get error_unexpectedError;
 
   /// No description provided for @error_secretsError.
@@ -1015,7 +1021,7 @@ abstract class AppLocalizations {
   /// No description provided for @warn_permissionsRequired.
   ///
   /// In en, this message translates to:
-  /// **'To start monitoring, please grant the required permissions.'**
+  /// **'To start monitoring, grant the required permissions.'**
   String get warn_permissionsRequired;
 }
 

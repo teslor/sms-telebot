@@ -87,14 +87,14 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
         } else {
           if (mounted) {
             setState(() => _testResult = false);
-            context.showErrorSnack(getLocalizedError(l10n, result.code, 'telegram_bot'));
+            context.showErrorSnack(getLocalizedError(l10n, result.code, ProviderId.telegram));
             return;
           }
         }
       }
 
       final result = await sendToProviderNative(
-        provider: 'telegram_bot',
+        provider: ProviderId.telegram,
         config: {'chatId': chatId, if (apiUrl.isNotEmpty) 'apiUrl': apiUrl},
         secret: token,
         body: l10n.msg_hello,
@@ -106,7 +106,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
         setState(() => _testResult = true);
       } else {
         setState(() => _testResult = false);
-        context.showErrorSnack(getLocalizedError(l10n, result.code, 'telegram_bot'));
+        context.showErrorSnack(getLocalizedError(l10n, result.code, ProviderId.telegram));
       }
     } catch (e) {
       if (mounted) {
@@ -114,7 +114,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
         context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     } finally {
-      if (mounted) setState(() { _isTesting = false; });
+      if (mounted) setState(() => _isTesting = false);
     }
   }
 
@@ -122,7 +122,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (!_isValidToken || !_isValidChatId || !_isValidApiUrl) {
-      setState(() { _saveResult = false; });
+      setState(() => _saveResult = false);
       context.showErrorSnack(getLocalizedError(l10n, 'invalid_params'));
       return;
     }
@@ -146,12 +146,12 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
           _isInputChanged = false;
         });
       } else {
-        setState(() { _saveResult = false; });
+        setState(() => _saveResult = false);
         context.showErrorSnack(getLocalizedError(l10n, result.code));
       }
     } catch (_) {
       if (mounted) {
-        setState(() { _saveResult = false; });
+        setState(() => _saveResult = false);
         context.showErrorSnack(getLocalizedError(l10n, 'unexpected_error'));
       }
     }
@@ -197,7 +197,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
             keyboardType: TextInputType.url,
             decoration: CustomStyle.compactInput(
               labelText: l10n.tbot_server,
-              helperText: l10n.tbot_serverInfo(AppConst.telegramUrl),
+              helperText: l10n.tbot_serverInfo(telegramUrl),
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             onChanged: _onChanged,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../constants.dart';
 import '../state.dart';
 import 'rule_connection_page.dart';
 import 'rule_filters_page.dart';
@@ -56,7 +57,7 @@ class _RulePageState extends State<RulePage> {
     final appState = context.watch<AppState>();
     final l10n = AppLocalizations.of(context)!;
     final provider = appState.selectedRule?['provider'];
-    final connectionTabTitle = provider == 'sms_gateway' ? l10n.sms_receiver : l10n.connection;
+    final connectionTabTitle = provider == ProviderId.sms ? l10n.sms_receiver : l10n.connection;
 
     return PopScope(
       canPop: false,
