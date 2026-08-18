@@ -68,6 +68,9 @@ class _HelpPageState extends State<HelpPage> {
       l10n.help_filters_04,
       l10n.help_filters_05,
     ];
+     final List<String> optionsItems = [
+      l10n.help_options_01,
+    ];
 
     final Color selectedChannelColor = Theme.of(context).colorScheme.primary;
     final List<String> selectedItems = [
@@ -155,6 +158,9 @@ class _HelpPageState extends State<HelpPage> {
 
             Text(l10n.help_filters, style: sectionSubtitleStyle),
             GuideList(items: filterItems, warnIndices: [4]),
+
+            Text(l10n.options, style: sectionSubtitleStyle),
+            GuideList(items: optionsItems, warnIndices: []),
             const SizedBox(height: 2),
           ],
         ),

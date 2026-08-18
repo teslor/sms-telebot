@@ -423,6 +423,10 @@ class AppLocalizationsRu extends AppLocalizations {
       'Фильтры применяются для всех типов событий, не только для входящих СМС.';
 
   @override
+  String get help_options_01 =>
+      'Приоритет правила определяет очерёдность обработки. Если правило сработало (сообщение отправлено), то остальные с меньшим приоритетом не применяются. Правила с одинаковым приоритетом срабатывают одновременно.';
+
+  @override
   String get consent_welcome =>
       'Добро пожаловать!\nПродолжая, вы подтверждаете, что ознакомились с этой информацией:';
 
@@ -437,10 +441,6 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get consent_item_03 =>
       'Важные разрешения запрашиваются только при включении соответствующих функций.';
-
-  @override
-  String get consent_item_04 =>
-      'Из-за используемых разрешений Google Play Protect и антивирусы могут показывать ложные предупреждения.';
 
   @override
   String get consent_details => 'Подробнее: ';

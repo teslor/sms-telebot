@@ -100,7 +100,7 @@ class _SettingsPageState extends State<SettingsPage> {
           Card(
             margin: EdgeInsets.zero,
             elevation: 0,
-            color: theme.colorScheme.surfaceContainerLow, 
+            color: theme.colorScheme.surfaceContainerLow,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
               side: BorderSide(color: theme.colorScheme.outlineVariant),

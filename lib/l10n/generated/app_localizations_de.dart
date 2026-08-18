@@ -425,6 +425,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die angegebenen Filter gelten für alle Ereignistypen, nicht nur für eingehende SMS.';
 
   @override
+  String get help_options_01 =>
+      'Die Regelpriorität bestimmt die Verarbeitungsreihenfolge. Wenn eine Regel ausgelöst wird (Nachricht gesendet), werden Regeln mit niedrigerer Priorität übersprungen. Regeln mit gleicher Priorität werden gleichzeitig ausgeführt.';
+
+  @override
   String get consent_welcome =>
       'Willkommen!\nWenn Sie fortfahren, bestätigen Sie, dass Sie diese Informationen gelesen haben:';
 
@@ -439,10 +443,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get consent_item_03 =>
       'Sensible Berechtigungen werden nur aktiviert, wenn Sie die entsprechenden Funktionen einschalten.';
-
-  @override
-  String get consent_item_04 =>
-      'Aufgrund der verwendeten Berechtigungen können Google Play Protect und Antivirenprogramme falsche Warnungen anzeigen.';
 
   @override
   String get consent_details => 'Mehr erfahren: ';

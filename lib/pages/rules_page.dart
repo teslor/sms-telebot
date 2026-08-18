@@ -83,6 +83,7 @@ class RulesPage extends StatelessWidget {
             final name = _providerName(provider);
             return ListTile(
               contentPadding: const EdgeInsetsDirectional.only(start: 20),
+              horizontalTitleGap: 12,
               leading: Icon(
                 _providerIcon(provider),
                 color: CustomColor.provider(provider),
@@ -159,6 +160,7 @@ class RuleCard extends StatelessWidget {
             if (index == 0) {
               return ListTile(
                 contentPadding: const EdgeInsetsDirectional.only(start: 20),
+                horizontalTitleGap: 12,
                 leading: const Icon(Icons.control_point_duplicate),
                 title: Text(
                   AppLocalizations.of(context)!.action_duplicate,
@@ -177,6 +179,7 @@ class RuleCard extends StatelessWidget {
 
             return ListTile(
               contentPadding: const EdgeInsetsDirectional.only(start: 20),
+              horizontalTitleGap: 12,
               leading: const Icon(Icons.delete_outline, color: Colors.red),
               title: Text(
                 AppLocalizations.of(context)!.action_delete,

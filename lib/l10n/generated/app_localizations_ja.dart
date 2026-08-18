@@ -415,6 +415,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get help_filters_05 => '設定したフィルターは、受信SMSだけでなくすべてのイベント種別に適用されます。';
 
   @override
+  String get help_options_01 =>
+      'ルールの優先度は処理順序を決定します。ルールが実行される（メッセージが送信される）と、より優先度の低いルールはスキップされます。同じ優先度のルールは同時に実行されます。';
+
+  @override
   String get consent_welcome => 'ようこそ！\n続行すると、この情報を確認したことに同意したものとみなされます：';
 
   @override
@@ -427,10 +431,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get consent_item_03 => '機密性の高い権限は、対応する機能を有効にした場合のみ要求されます。';
-
-  @override
-  String get consent_item_04 =>
-      '使用する権限により、Google Play Protectやウイルス対策ソフトが誤った警告を表示することがあります。';
 
   @override
   String get consent_details => '詳しく見る：';

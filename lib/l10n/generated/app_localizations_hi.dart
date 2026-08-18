@@ -423,6 +423,10 @@ class AppLocalizationsHi extends AppLocalizations {
       'सेट किए गए फ़िल्टर सभी इवेंट प्रकारों पर लागू होते हैं, सिर्फ इनकमिंग SMS पर नहीं।';
 
   @override
+  String get help_options_01 =>
+      'नियम की प्राथमिकता प्रोसेसिंग क्रम निर्धारित करती है। यदि कोई नियम सक्रिय होता है (संदेश भेजा गया), तो कम प्राथमिकता वाले नियम छोड़ दिए जाते हैं। समान प्राथमिकता वाले नियम एक साथ सक्रिय होते हैं।';
+
+  @override
   String get consent_welcome =>
       'स्वागत है!\nजारी रखकर, आप पुष्टि करते हैं कि आपने यह जानकारी पढ़ ली है:';
 
@@ -437,10 +441,6 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get consent_item_03 =>
       'संवेदनशील अनुमतियां केवल संबंधित सुविधाएं सक्षम करने पर मांगी जाती हैं।';
-
-  @override
-  String get consent_item_04 =>
-      'उपयोग की गई अनुमतियों के कारण Google Play Protect और एंटीवायरस गलत चेतावनियां दिखा सकते हैं।';
 
   @override
   String get consent_details => 'अधिक जानकारी: ';

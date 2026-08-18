@@ -400,6 +400,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get help_filters_05 => '已设置的筛选器会应用于所有事件类型，不仅仅是接收短信。';
 
   @override
+  String get help_options_01 =>
+      '规则优先级决定处理顺序。如果规则触发（消息已发送），则优先级较低的规则将被跳过。优先级相同的规则会同时触发。';
+
+  @override
   String get consent_welcome => '欢迎！\n继续操作即表示您确认已阅读以下信息：';
 
   @override
@@ -410,9 +414,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get consent_item_03 => '只有在启用相应功能时，应用才会请求敏感权限。';
-
-  @override
-  String get consent_item_04 => '由于使用了这些权限，Google Play Protect 和杀毒软件可能会显示误报。';
 
   @override
   String get consent_details => '了解更多：';

@@ -104,7 +104,7 @@ class _RulePageState extends State<RulePage> {
                 icon: Icon(_isEditing ? Icons.check : Icons.edit),
                 onPressed: () {
                   if (_isEditing) {
-                    _focusNode.unfocus(); 
+                    _focusNode.unfocus();
                   } else {
                     setState(() {
                       _isEditing = true;

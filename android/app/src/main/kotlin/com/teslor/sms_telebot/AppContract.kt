@@ -83,7 +83,7 @@ object MessageHelpers {
                 val text = "🕒 $time<i>$lb</i>" + if (b.isNotBlank()) "\n$b" else ""
                 FormattedMessage("$emoji <b>$s</b>", text)
             }
- 
+
             SendProviderId.NTFY -> {
                 val text = "🕒 $time$lb" + if (body.isNotBlank()) "\n$body" else ""
                 FormattedMessage("$emoji $sender", text)

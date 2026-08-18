@@ -68,10 +68,8 @@ class _ConsentContent extends StatelessWidget {
           Text(l10n.consent_item_02, style: itemStyle),
           _itemDivider,
           Text(l10n.consent_item_03, style: itemStyle),
-          _itemDivider,
-          Text(l10n.consent_item_04, style: itemStyle),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
           Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [

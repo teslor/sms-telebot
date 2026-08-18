@@ -868,6 +868,12 @@ abstract class AppLocalizations {
   /// **'The specified filters apply to all event types, not just incoming SMS.'**
   String get help_filters_05;
 
+  /// No description provided for @help_options_01.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule priority determines the processing order. If a rule triggers (message sent), lower-priority rules are skipped. Rules with equal priority trigger simultaneously.'**
+  String get help_options_01;
+
   /// No description provided for @consent_welcome.
   ///
   /// In en, this message translates to:
@@ -891,12 +897,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sensitive permissions are requested only when you enable the corresponding features.'**
   String get consent_item_03;
-
-  /// No description provided for @consent_item_04.
-  ///
-  /// In en, this message translates to:
-  /// **'Because of the permissions used, Google Play Protect and antivirus software may show false warnings.'**
-  String get consent_item_04;
 
   /// No description provided for @consent_details.
   ///
