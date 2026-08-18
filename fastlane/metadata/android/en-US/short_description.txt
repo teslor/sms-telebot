@@ -1,1 +1,1 @@
-Forward SMS, calls, and battery alerts to Telegram, email, or SMS
+Forward SMS, calls, and battery alerts to Telegram, ntfy, email, or SMS

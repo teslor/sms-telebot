@@ -1,4 +1,4 @@
-SMS Telebot forwards phone events to Telegram bots, email addresses (via SMTP), or phone numbers (via SMS)
+SMS Telebot forwards phone events to Telegram bots, ntfy topics, email addresses (via SMTP), or phone numbers (via SMS)
 
 Stay informed when your phone receives:
 

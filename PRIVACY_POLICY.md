@@ -7,8 +7,8 @@ This Privacy Policy explains how the **SMS Telebot** application collects, proce
 **SMS Telebot** is an automation tool designed strictly for personal use.
 
 * **No Cloud / No Developer Access:** The developer does not operate any background servers, analytics engines, or telemetry systems. Your passwords, SMS messages, call logs, device events, and configuration data remain entirely private and not transmitted to any unauthorized remote servers.
-* **Storage and Encryption:** All configuration settings are stored locally on the device. Sensitive data, including Telegram bot tokens and SMTP passwords, is stored in encrypted form.
-* **User-Directed Routing:** Data is only transmitted to the destinations explicitly configured by you (e.g., your personal Telegram Bot, your designated SMTP server, or another phone number via outgoing SMS). The app does nothing until you manually create and enable a forwarding rule and tap Start.
+* **Storage and Encryption:** All configuration settings are stored locally on the device. Sensitive data, including Telegram bot tokens, ntfy topics and access tokens, and SMTP passwords, is stored in encrypted form.
+* **User-Directed Routing:** Data is only transmitted to the destinations explicitly configured by you (e.g., a Telegram Bot, an ntfy server, an SMTP server, or another phone number via outgoing SMS). The app does nothing until you manually create and enable a forwarding rule and tap Start.
 
 ## 2. Transparency and Application Behavior
 
@@ -26,7 +26,7 @@ The application requests sensitive permissions purely on-demand, only when a spe
 * **READ_PHONE_STATE / READ_CALL_LOG:** Required only if you enable incoming call notifications in the settings. These permissions are used strictly to detect incoming phone numbers to route call alerts.
 * **SEND_SMS:** Required if you configure a rule to forward events as standard outgoing SMS messages to another phone number. The application will never send SMS messages implicitly or to unknown numbers. (Please note: standard network carrier charges may apply for outgoing SMS).
 * **FOREGROUND_SERVICE / POST_NOTIFICATIONS:** Required if you enable the optional "Always-on" mode. This allows the app to maintain a persistent connection without being killed by Android's battery optimizer. When active, it shows a status-bar notification to guarantee you are aware the app is running.
-* **INTERNET:** Required to forward the triggered events to your Telegram bot or SMTP server.
+* **INTERNET:** Required to forward event-triggered data to configured destinations, including Telegram bots, ntfy servers, and SMTP servers.
 * **RECEIVE_BOOT_COMPLETED:** Required to automatically re-initialize your active background forwarding rules after the device restarts.
 
 ## 4. Security Notice

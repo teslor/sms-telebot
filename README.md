@@ -4,12 +4,12 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue)](https://www.gnu.org/licenses/agpl-3.0)
 [![Privacy Policy](https://img.shields.io/badge/Privacy%20Policy-green)](./PRIVACY_POLICY.md)
 
-SMS Telebot is an Android app that automatically forwards incoming SMS to Telegram bots, email addresses via SMTP, or phone numbers via outgoing SMS.
+SMS Telebot is an Android app that automatically forwards incoming SMS to Telegram bots, ntfy topics, email addresses via SMTP, or phone numbers via outgoing SMS.
 It can also notify you about incoming calls, low battery, and charger connection status changes.
 
 ## :star: Features
 
-* **Flexible Forwarding Rules**: Create as many forwarding rules as you need and route events to a Telegram bot, an SMTP server, or a phone number (via SMS). You can add multiple destinations!
+* **Flexible Forwarding Rules**: Create as many forwarding rules as you need and route events to a Telegram bot, an ntfy server, an SMTP server, or a phone number (via SMS). You can add multiple destinations!
 
 * **Event Selection**: Choose exactly what to forward: incoming SMS, incoming calls, low battery alerts, or charger connection updates.
 
@@ -23,13 +23,17 @@ It can also notify you about incoming calls, low battery, and charger connection
 
 ## :hammer_and_wrench: Getting Started
 
-* **Set Up Telegram Bot**: If you do not have a bot yet, create one with [@BotFather](https://t.me/BotFather) (quick and free), then open a chat with your bot and send any message so the app can fetch chat ID automatically.
+* **Set Up Telegram**: If you do not have a bot yet, create one with [@BotFather](https://t.me/BotFather) (quick and free), then open a chat with your bot and send any message so the app can fetch chat ID automatically.
 
-* **Set Up SMTP Server**: Use any SMTP-enabled email account (for example Gmail). A dedicated mailbox is recommended, and in most cases you will need an app password from your email account security settings.
+* **Set Up ntfy**: Pick a topic name on any ntfy server (e.g., ntfy.sh or your own instance). To ensure privacy, use a long, random string so that no one else can subscribe to your topic.
 
-* **Create Forwarding Rules**: In the app, add one or more forwarding rules and choose the destination type (Telegram bot, SMTP server, SMS). Test each configuration and save it.
+* **Set Up SMTP**: Use any SMTP-enabled email account (for example Gmail). A dedicated mailbox is recommended, and in most cases you will need an app password from your email account security settings.
 
-* **Start Forwarding**: Once configured, your incoming messages and events will be forwarded using your active rules.
+* **Choose Events**: In the app settings, pick the events you want to forward, grant required permissions, and save your changes.
+
+* **Create Forwarding Rules**: Create one or more forwarding rules by selecting a destination (Telegram, ntfy, SMTP, or SMS). Test each configuration, save it, and then enable it from the rules list.
+
+* **Start Forwarding**: All set! Tap 'Start' to begin forwarding your messages and events.
 
 ## :mag: Using Filters
 
@@ -43,7 +47,6 @@ To verify if a specific message will be forwarded, simply enter the sender and/o
 
 ## :rocket: What's Next?
 
-* Forwarding to NTFY server *(soon)*
 * Push notifications forwarding
 * Custom message templates
 * Proxy settings
