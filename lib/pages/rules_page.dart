@@ -87,6 +87,7 @@ class RulesPage extends StatelessWidget {
               leading: Icon(
                 _providerIcon(provider),
                 color: CustomColor.provider(provider),
+                applyTextScaling: true,
               ),
               title: Text(name, style: const TextStyle(fontSize: 17)),
               onTap: () => Navigator.pop(sheetContext, provider),
@@ -161,7 +162,7 @@ class RuleCard extends StatelessWidget {
               return ListTile(
                 contentPadding: const EdgeInsetsDirectional.only(start: 20),
                 horizontalTitleGap: 12,
-                leading: const Icon(Icons.control_point_duplicate),
+                leading: const Icon(Icons.control_point_duplicate, applyTextScaling: true),
                 title: Text(
                   AppLocalizations.of(context)!.action_duplicate,
                   style: const TextStyle(fontSize: 17),
@@ -180,7 +181,7 @@ class RuleCard extends StatelessWidget {
             return ListTile(
               contentPadding: const EdgeInsetsDirectional.only(start: 20),
               horizontalTitleGap: 12,
-              leading: const Icon(Icons.delete_outline, color: Colors.red),
+              leading: const Icon(Icons.delete_outline, color: Colors.red, applyTextScaling: true),
               title: Text(
                 AppLocalizations.of(context)!.action_delete,
                 style: const TextStyle(fontSize: 17, color: Colors.red),
@@ -193,7 +194,7 @@ class RuleCard extends StatelessWidget {
                   builder: (dialogContext) => AlertDialog(
                     title: Text(
                       AppLocalizations.of(context)!.rule_deleteHeader,
-                      style: const TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 19),
                     ),
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -267,15 +268,14 @@ class RuleCard extends StatelessWidget {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Row(
               children: [
                 Expanded(
                   child: Text(
                     rule['name'] ?? AppLocalizations.of(context)!.rule,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                    maxLines: 1, overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Switch(

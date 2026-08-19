@@ -14,7 +14,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  static const EdgeInsets _switchTilePadding = EdgeInsets.fromLTRB(13, 0, 10, 0);
+  static const EdgeInsets _switchTilePadding = EdgeInsets.fromLTRB(13, 0, 10, 1);
+  static const TextStyle _switchStyle = TextStyle(height: 1.2);
 
   late TextEditingController _deviceLabelController;
 
@@ -108,7 +109,7 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Column(
               children: [
                 SwitchListTile(
-                  title: Text(l10n.settings_forwardSms),
+                  title: Text(l10n.settings_forwardSms, style: _switchStyle),
                   contentPadding: _switchTilePadding,
                   value: _forwardSms,
                   onChanged: (bool value) async {
@@ -119,7 +120,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const Divider(height: 1),
                 SwitchListTile(
-                  title: Text(l10n.settings_forwardCalls),
+                  title: Text(l10n.settings_forwardCalls, style: _switchStyle),
                   contentPadding: _switchTilePadding,
                   value: _forwardCalls,
                   onChanged: (bool value) async {
@@ -130,7 +131,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const Divider(height: 1),
                 SwitchListTile(
-                  title: Text(l10n.settings_notifyLowBattery),
+                  title: Text(l10n.settings_notifyLowBattery, style: _switchStyle),
                   contentPadding: _switchTilePadding,
                   value: _notifyLowBattery,
                   onChanged: (bool value) {
@@ -140,7 +141,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const Divider(height: 1),
                 SwitchListTile(
-                  title: Text(l10n.settings_notifyChargerState),
+                  title: Text(l10n.settings_notifyChargerState, style: _switchStyle),
                   contentPadding: _switchTilePadding,
                   value: _notifyChargerState,
                   onChanged: (bool value) {
@@ -165,7 +166,7 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Column(
               children: [
                 SwitchListTile(
-                  title: Text(l10n.settings_enableForeground),
+                  title: Text(l10n.settings_enableForeground, style: _switchStyle),
                   contentPadding: _switchTilePadding,
                   value: _enableForeground,
                   onChanged: (bool value) async {
@@ -176,7 +177,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const Divider(height: 1),
                 SwitchListTile(
-                  title: Text(l10n.settings_attachSimInfo),
+                  title: Text(l10n.settings_attachSimInfo, style: _switchStyle),
                   contentPadding: _switchTilePadding,
                   value: _attachSimInfo,
                   onChanged: (bool value) async {

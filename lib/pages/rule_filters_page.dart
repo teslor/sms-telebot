@@ -73,6 +73,13 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    ButtonSegment<int> modeSegment(int value, String text) => ButtonSegment<int>(
+      value: value,
+      label: Text(
+        text, style: const TextStyle(height: 1.2), textAlign: TextAlign.center,
+        maxLines: 2, overflow: TextOverflow.ellipsis,
+      ),
+    );
 
     return Scaffold(
       body: ListView(
@@ -80,11 +87,18 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
         children:[
           SegmentedButton<int>(
             showSelectedIcon: false,
-            style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 12))),
+            style: const ButtonStyle(
+              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 12)),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
+              ),
+            ),
             segments: <ButtonSegment<int>>[
-              ButtonSegment<int>(value: 0, label: Text(l10n.filters_off, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
-              ButtonSegment<int>(value: 1, label: Text(l10n.filters_whitelist, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
-              ButtonSegment<int>(value: 2, label: Text(l10n.filters_blacklist, textAlign: TextAlign.center, style: const TextStyle(height: 1.15))),
+              modeSegment(0, l10n.filters_off),
+              modeSegment(1, l10n.filters_whitelist),
+              modeSegment(2, l10n.filters_blacklist),
             ],
             selected: <int>{_filterMode},
             onSelectionChanged: (Set<int> newSelection) {
@@ -102,7 +116,7 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
             chips: _filterLists[_getListNames()[0]] ?? const <String>[],
             labelText: l10n.filters_sender,
             helperText: l10n.filters_senderInfo,
-            prefixIcon: const Icon(Icons.person_outline_rounded),
+            prefixIcon: const Icon(Icons.person_outline_rounded, applyTextScaling: true),
             onAddChip: (String chip) {
               final listName = _getListNames()[0];
               if (listName.isEmpty) return;
@@ -127,7 +141,7 @@ class _RuleFiltersPageState extends State<RuleFiltersPage> {
             chips: _filterLists[_getListNames()[1]] ?? const <String>[],
             labelText: l10n.filters_text,
             helperText: l10n.filters_textInfo,
-            prefixIcon: const Icon(Icons.sms_outlined),
+            prefixIcon: const Icon(Icons.sms_outlined, applyTextScaling: true),
             onAddChip: (String chip) {
               final listName = _getListNames()[1];
               if (listName.isEmpty) return;
@@ -209,7 +223,7 @@ class _ChipsWidgetState extends State<ChipsWidget> {
             helperText: widget.helperText,
             prefixIcon: widget.prefixIcon,
             suffixIcon: IconButton(
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add, applyTextScaling: true),
               onPressed: () async {
                 final text = inputController.text.trim();
                 if (text.isEmpty || (isRegex(text) && !await isValidRegexNative(text))) return;
@@ -232,7 +246,7 @@ class _ChipsWidgetState extends State<ChipsWidget> {
                 onTap: () { inputController.text = chip; },
                 child: Text(chip),
               ),
-              deleteIcon: const Icon(Icons.close),
+              deleteIcon: const Icon(Icons.close, applyTextScaling: true),
               onDeleted: () {
                 widget.onDeleteChip(chip);
               },

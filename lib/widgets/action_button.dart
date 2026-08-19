@@ -28,10 +28,14 @@ class ActionButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(label),
+          Flexible(
+            child: Text(label, textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis)
+          ),
           if (isSuccess != null || isInProgress) const SizedBox(width: 5),
-          if (isSuccess == true) const Icon(Icons.sentiment_satisfied_alt, color: Colors.green, size: iconSize)
-          else if (isSuccess == false) const Icon(Icons.sentiment_dissatisfied, color: Colors.orange, size: iconSize)
+          if (isSuccess == true)
+            const Icon(Icons.sentiment_satisfied_alt, color: Colors.green, size: iconSize, applyTextScaling: true)
+          else if (isSuccess == false)
+            const Icon(Icons.sentiment_dissatisfied, color: Colors.orange, size: iconSize, applyTextScaling: true)
           else if (isInProgress)
             const SizedBox(width: iconSize, height: iconSize, child: CircularProgressIndicator(color: Colors.green, strokeWidth: 2))
         ],

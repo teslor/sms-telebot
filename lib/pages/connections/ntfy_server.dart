@@ -25,6 +25,7 @@ class _NtfyServerConnectionState extends State<NtfyServerConnection> {
   bool _isInputChanged = false;
   bool? _testResult;
   bool? _saveResult;
+  bool _isTokenVisible = false;
   int _priority = 3;
 
   static final _topicRegex = RegExp(r'^[-_A-Za-z0-9]{1,64}$');
@@ -107,7 +108,7 @@ class _NtfyServerConnectionState extends State<NtfyServerConnection> {
         setState(() => _testResult = true);
       } else {
         setState(() => _testResult = false);
-        context.showErrorSnack(getLocalizedError(l10n, result.code));
+        context.showErrorSnack(getLocalizedError(l10n, result.code, ProviderId.ntfy));
       }
     } catch (_) {
       if (mounted) {
@@ -201,10 +202,18 @@ class _NtfyServerConnectionState extends State<NtfyServerConnection> {
           const SizedBox(height: 16),
           TextField(
             controller: _tokenController,
+            obscureText: !_isTokenVisible,
             decoration: CustomStyle.compactInput(
               labelText: l10n.ntfy_token,
               helperText: l10n.ntfy_tokenInfo,
               floatingLabelBehavior: FloatingLabelBehavior.always,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isTokenVisible ? Icons.visibility : Icons.visibility_off,
+                  applyTextScaling: true,
+                ),
+                onPressed: () => setState(() => _isTokenVisible = !_isTokenVisible),
+              ),              
             ),
             onChanged: _onChanged,
           ),

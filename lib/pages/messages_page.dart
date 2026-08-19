@@ -112,8 +112,16 @@ class _MessagesPageState extends State<MessagesPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(title, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
-              Text(value, style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
+              Text(
+                title, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center,
+                maxLines: 1, overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                value, style: TextStyle(fontSize: 19),
+                textAlign: TextAlign.center,
+                maxLines: 1, overflow: TextOverflow.ellipsis,
+              ),
             ],
           ),
         ),
@@ -151,7 +159,7 @@ class _MessagesPageState extends State<MessagesPage> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.arrow_downward_rounded, size: 12, color: theme.colorScheme.primary),
+                    Icon(Icons.arrow_downward_rounded, size: 12, color: theme.colorScheme.primary, applyTextScaling: true),
                     const SizedBox(width: 4),
                     Text(receivedDate, style: textStyleMuted),
                   ],
@@ -163,31 +171,31 @@ class _MessagesPageState extends State<MessagesPage> {
                         Text(activityDate, style: textStyleMuted),
                         const SizedBox(width: 4),
                       ],
-                      Icon(statusVisual.icon, size: 12, color: statusVisual.color),
+                      Icon(statusVisual.icon, size: 12, color: statusVisual.color, applyTextScaling: true),
                     ],
                   ),
               ],
             ),
             const SizedBox(height: 6),
-            RichText(
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              textScaler: MediaQuery.textScalerOf(context),
-              text: TextSpan(
-                style: DefaultTextStyle.of(context).style.copyWith(fontSize: 14),
-                children: [
-                  WidgetSpan(
-                    alignment: PlaceholderAlignment.middle,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 2),
-                      child: Icon(titleIcon, size: 14, color: titleIconColor),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(titleIcon, size: 14, color: titleIconColor, applyTextScaling: true),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        sender,
+                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                        maxLines: 1, overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                  TextSpan(text: ' $sender', style: const TextStyle(fontWeight: FontWeight.w600)),
-                  if (bodyText.isNotEmpty) TextSpan(text: '\n$bodyText'),
-                ]
-              ),
-            ),
+                  ],
+                ),
+                if (bodyText.isNotEmpty) Text(bodyText, maxLines: 2, overflow: TextOverflow.ellipsis),
+              ],
+            )
           ],
         ),
       ),

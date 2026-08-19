@@ -333,11 +333,10 @@ class _SmtpServerConnectionState extends State<SmtpServerConnection> {
               helperText: l10n.smtp_passwordInfo,
               suffixIcon: IconButton(
                 icon: Icon(
-                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  applyTextScaling: true,
                 ),
-                onPressed: () {
-                  setState(() => _isPasswordVisible = !_isPasswordVisible);
-                },
+                onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
               ),
             ),
             onChanged: _onChanged,

@@ -104,7 +104,7 @@ class _HelpPageState extends State<HelpPage> {
                     child: Row(
                       children: [
                         Text('GitHub', style: TextStyle(color: appLabelColor, decoration: TextDecoration.underline )),
-                        Icon(Icons.star_border_rounded, color: appLabelColor, size: 16),
+                        Icon(Icons.star_border_rounded, color: appLabelColor, size: 14, applyTextScaling: true),
                       ],
                     )
                   ),
@@ -144,8 +144,9 @@ class _HelpPageState extends State<HelpPage> {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Text(
-                            label, textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 16, color: textColor),
+                            label, style: TextStyle(fontSize: 15, color: textColor),
+                            textAlign: TextAlign.center,
+                            maxLines: 1, overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
@@ -191,8 +192,9 @@ class GuideList extends StatelessWidget {
       children: List.generate(items.length, (index) {
         return ListTile(
           contentPadding: const EdgeInsets.all(0),
-          leading: warnIndices.contains(index) ? const Icon(Icons.info_outline_rounded, color: Colors.blueAccent, size: 18) :
-                   const Icon(Icons.check_circle_outline_rounded, color: Colors.green, size: 18),
+          leading: warnIndices.contains(index) ?
+            const Icon(Icons.info_outline_rounded, color: Colors.blueAccent, size: 18, applyTextScaling: true) :
+            const Icon(Icons.check_circle_outline_rounded, color: Colors.green, size: 18, applyTextScaling: true),
           minLeadingWidth: 18,
           subtitle: Text(items[index], style: itemTextStyle),
         );

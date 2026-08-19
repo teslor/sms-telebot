@@ -68,7 +68,7 @@ class CustomStyle {
 
   static const InputDecorationTheme compactDropdown = InputDecorationTheme(
     border: OutlineInputBorder(),
-    constraints: BoxConstraints(minHeight: 50, maxHeight: 50),
+    isDense: true,
     contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 13),
   );
 
