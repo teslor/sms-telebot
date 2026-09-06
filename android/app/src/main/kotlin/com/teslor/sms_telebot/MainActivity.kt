@@ -58,7 +58,7 @@ class MainActivity : FlutterActivity() {
                                         body = body,
                                         simInfo = null,
                                         receivedAt = System.currentTimeMillis(),
-                                        labels = mapOf(
+                                        sets = mapOf(
                                             "deviceLabel" to deviceLabel,
                                         ),
                                     )
@@ -110,6 +110,15 @@ class MainActivity : FlutterActivity() {
                         val text = call.argument<String>("text") ?: ""
                         val isValid = MessageFilters.isValidRegex(text)
                         result.success(isValid)
+                    }
+
+                    "previewFormat" -> {
+                        val sets = call.argument<Map<String, String>>("sets") ?: emptyMap()
+                        try {
+                            result.success(MessageHelpers.previewFormat(sets))
+                        } catch (e: Exception) {
+                            result.error("invalid_format", e.message, null)
+                        }
                     }
 
                     "saveSecret" -> {

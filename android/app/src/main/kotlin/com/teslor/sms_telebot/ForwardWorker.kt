@@ -54,7 +54,8 @@ class ForwardWorker(
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val dbManager = DbManager.getInstance(applicationContext)
-        if (!dbManager.getBoolSetting("isRunning")) return@withContext Result.success()
+        val settings = dbManager.getAllSettings()
+        if (settings["isRunning"] != "1") return@withContext Result.success()
         val secretStorage = SecureStorageManager.getInstance(applicationContext)
 
         // Read input data from receiver
@@ -71,11 +72,12 @@ class ForwardWorker(
         val rules = dbManager.getRulesByIds(ruleIds)
         if (rules.isEmpty()) return@withContext Result.success()
 
-        // Get labels, required for formatting
-        val labels = mapOf(
-            "deviceLabel" to dbManager.getSetting("deviceLabel").orEmpty(),
-            "l10nSms" to dbManager.getSetting("l10nSms").orEmpty().ifBlank { "SMS" },
-            "l10nCall" to dbManager.getSetting("l10nCall").orEmpty().ifBlank { "Call" },
+        // Settings required for formatting
+        val sets = mapOf(
+            "customFormatJson" to settings["customFormatJson"].orEmpty(),
+            "deviceLabel" to settings["deviceLabel"].orEmpty(),
+            "l10nSms" to settings["l10nSms"].orEmpty().ifBlank { "SMS" },
+            "l10nCall" to settings["l10nCall"].orEmpty().ifBlank { "Call" },
         )
 
         val lastAttemptAt = System.currentTimeMillis()
@@ -100,10 +102,19 @@ class ForwardWorker(
                                     val secretResult = secretStorage.readSecret(rule.id.toString())
                                     if (secretResult.isSuccess) secretResult.data ?: "" else ""
                                 }
-                                processRule(
-                                    rule, secret,
-                                    messageData.type, messageData.sender, messageData.body,
-                                    messageData.simInfo, messageData.receivedAt, labels
+                                SendProviderGateway.send(
+                                    context = applicationContext,
+                                    providerId = rule.provider,
+                                    configJson = rule.configJson ?: "",
+                                    secret = secret,
+                                    type = messageData.type,
+                                    payload = SendProviderPayload(
+                                        sender = messageData.sender,
+                                        body = messageData.body,
+                                        simInfo = messageData.simInfo,
+                                        receivedAt = messageData.receivedAt,
+                                        sets = sets,
+                                    )
                                 )
                             } catch (e: CancellationException) {
                                 throw e
@@ -164,27 +175,6 @@ class ForwardWorker(
             )
             Result.failure() // all failures are permanent, no retry needed
         }
-    }
-
-    // Router by providers for forwarding
-    private fun processRule(
-        rule: ForwardingRuleConfig, secret: String, type: String, sender: String,
-        body: String, simInfo: String?, receivedAt: Long, labels: Map<String, String>
-    ): SendProviderResult {
-        return SendProviderGateway.send(
-            context = applicationContext,
-            providerId = rule.provider,
-            configJson = rule.configJson ?: "",
-            secret = secret,
-            type = type,
-            payload = SendProviderPayload(
-                sender = sender,
-                body = body,
-                simInfo = simInfo,
-                receivedAt = receivedAt,
-                labels = labels,
-            )
-        )
     }
 
     private fun createForegroundNotification(): Notification {

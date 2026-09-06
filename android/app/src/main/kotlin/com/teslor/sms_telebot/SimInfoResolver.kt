@@ -24,6 +24,20 @@ object SimInfoResolver {
         "subscription_id", "subId", "sub_id"
     )
 
+    data class SimData(val slot: String, val carrier: String)
+
+    fun parseInfo(input: String?): SimData {
+        val text = input?.trim()
+        if (text.isNullOrEmpty()) return SimData("", "")
+
+        return if (text.startsWith("SIM")) {
+            val parts = text.removePrefix("SIM").split("/", limit = 2)
+            SimData(parts[0].trim(), parts.getOrNull(1)?.trim().orEmpty())
+        } else {
+            SimData("", text)
+        }
+    }
+
     fun getInfo(
         context: Context,
         intent: Intent,

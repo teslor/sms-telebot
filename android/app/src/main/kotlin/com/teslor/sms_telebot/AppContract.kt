@@ -4,12 +4,15 @@
 package com.teslor.sms_telebot
 
 import android.content.Context
+import android.text.format.DateFormat
 import android.util.Log
 import java.security.MessageDigest
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
 import org.json.JSONObject
 
 object ResultCode {
@@ -43,29 +46,39 @@ object SendStatus {
 object MessageHelpers {
     data class FormattedMessage(val title: String, val text: String)
 
-    fun generateId(rawId: String): String {
-        return MessageDigest.getInstance("SHA-256")
-            .digest(rawId.toByteArray())
-            .joinToString(separator = "") { byte -> "%02x".format(byte.toInt() and 0xff) }
-            .take(16)
-    }
+    private data class TemplateContext(
+        val sender: String, val text: String, val slot: String, val carrier: String,
+        val dateTime: java.time.LocalDateTime, val device: String,
+    )
+    private data class CustomFormatCache(val rawJson: String, val root: JSONObject)
+
+    @Volatile
+    private var customFormatCache: CustomFormatCache? = null
+
+    private val dateFormatterCache = ConcurrentHashMap<String, DateTimeFormatter>()
+    private val customFormatLock = Any()
 
     fun format(
         provider: String, type: String,
-        sender: String, body: String, simInfo: String?, receivedAt: Long, labels: Map<String, String>
+        sender: String, body: String, simInfo: String?, receivedAt: Long, sets: Map<String, String>,
     ): FormattedMessage {
         val dt = Instant.ofEpochMilli(receivedAt)
             .atZone(ZoneId.systemDefault()).toLocalDateTime()
-        val time = dt.format(DateTimeFormatter.ofPattern(
-            if (dt.toLocalDate() == LocalDate.now()) "HH:mm" else "dd.MM HH:mm"
-        ))
+        val pattern = if (dt.toLocalDate() == LocalDate.now()) {
+            "HH:mm"
+        } else {
+            val currentLocale = Locale.getDefault()
+            DateFormat.getBestDateTimePattern(currentLocale, "ddMMHHmm")
+        }
+        val time = dt.format(DateTimeFormatter.ofPattern(pattern))
 
-        val deviceLabel = labels["deviceLabel"] ?: ""
-        val l10nSms = labels["l10nSms"] ?: ""
-        val l10nCall = labels["l10nCall"] ?: ""
+        val customFormatJson = sets["customFormatJson"].orEmpty()
+        val deviceLabel = sets["deviceLabel"].orEmpty()
+        val l10nSms = sets["l10nSms"].orEmpty()
+        val l10nCall = sets["l10nCall"].orEmpty()
 
         val dl = if (provider == SendProviderId.TELEGRAM) escapeHtml(deviceLabel) else deviceLabel
-        val si = simInfo?.trim().orEmpty()
+        val si = simInfo.orEmpty()
         val lb = when {
             dl.isNotBlank() && si.isNotBlank() -> " - $dl ($si)"
             dl.isNotBlank() -> " - $dl"
@@ -76,12 +89,12 @@ object MessageHelpers {
             "sms" -> "💬" "call" -> "📞" "sys" -> "🔋" else -> "🤖"
         }
 
-        return when (provider) {
+        val defaultFormattedMessage = when (provider) {
             SendProviderId.TELEGRAM -> {
                 val s = escapeHtml(sender)
                 val b = escapeHtml(body)
-                val text = "🕒 $time<i>$lb</i>" + if (b.isNotBlank()) "\n$b" else ""
-                FormattedMessage("$emoji <b>$s</b>", text)
+                val text = "🕒 <i>$time$lb</i>" + if (b.isNotBlank()) "\n$b" else ""
+                FormattedMessage("", "$emoji <b>$s</b> $text")
             }
 
             SendProviderId.NTFY -> {
@@ -111,10 +124,111 @@ object MessageHelpers {
 
             else -> FormattedMessage(sender, body)
         }
+
+        return try {
+            formatCustom(
+                provider, type, sender, body, simInfo, dt, customFormatJson, deviceLabel,
+            ) ?: defaultFormattedMessage
+        } catch (_: Exception) {
+            defaultFormattedMessage
+        }
     }
 
-    fun escapeHtml(t: String) =
-        t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    private fun formatCustom(
+        provider: String, type: String,
+        sender: String, body: String, simInfo: String?, dateTime: java.time.LocalDateTime,
+        customFormatJson: String, deviceLabel: String,
+    ): FormattedMessage? {
+        if (customFormatJson.isEmpty()) return null
+
+        val destination = provider.substringBefore('_')
+        val root = getCustomFormatRoot(customFormatJson)
+        val templates = root.getJSONObject("templates")
+        val providerTemplate = templates.optJSONObject(destination) ?: return null
+        val typeTemplate = providerTemplate.optJSONObject(type) ?: return null
+        val titleTemplate = typeTemplate.optString("title", "")
+        val messageTemplate = typeTemplate.optString("message", "")
+        val isTelegram = provider == SendProviderId.TELEGRAM
+        val (slot, carrier) = SimInfoResolver.parseInfo(simInfo)
+
+        val templateContext = TemplateContext(
+            sender = if (isTelegram) escapeHtml(sender) else sender,
+            text = if (isTelegram) escapeHtml(body) else body,
+            slot = slot,
+            carrier = carrier,
+            dateTime = dateTime,
+            device = if (isTelegram) escapeHtml(deviceLabel) else deviceLabel,
+        )
+
+        val title = if (titleTemplate.isNotEmpty()) applyTemplate(titleTemplate, templateContext) else ""
+        val text = if (messageTemplate.isNotEmpty()) applyTemplate(messageTemplate, templateContext) else ""
+
+        return FormattedMessage(title, text)
+    }
+
+    private fun getCustomFormatRoot(rawJson: String): JSONObject {
+        val cached = customFormatCache
+        if (cached != null && cached.rawJson == rawJson) return cached.root
+
+        synchronized(customFormatLock) {
+            val lockedCache = customFormatCache
+            if (lockedCache != null && lockedCache.rawJson == rawJson) return lockedCache.root
+
+            val root = JSONObject(rawJson)
+            customFormatCache = CustomFormatCache(rawJson = rawJson, root = root)
+            return root
+        }
+    }
+
+    fun previewFormat(sets: Map<String, String>): List<Map<String, String>> {
+        val previews = mutableListOf<Map<String, String>>()
+        for (provider in SendProviderId.list) {
+            for (type in listOf("sms", "call", "sys")) {
+                val (sender, text) = when (type) {
+                    "sys" -> sets["l10nBattery"].orEmpty() to "${sets["l10nLowBattery"].orEmpty()}: 15%"
+                    "call" -> "+12345678900" to ""
+                    else -> "+12345678900" to sets["l10nHello"].orEmpty()
+                }
+                val simInfo = if (type == "sms" || type == "call") "SIM 1 / Carrier" else null
+                val message = format(
+                    provider, type, sender, text, simInfo, System.currentTimeMillis(), sets,
+                )
+                previews += mapOf(
+                    "destination" to provider.substringBefore('_'), "type" to type,
+                    "title" to message.title, "message" to message.text,
+                )
+            }
+        }
+        return previews
+    }
+
+    private fun applyTemplate(template: String, context: TemplateContext): String {
+        var formatted = Regex("\\\$date\\((.*?)\\)").replace(template) { match ->
+            val pattern = match.groupValues[1]
+            val formatter = dateFormatterCache.getOrPut(pattern) {
+                DateTimeFormatter.ofPattern(pattern)
+            }
+            context.dateTime.format(formatter)
+        }
+
+        formatted = formatted
+            .replace("\$sender", context.sender)
+            .replace("\$text", context.text)
+            .replace("\$slot", context.slot)
+            .replace("\$carrier", context.carrier)
+            .replace("\$device", context.device)
+
+        return formatted
+    }
+
+    fun generateId(rawId: String): String {
+        return MessageDigest.getInstance("SHA-256")
+            .digest(rawId.toByteArray())
+            .joinToString(separator = "") { byte -> "%02x".format(byte.toInt() and 0xff) }
+            .take(16)
+    }
+
+    fun escapeHtml(t: String) = t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 }
 
 object MessageFilters {

@@ -76,6 +76,17 @@ class DbManager private constructor(private val mainDbPath: String) {
     // APP_SETTINGS
     // ================================================================================
 
+    // Read all settings as key-value map
+    fun getAllSettings(): Map<String, String> {
+        return withDatabase { db ->
+            db.query("app_settings", arrayOf("key", "value"), null, null, null, null, null).use { cursor ->
+                val map = HashMap<String, String>()
+                while (cursor.moveToNext()) map[cursor.getString(0)] = cursor.getString(1) ?: ""
+                map
+            }
+        } ?: emptyMap()
+    }
+
     // Read a specific setting by key
     fun getSetting(key: String): String? {
         return withDatabase { db ->
@@ -89,7 +100,7 @@ class DbManager private constructor(private val mainDbPath: String) {
 
     // Read a boolean setting
     fun getBoolSetting(key: String, defaultValue: Boolean = false): Boolean {
-        return getSetting(key)?.let { it == "1" || it.equals("true", ignoreCase = true) } ?: defaultValue
+        return getSetting(key)?.let { it == "1" } ?: defaultValue
     }
 
     // ================================================================================

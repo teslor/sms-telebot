@@ -110,6 +110,7 @@ object SendProviderId {
     const val NTFY = "ntfy_server"
     const val SMTP = "smtp_server"
     const val SMS = "sms_gateway"
+    val list = listOf(TELEGRAM, NTFY, SMTP, SMS)
 }
 
 data class SendProviderPayload(
@@ -117,7 +118,7 @@ data class SendProviderPayload(
     val body: String,
     val simInfo: String?,
     val receivedAt: Long,
-    val labels: Map<String, String>
+    val sets: Map<String, String>,
 )
 
 data class SendProviderResult(
@@ -224,9 +225,11 @@ object TelegramProvider : SendProvider {
                 body = payload.body,
                 simInfo = payload.simInfo,
                 receivedAt = payload.receivedAt,
-                labels = payload.labels,
+                sets = payload.sets,
             )
-            val result = sendRequest(token, chatId, apiUrl, "${fMessage.title}  ${fMessage.text}")
+            val message = if (fMessage.title.isNotBlank())
+                "${fMessage.title}\n${fMessage.text}" else fMessage.text
+            val result = sendRequest(token, chatId, apiUrl, message)
             mapApiResult(result)
         } catch (e: Exception) {
             buildResult(ResultCode.UNEXPECTED_ERROR, e.message ?: "unexpected error", exception = e)
@@ -352,7 +355,7 @@ object NtfyProvider : SendProvider {
                 body = payload.body,
                 simInfo = payload.simInfo,
                 receivedAt = payload.receivedAt,
-                labels = payload.labels,
+                sets = payload.sets,
             )
 
             val payloadJson = JSONObject().apply {
@@ -482,7 +485,7 @@ object SmtpProvider : SendProvider {
                 body = payload.body,
                 simInfo = payload.simInfo,
                 receivedAt = payload.receivedAt,
-                labels = payload.labels,
+                sets = payload.sets,
             )
 
             val message = MimeMessage(session)
@@ -643,7 +646,7 @@ object SmsProvider : SendProvider {
                 body = payload.body,
                 simInfo = payload.simInfo,
                 receivedAt = payload.receivedAt,
-                labels = payload.labels,
+                sets = payload.sets,
             )
 
             val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -657,8 +660,10 @@ object SmsProvider : SendProvider {
                 return buildResult(ResultCode.UNEXPECTED_ERROR, "SMS manager is unavailable")
             }
 
-            // Split message if it's too long (>160 characters per part)
-            val parts = smsManager.divideMessage("${fMessage.title}\n${fMessage.text}")
+            val message = if (fMessage.title.isNotBlank())
+                "${fMessage.title}\n${fMessage.text}" else fMessage.text
+            val parts = smsManager.divideMessage(message) // split message (160 characters per part)
+
             sendAndAwait(context, smsManager, targetNumber, parts)
         } catch (e: SecurityException) {
             buildResult(ResultCode.FORBIDDEN, "missing SEND_SMS permission", exception = e)
