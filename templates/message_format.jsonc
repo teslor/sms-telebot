@@ -1,0 +1,86 @@
+// SMS Telebot format template for forwarded messages; customize it as needed
+// Copy the entire file or a valid format definition to the clipboard, then paste it in the app settings
+//
+// Supported destinations: telegram, ntfy, smtp, sms
+// All destinations are optional; the default format is used if one is omitted
+// Each destination has an optional "title" (first line for telegram/sms, title for ntfy, subject for SMTP) and a "message"
+// Telegram supports a limited set of HTML tags, including <b> and <i> (displayed as is in preview)
+//
+// Incoming event types:
+//   sms - incoming SMS
+//   call - incoming call
+//   sys - system event (low battery or charger status)
+//
+// Template variables:
+//   $sender - sender's phone number or name for SMS and calls; localized label for system/battery events
+//   $text - original SMS text or generated system message; empty for calls
+//   $slot - SIM slot number (1 or 2) for SMS and calls; empty if "Attach SIM info" is disabled
+//   $carrier - SIM carrier name for SMS and calls; empty if "Attach SIM info" is disabled
+//   $date() - event date and time formatted with Java DateTimeFormatter, e.g. $date(yyyy-MM-dd HH:mm)
+//   $device - device label; empty if unset
+//
+// Use \n for line breaks in template strings
+// Add single-line comments with //
+
+{
+  "name": "Custom", // format name in the app settings
+  "version": 1, // schema version; do not change this
+  "templates": {
+    "telegram": {
+      "sms": {
+        "title": "SMS: <b>$sender</b>",
+        "message": "$date(MM-dd HH:mm) <i>$device - $carrier</i>\n$text"
+      },
+      "call": {
+        "title": "Call: <b>$sender</b>",
+        "message": "$date(MM-dd HH:mm) <i>$device - $carrier</i>"
+      },
+      "sys": {
+        "title": "<b>$sender</b>",
+        "message": "$date(MM-dd HH:mm) <i>$device</i>\n$text"
+      }
+    },
+    "ntfy": {
+      "sms": {
+        "title": "SMS: $sender",
+        "message": "$date(MM-dd HH:mm) $device - $carrier\n$text"
+      },
+      "call": {
+        "title": "Call: $sender",
+        "message": "$date(MM-dd HH:mm) $device - $carrier"
+      },
+      "sys": {
+        "title": "$sender",
+        "message": "$date(MM-dd HH:mm) $device\n$text"
+      }
+    },
+    "smtp": {
+      "sms": {
+        "title": "SMS: $sender",
+        "message": "$text\n\n$date(MM-dd HH:mm) $device - $carrier\n$sender"
+      },
+      "call": {
+        "title": "Call: $sender",
+        "message": "$date(MM-dd HH:mm) $device - $carrier\n$sender"
+      },
+      "sys": {
+        "title": "[$device] $sender",
+        "message": "$text\n\n$date(MM-dd HH:mm) $device"
+      }
+    },
+    "sms": {
+      "sms": {
+        "title": "SMS: $sender",
+        "message": "$date(MM-dd HH:mm) $device - $carrier\n$text"
+      },
+      "call": {
+        "title": "Call: $sender",
+        "message": "$date(MM-dd HH:mm) $device - $carrier"
+      },
+      "sys": {
+        "title": "$sender",
+        "message": "$date(MM-dd HH:mm) $device\n$text"
+      }
+    }
+  }
+}
