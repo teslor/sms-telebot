@@ -22,7 +22,8 @@
         android:enableOnBackInvokedCallback="true"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round">
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:localeConfig="@xml/locale_config">
         <receiver
             android:name=".BootReceiver"
             android:enabled="true"
