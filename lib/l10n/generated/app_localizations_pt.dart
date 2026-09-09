@@ -33,10 +33,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get action_test => 'Testar';
 
   @override
-  String get service_title => 'SMS Telebot está ativo';
+  String get service_title => 'Encaminhamento de mensagens';
 
   @override
-  String get service_text => 'Monitorando eventos';
+  String get service_text => 'Em segundo plano';
 
   @override
   String get msg_list => 'Mensagens';

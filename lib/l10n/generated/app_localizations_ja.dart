@@ -33,10 +33,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get action_test => 'テスト';
 
   @override
-  String get service_title => 'SMS Telebot が有効です';
+  String get service_title => 'メッセージ転送';
 
   @override
-  String get service_text => 'イベントを監視中';
+  String get service_text => 'バックグラウンドで実行中';
 
   @override
   String get msg_list => 'メッセージ';

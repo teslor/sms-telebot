@@ -163,13 +163,13 @@ abstract class AppLocalizations {
   /// No description provided for @service_title.
   ///
   /// In en, this message translates to:
-  /// **'SMS Telebot is active'**
+  /// **'Message forwarding'**
   String get service_title;
 
   /// No description provided for @service_text.
   ///
   /// In en, this message translates to:
-  /// **'Monitoring events'**
+  /// **'Running in background'**
   String get service_text;
 
   /// No description provided for @msg_list.

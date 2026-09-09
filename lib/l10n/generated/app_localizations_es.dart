@@ -33,10 +33,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get action_test => 'Probar';
 
   @override
-  String get service_title => 'SMS Telebot está activo';
+  String get service_title => 'Reenvío de mensajes';
 
   @override
-  String get service_text => 'Monitoreando eventos';
+  String get service_text => 'En segundo plano';
 
   @override
   String get msg_list => 'Mensajes';

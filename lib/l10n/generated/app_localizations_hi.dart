@@ -33,10 +33,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get action_test => 'टेस्ट करें';
 
   @override
-  String get service_title => 'SMS Telebot सक्रिय है';
+  String get service_title => 'संदेशों को फॉरवर्ड करना';
 
   @override
-  String get service_text => 'घटनाओं की निगरानी की जा रही है';
+  String get service_text => 'बैकग्राउंड में चल रहा है';
 
   @override
   String get msg_list => 'संदेश';

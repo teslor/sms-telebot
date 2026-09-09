@@ -36,8 +36,8 @@ class ForegroundService : Service() {
         )
 
         val dbManager = DbManager.getInstance(this)
-        val serviceTitle = dbManager.getSetting("l10nServiceTitle") ?: "SMS Telebot is active"
-        val serviceText = dbManager.getSetting("l10nServiceText") ?: "Monitoring events"
+        val serviceTitle = dbManager.getSetting("l10nServiceTitle") ?: "Message forwarding"
+        val serviceText = dbManager.getSetting("l10nServiceText") ?: "Running in background"
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(serviceTitle)
@@ -63,7 +63,7 @@ class ForegroundService : Service() {
 
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "SMS Telebot foreground",
+            "Background service",
             NotificationManager.IMPORTANCE_LOW
         ).apply {
             setShowBadge(false)
