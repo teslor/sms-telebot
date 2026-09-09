@@ -12,6 +12,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get action_cancel => 'Cancelar';
 
   @override
+  String get action_close => 'Cerrar';
+
+  @override
   String get action_continue => 'Continuar';
 
   @override
@@ -295,6 +298,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settings_attachSimInfo => 'Adjuntar datos SIM';
 
   @override
+  String get settings_format => 'Formato del mensaje';
+
+  @override
+  String get settings_formatDefault => 'Predeterminado';
+
+  @override
+  String get settings_formatPaste => 'Pegar';
+
+  @override
+  String get settings_formatPreview => 'Previsualizar';
+
+  @override
+  String get settings_formatReset => 'Restablecer';
+
+  @override
+  String get settings_formatError => 'Formato de plantilla no válido.';
+
+  @override
   String get settings_deviceLabel => 'Etiqueta del dispositivo';
 
   @override
@@ -331,15 +352,22 @@ class AppLocalizationsEs extends AppLocalizations {
       'El modo permanente en segundo plano mejora la fiabilidad del envío (especialmente para notificaciones del sistema), pero aumenta bastante el consumo de batería. En este modo aparece una notificación persistente. No se recomienda activarlo salvo que sea necesario.';
 
   @override
-  String get help_opts_025 =>
+  String get help_opts_03 =>
       'Activa el interruptor para añadir los datos de la SIM (ranura y operador) al reenviar SMS y llamadas entrantes. Los datos de la SIM no están disponibles en algunos sistemas, especialmente para las llamadas.';
 
   @override
-  String get help_opts_03 =>
+  String get help_opts_04 =>
+      'Si desea cambiar el formato de los mensajes, descargue el archivo de plantilla, realice sus cambios y pegue el texto de la plantilla en los ajustes.';
+
+  @override
+  String get help_opts_04h => 'Descargar plantilla';
+
+  @override
+  String get help_opts_05 =>
       'Si usas la app en varios teléfonos, puedes establecer una etiqueta de dispositivo. Se enviará junto con el mensaje para identificar el teléfono receptor.';
 
   @override
-  String get help_opts_04 =>
+  String get help_opts_06 =>
       'Se recomienda desactivar la optimización de batería para esta app, ya que el sistema puede limitar la actividad en segundo plano para ahorrar energía.';
 
   @override

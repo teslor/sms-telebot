@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'constants.dart';
 
 class CustomColor {
-  static Color provider(String provider) {
-    return switch (provider) {
-      ProviderId.telegram => const Color(0xFF229ED9),
-      ProviderId.ntfy => const Color(0xFF317F6F),
-      ProviderId.smtp => const Color(0xFFEF6C00),
-      ProviderId.sms => const Color(0xFF1A73E8),
+  static Color destination(String destination) {
+    return switch (destination) {
+      'telegram' => const Color(0xFF229ED9),
+      'ntfy' => const Color(0xFF317F6F),
+      'smtp' => const Color(0xFFEF6C00),
+      'sms' => const Color(0xFF1A73E8),
       _ => Colors.blueGrey,
     };
   }

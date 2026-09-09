@@ -12,6 +12,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get action_cancel => 'Отмена';
 
   @override
+  String get action_close => 'Закрыть';
+
+  @override
   String get action_continue => 'Продолжить';
 
   @override
@@ -295,6 +298,24 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settings_attachSimInfo => 'Передавать данные SIM';
 
   @override
+  String get settings_format => 'Формат сообщений';
+
+  @override
+  String get settings_formatDefault => 'Стандартный';
+
+  @override
+  String get settings_formatPaste => 'Вставить из буфера';
+
+  @override
+  String get settings_formatPreview => 'Открыть предпросмотр';
+
+  @override
+  String get settings_formatReset => 'Сбросить';
+
+  @override
+  String get settings_formatError => 'Некорректный формат шаблона.';
+
+  @override
   String get settings_deviceLabel => 'Метка устройства';
 
   @override
@@ -331,15 +352,22 @@ class AppLocalizationsRu extends AppLocalizations {
       'Режим постоянной работы в фоне повышает надёжность доставки сообщений (особенно системных уведомлений), но увеличивает расход батареи. В этом режиме отображается постоянное уведомление в шторке. Включайте только при необходимости.';
 
   @override
-  String get help_opts_025 =>
+  String get help_opts_03 =>
       'Включите переключатель, чтобы при пересылке входящих СМС и звонков добавить данные SIM-карты (слот и оператор). На некоторых системах SIM-данные недоступны (особенно для звонков).';
 
   @override
-  String get help_opts_03 =>
+  String get help_opts_04 =>
+      'Если вы хотите изменить формат сообщений, скачайте файл-шаблон, внесите свои правки и вставьте текст шаблона в настройках.';
+
+  @override
+  String get help_opts_04h => 'Скачать шаблон';
+
+  @override
+  String get help_opts_05 =>
       'При использовании приложения на нескольких телефонах можно задать метку устройства — она отправляется вместе с сообщением для идентификации телефона-получателя.';
 
   @override
-  String get help_opts_04 =>
+  String get help_opts_06 =>
       'Важно отключить для приложения оптимизацию батареи, поскольку система может ограничивать работу в фоне для экономии заряда.';
 
   @override

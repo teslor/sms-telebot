@@ -213,7 +213,7 @@ class _NtfyServerConnectionState extends State<NtfyServerConnection> {
                   applyTextScaling: true,
                 ),
                 onPressed: () => setState(() => _isTokenVisible = !_isTokenVisible),
-              ),              
+              ),
             ),
             onChanged: _onChanged,
           ),

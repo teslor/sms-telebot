@@ -118,6 +118,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get action_cancel;
 
+  /// No description provided for @action_close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get action_close;
+
   /// No description provided for @action_continue.
   ///
   /// In en, this message translates to:
@@ -670,6 +676,42 @@ abstract class AppLocalizations {
   /// **'Attach SIM info'**
   String get settings_attachSimInfo;
 
+  /// No description provided for @settings_format.
+  ///
+  /// In en, this message translates to:
+  /// **'Message format'**
+  String get settings_format;
+
+  /// No description provided for @settings_formatDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get settings_formatDefault;
+
+  /// No description provided for @settings_formatPaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get settings_formatPaste;
+
+  /// No description provided for @settings_formatPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get settings_formatPreview;
+
+  /// No description provided for @settings_formatReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get settings_formatReset;
+
+  /// No description provided for @settings_formatError.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid template format.'**
+  String get settings_formatError;
+
   /// No description provided for @settings_deviceLabel.
   ///
   /// In en, this message translates to:
@@ -730,23 +772,35 @@ abstract class AppLocalizations {
   /// **'Permanent background mode improves delivery reliability (especially for system notifications) but uses more battery. A persistent notification will appear in the notification shade. Enable only when necessary.'**
   String get help_opts_02;
 
-  /// No description provided for @help_opts_025.
-  ///
-  /// In en, this message translates to:
-  /// **'Enable the switch to add SIM card data (slot and operator) when forwarding incoming SMS and calls. SIM data is not available on some systems (especially for calls).'**
-  String get help_opts_025;
-
   /// No description provided for @help_opts_03.
   ///
   /// In en, this message translates to:
-  /// **'Assign a device label when forwarding from multiple phones. The label is attached to each message for easy identification.'**
+  /// **'Enable the switch to add SIM card data (slot and operator) when forwarding incoming SMS and calls. SIM data is not available on some systems (especially for calls).'**
   String get help_opts_03;
 
   /// No description provided for @help_opts_04.
   ///
   /// In en, this message translates to:
-  /// **'Disable battery optimization for this app to prevent the system from restricting background activity.'**
+  /// **'If you want to change the message format, download the template file, make your changes, and paste the template text in the settings.'**
   String get help_opts_04;
+
+  /// No description provided for @help_opts_04h.
+  ///
+  /// In en, this message translates to:
+  /// **'Download template'**
+  String get help_opts_04h;
+
+  /// No description provided for @help_opts_05.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign a device label when forwarding from multiple phones. The label is attached to each message for easy identification.'**
+  String get help_opts_05;
+
+  /// No description provided for @help_opts_06.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable battery optimization for this app to prevent the system from restricting background activity.'**
+  String get help_opts_06;
 
   /// No description provided for @help_rule_01.
   ///

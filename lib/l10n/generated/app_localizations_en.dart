@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get action_cancel => 'Cancel';
 
   @override
+  String get action_close => 'Close';
+
+  @override
   String get action_continue => 'Continue';
 
   @override
@@ -294,6 +297,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_attachSimInfo => 'Attach SIM info';
 
   @override
+  String get settings_format => 'Message format';
+
+  @override
+  String get settings_formatDefault => 'Default';
+
+  @override
+  String get settings_formatPaste => 'Paste';
+
+  @override
+  String get settings_formatPreview => 'Preview';
+
+  @override
+  String get settings_formatReset => 'Reset';
+
+  @override
+  String get settings_formatError => 'Invalid template format.';
+
+  @override
   String get settings_deviceLabel => 'Device label';
 
   @override
@@ -330,15 +351,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Permanent background mode improves delivery reliability (especially for system notifications) but uses more battery. A persistent notification will appear in the notification shade. Enable only when necessary.';
 
   @override
-  String get help_opts_025 =>
+  String get help_opts_03 =>
       'Enable the switch to add SIM card data (slot and operator) when forwarding incoming SMS and calls. SIM data is not available on some systems (especially for calls).';
 
   @override
-  String get help_opts_03 =>
+  String get help_opts_04 =>
+      'If you want to change the message format, download the template file, make your changes, and paste the template text in the settings.';
+
+  @override
+  String get help_opts_04h => 'Download template';
+
+  @override
+  String get help_opts_05 =>
       'Assign a device label when forwarding from multiple phones. The label is attached to each message for easy identification.';
 
   @override
-  String get help_opts_04 =>
+  String get help_opts_06 =>
       'Disable battery optimization for this app to prevent the system from restricting background activity.';
 
   @override

@@ -198,6 +198,13 @@ Future<bool> isValidRegexNative(String text) async {
   }
 }
 
+Future<List<Map<String, String>>> previewFormatNative(Map<String, String> sets) async {
+  final result = await _mainChannel.invokeMethod<List<dynamic>>('previewFormat', {
+    'sets': sets,
+  });
+  return (result ?? []).map((item) => Map<String, String>.from(item as Map)).toList();
+}
+
 Future<CallResult> saveSecretNative(String id, String secret) async {
   try {
     final result = await _mainChannel.invokeMethod<Map<dynamic, dynamic>>('saveSecret', {

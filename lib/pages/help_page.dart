@@ -4,6 +4,7 @@ import '../constants.dart';
 import '../service.dart';
 
 enum Channel { telegram, ntfy, smtp, sms }
+const linkColor = Color.fromARGB(255, 0, 75, 204);
 
 class HelpPage extends StatefulWidget {
   const HelpPage({super.key});
@@ -28,52 +29,56 @@ class _HelpPageState extends State<HelpPage> {
     final sectionTitleStyle = TextStyle(fontSize: 18, height: 2);
     final sectionSubtitleStyle = TextStyle(fontSize: 16, height: 2);
 
-    final List<String> infoItems = [
+    final infoItems = [
       l10n.help_info_01,
       l10n.help_info_02,
       l10n.help_info_03,
     ];
-    final List<String> optsItems = [
+    final optsItems = [
       l10n.help_opts_01,
       l10n.help_opts_02,
-      l10n.help_opts_025,
       l10n.help_opts_03,
-      l10n.help_opts_04,
+      {
+        'text': l10n.help_opts_04, 'link': l10n.help_opts_04h,
+        'url': '$appLink/raw/refs/heads/main/templates/message_format.jsonc',
+      },
+      l10n.help_opts_05,
+      l10n.help_opts_06,
     ];
-    final List<String> tbotItems = [
+    final tbotItems = [
       l10n.help_tbot_01,
       l10n.help_tbot_02,
       l10n.help_tbot_03,
       l10n.help_tbot_04,
     ];
-    final List<String> ntfyItems = [
+    final ntfyItems = [
       l10n.help_ntfy_01('$ntfyUrl/app'),
       l10n.help_ntfy_02,
       l10n.help_ntfy_03,
       l10n.help_ntfy_04,
     ];
-    final List<String> smtpItems = [
+    final smtpItems = [
       l10n.help_smtp_01,
       l10n.help_smtp_02,
     ];
-    final List<String> smsItems = [
+    final smsItems = [
       l10n.help_sms_01,
       l10n.help_sms_02,
       l10n.help_sms_03,
     ];
-    final List<String> filterItems = [
+    final filterItems = [
       l10n.help_filters_01,
       l10n.help_filters_02,
       l10n.help_filters_03,
       l10n.help_filters_04,
       l10n.help_filters_05,
     ];
-     final List<String> optionsItems = [
+    final optionsItems = [
       l10n.help_options_01,
     ];
 
     final Color selectedChannelColor = Theme.of(context).colorScheme.primary;
-    final List<String> selectedItems = [
+    final selectedItems = [
       ...switch (_selectedChannel) {
         Channel.telegram => tbotItems,
         Channel.ntfy => ntfyItems,
@@ -103,8 +108,8 @@ class _HelpPageState extends State<HelpPage> {
                     onTap: () { launchURL(appLink); },
                     child: Row(
                       children: [
-                        Text('GitHub', style: TextStyle(color: appLabelColor, decoration: TextDecoration.underline )),
-                        Icon(Icons.star_border_rounded, color: appLabelColor, size: 14, applyTextScaling: true),
+                        Text('GitHub', style: TextStyle(color: linkColor, decorationColor: linkColor, decoration: TextDecoration.underline )),
+                        Icon(Icons.star_border_rounded, color: linkColor, size: 14, applyTextScaling: true),
                       ],
                     )
                   ),
@@ -118,7 +123,7 @@ class _HelpPageState extends State<HelpPage> {
             GuideList(items: infoItems, warnIndices: []),
 
             Text(l10n.settings, style: sectionTitleStyle),
-            GuideList(items: optsItems, warnIndices: [4]),
+            GuideList(items: optsItems, warnIndices: [5]),
 
             Text(l10n.rules_setup, style: sectionTitleStyle),
             SizedBox(
@@ -177,7 +182,7 @@ class GuideList extends StatelessWidget {
     required this.warnIndices,
   });
 
-  final List<String> items;
+  final List<Object> items;
   final List<int> warnIndices;
 
   @override
@@ -186,17 +191,37 @@ class GuideList extends StatelessWidget {
       fontSize: 13,
       height: 1.4,
     );
+    final linkStyle = itemTextStyle?.copyWith(
+      color: linkColor,
+      decorationColor: linkColor,
+      decoration: TextDecoration.underline,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(items.length, (index) {
+        final item = items[index];
+        final data = item is String ? null : item as Map<String, dynamic>;
+        final text = item is String ? item : data!['text'] as String;
+        final link = data?['link'] as String?;
+        final url = data?['url'] as String?;
+
         return ListTile(
           contentPadding: const EdgeInsets.all(0),
           leading: warnIndices.contains(index) ?
             const Icon(Icons.info_outline_rounded, color: Colors.blueAccent, size: 18, applyTextScaling: true) :
             const Icon(Icons.check_circle_outline_rounded, color: Colors.green, size: 18, applyTextScaling: true),
           minLeadingWidth: 18,
-          subtitle: Text(items[index], style: itemTextStyle),
+          subtitle: link != null && url != null
+            ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(text, style: itemTextStyle),
+                InkWell(onTap: () => launchURL(url), child: Text(link, style: linkStyle)),
+              ],
+            )
+            : Text(text, style: itemTextStyle),
         );
       }),
     );

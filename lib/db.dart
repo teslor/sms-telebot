@@ -133,6 +133,7 @@ class MainDb {
       'notifyChargerState': '0',
       'enableForeground': '0',
       'attachSimInfo': '0',
+      'customFormatJson': '',
       'deviceLabel': '',
     };
 
@@ -201,13 +202,11 @@ class MainDb {
   /// Read a boolean setting
   Future<bool> getBoolSetting(String key, {bool defaultValue = false}) async {
     final val = await getSetting(key);
-    if (val == null) return defaultValue;
-    return val == '1' || val.toLowerCase() == 'true';
+    return val != null ? val == '1' : defaultValue;
   }
 
   /// Save a boolean setting
   Future<int> saveBoolSetting(String key, bool value) async {
-    // Store as '1' or '0' — a common convention for SQLite
     return await saveSetting(key, value ? '1' : '0');
   }
 

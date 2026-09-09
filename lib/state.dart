@@ -21,6 +21,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   bool notifyChargerState = false;
   bool enableForeground = false;
   bool attachSimInfo = false;
+  String customFormatJson = '';
   String deviceLabel = '';
 
   // Rule list
@@ -136,6 +137,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     notifyChargerState = settings['notifyChargerState'] == '1';
     enableForeground = settings['enableForeground'] == '1';
     attachSimInfo = settings['attachSimInfo'] == '1';
+    customFormatJson = settings['customFormatJson'] ?? '';
     deviceLabel = settings['deviceLabel'] ?? '';
     notifyListeners();
   }
@@ -332,17 +334,20 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     required bool notifyChargerState,
     required bool enableForeground,
     required bool attachSimInfo,
+    required String customFormatJson,
     required String deviceLabel,
   }) async {
-    await MainDb.instance.saveSettings({
+    final settingsPayload = {
       'forwardSms': forwardSms ? '1' : '0',
       'forwardCalls': forwardCalls ? '1' : '0',
       'notifyLowBattery': notifyLowBattery ? '1' : '0',
       'notifyChargerState': notifyChargerState ? '1' : '0',
       'enableForeground': enableForeground ? '1' : '0',
       'attachSimInfo': attachSimInfo ? '1' : '0',
+      'customFormatJson': customFormatJson,
       'deviceLabel': deviceLabel,
-    });
+    };
+    await MainDb.instance.saveSettings(settingsPayload);
 
     this.forwardSms = forwardSms;
     this.forwardCalls = forwardCalls;
@@ -350,6 +355,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     this.notifyChargerState = notifyChargerState;
     this.enableForeground = enableForeground;
     this.attachSimInfo = attachSimInfo;
+    this.customFormatJson = customFormatJson;
     this.deviceLabel = deviceLabel;
 
     notifyListeners();

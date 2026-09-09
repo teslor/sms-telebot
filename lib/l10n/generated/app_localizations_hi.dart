@@ -12,6 +12,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get action_cancel => 'रद्द करें';
 
   @override
+  String get action_close => 'बंद करें';
+
+  @override
   String get action_continue => 'जारी रखें';
 
   @override
@@ -295,6 +298,24 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settings_attachSimInfo => 'SIM जानकारी';
 
   @override
+  String get settings_format => 'संदेश प्रारूप';
+
+  @override
+  String get settings_formatDefault => 'डिफ़ॉल्ट';
+
+  @override
+  String get settings_formatPaste => 'पेस्ट करें';
+
+  @override
+  String get settings_formatPreview => 'पूर्वावलोकन देखें';
+
+  @override
+  String get settings_formatReset => 'रीसेट करें';
+
+  @override
+  String get settings_formatError => 'अमान्य टेम्पलेट प्रारूप।';
+
+  @override
   String get settings_deviceLabel => 'डिवाइस लेबल';
 
   @override
@@ -331,15 +352,22 @@ class AppLocalizationsHi extends AppLocalizations {
       'परमानेंट बैकग्राउंड मोड संदेश डिलीवरी की विश्वसनीयता बढ़ाता है (खासकर सिस्टम नोटिफिकेशन के लिए), लेकिन बैटरी खपत काफी बढ़ाता है। इस मोड में नोटिफिकेशन पैनल में स्थायी सूचना दिखती है। जरूरत न हो तो इसे ऑन न करें।';
 
   @override
-  String get help_opts_025 =>
+  String get help_opts_03 =>
       'इनकमिंग SMS और कॉल फ़ॉरवर्ड करते समय SIM डेटा (स्लॉट और ऑपरेटर) जोड़ने के लिए स्विच चालू करें। कुछ सिस्टम में SIM डेटा उपलब्ध नहीं होता, खासकर कॉल के लिए।';
 
   @override
-  String get help_opts_03 =>
+  String get help_opts_04 =>
+      'यदि आप संदेशों का प्रारूप बदलना चाहते हैं, तो टेम्पलेट फ़ाइल डाउनलोड करें, अपने परिवर्तन करें और सेटिंग्स में टेम्पलेट टेक्स्ट पेस्ट करें।';
+
+  @override
+  String get help_opts_04h => 'टेम्पलेट डाउनलोड करें';
+
+  @override
+  String get help_opts_05 =>
       'अगर आप ऐप को कई फोनों पर इस्तेमाल करते हैं, तो डिवाइस लेबल सेट कर सकते हैं। यह संदेश के साथ भेजा जाता है ताकि प्राप्त करने वाले फोन की पहचान हो सके।';
 
   @override
-  String get help_opts_04 =>
+  String get help_opts_06 =>
       'इस ऐप के लिए बैटरी ऑप्टिमाइज़ेशन बंद करना बेहतर है, क्योंकि सिस्टम पावर बचाने के लिए बैकग्राउंड गतिविधि सीमित कर सकता है।';
 
   @override

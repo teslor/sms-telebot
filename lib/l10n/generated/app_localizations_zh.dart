@@ -12,6 +12,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get action_cancel => '取消';
 
   @override
+  String get action_close => '关闭';
+
+  @override
   String get action_continue => '继续';
 
   @override
@@ -292,6 +295,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_attachSimInfo => '附加SIM信息';
 
   @override
+  String get settings_format => '消息格式';
+
+  @override
+  String get settings_formatDefault => '默认';
+
+  @override
+  String get settings_formatPaste => '粘贴';
+
+  @override
+  String get settings_formatPreview => '预览';
+
+  @override
+  String get settings_formatReset => '重置';
+
+  @override
+  String get settings_formatError => '无效的模板格式。';
+
+  @override
   String get settings_deviceLabel => '设备标签';
 
   @override
@@ -323,14 +344,20 @@ class AppLocalizationsZh extends AppLocalizations {
       '常驻后台模式可提高消息送达稳定性（尤其是系统通知），但会明显增加耗电。启用后，通知栏会显示常驻通知。除非确有需要，不建议开启。';
 
   @override
-  String get help_opts_025 =>
+  String get help_opts_03 =>
       '转发收到的短信和来电时，如需添加 SIM 卡信息（卡槽和运营商），请开启此开关。部分系统无法提供 SIM 信息，尤其是通话信息。';
 
   @override
-  String get help_opts_03 => '如果您在多台手机上使用本应用，可设置设备标签。该标签会随消息一起发送，用于识别接收端手机。';
+  String get help_opts_04 => '如果您想更改消息格式，请下载模板文件，进行修改，然后将模板文本粘贴到设置中。';
 
   @override
-  String get help_opts_04 => '建议为本应用关闭电池优化，因为系统可能会为省电而限制后台活动。';
+  String get help_opts_04h => '下载模板';
+
+  @override
+  String get help_opts_05 => '如果您在多台手机上使用本应用，可设置设备标签。该标签会随消息一起发送，用于识别接收端手机。';
+
+  @override
+  String get help_opts_06 => '建议为本应用关闭电池优化，因为系统可能会为省电而限制后台活动。';
 
   @override
   String get help_rule_01 => '请测试并保存设置（测试成功后会发送欢迎消息）。然后在列表中启用该规则，并点按「开始」以开始转发！';

@@ -12,6 +12,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get action_cancel => 'Cancelar';
 
   @override
+  String get action_close => 'Fechar';
+
+  @override
   String get action_continue => 'Continuar';
 
   @override
@@ -294,6 +297,24 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settings_attachSimInfo => 'Anexar dados SIM';
 
   @override
+  String get settings_format => 'Formato da mensagem';
+
+  @override
+  String get settings_formatDefault => 'Padrão';
+
+  @override
+  String get settings_formatPaste => 'Colar';
+
+  @override
+  String get settings_formatPreview => 'Visualizar';
+
+  @override
+  String get settings_formatReset => 'Redefinir';
+
+  @override
+  String get settings_formatError => 'Formato de modelo inválido.';
+
+  @override
   String get settings_deviceLabel => 'Rótulo do dispositivo';
 
   @override
@@ -330,15 +351,22 @@ class AppLocalizationsPt extends AppLocalizations {
       'O modo permanente em segundo plano melhora a confiabilidade do envio (principalmente para notificações do sistema), mas aumenta bastante o consumo de bateria. Nesse modo, aparece uma notificação persistente. Não é recomendado ativar sem necessidade.';
 
   @override
-  String get help_opts_025 =>
+  String get help_opts_03 =>
       'Ative o interruptor para incluir dados do SIM (slot e operadora) ao encaminhar SMS e chamadas recebidos. Os dados do SIM não estão disponíveis em alguns sistemas, especialmente para chamadas.';
 
   @override
-  String get help_opts_03 =>
+  String get help_opts_04 =>
+      'Se você quiser alterar o formato das mensagens, baixe o arquivo de modelo, faça suas alterações e cole o texto do modelo nas configurações.';
+
+  @override
+  String get help_opts_04h => 'Baixar modelo';
+
+  @override
+  String get help_opts_05 =>
       'Se você usa o app em vários telefones, pode definir um rótulo do dispositivo. Ele é enviado junto com a mensagem para identificar o telefone de destino.';
 
   @override
-  String get help_opts_04 =>
+  String get help_opts_06 =>
       'É recomendado desativar a otimização de bateria para este app, pois o sistema pode limitar a atividade em segundo plano para economizar energia.';
 
   @override

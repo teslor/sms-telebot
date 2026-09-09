@@ -12,6 +12,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get action_cancel => 'Abbrechen';
 
   @override
+  String get action_close => 'Schließen';
+
+  @override
   String get action_continue => 'Fortfahren';
 
   @override
@@ -297,6 +300,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings_attachSimInfo => 'SIM-Info anhängen';
 
   @override
+  String get settings_format => 'Nachrichtenformat';
+
+  @override
+  String get settings_formatDefault => 'Standard';
+
+  @override
+  String get settings_formatPaste => 'Einfügen';
+
+  @override
+  String get settings_formatPreview => 'Vorschau anzeigen';
+
+  @override
+  String get settings_formatReset => 'Zurücksetzen';
+
+  @override
+  String get settings_formatError => 'Ungültiges Vorlagformat.';
+
+  @override
   String get settings_deviceLabel => 'Gerätename';
 
   @override
@@ -333,15 +354,22 @@ class AppLocalizationsDe extends AppLocalizations {
       'Der dauerhafte Hintergrundmodus verbessert die Zuverlässigkeit der Zustellung (insbesondere bei Systembenachrichtigungen), erhöht aber den Akkuverbrauch deutlich. In diesem Modus wird eine permanente Benachrichtigung angezeigt. Aktivieren Sie ihn nur bei Bedarf.';
 
   @override
-  String get help_opts_025 =>
+  String get help_opts_03 =>
       'Aktivieren Sie den Schalter, um beim Weiterleiten eingehender SMS und Anrufe SIM-Daten (Slot und Anbieter) hinzuzufügen. Auf manchen Systemen sind SIM-Daten nicht verfügbar (insbesondere bei Anrufen).';
 
   @override
-  String get help_opts_03 =>
+  String get help_opts_04 =>
+      'Wenn Sie das Nachrichtenformat ändern möchten, laden Sie die Vorlagendatei herunter, nehmen Sie Ihre Änderungen vor und fügen Sie den Vorlagentext in den Einstellungen ein.';
+
+  @override
+  String get help_opts_04h => 'Vorlage öffnen';
+
+  @override
+  String get help_opts_05 =>
       'Wenn Sie die App auf mehreren Telefonen verwenden, können Sie eine Gerätebezeichnung festlegen. Diese wird zusammen mit der Nachricht gesendet, um das empfangende Telefon zu identifizieren.';
 
   @override
-  String get help_opts_04 =>
+  String get help_opts_06 =>
       'Es wird empfohlen, die Akkuoptimierung für diese App zu deaktivieren, da das System die Hintergrundaktivität zur Energieeinsparung einschränken kann.';
 
   @override

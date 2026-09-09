@@ -12,6 +12,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get action_cancel => 'Annuler';
 
   @override
+  String get action_close => 'Fermer';
+
+  @override
   String get action_continue => 'Continuer';
 
   @override
@@ -298,6 +301,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settings_attachSimInfo => 'Joindre données SIM';
 
   @override
+  String get settings_format => 'Format du message';
+
+  @override
+  String get settings_formatDefault => 'Par défaut';
+
+  @override
+  String get settings_formatPaste => 'Coller';
+
+  @override
+  String get settings_formatPreview => 'Prévisualiser';
+
+  @override
+  String get settings_formatReset => 'Réinitialiser';
+
+  @override
+  String get settings_formatError => 'Format de modèle invalide.';
+
+  @override
   String get settings_deviceLabel => 'Libellé de l\'appareil';
 
   @override
@@ -334,15 +355,22 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le mode permanent en arrière-plan améliore la fiabilité de l\'envoi (surtout pour les notifications système), mais augmente fortement la consommation de batterie. Dans ce mode, une notification persistante apparaît. Il n\'est pas recommandé de l\'activer sans nécessité.';
 
   @override
-  String get help_opts_025 =>
+  String get help_opts_03 =>
       'Activez l\'option pour ajouter les données de la carte SIM (emplacement et opérateur) lors du transfert des SMS et appels entrants. Les données SIM ne sont pas disponibles sur certains systèmes, notamment pour les appels.';
 
   @override
-  String get help_opts_03 =>
+  String get help_opts_04 =>
+      'Si vous voulez changer le format des messages, téléchargez le fichier modèle, effectuez vos modifications et collez le texte du modèle dans les paramètres.';
+
+  @override
+  String get help_opts_04h => 'Télécharger le modèle';
+
+  @override
+  String get help_opts_05 =>
       'Si vous utilisez l\'application sur plusieurs téléphones, vous pouvez définir un libellé d\'appareil. Il est envoyé avec le message pour identifier le téléphone destinataire.';
 
   @override
-  String get help_opts_04 =>
+  String get help_opts_06 =>
       'Il est recommandé de désactiver l\'optimisation de batterie pour cette application, car le système peut limiter l\'activité en arrière-plan pour économiser l\'énergie.';
 
   @override

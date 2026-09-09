@@ -44,7 +44,7 @@ class RulesMainPage extends StatelessWidget {
 class RulesPage extends StatelessWidget {
   const RulesPage({super.key});
 
-  String _providerName(String provider) {
+  String _destinationName(String provider) {
     return switch (provider) {
       ProviderId.telegram => 'Telegram',
       ProviderId.ntfy => 'ntfy',
@@ -54,7 +54,7 @@ class RulesPage extends StatelessWidget {
     };
   }
 
-  IconData _providerIcon(String provider) {
+  IconData _destinationIcon(String provider) {
     return switch (provider) {
       ProviderId.telegram => Icons.telegram_outlined,
       ProviderId.ntfy => Icons.terminal_outlined,
@@ -64,7 +64,7 @@ class RulesPage extends StatelessWidget {
     };
   }
 
-  Future<String?> _showProviderPicker(BuildContext context) {
+  Future<String?> _showDestinationPicker(BuildContext context) {
     final providers = connectionProviders.keys.toList(growable: false);
 
     return showModalBottomSheet<String>(
@@ -80,13 +80,13 @@ class RulesPage extends StatelessWidget {
           separatorBuilder: (_, _) => const Divider(height: 1),
           itemBuilder: (itemContext, index) {
             final provider = providers[index];
-            final name = _providerName(provider);
+            final name = _destinationName(provider);
             return ListTile(
               contentPadding: const EdgeInsetsDirectional.only(start: 20),
               horizontalTitleGap: 12,
               leading: Icon(
-                _providerIcon(provider),
-                color: CustomColor.provider(provider),
+                _destinationIcon(provider),
+                color: CustomColor.destination(provider.split('_').first),
                 applyTextScaling: true,
               ),
               title: Text(name, style: const TextStyle(fontSize: 17)),
@@ -125,11 +125,11 @@ class RulesPage extends StatelessWidget {
         label: AppLocalizations.of(context)!.rule_add,
         isSuccess: null,
         onPressed: () async {
-          final selectedProvider = await _showProviderPicker(context);
+          final selectedProvider = await _showDestinationPicker(context);
           if (selectedProvider == null) return;
           if (selectedProvider == ProviderId.sms && !await getSmsSendPermission(openSettings: true)) return;
           if (!context.mounted) return;
-          final name = _providerName(selectedProvider);
+          final name = _destinationName(selectedProvider);
           await _runAppStateAction(
             context,
             () => appState.addRule(name: name, provider: selectedProvider, autoSelect: true),

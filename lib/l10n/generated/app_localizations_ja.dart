@@ -12,6 +12,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get action_cancel => 'キャンセル';
 
   @override
+  String get action_close => '閉じる';
+
+  @override
   String get action_continue => '続行';
 
   @override
@@ -293,6 +296,24 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_attachSimInfo => 'SIM情報添付';
 
   @override
+  String get settings_format => 'メッセージ形式';
+
+  @override
+  String get settings_formatDefault => 'デフォルト';
+
+  @override
+  String get settings_formatPaste => '貼り付け';
+
+  @override
+  String get settings_formatPreview => 'プレビューを表示';
+
+  @override
+  String get settings_formatReset => 'リセット';
+
+  @override
+  String get settings_formatError => '無効なテンプレート形式です。';
+
+  @override
   String get settings_deviceLabel => 'デバイスラベル';
 
   @override
@@ -327,15 +348,22 @@ class AppLocalizationsJa extends AppLocalizations {
       '常時バックグラウンドモードにすると配信の信頼性（特にシステム通知）が上がりますが、バッテリー消費は大きく増えます。このモードでは通知領域に常駐通知が表示されます。必要な場合のみ有効化してください。';
 
   @override
-  String get help_opts_025 =>
+  String get help_opts_03 =>
       '受信SMSや通話の転送時にSIM情報（スロットと通信事業者）を追加するには、スイッチを有効にしてください。一部のシステムではSIM情報を利用できません（特に通話の場合）。';
 
   @override
-  String get help_opts_03 =>
+  String get help_opts_04 =>
+      'メッセージ形式を変更したい場合は、テンプレートファイルをダウンロードして、変更を加え、設定にテンプレートのテキストを貼り付けてください。';
+
+  @override
+  String get help_opts_04h => 'テンプレートをダウンロード';
+
+  @override
+  String get help_opts_05 =>
       '複数の端末でアプリを使う場合は、デバイスラベルを設定できます。ラベルはメッセージと一緒に送信され、受信側の端末を識別できます。';
 
   @override
-  String get help_opts_04 =>
+  String get help_opts_06 =>
       'システムが省電力のためにバックグラウンド動作を制限する可能性があるため、このアプリではバッテリー最適化を無効にすることをおすすめします。';
 
   @override

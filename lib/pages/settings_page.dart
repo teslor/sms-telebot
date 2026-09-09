@@ -1,10 +1,15 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../../extensions/build_context_x.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../styles.dart';
 import '../state.dart';
 import '../service.dart';
 import '../widgets/action_button.dart';
+
+enum _FormatMenuAction { paste, preview, reset }
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -25,6 +30,8 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _notifyChargerState = false;
   bool _enableForeground = false;
   bool _attachSimInfo = false;
+  String _customFormatJson = '';
+  String _currentFormatName = '';
 
   bool _isInputChanged = false;
   bool? _saveResult;
@@ -41,6 +48,8 @@ class _SettingsPageState extends State<SettingsPage> {
     _notifyChargerState = appState.notifyChargerState;
     _enableForeground = appState.enableForeground;
     _attachSimInfo = appState.attachSimInfo;
+    _customFormatJson = appState.customFormatJson;
+    _currentFormatName = _getFormatName();
   }
 
   @override
@@ -67,6 +76,7 @@ class _SettingsPageState extends State<SettingsPage> {
       notifyChargerState: _notifyChargerState,
       enableForeground: _enableForeground,
       attachSimInfo: _attachSimInfo,
+      customFormatJson: _customFormatJson,
       deviceLabel: _deviceLabelController.text,
     );
 
@@ -76,6 +86,123 @@ class _SettingsPageState extends State<SettingsPage> {
         _isInputChanged = false;
       });
     }
+  }
+
+  String _getFormatName() {
+    if (_customFormatJson.isEmpty) return '';
+    try {
+      final parsed = jsonDecode(_customFormatJson);
+      if (parsed is Map<String, dynamic>) {
+        final name = parsed['name']?.toString().trim() ?? '';
+        if (name.isNotEmpty) return name;
+      }
+    } catch (_) {}
+    return '';
+  }
+
+  Future<void> _pasteFormat(BuildContext context) async {
+    final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+    final text = clipboardData?.text ?? '';
+    if (text.trim().isEmpty) return;
+
+    try {
+      final cleanJson = text.replaceAll(RegExp(r'//.*$', multiLine: true), '');
+      final parsed = jsonDecode(cleanJson);
+      if (parsed is! Map<String, dynamic>) throw const FormatException();
+
+      final name = parsed['name']?.toString().trim() ?? '';
+      final templates = parsed['templates'];
+      if (name.isEmpty || templates is! Map<String, dynamic> || templates.isEmpty) {
+        throw const FormatException();
+      }
+
+      setState(() {
+        _customFormatJson = jsonEncode(parsed);
+        _currentFormatName = name;
+        _saveResult = null;
+        _isInputChanged = true;
+      });
+    } catch (_) {
+      if (!context.mounted) return;
+      context.showErrorSnack(AppLocalizations.of(context)!.settings_formatError);
+    }
+  }
+
+  Future<void> _showFormatPreview(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      final sets = {
+        'customFormatJson': _customFormatJson,
+        'deviceLabel': _deviceLabelController.text,
+        'l10nSms': l10n.msg_sms,
+        'l10nCall': l10n.msg_call,
+        'l10nBattery': l10n.msg_battery,
+        'l10nLowBattery': l10n.msg_lowBattery,
+        'l10nHello': l10n.msg_hello.replaceFirst(RegExp(r'\s*\^.*$'), ''),
+      };
+      final previews = await previewFormatNative(sets);
+      final groupedPreviews = <String, List<Map<String, String>>>{};
+      for (final preview in previews) {
+        groupedPreviews.putIfAbsent(preview['destination']!, () => []).add(preview);
+      }
+      if (!context.mounted) return;
+      showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          insetPadding: const EdgeInsets.all(20),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final entry in groupedPreviews.entries) ...[
+                  Text(
+                    switch (entry.key) {
+                      'telegram' => 'Telegram', 'smtp' => 'SMTP', 'sms' => 'SMS',
+                      _ => entry.key,
+                    },
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: CustomColor.destination(entry.key),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  for (final preview in entry.value) ...[
+                    const Divider(height: 1),
+                    const SizedBox(height: 8),
+                    if (preview['title']!.isNotEmpty) Text(preview['title']!),
+                    if (preview['message']!.isNotEmpty) Text(preview['message']!),
+                    const SizedBox(height: 8),
+                  ],
+                  const SizedBox(height: 4),
+                ],
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.action_close),
+            ),
+          ],
+        ),
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      context.showErrorSnack(l10n.settings_formatError);
+    }
+  }
+
+  PopupMenuItem<_FormatMenuAction> buildMenuItem(_FormatMenuAction value, IconData icon, String text, {bool enabled = true}) {
+    return PopupMenuItem(
+      value: value,
+      enabled: enabled,
+      padding: EdgeInsets.zero,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(width: 15), Icon(icon, size: 19, applyTextScaling: true),
+          const SizedBox(width: 10), Text(text)],
+      ),
+    );
   }
 
   @override
@@ -185,6 +312,66 @@ class _SettingsPageState extends State<SettingsPage> {
                     _attachSimInfo = value;
                     _onSettingChanged();
                   },
+                ),
+                const Divider(height: 1),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 10, 16, 10),
+                  child: SizedBox(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${l10n.settings_format}:',
+                                style: theme.textTheme.bodyLarge?.copyWith(height: _switchStyle.height),
+                              ),
+                              Text(
+                                _currentFormatName.isEmpty ? l10n.settings_formatDefault : _currentFormatName,
+                                style: theme.textTheme.bodyLarge?.copyWith(
+                                  height: 1.25,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  color: theme.colorScheme.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        PopupMenuButton<_FormatMenuAction>(
+                          position: PopupMenuPosition.under,
+                          padding: EdgeInsets.zero,
+                          borderRadius: BorderRadius.circular(16),
+                          onSelected: (action) {
+                            switch (action) {
+                              case _FormatMenuAction.paste: _pasteFormat(context);
+                              case _FormatMenuAction.preview: _showFormatPreview(context);
+                              case _FormatMenuAction.reset:
+                                _customFormatJson = '';
+                                _currentFormatName = '';
+                                _onSettingChanged();
+                            }
+                          },
+                          itemBuilder: (context) => [
+                            buildMenuItem(_FormatMenuAction.paste, Icons.content_paste_outlined, l10n.settings_formatPaste),
+                            buildMenuItem(_FormatMenuAction.preview, Icons.preview_outlined, l10n.settings_formatPreview),
+                            buildMenuItem(_FormatMenuAction.reset, Icons.delete_outlined, l10n.settings_formatReset, enabled: _customFormatJson.isNotEmpty),
+                          ],
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.surfaceContainerHigh,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const SizedBox(
+                              width: 32, height: 32,
+                              child: Icon(Icons.more_vert, size: 20),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
