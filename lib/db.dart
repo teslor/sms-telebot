@@ -217,7 +217,7 @@ class MainDb {
   /// Get ALL rules from forwarding_rules
   Future<List<Map<String, dynamic>>> getAllRules() async {
     final db = await instance.database;
-    return await db.query('forwarding_rules', orderBy: 'priority ASC, name ASC');
+    return await db.query('forwarding_rules', orderBy: 'priority ASC, name COLLATE LOCALIZED ASC');
   }
 
   /// Create a new rule in forwarding_rules

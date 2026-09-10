@@ -114,7 +114,7 @@ class DbManager private constructor(private val mainDbPath: String) {
                 "forwarding_rules",
                 arrayOf("id", "provider", "filter_mode", "filters_json"),
                 "is_active = 1",
-                null, null, null, "priority ASC, name ASC"
+                null, null, null, "priority ASC, name COLLATE LOCALIZED ASC"
             ).use { cursor ->
                 val list = mutableListOf<ForwardingRule>()
                 while (cursor.moveToNext()) {
@@ -143,7 +143,7 @@ class DbManager private constructor(private val mainDbPath: String) {
                 "forwarding_rules",
                 arrayOf("id", "name", "provider", "priority", "config_json"),
                 "id IN ($placeholders) AND is_active = 1",
-                stringArgs, null, null, "priority ASC, name ASC"
+                stringArgs, null, null, "priority ASC, name COLLATE LOCALIZED ASC"
             ).use { cursor ->
                 val list = mutableListOf<ForwardingRuleConfig>()
                 while (cursor.moveToNext()) {
