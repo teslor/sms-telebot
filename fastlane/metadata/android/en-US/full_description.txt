@@ -11,10 +11,11 @@ Key Features:
 
 - Flexible Routing: Create multiple rules to forward events to different destinations.
 - Advanced Filtering: Powerful filtering by sender or message content with Regex support, whitelist and blacklist modes.
-- Always-on background mode: Improved reliability on devices with aggressive battery/background restrictions.
-- Automatic retries: Failed forwarding attempts are retried when temporary connectivity issues are resolved.
-- Secure storage: Sensitive credentials (such as tokens, passwords etc.) are stored in encrypted form.
-- Privacy-focused: No hidden servers, no trackers, no ads; data goes only to destinations you configure.
+- Customizable Message Formats: Tailor the format of forwarded messages to your needs.
+- Always-On Background Mode: Improved reliability on devices with aggressive battery/background restrictions.
+- Automatic Retries: Failed forwarding attempts are retried when temporary connectivity issues are resolved.
+- Secure Storage: Sensitive credentials (such as tokens, passwords etc.) are stored in encrypted form.
+- Privacy-Focused: No hidden servers, no trackers, no ads; data goes only to destinations you configure.
 
 Important Notes:
 
