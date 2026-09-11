@@ -15,6 +15,8 @@ It can also notify you about incoming calls, low battery, and charger connection
 
 * **Custom Filters**: Set up filters based on sender or message text inside each rule to control which events are forwarded. Support for regular expressions is included.
 
+* **Customizable Message Formats**: Customize forwarded message titles and content for each event type and destination.
+
 * **Always-on Background Mode**: Keep monitoring active with a persistent notification for maximum delivery reliability on stricter Android builds.
 
 * **Auto Retry**: If forwarding fails because of temporary issues (like no internet), the app automatically retries in the background.
@@ -48,7 +50,6 @@ To verify if a specific message will be forwarded, simply enter the sender and/o
 ## :rocket: What's Next?
 
 * Push notifications forwarding
-* Custom message templates
 * Proxy settings
 
 ## :memo: Important Notes

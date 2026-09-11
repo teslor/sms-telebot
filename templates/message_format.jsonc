@@ -1,10 +1,11 @@
-// SMS Telebot format template for forwarded messages; customize it as needed
-// Copy the entire file or a valid format definition to the clipboard, then paste it in the app settings
+// SMS Telebot format template for forwarded messages; customize it as needed.
+// Copy the entire file or a valid format definition to the clipboard, then paste it in the app settings.
+// You can find the latest version of this file in the "templates" folder of the SMS Telebot GitHub repository.
 //
 // Supported destinations: telegram, ntfy, smtp, sms
-// All destinations are optional; the default format is used if one is omitted
-// Each destination has an optional "title" (first line for telegram/sms, title for ntfy, subject for SMTP) and a "message"
-// Telegram supports a limited set of HTML tags, including <b> and <i> (displayed as is in preview)
+// All destinations are optional; the default format is used if one is omitted.
+// Each destination has an optional "title" (first line for telegram/sms, title for ntfy, subject for SMTP) and a "message".
+// Telegram supports a limited set of HTML tags, including <b> and <i> (displayed as is in preview).
 //
 // Incoming event types:
 //   sms - incoming SMS
@@ -19,8 +20,8 @@
 //   $date() - event date and time formatted with Java DateTimeFormatter, e.g. $date(yyyy-MM-dd HH:mm)
 //   $device - device label; empty if unset
 //
-// Use \n for line breaks in template strings
-// Add single-line comments with //
+// Use \n for line breaks in template strings.
+// Add single-line comments with //.
 
 {
   "name": "Custom", // format name in the app settings
