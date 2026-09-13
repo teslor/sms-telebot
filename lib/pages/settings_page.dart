@@ -148,41 +148,57 @@ class _SettingsPageState extends State<SettingsPage> {
       if (!context.mounted) return;
       showDialog<void>(
         context: context,
-        builder: (context) => AlertDialog(
-          insetPadding: const EdgeInsets.all(20),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final entry in groupedPreviews.entries) ...[
-                  Text(
-                    switch (entry.key) {
-                      'telegram' => 'Telegram', 'smtp' => 'SMTP', 'sms' => 'SMS',
-                      _ => entry.key,
-                    },
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: CustomColor.destination(entry.key),
+        useSafeArea: false,
+        builder: (context) => Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 70),
+          child: SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (final entry in groupedPreviews.entries) ...[
+                            Text(
+                              switch (entry.key) {
+                                'telegram' => 'Telegram', 'smtp' => 'SMTP', 'sms' => 'SMS',
+                                _ => entry.key,
+                              },
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: CustomColor.destination(entry.key),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            for (final preview in entry.value) ...[
+                              const Divider(height: 1),
+                              const SizedBox(height: 8),
+                              if (preview['title']!.isNotEmpty) Text(preview['title']!),
+                              if (preview['message']!.isNotEmpty) Text(preview['message']!),
+                              const SizedBox(height: 8),
+                            ],
+                            const SizedBox(height: 4),
+                          ],
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  for (final preview in entry.value) ...[
-                    const Divider(height: 1),
-                    const SizedBox(height: 8),
-                    if (preview['title']!.isNotEmpty) Text(preview['title']!),
-                    if (preview['message']!.isNotEmpty) Text(preview['message']!),
-                    const SizedBox(height: 8),
-                  ],
-                  const SizedBox(height: 4),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(l10n.action_close),
+                    ),
+                  ),
                 ],
-              ],
+              ),
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(l10n.action_close),
-            ),
-          ],
         ),
       );
     } catch (_) {

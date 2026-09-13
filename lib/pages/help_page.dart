@@ -40,7 +40,7 @@ class _HelpPageState extends State<HelpPage> {
       l10n.help_opts_03,
       {
         'text': l10n.help_opts_04, 'link': l10n.help_opts_04h,
-        'url': '$appLink/raw/refs/heads/main/templates/message_format.jsonc',
+        'url': '$appLink/raw/refs/heads/main/templates/message_basic.jsonc',
       },
       l10n.help_opts_05,
       l10n.help_opts_06,

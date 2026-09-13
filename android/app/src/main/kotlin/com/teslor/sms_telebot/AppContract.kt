@@ -144,8 +144,11 @@ object MessageHelpers {
         val destination = provider.substringBefore('_')
         val root = getCustomFormatRoot(customFormatJson)
         val templates = root.getJSONObject("templates")
-        val providerTemplate = templates.optJSONObject(destination) ?: return null
-        val typeTemplate = providerTemplate.optJSONObject(type) ?: return null
+        val providerTemplate = templates.optJSONObject(destination)
+        val commonTemplate = templates.optJSONObject("common")
+        val typeTemplate = providerTemplate?.optJSONObject(type)
+            ?: commonTemplate?.optJSONObject(type)
+            ?: return null
         val titleTemplate = typeTemplate.optString("title", "")
         val messageTemplate = typeTemplate.optString("message", "")
         val isTelegram = provider == SendProviderId.TELEGRAM
