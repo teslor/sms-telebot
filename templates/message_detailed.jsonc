@@ -1,0 +1,67 @@
+// SMS Telebot format template for forwarded messages; customize it as needed.
+// Copy the entire file or a valid format definition to the clipboard, then paste it in the app settings.
+// This and other templates are available in the `templates` folder of the SMS Telebot GitHub repository.
+// See message_basic.jsonc for a description of the template structure.
+
+{
+  "name": "Detailed",
+  "version": 1,
+  "templates": {
+    "telegram": {
+      "sms": {
+        "title": "✉️ <b>$sender</b>",
+        "message": "$text\n<i>$date(dd MMM yyyy, HH:mm:ss)</i>\n<i>$device (SIM $slot, $carrier)</i>"
+      },
+      "call": {
+        "title": "☎️ <b>$sender</b>",
+        "message": "<i>$date(dd MMM yyyy, HH:mm:ss)</i>\n<i>$device (SIM $slot, $carrier)</i>"
+      },
+      "sys": {
+        "title": "📱 <b>$sender</b>",
+        "message": "$text\n<i>$date(dd MMM yyyy, HH:mm:ss)</i>\n<i>$device</i>"
+      }
+    },
+    "ntfy": {
+      "sms": {
+        "title": "✉️ $sender",
+        "message": "$text\n$date(dd MMM yyyy, HH:mm:ss)\n$device (SIM $slot, $carrier)"
+      },
+      "call": {
+        "title": "☎️ $sender",
+        "message": "$date(dd MMM yyyy, HH:mm:ss)\n$device (SIM $slot, $carrier)"
+      },
+      "sys": {
+        "title": "📱 $sender",
+        "message": "$text\n$date(dd MMM yyyy, HH:mm:ss)\n$device"
+      }
+    },
+    "smtp": {
+      "sms": {
+        "title": "SMS: $sender",
+        "message": "$text\n\n$date(dd MMM yyyy, HH:mm:ss)\n$device (SIM $slot, $carrier)\n✉️ $sender"
+      },
+      "call": {
+        "title": "Call: $sender",
+        "message": "$date(dd MMM yyyy, HH:mm:ss)\n$device (SIM $slot, $carrier)\n☎️ $sender"
+      },
+      "sys": {
+        "title": "$sender",
+        "message": "$text\n\n$date(dd MMM yyyy, HH:mm:ss)\n📱 $device"
+      }
+    },
+    "sms": {
+      "sms": {
+        "title": "SMS: $sender",
+        "message": "$text\n$date(dd MMM yyyy, HH:mm:ss)\n$device (SIM $slot, $carrier)"
+      },
+      "call": {
+        "title": "Call: $sender",
+        "message": "$date(dd MMM yyyy, HH:mm:ss)\n$device (SIM $slot, $carrier)"
+      },
+      "sys": {
+        "title": "$sender",
+        "message": "$text\n$date(dd MMM yyyy, HH:mm:ss)\n$device"
+      }
+    }
+  }
+}
