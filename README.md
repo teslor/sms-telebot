@@ -37,6 +37,8 @@ It can also notify you about incoming calls, low battery, and charger connection
 
 * **Start Forwarding**: All set! Tap 'Start' to begin forwarding your messages and events.
 
+* **Customize Format (advanced)**: Replace the default format for forwarded messages with your own! The [`templates`](templates) folder contains ready-to-use examples. Download and edit any template. See the format description in the [`basic template`](templates/message_basic.jsonc). Then copy its contents and just paste them into the app.
+
 ## :mag: Using Filters
 
 You can establish filters to control which messages are forwarded based on the sender or the message text. Filters can be set to trigger when the sender's number or name, or the message content, contains specific characters.
