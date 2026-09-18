@@ -45,6 +45,8 @@ class CallReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 processCall(context, intent, incomingNumber, attachSimInfo)
+            } catch (e: Exception) {
+                AppLog.e("CallReceiver", "Failed to process incoming call", e)
             } finally {
                 pendingResult.finish() // mandatory to finish BroadcastReceiver
             }

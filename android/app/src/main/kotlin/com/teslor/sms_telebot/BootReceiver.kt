@@ -25,7 +25,11 @@ class BootReceiver : BroadcastReceiver() {
             if (!dbManager.getBoolSetting("enableForeground")) return
 
             val serviceIntent = Intent(context, ForegroundService::class.java)
-            ContextCompat.startForegroundService(context, serviceIntent)
+            try {
+                ContextCompat.startForegroundService(context, serviceIntent)
+            } catch (e: Exception) {
+                AppLog.e("BootReceiver", "Failed to start foreground service", e)
+            }
         }
     }
 }

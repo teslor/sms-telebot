@@ -49,6 +49,8 @@ class DeviceStatusReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 processSystemAlert(context, action, sender, body)
+            } catch (e: Exception) {
+                AppLog.e("DeviceStatusReceiver", "Failed to process device status update", e)
             } finally {
                 pendingResult.finish()
             }

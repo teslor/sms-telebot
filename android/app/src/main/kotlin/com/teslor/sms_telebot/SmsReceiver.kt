@@ -35,6 +35,8 @@ class SmsReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 processSms(context, intent, attachSimInfo)
+            } catch (e: Exception) {
+                AppLog.e("SmsReceiver", "Failed to process incoming SMS", e)
             } finally {
                 pendingResult.finish() // mandatory to finish BroadcastReceiver
             }
