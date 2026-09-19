@@ -8,6 +8,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -48,8 +49,16 @@ class ForegroundService : Service() {
             .setContentIntent(contentIntent)
             .build()
 
-        // Repeated starts are safe: Android updates the same foreground notification
-        startForeground(NOTIFICATION_ID, notification)
+        // Use specialUse FGS type for Android 14+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(
+                NOTIFICATION_ID,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            )
+        } else {
+            startForeground(NOTIFICATION_ID, notification)
+        }
 
         // Restart service after process termination if needed
         return START_STICKY
