@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="service_title">メッセージ転送</string>
+    <string name="service_text">バックグラウンドで実行中</string>
+    <string name="sms">メッセージ</string>
+    <string name="call">通話</string>
+    <string name="battery">バッテリー</string>
+    <string name="low_battery">バッテリー残量低下</string>
+    <string name="charger_connected">充電器接続</string>
+    <string name="charger_disconnected">充電器切断</string>
+</resources>

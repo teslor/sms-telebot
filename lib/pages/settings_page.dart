@@ -134,10 +134,6 @@ class _SettingsPageState extends State<SettingsPage> {
       final sets = {
         'customFormatJson': _customFormatJson,
         'deviceLabel': _deviceLabelController.text,
-        'l10nSms': l10n.msg_sms,
-        'l10nCall': l10n.msg_call,
-        'l10nBattery': l10n.msg_battery,
-        'l10nLowBattery': l10n.msg_lowBattery,
         'l10nHello': l10n.msg_hello.replaceFirst(RegExp(r'\s*\^.*$'), ''),
       };
       final previews = await previewFormatNative(sets);

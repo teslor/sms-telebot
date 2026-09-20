@@ -51,29 +51,6 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     await _loadSettings();
     await _loadRules();
 
-    // Save l10n required for background process after first frame when context is available
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final localizations = AppLocalizations.of(navigatorKey.currentContext!)!;
-      final settings = await MainDb.instance.getAllSettings();
-      final l10nSettings = {
-        'l10nServiceTitle': localizations.service_title,
-        'l10nServiceText': localizations.service_text,
-        'l10nSms': localizations.msg_sms,
-        'l10nCall': localizations.msg_call,
-        'l10nBattery': localizations.msg_battery,
-        'l10nLowBattery': localizations.msg_lowBattery,
-        'l10nChargerConnected': localizations.msg_chargerConnected,
-        'l10nChargerDisconnected': localizations.msg_chargerDisconnected,
-      };
-
-      final l10nChanged = <String, String>{};
-      l10nSettings.forEach((key, value) {
-        if (settings[key] != value) l10nChanged[key] = value;
-      });
-
-      if (l10nChanged.isNotEmpty) await MainDb.instance.saveSettings(l10nChanged);
-    });
-
     _updateStats();
     if (isRunning) {
       _startStatsPolling();

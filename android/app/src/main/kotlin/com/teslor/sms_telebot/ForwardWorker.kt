@@ -54,7 +54,9 @@ class ForwardWorker(
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val dbManager = DbManager.getInstance(applicationContext)
-        val settings = dbManager.getAllSettings()
+        val settings = dbManager.getSettings(
+            listOf("isRunning", "customFormatJson", "deviceLabel")
+        )
         if (settings["isRunning"] != "1") return@withContext Result.success()
         val secretStorage = SecureStorageManager.getInstance(applicationContext)
 
@@ -76,8 +78,8 @@ class ForwardWorker(
         val sets = mapOf(
             "customFormatJson" to settings["customFormatJson"].orEmpty(),
             "deviceLabel" to settings["deviceLabel"].orEmpty(),
-            "l10nSms" to settings["l10nSms"].orEmpty().ifBlank { "SMS" },
-            "l10nCall" to settings["l10nCall"].orEmpty().ifBlank { "Call" },
+            "l10nSms" to applicationContext.getString(R.string.sms),
+            "l10nCall" to applicationContext.getString(R.string.call),
         )
 
         val lastAttemptAt = System.currentTimeMillis()

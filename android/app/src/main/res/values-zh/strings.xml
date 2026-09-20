@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="service_title">消息转发</string>
+    <string name="service_text">正在后台运行</string>
+    <string name="sms">短信</string>
+    <string name="call">通话</string>
+    <string name="battery">电池</string>
+    <string name="low_battery">电量低</string>
+    <string name="charger_connected">充电器已连接</string>
+    <string name="charger_disconnected">充电器已断开</string>
+</resources>

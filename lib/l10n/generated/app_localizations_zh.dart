@@ -33,12 +33,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get action_test => '测试';
 
   @override
-  String get service_title => '消息转发';
-
-  @override
-  String get service_text => '正在后台运行';
-
-  @override
   String get msg_list => '消息';
 
   @override
@@ -61,24 +55,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get msg_stop => '停止';
-
-  @override
-  String get msg_sms => '短信';
-
-  @override
-  String get msg_call => '通话';
-
-  @override
-  String get msg_battery => '电池';
-
-  @override
-  String get msg_lowBattery => '电量低';
-
-  @override
-  String get msg_chargerConnected => '充电器已连接';
-
-  @override
-  String get msg_chargerDisconnected => '充电器已断开';
 
   @override
   String get rule => '规则';

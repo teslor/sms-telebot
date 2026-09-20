@@ -113,7 +113,12 @@ class MainActivity : FlutterActivity() {
                     }
 
                     "previewFormat" -> {
-                        val sets = call.argument<Map<String, String>>("sets") ?: emptyMap()
+                        val sets = (call.argument<Map<String, String>>("sets") ?: emptyMap()) + mapOf(
+                            "l10nSms" to getString(R.string.sms),
+                            "l10nCall" to getString(R.string.call),
+                            "l10nBattery" to getString(R.string.battery),
+                            "l10nLowBattery" to getString(R.string.low_battery),
+                        )
                         try {
                             result.success(MessageHelpers.previewFormat(sets))
                         } catch (e: Exception) {

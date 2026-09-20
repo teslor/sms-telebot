@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="service_title">Пересылка сообщений</string>
+    <string name="service_text">Работает в фоне</string>
+    <string name="sms">СМС</string>
+    <string name="call">Звонок</string>
+    <string name="battery">Батарея</string>
+    <string name="low_battery">Низкий уровень заряда</string>
+    <string name="charger_connected">Зарядка подключена</string>
+    <string name="charger_disconnected">Зарядка отключена</string>
+</resources>

@@ -160,18 +160,6 @@ abstract class AppLocalizations {
   /// **'Test'**
   String get action_test;
 
-  /// No description provided for @service_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Message forwarding'**
-  String get service_title;
-
-  /// No description provided for @service_text.
-  ///
-  /// In en, this message translates to:
-  /// **'Running in background'**
-  String get service_text;
-
   /// No description provided for @msg_list.
   ///
   /// In en, this message translates to:
@@ -219,42 +207,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stop'**
   String get msg_stop;
-
-  /// No description provided for @msg_sms.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS'**
-  String get msg_sms;
-
-  /// No description provided for @msg_call.
-  ///
-  /// In en, this message translates to:
-  /// **'Call'**
-  String get msg_call;
-
-  /// No description provided for @msg_battery.
-  ///
-  /// In en, this message translates to:
-  /// **'Battery'**
-  String get msg_battery;
-
-  /// No description provided for @msg_lowBattery.
-  ///
-  /// In en, this message translates to:
-  /// **'Low battery'**
-  String get msg_lowBattery;
-
-  /// No description provided for @msg_chargerConnected.
-  ///
-  /// In en, this message translates to:
-  /// **'Charger connected'**
-  String get msg_chargerConnected;
-
-  /// No description provided for @msg_chargerDisconnected.
-  ///
-  /// In en, this message translates to:
-  /// **'Charger disconnected'**
-  String get msg_chargerDisconnected;
 
   /// No description provided for @rule.
   ///

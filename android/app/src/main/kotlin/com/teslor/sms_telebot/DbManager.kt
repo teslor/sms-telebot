@@ -76,10 +76,15 @@ class DbManager private constructor(private val mainDbPath: String) {
     // APP_SETTINGS
     // ================================================================================
 
-    // Read all settings as key-value map
-    fun getAllSettings(): Map<String, String> {
+    // Read settings by keys as key-value map
+    fun getSettings(keys: Collection<String>): Map<String, String> {
+        if (keys.isEmpty()) return emptyMap()
+        val placeholders = keys.joinToString(",") { "?" }
         return withDatabase { db ->
-            db.query("app_settings", arrayOf("key", "value"), null, null, null, null, null).use { cursor ->
+            db.query(
+                "app_settings", arrayOf("key", "value"), "key IN ($placeholders)",
+                keys.toTypedArray(), null, null, null
+            ).use { cursor ->
                 val map = HashMap<String, String>()
                 while (cursor.moveToNext()) map[cursor.getString(0)] = cursor.getString(1) ?: ""
                 map

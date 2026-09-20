@@ -33,12 +33,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get action_test => 'Testar';
 
   @override
-  String get service_title => 'Encaminhamento de mensagens';
-
-  @override
-  String get service_text => 'Em segundo plano';
-
-  @override
   String get msg_list => 'Mensagens';
 
   @override
@@ -61,24 +55,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get msg_stop => 'Parar';
-
-  @override
-  String get msg_sms => 'SMS';
-
-  @override
-  String get msg_call => 'Chamada';
-
-  @override
-  String get msg_battery => 'Bateria';
-
-  @override
-  String get msg_lowBattery => 'Bateria fraca';
-
-  @override
-  String get msg_chargerConnected => 'Carregador conectado';
-
-  @override
-  String get msg_chargerDisconnected => 'Carregador desconectado';
 
   @override
   String get rule => 'Regra';

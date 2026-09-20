@@ -30,20 +30,19 @@ class DeviceStatusReceiver : BroadcastReceiver() {
                 val level = bm
                     ?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
                     ?.takeIf { it in 1..100 } ?: 15
-                val l10nLowBattery = dbManager.getSetting("l10nLowBattery").orEmpty().ifBlank { "Low battery" }
-                "$l10nLowBattery: $level%"
+                "${context.getString(R.string.low_battery)}: $level%"
             }
             Intent.ACTION_POWER_CONNECTED -> {
                 if (!dbManager.getBoolSetting("notifyChargerState")) return
-                dbManager.getSetting("l10nChargerConnected").orEmpty().ifBlank { "Charger connected" }
+                context.getString(R.string.charger_connected)
             }
             Intent.ACTION_POWER_DISCONNECTED -> {
                 if (!dbManager.getBoolSetting("notifyChargerState")) return
-                dbManager.getSetting("l10nChargerDisconnected").orEmpty().ifBlank { "Charger disconnected" }
+                context.getString(R.string.charger_disconnected)
             }
             else -> return
         }
-        val sender = dbManager.getSetting("l10nBattery").orEmpty().ifBlank { "Battery" }
+        val sender = context.getString(R.string.battery)
 
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {

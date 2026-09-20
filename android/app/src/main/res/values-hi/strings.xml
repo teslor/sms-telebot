@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="service_title">संदेशों को फॉरवर्ड करना</string>
+    <string name="service_text">बैकग्राउंड में चल रहा है</string>
+    <string name="sms">SMS</string>
+    <string name="call">कॉल</string>
+    <string name="battery">बैटरी</string>
+    <string name="low_battery">बैटरी कम</string>
+    <string name="charger_connected">चार्जर कनेक्टेड</string>
+    <string name="charger_disconnected">चार्जर डिस्कनेक्टेड</string>
+</resources>

@@ -36,13 +36,9 @@ class ForegroundService : Service() {
             this, 0, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val dbManager = DbManager.getInstance(this)
-        val serviceTitle = dbManager.getSetting("l10nServiceTitle") ?: "Message forwarding"
-        val serviceText = dbManager.getSetting("l10nServiceText") ?: "Running in background"
-
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle(serviceTitle)
-            .setContentText(serviceText)
+            .setContentTitle(getString(R.string.service_title))
+            .setContentText(getString(R.string.service_text))
             .setSmallIcon(R.drawable.ic_notification)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)

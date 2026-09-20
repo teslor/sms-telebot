@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="service_title">Message forwarding</string>
+    <string name="service_text">Running in background</string>
+    <string name="sms">SMS</string>
+    <string name="call">Call</string>
+    <string name="battery">Battery</string>
+    <string name="low_battery">Low battery</string>
+    <string name="charger_connected">Charger connected</string>
+    <string name="charger_disconnected">Charger disconnected</string>
+</resources>

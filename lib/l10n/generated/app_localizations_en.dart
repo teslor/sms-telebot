@@ -33,12 +33,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get action_test => 'Test';
 
   @override
-  String get service_title => 'Message forwarding';
-
-  @override
-  String get service_text => 'Running in background';
-
-  @override
   String get msg_list => 'Messages';
 
   @override
@@ -61,24 +55,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get msg_stop => 'Stop';
-
-  @override
-  String get msg_sms => 'SMS';
-
-  @override
-  String get msg_call => 'Call';
-
-  @override
-  String get msg_battery => 'Battery';
-
-  @override
-  String get msg_lowBattery => 'Low battery';
-
-  @override
-  String get msg_chargerConnected => 'Charger connected';
-
-  @override
-  String get msg_chargerDisconnected => 'Charger disconnected';
 
   @override
   String get rule => 'Rule';

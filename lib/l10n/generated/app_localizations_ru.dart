@@ -33,12 +33,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get action_test => 'Проверить';
 
   @override
-  String get service_title => 'Пересылка сообщений';
-
-  @override
-  String get service_text => 'Работает в фоне';
-
-  @override
   String get msg_list => 'Сообщения';
 
   @override
@@ -61,24 +55,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get msg_stop => 'Стоп';
-
-  @override
-  String get msg_sms => 'СМС';
-
-  @override
-  String get msg_call => 'Звонок';
-
-  @override
-  String get msg_battery => 'Батарея';
-
-  @override
-  String get msg_lowBattery => 'Низкий уровень заряда';
-
-  @override
-  String get msg_chargerConnected => 'Зарядка подключена';
-
-  @override
-  String get msg_chargerDisconnected => 'Зарядка отключена';
 
   @override
   String get rule => 'Правило';
