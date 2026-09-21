@@ -25,6 +25,7 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
   bool _isInputChanged = false;
   bool? _testResult;
   bool? _saveResult;
+  bool _isTokenVisible = false;
 
   static final _tokenRegex = RegExp(r'^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$');
 
@@ -175,8 +176,16 @@ class _TelegramBotConnectionState extends State<TelegramBotConnection> {
         children:[
           TextField(
             controller: _tokenController,
+            obscureText: !_isTokenVisible,
             decoration: CustomStyle.compactInput(
               labelText: l10n.tbot_token,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isTokenVisible ? Icons.visibility : Icons.visibility_off,
+                  applyTextScaling: true,
+                ),
+                onPressed: () => setState(() => _isTokenVisible = !_isTokenVisible),
+              ),
             ),
             onChanged: _onChanged,
           ),

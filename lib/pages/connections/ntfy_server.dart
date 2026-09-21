@@ -25,6 +25,7 @@ class _NtfyServerConnectionState extends State<NtfyServerConnection> {
   bool _isInputChanged = false;
   bool? _testResult;
   bool? _saveResult;
+  bool _isTopicVisible = false;
   bool _isTokenVisible = false;
   int _priority = 3;
 
@@ -177,7 +178,17 @@ class _NtfyServerConnectionState extends State<NtfyServerConnection> {
         children: [
           TextField(
             controller: _topicController,
-            decoration: CustomStyle.compactInput(labelText: l10n.ntfy_topic),
+            obscureText: !_isTopicVisible,
+            decoration: CustomStyle.compactInput(
+              labelText: l10n.ntfy_topic,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isTopicVisible ? Icons.visibility : Icons.visibility_off,
+                  applyTextScaling: true,
+                ),
+                onPressed: () => setState(() => _isTopicVisible = !_isTopicVisible),
+              ),
+            ),
             onChanged: _onChanged,
           ),
           const SizedBox(height: 16),
