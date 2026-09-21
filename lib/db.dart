@@ -23,7 +23,6 @@ class MainDb {
     }
   }
 
-  // Database initialization
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
@@ -62,14 +61,11 @@ class MainDb {
     return db;
   }
 
-  // Enable WAL mode for concurrent Dart/Kotlin access
   Future<void> _onConfigure(Database db) async {
     await db.rawQuery('PRAGMA busy_timeout = 5000');
-    await db.rawQuery('PRAGMA journal_mode = WAL');
     await db.execute('PRAGMA foreign_keys = ON');
   }
 
-  // Create tables on first launch
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE app_settings (

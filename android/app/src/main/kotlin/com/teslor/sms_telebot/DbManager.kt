@@ -49,8 +49,7 @@ class DbManager private constructor(private val mainDbPath: String) {
             return try {
                 val flags = SQLiteDatabase.OPEN_READWRITE or SQLiteDatabase.ENABLE_WRITE_AHEAD_LOGGING
                 SQLiteDatabase.openDatabase(mainDb.absolutePath, null, flags).apply {
-                    rawQuery("PRAGMA busy_timeout = 5000", null).use { }
-                    enableWriteAheadLogging()
+                    rawQuery("PRAGMA busy_timeout = 5000", null).use { it.moveToFirst() }
                     setForeignKeyConstraintsEnabled(true)
                 }.also {
                     opened -> database = opened

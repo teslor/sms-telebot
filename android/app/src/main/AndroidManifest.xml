@@ -25,6 +25,9 @@
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:localeConfig="@xml/locale_config">
+        <meta-data
+            android:name="com.tekartik.sqflite.wal_enabled"
+            android:value="true" />
         <receiver
             android:name=".BootReceiver"
             android:enabled="true"
