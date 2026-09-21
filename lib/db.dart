@@ -29,7 +29,7 @@ class MainDb {
 
     final db = await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onConfigure: _onConfigure,
       onCreate: _onCreate,
       onUpgrade: (db, oldVersion, newVersion) async {
@@ -51,6 +51,9 @@ class MainDb {
           await db.execute('ALTER TABLE forwarding_rules ADD COLUMN priority INTEGER DEFAULT 3');
           await db.execute('CREATE INDEX idx_fr_priority ON forwarding_rules(priority)');
           await db.execute('CREATE INDEX idx_al_timestamp ON app_logs(timestamp)');
+        }
+        if (oldVersion < 4) {
+          await db.execute('DROP TABLE IF EXISTS app_logs');
         }
       },
     );
@@ -105,16 +108,6 @@ class MainDb {
       )
     ''');
     await db.execute('CREATE INDEX idx_mh_received_at ON messages_history(received_at)');
-
-    await db.execute('''
-      CREATE TABLE app_logs (
-        id INTEGER PRIMARY KEY,
-        timestamp INTEGER,
-        level INTEGER,
-        message TEXT
-      )
-    ''');
-    await db.execute('CREATE INDEX idx_al_timestamp ON app_logs(timestamp)');
   }
 
   Future<void> _seedDefaults(Database db) async {

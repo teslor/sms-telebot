@@ -161,7 +161,7 @@ interface SendProvider {
         val isUnexpectedError = code == ResultCode.UNEXPECTED_ERROR || details != null || exception != null
 
         when {
-            isSuccess -> AppLog.i(TAG, "Sent successfully$infoSuffix $meta")
+            isSuccess -> AppLog.d(TAG) { "Sent successfully$infoSuffix $meta" }
             isUnexpectedError -> AppLog.e(TAG, "Send failed$infoSuffix $meta", exception)
             else -> AppLog.w(TAG, "Send failed$infoSuffix $meta")
         }

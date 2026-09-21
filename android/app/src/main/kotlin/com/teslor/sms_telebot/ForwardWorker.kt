@@ -89,9 +89,10 @@ class ForwardWorker(
 
         // Start parallel sending within each priority group
         // Lower priority rules are processed only if all higher priority rules failed
-        val ruleNames = rules.joinToString(", ") { it.name }
         val senderMask = messageData.sender.let { if (it.length > 4) "${it.take(2)}***${it.takeLast(2)}" else "***" }
-        AppLog.i(TAG, "Start processing message (type=${messageData.type}, sender=$senderMask, len=${messageData.body.length}, rules=\"$ruleNames\")")
+        AppLog.d(TAG) {
+            "Start processing message (type=${messageData.type}, sender=$senderMask, len=${messageData.body.length}, rules=${ruleIds.joinToString(prefix = "[", postfix = "]")})"
+        }
         for ((priority, priorityRules) in rules.groupBy { it.priority }.toSortedMap()) { // keep priority order explicit
             val groupResults = coroutineScope {
                 priorityRules.map { rule ->
@@ -121,7 +122,7 @@ class ForwardWorker(
                             } catch (e: CancellationException) {
                                 throw e
                             } catch (e: Exception) {
-                                AppLog.e(TAG, "Rule failed with exception (name=${rule.name})", e)
+                                AppLog.e(TAG, "Rule failed with exception (id=${rule.id})", e)
                                 SendProviderResult(isSuccess = false, code = "", info = "")
                             }
                         }

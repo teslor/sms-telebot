@@ -6,6 +6,8 @@ package com.teslor.sms_telebot
 import android.content.Context
 import android.text.format.DateFormat
 import android.util.Log
+import java.io.File
+import java.io.FileOutputStream
 import java.security.MessageDigest
 import java.time.Instant
 import java.time.LocalDate
@@ -13,6 +15,12 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.json.JSONObject
 
 object ResultCode {
@@ -312,63 +320,76 @@ object MessageFilters {
 }
 
 object AppLog {
-    const val LEVEL_INFO = 0
-    const val LEVEL_WARN = 1
-    const val LEVEL_ERROR = 2
-
     @Volatile
     @PublishedApi
     internal var isDebugEnabled = false
 
     @Volatile
-    private var dbManager: DbManager? = null
+    private var logDir: File? = null
 
-    // Prevents recursive DB logging (safeguard if DB will use AppLog)
-    private val isPersistingDbLog = ThreadLocal.withInitial { false }
+    private val fileScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val fileMutex = Mutex()
 
     fun configure(context: Context, enabled: Boolean) {
         isDebugEnabled = enabled
-        dbManager = DbManager.getInstance(context.applicationContext)
+        logDir = File(context.applicationContext.filesDir, "logs")
     }
 
     inline fun d(tag: String, e: Throwable? = null, message: () -> String) {
         if (!isDebugEnabled) return
         val text = message()
         if (e == null) Log.d(tag, text) else Log.d(tag, text, e)
+        saveToFile("DEBUG", tag, text, e)
     }
 
     fun i(tag: String, message: String, e: Throwable? = null) {
         if (e == null) Log.i(tag, message) else Log.i(tag, message, e)
-        persistToDb(LEVEL_INFO, tag, message, e)
+        saveToFile("INFO", tag, message, e)
     }
 
     fun w(tag: String, message: String, e: Throwable? = null) {
         if (e == null) Log.w(tag, message) else Log.w(tag, message, e)
-        persistToDb(LEVEL_WARN, tag, message, e)
+        saveToFile("WARN", tag, message, e)
     }
 
     fun e(tag: String, message: String, e: Throwable? = null) {
         if (e == null) Log.e(tag, message) else Log.e(tag, message, e)
-        persistToDb(LEVEL_ERROR, tag, message, e)
+        saveToFile("ERROR", tag, message, e)
     }
 
-    private fun persistToDb(level: Int, tag: String, message: String, e: Throwable?) {
-        val manager = dbManager ?: return
-        if (isPersistingDbLog.get() == true) return
+    @PublishedApi
+    internal fun saveToFile(level: String, tag: String, message: String, e: Throwable?) {
+        val dir = logDir ?: return
+        val line = JSONObject()
+            .put("time", DateTimeFormatter.ISO_INSTANT.format(Instant.now()))
+            .put("level", level)
+            .put("tag", tag)
+            .put("message", message)
+            .apply {
+                e?.let {
+                    put("exception", "${it::class.java.simpleName}: ${it.message ?: "unknown"}")
+                }
+            }
+            .toString() + '\n'
 
-        val text = if (e == null) {
-            "[$tag] $message"
-        } else {
-            val eInfo = "${e::class.java.simpleName}: ${e.message ?: "unknown"}"
-            "[$tag] $message | $eInfo"
+        fileScope.launch {
+            try {
+                fileMutex.withLock { appendLine(dir, line) }
+            } catch (_: Exception) { }
         }
+    }
 
-        try {
-            isPersistingDbLog.set(true)
-            manager.insertAppLogs(level = level, message = text)
-        } finally {
-            isPersistingDbLog.set(false)
+    private fun appendLine(dir: File, line: String) {
+        if (!dir.exists() && !dir.mkdirs()) return
+        val activeFile = File(dir, "app.log")
+        val bytes = line.toByteArray(Charsets.UTF_8)
+        
+        // Rotate log files if the active file exceeds 512KB
+        if (activeFile.length() + bytes.size > 512 * 1024L) {
+            File(dir, "app.prev.log").delete()
+            activeFile.renameTo(File(dir, "app.prev.log"))
         }
+        FileOutputStream(activeFile, true).use { it.write(bytes) }
     }
 
     fun sanitizeString(value: String): String =

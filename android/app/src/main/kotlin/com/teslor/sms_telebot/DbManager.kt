@@ -22,7 +22,6 @@ class DbManager private constructor(private val mainDbPath: String) {
 
     companion object {
         private const val TAG = "Database"
-        private const val APP_LOGS_LIMIT = 500
 
         @Suppress("StaticFieldLeak")
         @Volatile
@@ -234,31 +233,5 @@ class DbManager private constructor(private val mainDbPath: String) {
             db.query("messages_history", arrayOf("1"), "id = ?", arrayOf(id), null, null, null, "1")
                 .use { it.moveToFirst() }
         } ?: false
-    }
-
-    // ================================================================================
-    // APP_LOGS
-    // ================================================================================
-
-    fun insertAppLogs(level: Int, message: String): Boolean {
-        val db = getOrOpenDatabase() ?: return false
-
-        return try {
-            val values = ContentValues().apply {
-                put("timestamp", System.currentTimeMillis())
-                put("level", level)
-                put("message", if (message.length > 1000) message.take(1000) else message)
-            }
-            val inserted = db.insert("app_logs", null, values) != -1L
-
-            if (inserted && kotlin.random.Random.nextInt(50) == 0) {
-                db.execSQL("DELETE FROM app_logs WHERE id <= (SELECT id FROM app_logs ORDER BY id DESC LIMIT 1 OFFSET $APP_LOGS_LIMIT)")
-            }
-
-            inserted
-        } catch (e: SQLiteException) {
-            Log.e(TAG, "Failed to insert app log entry", e)
-            false
-        }
     }
 }

@@ -34,7 +34,7 @@ class MainActivity : FlutterActivity() {
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, MAIN_CHANNEL)
             .setMethodCallHandler { call, result ->
-                AppLog.d(TAG) { "Method call: ${call.method}" }
+                AppLog.d(TAG) { "Method called: ${call.method}" }
 
                 when (call.method) {
                     "sendToProvider" -> {
