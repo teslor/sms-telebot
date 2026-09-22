@@ -295,4 +295,12 @@ class MainDb {
       orderBy: 'received_at DESC', limit: limit,
     );
   }
+
+  /// Change status of messages with status FAILED_RETRY to FAILED_FINAL
+  Future<void> resetRetryStatus() async {
+    final db = await instance.database;
+    await db.update(
+      'messages_history', {'status': 1}, where: 'status = ?', whereArgs: [2],
+    );
+  } 
 }

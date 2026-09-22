@@ -85,9 +85,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     isRunning = false;
     notifyListeners();
     _stopStatsPolling();
-    await MainDb.instance.saveBoolSetting('isRunning', false);
     stopWorkersNative();
-    stopForegroundServiceNative();
+    stopForegroundServiceNative();    
+    await MainDb.instance.saveBoolSetting('isRunning', false);
+    await MainDb.instance.resetRetryStatus();
   }
 
   @override
@@ -125,11 +126,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     // Refresh selected rule data if it exists
     if (selectedRule != null) {
       final updatedRule = rules.where((r) => r['id'] == selectedRule!['id']).firstOrNull;
-      if (updatedRule != null) {
-        selectRule(updatedRule);
-      } else {
-        selectRule(null);
-      }
+      await selectRule(updatedRule);
     }
     notifyListeners();
   }
@@ -211,6 +208,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<CallResult> deleteRule(int id) async {
     await MainDb.instance.deleteRule(id);
+    await deleteSecretNative(id.toString());
     await _loadRules();
     return okResult();
   }
@@ -221,7 +219,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
     if (!autoSelect) return okResult();
     final newRule = rules.where((rule) => rule['id'] == newRuleId).firstOrNull;
-    if (newRule != null) selectRule(newRule);
+    if (newRule != null) await selectRule(newRule);
     return okResult();
   }
 
