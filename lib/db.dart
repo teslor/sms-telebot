@@ -66,6 +66,7 @@ class MainDb {
 
   Future<void> _onConfigure(Database db) async {
     await db.rawQuery('PRAGMA busy_timeout = 5000');
+    await db.execute('PRAGMA synchronous = NORMAL');
     await db.execute('PRAGMA foreign_keys = ON');
   }
 
@@ -181,9 +182,9 @@ class MainDb {
   }
 
   /// Insert/Update a setting (creates a row if missing, replaces if exists)
-  Future<int> saveSetting(String key, String value) async {
+  Future<void> saveSetting(String key, String value) async {
     final db = await instance.database;
-    return await db.insert('app_settings', {
+    await db.insert('app_settings', {
       'key': key, 'value': value,
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
@@ -195,8 +196,8 @@ class MainDb {
   }
 
   /// Save a boolean setting
-  Future<int> saveBoolSetting(String key, bool value) async {
-    return await saveSetting(key, value ? '1' : '0');
+  Future<void> saveBoolSetting(String key, bool value) async {
+    await saveSetting(key, value ? '1' : '0');
   }
 
   // ================================================================================
@@ -218,10 +219,8 @@ class MainDb {
     int filterMode = 0,
     String? configJson,
     String? filtersJson,
-    DatabaseExecutor? executor,
   }) async {
-    final db = executor ?? await instance.database;
-    return await db.insert('forwarding_rules', {
+    final values = {
       'name': name,
       'provider': provider,
       'is_active': isActive,
@@ -230,29 +229,31 @@ class MainDb {
       'config_json': configJson,
       'filters_json': filtersJson,
       'created_at': DateTime.now().millisecondsSinceEpoch,
-    });
+    };
+    final db = await instance.database;
+    return db.transaction((transaction) => transaction.insert('forwarding_rules', values));
   }
 
   /// Update a specific rule by ID
-  Future<int> updateRule(int id, Map<String, dynamic> ruleData) async {
+  Future<void> updateRule(int id, Map<String, dynamic> ruleData) async {
     final db = await instance.database;
-    return await db.update(
+    await db.update(
       'forwarding_rules', ruleData, where: 'id = ?', whereArgs: [id],
     );
   }
 
   /// Update a specific field of a rule by ID
-  Future<int> updateRuleField(int id, String column, dynamic value) async {
+  Future<void> updateRuleField(int id, String column, dynamic value) async {
     final db = await instance.database;
-    return await db.update(
+    await db.update(
       'forwarding_rules', {column: value}, where: 'id = ?', whereArgs: [id],
     );
   }
 
   /// Delete a specific rule by ID
-  Future<int> deleteRule(int id) async {
+  Future<void> deleteRule(int id) async {
     final db = await instance.database;
-    return await db.delete('forwarding_rules', where: 'id = ?', whereArgs: [id]);
+    await db.delete('forwarding_rules', where: 'id = ?', whereArgs: [id]);
   }
 
   // ================================================================================
