@@ -5,11 +5,15 @@ package com.teslor.sms_telebot
 
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.work.WorkManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import java.io.File
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -185,9 +189,48 @@ class MainActivity : FlutterActivity() {
                         permissionRequestManager.request(call.argument("permission"), result)
                     }
 
+                    "exportLogs" -> exportLogs(result)
+
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    private fun exportLogs(result: MethodChannel.Result) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val archiveDir = File(cacheDir, "exports").apply { mkdirs() }
+                val archive = File(archiveDir, "sms-telebot-logs.zip")
+                val logsDir = File(filesDir, "logs")
+
+                ZipOutputStream(archive.outputStream()).use { zip ->
+                    logsDir.listFiles()?.filter(File::isFile)?.forEach { file ->
+                        zip.putNextEntry(ZipEntry(file.name))
+                        file.inputStream().use { it.copyTo(zip) }
+                        zip.closeEntry()
+                    }
+                }
+
+                val archiveUri = FileProvider.getUriForFile(
+                    this@MainActivity, "$packageName.fileprovider", archive
+                )
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "application/zip"
+                    putExtra(Intent.EXTRA_STREAM, archiveUri)
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+
+                withContext(Dispatchers.Main) {
+                    startActivity(Intent.createChooser(intent, null))
+                    result.success(true)
+                }
+            } catch (e: Exception) {
+                AppLog.e(TAG, "Failed to export logs", e)
+                withContext(Dispatchers.Main) {
+                    result.error("log_export_failed", e.message, null)
+                }
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -200,5 +243,4 @@ class MainActivity : FlutterActivity() {
             permissionRequestManager.onRequestPermissionsResult(requestCode, grantResults)
         }
     }
-
 }

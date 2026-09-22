@@ -272,3 +272,11 @@ Future<bool> requestPermissionNative(String permission, {bool openSettings = fal
     return false;
   }
 }
+
+Future<bool> exportLogsNative() async {
+  try {
+    return await _mainChannel.invokeMethod<bool>('exportLogs') ?? false;
+  } catch (_) {
+    return false;
+  }
+}

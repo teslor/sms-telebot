@@ -21,6 +21,8 @@ class _HelpPageState extends State<HelpPage> {
     (Channel.smtp, 'SMTP'),
     (Channel.sms, 'SMS'),
   ];
+  int _versionTaps = 0;
+  bool _allowLogExport = false;
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +95,9 @@ class _HelpPageState extends State<HelpPage> {
         title: Text(l10n.help_about),
         centerTitle: true,
         elevation: 2,
+        actions: [
+          if (_allowLogExport) IconButton(onPressed: exportLogsNative, icon: const Icon(Icons.ios_share_rounded)),
+        ],
       ),
       body: SafeArea(
         child: ListView(
@@ -103,7 +108,10 @@ class _HelpPageState extends State<HelpPage> {
               offset: const Offset(0, -5),
               child: Row(
                 children: [
-                  Text('$appVersion, ', style: TextStyle(color: appLabelColor)),
+                  InkWell(
+                    onTap: _onVersionTap,
+                    child: Text('$appVersion, ', style: TextStyle(color: appLabelColor)),
+                  ),
                   InkWell(
                     onTap: () { launchURL(appLink); },
                     child: Row(
@@ -172,6 +180,12 @@ class _HelpPageState extends State<HelpPage> {
         ),
       ),
     );
+  }
+
+  void _onVersionTap() {
+    if (_allowLogExport) return;
+    _versionTaps++;
+    if (_versionTaps == 5) setState(() => _allowLogExport = true);
   }
 }
 
